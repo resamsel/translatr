@@ -15,5 +15,8 @@
     "**/*.d.ts",
     "**/testing.ts",
     "**/testing/*"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "strictTemplates": false
+  }
 }

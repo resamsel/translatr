@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { AbstractEditFormComponent } from '../../../shared/edit-form/abstract-ed
   standalone: false,
   selector: 'app-user-settings',
   templateUrl: './user-settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-settings.component.scss']
 })
 export class UserSettingsComponent extends AbstractEditFormComponent<UserSettingsComponent, User>

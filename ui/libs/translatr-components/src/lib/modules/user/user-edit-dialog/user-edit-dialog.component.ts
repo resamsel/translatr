@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ErrorAction, User, UserRole } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
@@ -21,6 +21,7 @@ const defaultUser: Partial<User> = {
   standalone: false,
   selector: 'dev-user-edit-dialog',
   templateUrl: './user-edit-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-edit-dialog.component.css']
 })
 export class UserEditDialogComponent {

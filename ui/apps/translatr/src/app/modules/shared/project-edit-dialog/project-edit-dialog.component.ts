@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -10,6 +10,7 @@ import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
   standalone: false,
   selector: 'app-protect-creation-dialog',
   templateUrl: './project-edit-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-edit-dialog.component.scss']
 })
 export class ProjectEditDialogComponent extends BaseEditFormComponent<

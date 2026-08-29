@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Params, Router } from '@angular/router';
 import { Feature, ProjectCriteria, User } from '@dev/translatr-model';
@@ -14,6 +14,7 @@ import { ProjectsFacade } from './+state/projects.facade';
   standalone: false,
   selector: 'app-projects-page',
   templateUrl: './projects-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./projects-page.component.scss']
 })
 export class ProjectsPageComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
@@ -22,6 +22,7 @@ export interface ProjectEditDialogConfig {
   standalone: false,
   selector: 'dev-project-edit-dialog',
   templateUrl: './project-edit-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-edit-dialog.component.css']
 })
 export class ProjectEditDialogComponent {

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
@@ -24,6 +24,7 @@ export interface AccessTokenEditDialogConfig {
   standalone: false,
   selector: 'dev-access-token-edit-dialog',
   templateUrl: './access-token-edit-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./access-token-edit-dialog.component.css']
 })
 export class AccessTokenEditDialogComponent {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ProjectCriteria, User } from '@dev/translatr-model';
@@ -12,6 +12,7 @@ import { openProjectEditDialog } from '../../../shared/project-edit-dialog/proje
   standalone: false,
   selector: 'app-user-projects',
   templateUrl: './user-projects.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-projects.component.scss']
 })
 export class UserProjectsComponent implements OnInit {

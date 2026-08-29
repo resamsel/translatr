@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
 import { defaultFilters, FilterCriteria } from '../list-header.component';
 
 @Component({
   standalone: false,
   selector: 'app-list-header',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockListHeaderComponent {

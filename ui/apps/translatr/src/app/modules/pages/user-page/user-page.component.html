@@ -3,7 +3,7 @@
   [elevated]="false"
   [me]="me$ | async"
   [overlay]="true"
-  [page]="(user$ | async)?.name"
+  [page]="$safeNavigationMigration((user$ | async)?.name)"
   [showDashboardLink]="true"
 >
   <header [featureFlagClass]="{ 'header-graphic': Feature.HeaderGraphic }" class="header">

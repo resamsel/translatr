@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AccessToken } from '@dev/translatr-model';
 
@@ -6,6 +6,7 @@ import { AccessToken } from '@dev/translatr-model';
   standalone: false,
   selector: 'app-protect-creation-dialog',
   templateUrl: './access-token-edit-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./access-token-edit-dialog.component.scss']
 })
 export class AccessTokenEditDialogComponent {

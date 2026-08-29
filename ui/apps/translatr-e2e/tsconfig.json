@@ -6,12 +6,14 @@
       "cypress",
       "node"
     ],
-    "paths": {}
+    "paths": {},
+    "ignoreDeprecations": "6.0"
   },
   "ts-node": {
     "compilerOptions": {
       "moduleResolution": "node",
-      "paths": {}
+      "paths": {},
+      "ignoreDeprecations": "6.0"
     }
   },
   "include": [

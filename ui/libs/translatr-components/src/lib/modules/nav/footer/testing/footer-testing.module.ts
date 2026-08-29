@@ -1,8 +1,9 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, NgModule, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'app-footer',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockFooterComponent {}

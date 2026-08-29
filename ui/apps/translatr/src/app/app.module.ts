@@ -1,5 +1,5 @@
 import { LayoutModule } from '@angular/cdk/layout';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -65,7 +65,7 @@ import { MatNotificationService } from './services/mat-notification-service';
     SvgIconComponent
   ],
   providers: [
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     AppFacade,
     { provide: FeatureFlagFacade, useClass: AppFacade },
     { provide: WINDOW, useFactory: () => window },

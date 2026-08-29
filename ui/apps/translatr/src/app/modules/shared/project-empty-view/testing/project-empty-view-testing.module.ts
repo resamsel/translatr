@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'app-project-empty-view',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockProjectEmptyViewComponent {

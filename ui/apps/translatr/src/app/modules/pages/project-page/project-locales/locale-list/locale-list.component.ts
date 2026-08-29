@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -18,6 +18,7 @@ import { openLocaleEditDialog } from '../../../../shared/locale-edit-dialog/loca
   standalone: false,
   selector: 'app-locale-list',
   templateUrl: './locale-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./locale-list.component.scss']
 })
 export class LocaleListComponent {

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Member } from '@dev/translatr-model';
 import { map } from 'rxjs/operators';
@@ -14,6 +14,7 @@ interface Data {
   standalone: false,
   selector: 'app-project-member-edit-dialog',
   templateUrl: './project-member-edit-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-member-edit-dialog.component.scss']
 })
 export class ProjectMemberEditDialogComponent {

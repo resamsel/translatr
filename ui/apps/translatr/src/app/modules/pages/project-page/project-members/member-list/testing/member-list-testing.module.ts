@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Member, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { FilterCriteria } from '../../../../../shared/list-header/list-header.component';
 
 @Component({
   standalone: false,
   selector: 'app-member-list',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockMemberListComponent {

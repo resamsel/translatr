@@ -2,7 +2,7 @@
   <dev-error-page-header transloco="error.notfound.title">Page not found</dev-error-page-header>
   @if (route.queryParams | async; as params) {
     <dev-error-page-message
-      [innerHTML]="'error.notfound.text' | transloco: { type: params?.model, id: params?.id }"
+      [innerHTML]="'error.notfound.text' | transloco: { type: $safeNavigationMigration(params?.model), id: $safeNavigationMigration(params?.id) }"
     >
       Could not find {{ params?.model }} <strong>{{ params?.id }}</strong
       >.

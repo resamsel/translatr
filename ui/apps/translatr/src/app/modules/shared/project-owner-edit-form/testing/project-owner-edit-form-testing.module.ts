@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Member, Project } from '@dev/translatr-model';
 
 @Component({
   standalone: false,
   selector: 'app-project-owner-edit-form',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockProjectOwnerEditFormComponent {

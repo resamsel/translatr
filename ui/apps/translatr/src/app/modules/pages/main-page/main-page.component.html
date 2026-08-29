@@ -163,21 +163,21 @@
     <div class="flex">
       <dev-metric
         [name]="'projects.title' | transloco"
-        [value]="(statistics$ | async)?.projectCount | shortNumber"
+        [value]="$safeNavigationMigration((statistics$ | async)?.projectCount) | shortNumber"
         icon="library_books"
         class="project count"
       ></dev-metric>
 
       <dev-metric
         [name]="'users.title' | transloco"
-        [value]="(statistics$ | async)?.userCount | shortNumber"
+        [value]="$safeNavigationMigration((statistics$ | async)?.userCount) | shortNumber"
         icon="group"
         class="user count"
       ></dev-metric>
 
       <dev-metric
         [name]="'activities.title' | transloco"
-        [value]="(statistics$ | async)?.activityCount | shortNumber"
+        [value]="$safeNavigationMigration((statistics$ | async)?.activityCount) | shortNumber"
         icon="change_history"
         class="activity count"
       ></dev-metric>

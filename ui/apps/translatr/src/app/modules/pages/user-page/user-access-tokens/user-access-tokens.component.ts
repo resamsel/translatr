@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { FilterCriteria } from '../../../shared/list-header/list-header.componen
   standalone: false,
   selector: 'app-user-access-tokens',
   templateUrl: './user-access-tokens.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-access-tokens.component.scss']
 })
 export class UserAccessTokensComponent implements OnInit {

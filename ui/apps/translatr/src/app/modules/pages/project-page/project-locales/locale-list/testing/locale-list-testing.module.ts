@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
 
 @Component({
   standalone: false,
   selector: 'app-locale-list',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockLocaleListComponent {

@@ -3,14 +3,14 @@
   <a [routerLink]="memberLink" class="link"
     >{{ member?.userName }} (<span
       transloco="member.role.value"
-      [translocoParams]="{ role: member?.role }"
+      [translocoParams]="{ role: $safeNavigationMigration(member?.role) }"
       >{{ member?.role }}</span
     >)
   </a>
 } @else {
   <span transloco="member">Member</span>:
   {{ member?.userName }}
-  (<span transloco="member.role.value" [translocoParams]="{ role: member?.role }">{{
+  (<span transloco="member.role.value" [translocoParams]="{ role: $safeNavigationMigration(member?.role) }">{{
     member?.role
   }}</span
   >)

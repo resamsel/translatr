@@ -1,10 +1,11 @@
-import { Component, Input, NgModule } from '@angular/core';
+import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AccessToken } from '@dev/translatr-model';
 
 @Component({
   standalone: false,
   selector: 'app-access-token-edit-form',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 export class MockAccessTokenEditFormComponent {

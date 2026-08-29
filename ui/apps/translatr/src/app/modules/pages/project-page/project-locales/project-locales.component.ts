@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
@@ -10,6 +10,7 @@ import { ProjectFacade } from '../../../shared/project-state';
   standalone: false,
   selector: 'app-project-locales',
   templateUrl: './project-locales.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-locales.component.scss']
 })
 export class ProjectLocalesComponent {

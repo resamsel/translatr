@@ -1,8 +1,9 @@
-import { Component, Input, NgModule } from '@angular/core';
+import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'dev-empty-view',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockEmptyViewComponent {
@@ -14,6 +15,7 @@ class MockEmptyViewComponent {
 @Component({
   standalone: false,
   selector: 'dev-empty-view-actions',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockEmptyViewActionsComponent {}
@@ -21,6 +23,7 @@ class MockEmptyViewActionsComponent {}
 @Component({
   standalone: false,
   selector: 'dev-empty-view-content',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockEmptyViewContentComponent {}
@@ -28,6 +31,7 @@ class MockEmptyViewContentComponent {}
 @Component({
   standalone: false,
   selector: 'dev-empty-view-header',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockEmptyViewHeaderComponent {}

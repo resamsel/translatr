@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Aggregate, Feature, PagedList, User, UserRole } from '@dev/translatr-model';
 import { ActivityService, StatisticService } from '@dev/translatr-sdk';
 import { shareReplay, map, startWith } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { environment } from '../../../../environments/environment';
   standalone: false,
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./main-page.component.scss']
 })
 export class MainPageComponent {

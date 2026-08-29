@@ -3,7 +3,8 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "preserve",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "**/*.ts"

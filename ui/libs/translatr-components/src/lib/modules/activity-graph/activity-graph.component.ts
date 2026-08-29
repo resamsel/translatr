@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Aggregate } from '@dev/translatr-model';
 import { TranslocoService } from '@jsverse/transloco';
 import * as d3 from 'd3';
@@ -146,6 +146,7 @@ interface DataRect extends SvgRect {
   standalone: false,
   selector: 'dev-activity-graph',
   templateUrl: './activity-graph.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./activity-graph.component.scss']
 })
 export class ActivityGraphComponent implements OnChanges, OnDestroy {

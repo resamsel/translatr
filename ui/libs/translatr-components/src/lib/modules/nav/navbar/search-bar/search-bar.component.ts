@@ -5,7 +5,8 @@ import {
   Input,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
@@ -29,6 +30,7 @@ const defaultAutocompleteOptions: Option[] = [
   standalone: false,
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./search-bar.component.scss']
 })
 export class SearchBarComponent implements OnInit {

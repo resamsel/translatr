@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MemberRole, Project } from '@dev/translatr-model';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
@@ -8,6 +8,7 @@ import { ProjectFacade } from '../project-state/+state';
   standalone: false,
   selector: 'app-project-owner-edit-dialog',
   templateUrl: './project-owner-edit-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-owner-edit-dialog.component.scss']
 })
 export class ProjectOwnerEditDialogComponent {

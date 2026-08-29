@@ -1,10 +1,11 @@
-import { Component, Input, NgModule } from '@angular/core';
+import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
 import { Link } from '@dev/translatr-components';
 import { Message, User } from '@dev/translatr-model';
 
 @Component({
   standalone: false,
   selector: 'app-editor',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockEditorComponent {
@@ -20,6 +21,7 @@ class MockEditorComponent {
 @Component({
   standalone: false,
   selector: 'app-editor-selector',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockEditorSelectorComponent {}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { filter, map,  takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ProjectFacade } from '../../../shared/project-state';
 
@@ -6,6 +6,7 @@ import { ProjectFacade } from '../../../shared/project-state';
   standalone: false,
   selector: 'app-project-activity',
   templateUrl: './project-activity.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-activity.component.scss']
 })
 export class ProjectActivityComponent implements OnInit {

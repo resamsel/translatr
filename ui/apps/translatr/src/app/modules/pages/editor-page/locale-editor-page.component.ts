@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Params, Router } from '@angular/router';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
@@ -23,6 +23,7 @@ const filterComparator = (a: Params, b: Params): boolean =>
   standalone: false,
   selector: 'app-locale-editor-page',
   templateUrl: './locale-editor-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./locale-editor-page.component.scss']
 })
 export class LocaleEditorPageComponent implements OnInit, OnDestroy {
