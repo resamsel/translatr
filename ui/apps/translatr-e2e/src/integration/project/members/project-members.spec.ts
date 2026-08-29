@@ -18,7 +18,7 @@ describe('Project Members', () => {
     cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
   });
 
-  it('should have page name Project Keys', () => {
+  it('should have page name johndoe/p1', () => {
     // given
 
     // when
@@ -26,5 +26,19 @@ describe('Project Members', () => {
 
     // then
     page.getPageName().should('have.text', 'johndoe/p1');
+  });
+
+  it('should render all four members with name and role', () => {
+    // given
+
+    // when
+    page.navigateTo();
+
+    // then
+    page.getMemberRows().should('have.length', 4);
+    page.getMemberRow('John Doe').should('contain.text', 'Owner');
+    page.getMemberRow('Jane Smith').should('contain.text', 'Developer');
+    page.getMemberRow("Sophia O'Reilly").should('contain.text', 'Translator');
+    page.getMemberRow('Ronny Lee').should('contain.text', 'Manager');
   });
 });
