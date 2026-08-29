@@ -1,8 +1,6 @@
 <div [formGroup]="form">
   @if (form.errors && form.errors['']) {
-    <mat-error>{{
-      form.errors['']
-    }}</mat-error>
+    <mat-error>{{ form.errors[''] }}</mat-error>
   }
   <mat-form-field appearance="outline">
     <mat-label transloco="user.name">Name</mat-label>
@@ -12,11 +10,9 @@
       [placeholder]="'user.name' | transloco"
       formControlName="name"
       cdkFocusInitial
-      />
+    />
     @if (form.get('name').errors) {
-      <mat-error>{{
-        form.get('name').errors.violation
-      }}</mat-error>
+      <mat-error>{{ form.get('name').errors.violation }}</mat-error>
     }
   </mat-form-field>
   <mat-form-field appearance="outline">
@@ -26,38 +22,28 @@
       required
       [placeholder]="'user.username' | transloco"
       formControlName="username"
-      />
+    />
     @if (form.get('username').errors) {
-      <mat-error>{{
-        form.get('username').errors.violation
-      }}</mat-error>
+      <mat-error>{{ form.get('username').errors.violation }}</mat-error>
     }
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label transloco="user.email">Email</mat-label>
-    <input matInput [placeholder]="'user.email' | transloco" formControlName="email"/>
+    <input matInput [placeholder]="'user.email' | transloco" formControlName="email" />
     @if (form.get('email').errors) {
-      <mat-error>{{
-        form.get('email').errors.violation
-      }}</mat-error>
+      <mat-error>{{ form.get('email').errors.violation }}</mat-error>
     }
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label transloco="user.role">Role</mat-label>
     <mat-select required formControlName="role">
       @for (role of roles; track role) {
-        <mat-option
-          [value]="role"
-          [disabled]="!roleAllowed(role)"
-          >{{ role }}</mat-option
-          >
-        }
-      </mat-select>
-      @if (form.get('role').errors) {
-        <mat-error>{{
-          form.get('role').errors.violation
-        }}</mat-error>
+        <mat-option [value]="role" [disabled]="!roleAllowed(role)">{{ role }}</mat-option>
       }
-    </mat-form-field>
-  </div>
-  <ng-content></ng-content>
+    </mat-select>
+    @if (form.get('role').errors) {
+      <mat-error>{{ form.get('role').errors.violation }}</mat-error>
+    }
+  </mat-form-field>
+</div>
+<ng-content></ng-content>

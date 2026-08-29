@@ -7,14 +7,14 @@
       appearance="fill"
       color="accent"
       (selected)="onSelected($event)"
-      >
+    >
       <mat-icon matPrefix>search</mat-icon>
     </dev-filter-field>
   }
   @if (removeVisible) {
     <button (click)="remove.emit()" [disabled]="!removeEnabled" i18n mat-icon-button>
-    <mat-icon>remove</mat-icon>
-  </button>
+      <mat-icon>remove</mat-icon>
+    </button>
   }
 </div>
 
@@ -26,7 +26,7 @@
     class="floating-action-btn pin-bottom"
     color="accent"
     mat-fab
-    >
+  >
     <mat-icon>add</mat-icon>
   </button>
 }

@@ -3,7 +3,7 @@
   [elevated]="false"
   [overlay]="true"
   [page]="t('registration.title')"
-  >
+>
   <header class="header header-graphic">
     <div class="container title">
       <div class="content">
@@ -17,12 +17,11 @@
       <mat-card-title transloco="registration.title">User Registration</mat-card-title>
       @if (profile$ | async; as profile) {
         <mat-card-subtitle>
-          <span class="client client-{{profile.clientName}}">
+          <span class="client client-{{ profile.clientName }}">
             <fa-icon [icon]="icons[profile.clientName]"></fa-icon>
-            <span
-              transloco="client.name"
-              [translocoParams]="{clientName: profile.clientName}"
-            >{{profile.clientName}}</span>
+            <span transloco="client.name" [translocoParams]="{ clientName: profile.clientName }">{{
+              profile.clientName
+            }}</span>
           </span>
         </mat-card-subtitle>
       }
@@ -41,7 +40,8 @@
           (click)="editForm.onSubmit()"
           [disabled]="editForm.form.invalid"
           transloco="button.save"
-          >Save
+        >
+          Save
         </button>
       </mat-card-actions>
     </mat-card>

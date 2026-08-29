@@ -10,7 +10,9 @@
           <mat-icon class="image">account_circle</mat-icon>
           <div class="text">
             <h1 class="page" transloco="login.title">Login Page</h1>
-            <p class="description" transloco="login.text">Sign in with any of the given providers</p>
+            <p class="description" transloco="login.text">
+              Sign in with any of the given providers
+            </p>
           </div>
         </div>
       </div>
@@ -26,12 +28,12 @@
           @for (provider of providers$ | async; track provider) {
             <a
               [ngClass]="'client-' + provider.key"
-              href="{{endpointUrl}}{{provider.url}}{{redirectUri$ | async}}"
+              href="{{ endpointUrl }}{{ provider.url }}{{ redirectUri$ | async }}"
               mat-button
               class="client"
-              >
+            >
               <fa-icon [icon]="icons[provider.key]"></fa-icon>
-              {{names[provider.key]}}
+              {{ names[provider.key] }}
             </a>
           }
         </div>

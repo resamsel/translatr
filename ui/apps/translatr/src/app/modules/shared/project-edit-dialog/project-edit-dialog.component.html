@@ -9,30 +9,27 @@
         [placeholder]="'project.name' | transloco"
         cdkFocusInitial
         formControlName="name"
-        />
+      />
       @if (nameFormControl.invalid && nameFormControl.errors.pattern) {
-        <mat-error
-          transloco="project.name.error.pattern"
+        <mat-error transloco="project.name.error.pattern"
           >Must match pattern [a-zA-Z0-9_.-]*
-          </mat-error
-          >
-        }
-        @if (nameFormControl.invalid && nameFormControl.errors['violation']) {
-          <mat-error
-            >{{ nameFormControl.errors['violation'] }}</mat-error
-            >
-          }
-        </mat-form-field>
-      </form>
-    </div>
-    <div class="dialog-actions" mat-dialog-actions>
-      <button
-        [disabled]="form.invalid || processing"
-        mat-flat-button
-        color="primary"
-        transloco="button.save"
-        (click)="onSave()"
-        >Save
-      </button>
-      <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
-    </div>
+        </mat-error>
+      }
+      @if (nameFormControl.invalid && nameFormControl.errors['violation']) {
+        <mat-error>{{ nameFormControl.errors['violation'] }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+  <button
+    [disabled]="form.invalid || processing"
+    mat-flat-button
+    color="primary"
+    transloco="button.save"
+    (click)="onSave()"
+  >
+    Save
+  </button>
+  <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
+</div>

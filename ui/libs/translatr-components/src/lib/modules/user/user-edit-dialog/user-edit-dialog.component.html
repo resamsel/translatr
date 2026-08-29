@@ -1,16 +1,9 @@
 @if (!data.user?.id) {
-  <h1
-    mat-dialog-title
-    transloco="user.create.title"
-    >Create user
-  </h1>
+  <h1 mat-dialog-title transloco="user.create.title">Create user</h1>
 }
 @if (data.user?.id) {
-  <h1
-    mat-dialog-title
-    transloco="user.edit.title"
-    [translocoParams]="{name: data.user.name}"
-    >Edit {{ data.user.name }}
+  <h1 mat-dialog-title transloco="user.edit.title" [translocoParams]="{ name: data.user.name }">
+    Edit {{ data.user.name }}
   </h1>
 }
 <dev-user-edit-form
@@ -19,7 +12,7 @@
   [user]="user"
   [errors]="errors$ | async"
   (edit)="onSubmit($event)"
-  >
+>
   <div class="dialog-actions" mat-dialog-actions>
     <button
       mat-flat-button
@@ -27,7 +20,8 @@
       (click)="editForm.onSubmit()"
       [disabled]="editForm.invalid"
       transloco="button.save"
-      >Save
+    >
+      Save
     </button>
     <button mat-button (click)="onCancel()" transloco="button.cancel">Cancel</button>
   </div>

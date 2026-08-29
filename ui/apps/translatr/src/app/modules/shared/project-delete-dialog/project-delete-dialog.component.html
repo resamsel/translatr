@@ -2,7 +2,9 @@
 <div mat-dialog-content>
   <form [formGroup]="form">
     <div [innerHTML]="'project.delete.warning' | transloco">
-      <p>This action <strong>cannot</strong> be undone. This will remove the project permanently.</p>
+      <p>
+        This action <strong>cannot</strong> be undone. This will remove the project permanently.
+      </p>
       <p>Please type in the name of the project to confirm.</p>
     </div>
     <mat-form-field appearance="outline" class="name">
@@ -14,10 +16,9 @@
         [placeholder]="'project.name' | transloco"
         matInput
         type="text"
-        />
+      />
       @if (nameFormControl.invalid && nameFormControl.errors['violation']) {
-        <mat-error
-          >
+        <mat-error>
           {{ nameFormControl.errors['violation'] }}
         </mat-error>
       }
@@ -32,7 +33,8 @@
     color="primary"
     transloco="project.delete.confirm.button"
     (click)="onDelete()"
-    >I understand the consequences, delete this project
+  >
+    I understand the consequences, delete this project
   </button>
   <button class="cancel" mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
 </div>

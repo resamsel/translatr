@@ -4,30 +4,26 @@
   [showMore]="showMore"
   [showMoreLink]="showMoreLink"
   (filter)="onFilter($event)"
-  >
+>
   @for (activity of activities?.list; track trackByFn($index, activity)) {
-    <mat-list-item
-      [ngClass]="iconType(activity.contentType)"
-      class="activity-list-item"
-      >
+    <mat-list-item [ngClass]="iconType(activity.contentType)" class="activity-list-item">
       <div class="timestamp sub-title">
         <span [matTooltip]="activity.whenCreated | date: 'full'">{{
           activity.whenCreated | amTimeAgo
         }}</span>
       </div>
-      <mat-icon
-        [ngClass]="iconType(activity.contentType)"
-        class="circle"
-        matListItemIcon
-      >{{icon(activity.contentType)}}</mat-icon>
+      <mat-icon [ngClass]="iconType(activity.contentType)" class="circle" matListItemIcon>{{
+        icon(activity.contentType)
+      }}</mat-icon>
       <h3 class="activity-content" matListItemTitle>
         @if (relativeTo !== 'user') {
-          <a
-            [routerLink]="['/', activity.userUsername]"
-            class="link user-name"
-          >{{activity.userName}}</a>
+          <a [routerLink]="['/', activity.userUsername]" class="link user-name">{{
+            activity.userName
+          }}</a>
         }
-        <span transloco="activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}"></span>
+        <span
+          transloco="activity.{{ contentTypeOf(activity) }}.{{ activity.type.toLowerCase() }}"
+        ></span>
         @if (contentTypeOf(activity); as contentType) {
           @switch (contentType) {
             @case ('project') {
@@ -43,9 +39,7 @@
                   [project]="projectOf(locale(activity))"
                 ></app-activity-project-link>
               }
-              <app-activity-locale-link
-                [locale]="locale(activity)"
-              ></app-activity-locale-link>
+              <app-activity-locale-link [locale]="locale(activity)"></app-activity-locale-link>
             }
             @case ('key') {
               @if (relativeTo !== 'project') {
@@ -53,9 +47,7 @@
                   [project]="projectOf(key(activity))"
                 ></app-activity-project-link>
               }
-              <app-activity-key-link
-                [key]="key(activity)"
-              ></app-activity-key-link>
+              <app-activity-key-link [key]="key(activity)"></app-activity-key-link>
             }
             @case ('message') {
               @if (relativeTo !== 'project') {
@@ -78,9 +70,7 @@
                   [project]="projectOf(member(activity))"
                 ></app-activity-project-link>
               }
-              <app-activity-member-link
-                [member]="member(activity)"
-              ></app-activity-member-link>
+              <app-activity-member-link [member]="member(activity)"></app-activity-member-link>
             }
             @case ('accesstoken') {
               <app-activity-access-token-link

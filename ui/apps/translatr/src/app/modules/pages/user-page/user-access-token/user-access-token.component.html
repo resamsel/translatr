@@ -1,14 +1,13 @@
 @if (accessToken$ | async; as accessToken) {
   <mat-card>
     <mat-card-header>
-      <mat-card-title [transloco]="accessToken.id === undefined ? 'accessToken.create' : 'accessToken.edit'">Access
-        Token
+      <mat-card-title
+        [transloco]="accessToken.id === undefined ? 'accessToken.create' : 'accessToken.edit'"
+        >Access Token
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <app-access-token-edit-form
-        #form
-        [accessToken]="accessToken">
+      <app-access-token-edit-form #form [accessToken]="accessToken">
         <div class="dialog-actions">
           <button
             mat-flat-button
@@ -16,7 +15,8 @@
             (click)="form.onSave()"
             [disabled]="form.form.invalid || !form.dirty"
             transloco="button.save"
-            >Save
+          >
+            Save
           </button>
           <a routerLink=".." mat-button transloco="button.cancel">Cancel</a>
         </div>

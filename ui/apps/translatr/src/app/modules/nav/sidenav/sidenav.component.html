@@ -11,10 +11,7 @@
     </ng-container>
 
     @if (showDashboardLink) {
-      <a
-        mat-icon-button
-        [matTooltip]="t('dashboard.title')"
-        routerLink="/dashboard">
+      <a mat-icon-button [matTooltip]="t('dashboard.title')" routerLink="/dashboard">
         <mat-icon>view_quilt</mat-icon>
       </a>
     }
@@ -25,9 +22,7 @@
     ></app-auth-bar-language-switcher>
     <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
       @if (me) {
-        <a mat-menu-item [routerLink]="['/', me.username]" transloco="user.profile">
-          Profile
-        </a>
+        <a mat-menu-item [routerLink]="['/', me.username]" transloco="user.profile"> Profile </a>
       }
       @if (isAdmin(me)) {
         <mat-divider></mat-divider>

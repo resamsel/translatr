@@ -14,10 +14,9 @@
         [placeholder]="'key.name' | transloco"
         cdkFocusInitial
         formControlName="name"
-        />
+      />
       @if (nameFormControl.invalid && nameFormControl.errors['violation']) {
-        <mat-error
-        >{{ nameFormControl.errors['violation'] }}</mat-error>
+        <mat-error>{{ nameFormControl.errors['violation'] }}</mat-error>
       }
     </mat-form-field>
   </form>
@@ -30,7 +29,8 @@
     class="save"
     transloco="button.save"
     (click)="onSave()"
-    >Save
+  >
+    Save
   </button>
   <button class="cancel" mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
 </div>

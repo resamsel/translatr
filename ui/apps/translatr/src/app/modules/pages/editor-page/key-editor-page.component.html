@@ -9,13 +9,13 @@
   class="key-editor"
   (nextItem)="onNextItem()"
   (previousItem)="onPreviousItem()"
-  >
+>
   <dev-filter-field
     (selected)="onSelected($event)"
     [filters]="filters"
     [selection]="selection$ | async"
     appearance="fill"
-    >
+  >
     <mat-icon matPrefix>search</mat-icon>
   </dev-filter-field>
 
@@ -28,18 +28,18 @@
         [value]="(key$ | async)?.name"
         (keydown.enter)="onKeyChange(keyInput.value)"
         [readonly]="true"
-        />
+      />
     </mat-form-field>
     <div class="flex-spacer"></div>
     @if (selectedLocaleName$ | async) {
       <a
         mat-icon-button
         [routerLink]="['../..', 'locales', selectedLocaleName$ | async]"
-      [queryParams]="{
-        key: (key$ | async)?.name,
-        search: (key$ | async)?.name
-      }"
-        >
+        [queryParams]="{
+          key: (key$ | async)?.name,
+          search: (key$ | async)?.name,
+        }"
+      >
         <mat-icon>compare_arrows</mat-icon>
       </a>
     } @else {
@@ -56,21 +56,21 @@
     [criteria]="search$ | async"
     [empty]="empty"
     [nothingFound]="nothingFound"
-    >
+  >
     @for (item of (messageItems$ | async)?.list; track trackByFn($index, item)) {
       <a
         [class.active]="item.selected"
         [queryParams]="{ locale: item.locale.name }"
         [routerLink]="[]"
-        [ngClass]="{warning: item.message?.dirty}"
+        [ngClass]="{ warning: item.message?.dirty }"
         mat-list-item
         queryParamsHandling="merge"
         class="locale"
-        >
+      >
         <h3 matLine>{{ item.locale.displayName }}</h3>
         <p class="sub-title translation" matLine>
           @if (item.message) {
-            <span>{{item.message.value}}</span>
+            <span>{{ item.message.value }}</span>
           } @else {
             -
           }
@@ -80,7 +80,9 @@
     <ng-template #empty>
       @if (key$ | async; as key) {
         <dev-empty-view icon="language">
-          <dev-empty-view-header transloco="locales.teaser.title">No languages defined</dev-empty-view-header>
+          <dev-empty-view-header transloco="locales.teaser.title"
+            >No languages defined</dev-empty-view-header
+          >
           <dev-empty-view-content transloco="locales.teaser.text" data-test="locale-teaser">
             It seems there are no languages defined, yet - would you like to add one now?
           </dev-empty-view-content>
@@ -91,8 +93,9 @@
                 transloco="locale.create.button"
                 mat-raised-button
                 data-test="create-locale"
-                (click)="openLocaleDialog({projectId: key.projectId})"
-                >Add language
+                (click)="openLocaleDialog({ projectId: key.projectId })"
+              >
+                Add language
               </button>
             </dev-empty-view-actions>
           }
@@ -102,20 +105,24 @@
     <ng-template #nothingFound>
       @if (key$ | async; as key) {
         <dev-empty-view icon="language">
-          <dev-empty-view-header transloco="locales.notfound.title">No languages found</dev-empty-view-header>
+          <dev-empty-view-header transloco="locales.notfound.title"
+            >No languages found</dev-empty-view-header
+          >
           <dev-empty-view-content transloco="locales.notfound.text" data-test="locale-teaser">
-            Could not find any locales with the given filter. Try removing some filters or create a new language.
+            Could not find any locales with the given filter. Try removing some filters or create a
+            new language.
           </dev-empty-view-content>
           @if (search$ | async; as criteria) {
             <dev-empty-view-actions>
               @if ((canCreateLocale$ | async) && criteria.search) {
                 <button
-                  (click)="openLocaleDialog({projectId: key.projectId, name: criteria.search})"
+                  (click)="openLocaleDialog({ projectId: key.projectId, name: criteria.search })"
                   color="accent"
                   transloco="locale.create.button"
                   mat-raised-button
                   data-test="create-locale"
-                  >Add language
+                >
+                  Add language
                 </button>
               }
             </dev-empty-view-actions>

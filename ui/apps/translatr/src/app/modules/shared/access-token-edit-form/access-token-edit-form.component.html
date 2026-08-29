@@ -2,15 +2,9 @@
   <section class="name">
     <mat-form-field appearance="outline">
       <mat-label transloco="accessToken.name">Name</mat-label>
-      <input
-        matInput
-        type="text"
-        cdkFocusInitial
-        formControlName="name">
+      <input matInput type="text" cdkFocusInitial formControlName="name" />
       @if (nameFormControl.invalid && nameFormControl.errors['violation']) {
-        <mat-error
-          >
-        {{ nameFormControl.errors["violation"] }}</mat-error>
+        <mat-error> {{ nameFormControl.errors['violation'] }}</mat-error>
       }
     </mat-form-field>
   </section>
@@ -19,7 +13,7 @@
     <section class="key">
       <mat-form-field appearance="outline">
         <mat-label transloco="accessToken.key">Key</mat-label>
-        <input [readonly]="true" formControlName="key" matInput type="text">
+        <input [readonly]="true" formControlName="key" matInput type="text" />
       </mat-form-field>
     </section>
   }
@@ -29,21 +23,24 @@
     <div>
       @for (scopeType of scopeTypes; track scopeType) {
         <div class="scope">
-          <h3 transloco="scope.type" [translocoParams]="{type: scopeType}">{{scopeType}}</h3>
+          <h3 transloco="scope.type" [translocoParams]="{ type: scopeType }">{{ scopeType }}</h3>
           <p>
             @for (scope of scopeMap[scopeType]; track scope) {
               <mat-checkbox
                 [checked]="activeScopeMap[scope]"
                 (change)="onChangeScope(scope, $event)"
-                ><span transloco="scope.permission"
-              [translocoParams]="{permission: scopePermission(scope)}">{{scopePermission(scope)}}</span>
-            </mat-checkbox>
-          }
-        </p>
-      </div>
-    }
-  </div>
-</section>
+                ><span
+                  transloco="scope.permission"
+                  [translocoParams]="{ permission: scopePermission(scope) }"
+                  >{{ scopePermission(scope) }}</span
+                >
+              </mat-checkbox>
+            }
+          </p>
+        </div>
+      }
+    </div>
+  </section>
 
-<ng-content></ng-content>
+  <ng-content></ng-content>
 </form>

@@ -1,6 +1,8 @@
 <dev-empty-view icon="book">
   @if (canCreate) {
-    <dev-empty-view-header transloco="project.teaser.title">No project defined</dev-empty-view-header>
+    <dev-empty-view-header transloco="project.teaser.title"
+      >No project defined</dev-empty-view-header
+    >
     <dev-empty-view-content transloco="project.teaser.text">
       No projects defined, yet - how about creating one?
     </dev-empty-view-content>
@@ -11,11 +13,14 @@
         color="accent"
         mat-raised-button
         transloco="project.create.button"
-        >Start new project
+      >
+        Start new project
       </button>
     </dev-empty-view-actions>
   } @else {
-    <dev-empty-view-header transloco="projects.empty.title">No projects visible</dev-empty-view-header>
+    <dev-empty-view-header transloco="projects.empty.title"
+      >No projects visible</dev-empty-view-header
+    >
     <dev-empty-view-content transloco="projects.empty.text">
       There are no projects visible to you.
     </dev-empty-view-content>

@@ -8,26 +8,22 @@
       [canCreate]="canCreate"
       showFilter="true"
       [addTooltip]="t('key.create.tooltip')"
-      (create)="openKeyEditDialog({projectId: project.id})"
+      (create)="openKeyEditDialog({ projectId: project.id })"
       (filter)="onFilter($event)"
-      >
+    >
       @for (key of keys?.list; track trackByFn($index, key)) {
         <a
           mat-list-item
-      [routerLink]="[
-        '/',
-        project.ownerUsername,
-        project.name,
-        'keys',
-        key.name
-      ]"
-          >
+          [routerLink]="['/', project.ownerUsername, project.name, 'keys', key.name]"
+        >
           <mat-icon class="key circle" matListItemIcon>vpn_key</mat-icon>
           <h3 matListItemTitle>{{ key.name }}</h3>
           @if (key.progress !== undefined) {
             <mat-progress-bar
               [value]="key.progress * 100"
-              [matTooltip]="t('key.progress.tooltip', {progress: key.progress * 100 | number:'1.0-1'})"
+              [matTooltip]="
+                t('key.progress.tooltip', { progress: key.progress * 100 | number: '1.0-1' })
+              "
               mode="determinate"
               color="accent"
               matListItemLine
@@ -39,7 +35,7 @@
               mat-icon-button
               class="edit"
               (click)="onEdit(key, $event)"
-              >
+            >
               <mat-icon>edit</mat-icon>
             </button>
           }
@@ -65,11 +61,12 @@
       <dev-empty-view-actions>
         @if (canCreate) {
           <button
-            (click)="openKeyEditDialog({projectId: project.id})"
+            (click)="openKeyEditDialog({ projectId: project.id })"
             color="accent"
             transloco="key.create.button"
             mat-raised-button
-            >Add key
+          >
+            Add key
           </button>
         }
       </dev-empty-view-actions>
@@ -80,16 +77,18 @@
     <dev-empty-view icon="vpn_key" justifyContent="center">
       <dev-empty-view-header transloco="keys.notfound.title">No keys found</dev-empty-view-header>
       <dev-empty-view-content transloco="keys.notfound.text">
-        Could not find any keys with the given filter. Try removing some filters or create a new key.
+        Could not find any keys with the given filter. Try removing some filters or create a new
+        key.
       </dev-empty-view-content>
       <dev-empty-view-actions>
         @if (canCreate && criteria.search) {
           <button
-            (click)="openKeyEditDialog({projectId: project.id, name: criteria.search})"
+            (click)="openKeyEditDialog({ projectId: project.id, name: criteria.search })"
             color="accent"
             transloco="key.create.button"
             mat-raised-button
-            >Add key
+          >
+            Add key
           </button>
         }
       </dev-empty-view-actions>

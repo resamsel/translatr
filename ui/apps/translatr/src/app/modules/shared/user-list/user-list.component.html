@@ -4,11 +4,9 @@
   [showFilter]="true"
   [nothingFound]="nothingFound"
   (filter)="filter.emit($event)"
-  >
+>
   @for (user of users?.list; track trackByFn($index, user)) {
-    <a
-      [routerLink]="['/', user.username]"
-      mat-list-item>
+    <a [routerLink]="['/', user.username]" mat-list-item>
       <img
         [md5Hash]="user.emailHash"
         class="icon"
@@ -18,19 +16,23 @@
         [round]="false"
         [alt]="user.name"
         cornerRadius="6"
-        />
+      />
       <h3 matListItemTitle>
         {{ user.name }} <span class="username">{{ user.username }}</span>
       </h3>
       <p class="sub-title" matListItemLine>
         <span
           transloco="user.memberships"
-          [translocoParams]="{memberships: user.memberships !== undefined ? user.memberships.length : 0}"
+          [translocoParams]="{
+            memberships: user.memberships !== undefined ? user.memberships.length : 0,
+          }"
           >Contributing to {{ user.memberships?.length }} projects
         </span>
       </p>
       <p class="sub-title" matListItemLine>
-        <span transloco="when.joined">Joined</span>&nbsp;<span>{{ user.whenCreated | amTimeAgo }}</span>
+        <span transloco="when.joined">Joined</span>&nbsp;<span>{{
+          user.whenCreated | amTimeAgo
+        }}</span>
       </p>
     </a>
   }
