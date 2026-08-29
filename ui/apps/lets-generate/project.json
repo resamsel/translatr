@@ -7,22 +7,33 @@
   "generators": {},
   "targets": {
     "build": {
-      "executor": "@nx/node:build",
+      "executor": "@nx/esbuild:esbuild",
       "options": {
         "outputPath": "dist/apps/lets-generate",
+        "outputFileName": "main.js",
         "main": "apps/lets-generate/src/main.ts",
-        "tsConfig": "apps/lets-generate/tsconfig.app.json"
+        "tsConfig": "apps/lets-generate/tsconfig.app.json",
+        "platform": "node",
+        "format": [
+          "cjs"
+        ],
+        "bundle": true,
+        "thirdParty": false,
+        "generatePackageJson": false,
+        "esbuildOptions": {
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
       },
       "configurations": {
         "production": {
-          "optimization": true,
-          "extractLicenses": false,
-          "inspect": false
+          "minify": true
         }
       }
     },
     "serve": {
-      "executor": "@nx/node:execute",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "lets-generate:build"
       }
