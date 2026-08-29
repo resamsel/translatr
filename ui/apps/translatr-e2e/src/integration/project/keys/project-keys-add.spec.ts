@@ -61,4 +61,30 @@ describe('Project Keys Add Key', () => {
     // then
     page.getDialog().should('have.length', 0);
   });
+
+  it('should add the key and open the new key on save', () => {
+    // given
+    cy.intercept('POST', '/api/key', { fixture: 'johndoe/p1/key-created' }).as('createKey');
+    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys-added' });
+    cy.intercept('/api/johndoe/p1/keys/home.title', { fixture: 'johndoe/p1/key-created' });
+
+    // when
+    page.navigateTo();
+    page.getFloatingActionButton().click();
+    page
+      .getDialog()
+      .find('mat-form-field.name input')
+      .type('home.title');
+    page
+      .getDialog()
+      .find('button[transloco="button.save"], button.save')
+      .click();
+
+    // then
+    cy.wait('@createKey')
+      .its('request.body')
+      .should('deep.include', { name: 'home.title' });
+    page.getDialog().should('have.length', 0);
+    cy.url().should('match', /\/johndoe\/p1\/keys\/home\.title$/);
+  });
 });
