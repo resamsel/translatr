@@ -1,5 +1,7 @@
-<a *ngIf="project" [routerLink]="['/', project.ownerUsername, project.name]">
-  <app-project-card [project]="project">
-    <ng-content></ng-content>
-  </app-project-card>
-</a>
+@if (project) {
+  <a [routerLink]="['/', project.ownerUsername, project.name]">
+    <app-project-card [project]="project">
+      <ng-content></ng-content>
+    </app-project-card>
+  </a>
+}

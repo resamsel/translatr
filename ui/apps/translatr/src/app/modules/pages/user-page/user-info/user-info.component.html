@@ -8,7 +8,7 @@
       <mat-icon inline="true">access_time</mat-icon>
       <span [matTooltip]="(user$ | async)?.whenCreated | date">{{
         (user$ | async)?.whenCreated | amTimeAgo
-        }}</span>
+      }}</span>
     </p>
   </user-card>
 
@@ -42,13 +42,15 @@
       <div class="clearfix"></div>
     </section>
 
-    <section *ngIf="canReadActivity$ | async">
-      <h2 transloco="activity">Activity</h2>
-      <app-activity-list
-        [activities]="activities$ | async"
-        showMoreLink="activity"
-        relativeTo="user"
-      ></app-activity-list>
-    </section>
+    @if (canReadActivity$ | async) {
+      <section>
+        <h2 transloco="activity">Activity</h2>
+        <app-activity-list
+          [activities]="activities$ | async"
+          showMoreLink="activity"
+          relativeTo="user"
+        ></app-activity-list>
+      </section>
+    }
   </div>
 </ng-container>

@@ -21,8 +21,8 @@ describe('UsersFacade', () => {
       ]
     });
 
-    store = TestBed.get(Store);
-    facade = TestBed.get(UsersFacade);
+    store = TestBed.inject(Store) as typeof store;
+    facade = TestBed.inject(UsersFacade) as typeof facade;
   });
 
   describe('loadProjects', () => {

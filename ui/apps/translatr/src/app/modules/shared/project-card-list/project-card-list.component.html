@@ -7,10 +7,11 @@
   [loadingListLength]="3"
   [showMore]="showMore"
   [showMoreLink]="showMoreLink"
->
-  <app-project-card-link
-    *ngFor="let project of projects?.list; trackBy: trackByFn"
+  >
+  @for (project of projects?.list; track trackByFn($index, project)) {
+    <app-project-card-link
     [project]="project"></app-project-card-link>
+  }
   <ng-template #empty>
     <app-project-empty-view
       (create)="create.emit()"

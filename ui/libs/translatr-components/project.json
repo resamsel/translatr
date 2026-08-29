@@ -4,6 +4,9 @@
   "sourceRoot": "libs/translatr-components/src",
   "projectType": "library",
   "prefix": "dev",
+  "tags": [
+    "lib"
+  ],
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
@@ -21,8 +24,5 @@
         "tsConfig": "libs/translatr-components/tsconfig.spec.json"
       }
     }
-  },
-  "tags": [
-    "lib"
-  ]
+  }
 }

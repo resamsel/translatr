@@ -4,35 +4,36 @@
   [showFilter]="true"
   [nothingFound]="nothingFound"
   (filter)="filter.emit($event)"
->
-  <a
-    *ngFor="let user of users?.list; trackBy: trackByFn"
-    [routerLink]="['/', user.username]"
-    mat-list-item>
-    <img
-      [md5Hash]="user.emailHash"
-      class="icon"
-      matListItemAvatar
-      ngxGravatar
-      size="36"
-      [round]="false"
-      [alt]="user.name"
-      cornerRadius="6"
-    />
-    <h3 matListItemTitle>
-      {{ user.name }} <span class="username">{{ user.username }}</span>
-    </h3>
-    <p class="sub-title" matListItemLine>
+  >
+  @for (user of users?.list; track trackByFn($index, user)) {
+    <a
+      [routerLink]="['/', user.username]"
+      mat-list-item>
+      <img
+        [md5Hash]="user.emailHash"
+        class="icon"
+        matListItemAvatar
+        ngxGravatar
+        size="36"
+        [round]="false"
+        [alt]="user.name"
+        cornerRadius="6"
+        />
+      <h3 matListItemTitle>
+        {{ user.name }} <span class="username">{{ user.username }}</span>
+      </h3>
+      <p class="sub-title" matListItemLine>
         <span
           transloco="user.memberships"
           [translocoParams]="{memberships: user.memberships !== undefined ? user.memberships.length : 0}"
-        >Contributing to {{ user.memberships?.length }} projects
+          >Contributing to {{ user.memberships?.length }} projects
         </span>
-    </p>
-    <p class="sub-title" matListItemLine>
-      <span transloco="when.joined">Joined</span>&nbsp;<span>{{ user.whenCreated | amTimeAgo }}</span>
-    </p>
-  </a>
+      </p>
+      <p class="sub-title" matListItemLine>
+        <span transloco="when.joined">Joined</span>&nbsp;<span>{{ user.whenCreated | amTimeAgo }}</span>
+      </p>
+    </a>
+  }
   <ng-template #nothingFound>
     <dev-empty-view icon="account_circle">
       <dev-empty-view-header transloco="users.notfound.title">No users found</dev-empty-view-header>

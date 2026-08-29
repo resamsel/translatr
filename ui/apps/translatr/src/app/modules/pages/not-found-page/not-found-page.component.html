@@ -1,11 +1,12 @@
 <dev-error-page icon="error_outline">
   <dev-error-page-header transloco="error.notfound.title">Page not found</dev-error-page-header>
-  <dev-error-page-message
-    *ngIf="route.queryParams | async as params"
-    [innerHTML]="'error.notfound.text' | transloco:{type: params?.model, id: params?.id}"
-  >
-    Could not find {{params?.model}} <strong>{{params?.id}}</strong>.
-  </dev-error-page-message>
+  @if (route.queryParams | async; as params) {
+    <dev-error-page-message
+      [innerHTML]="'error.notfound.text' | transloco:{type: params?.model, id: params?.id}"
+      >
+      Could not find {{params?.model}} <strong>{{params?.id}}</strong>.
+    </dev-error-page-message>
+  }
   <a
     mat-raised-button
     routerLink="/dashboard"

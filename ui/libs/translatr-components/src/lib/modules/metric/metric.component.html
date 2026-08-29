@@ -1,21 +1,50 @@
-<a *ngIf="routerLink; else metric" [queryParams]="queryParams" [routerLink]="routerLink">
-  <ng-container [ngTemplateOutlet]="metric"></ng-container>
-</a>
+@if (routerLink) {
+  <a [queryParams]="queryParams" [routerLink]="routerLink">
+    <ng-container [ngTemplateOutlet]="metric"></ng-container>
+  </a>
+} @else {
+  <mat-card
+    [class.icon]="icon !== undefined"
+    matTooltip="{{name}}: {{value}}"
+    >
+    <mat-card-header>
+      @if (value !== undefined) {
+        <mat-card-title
+          class="ellipsis"
+        >{{ value }}</mat-card-title>
+      }
+      @if (value === undefined) {
+        <mat-card-title>-</mat-card-title>
+      }
+      <mat-card-subtitle>{{ name }}</mat-card-subtitle>
+    </mat-card-header>
+    @if (icon !== undefined) {
+      <div class="metric-icon">
+        <mat-icon>{{ icon }}</mat-icon>
+      </div>
+    }
+  </mat-card>
+}
 <ng-template #metric>
   <mat-card
     [class.icon]="icon !== undefined"
     matTooltip="{{name}}: {{value}}"
-  >
+    >
     <mat-card-header>
-      <mat-card-title
-        *ngIf="value !== undefined"
-        class="ellipsis"
-      >{{ value }}</mat-card-title>
-      <mat-card-title *ngIf="value === undefined">-</mat-card-title>
+      @if (value !== undefined) {
+        <mat-card-title
+          class="ellipsis"
+        >{{ value }}</mat-card-title>
+      }
+      @if (value === undefined) {
+        <mat-card-title>-</mat-card-title>
+      }
       <mat-card-subtitle>{{ name }}</mat-card-subtitle>
     </mat-card-header>
-    <div *ngIf="icon !== undefined" class="metric-icon">
-      <mat-icon>{{ icon }}</mat-icon>
-    </div>
+    @if (icon !== undefined) {
+      <div class="metric-icon">
+        <mat-icon>{{ icon }}</mat-icon>
+      </div>
+    }
   </mat-card>
 </ng-template>

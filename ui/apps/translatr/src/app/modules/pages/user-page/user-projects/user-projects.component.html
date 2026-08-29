@@ -7,14 +7,15 @@
     (filter)="onFilter($event)"
   ></app-project-list>
 
-  <button
-    *ngIf="canCreateProject$ | async"
-    mat-fab
-    color="accent"
-    class="floating-action-btn pin-bottom"
-    (click)="openProjectCreationDialog()"
-    [matTooltip]="t('project.create.tooltip')"
-  >
-    <mat-icon>add</mat-icon>
-  </button>
+  @if (canCreateProject$ | async) {
+    <button
+      mat-fab
+      color="accent"
+      class="floating-action-btn pin-bottom"
+      (click)="openProjectCreationDialog()"
+      [matTooltip]="t('project.create.tooltip')"
+      >
+      <mat-icon>add</mat-icon>
+    </button>
+  }
 </ng-container>

@@ -14,12 +14,13 @@
         [placeholder]="'project.name' | transloco"
         matInput
         type="text"
-      />
-      <mat-error
-        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
-      >
-        {{ nameFormControl.errors['violation'] }}
-      </mat-error>
+        />
+      @if (nameFormControl.invalid && nameFormControl.errors['violation']) {
+        <mat-error
+          >
+          {{ nameFormControl.errors['violation'] }}
+        </mat-error>
+      }
     </mat-form-field>
   </form>
 </div>
@@ -31,7 +32,7 @@
     color="primary"
     transloco="project.delete.confirm.button"
     (click)="onDelete()"
-  >I understand the consequences, delete this project
+    >I understand the consequences, delete this project
   </button>
   <button class="cancel" mat-button mat-dialog-close transloco="button.cancel">Cancel</button>
 </div>

@@ -4,7 +4,7 @@
   [backLink]="backLink"
   [me]="me"
   [elevated]="false"
->
+  >
   <ng-container ngProjectAs="app-search-bar">
     <ng-content select="app-search-bar"></ng-content>
   </ng-container>
@@ -22,64 +22,68 @@
         <ng-content select="app-nav-list"></ng-content>
       </div>
     </div>
-    <div *ngIf="message; else noMessage" class="editor">
-      <div class="buttons dialog-actions">
-        <mat-menu #saveMenu="matMenu" xPosition="before" yPosition="above" overlapTrigger="false">
+    @if (message) {
+      <div class="editor">
+        <div class="buttons dialog-actions">
+          <mat-menu #saveMenu="matMenu" xPosition="before" yPosition="above" overlapTrigger="false">
+            @if ((saveBehavior$ | async) !== SaveBehavior.Save) {
+              <button
+                mat-menu-item
+                transloco="button.save"
+                class="save-behavior-save"
+                (click)="onSaveBehavior()"
+                >Save
+              </button>
+            }
+            @if ((saveBehavior$ | async) !== SaveBehavior.SaveAndNext) {
+              <button
+                mat-menu-item
+                transloco="button.saveandnext"
+                class="save-behavior-saveandnext"
+                (click)="onSaveAndNextBehavior()"
+                >Save and next
+              </button>
+            }
+          </mat-menu>
+          <div class="button-group">
+            <button
+              mat-flat-button
+              color="primary"
+              class="save-button"
+              [transloco]="'button.' + (saveBehavior$ | async)"
+              (click)="onSave()"
+              >Save
+            </button>
+            <button
+              mat-flat-button
+              [mat-menu-trigger-for]="saveMenu"
+              color="primary"
+              class="menu-button"
+              >
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+          </div>
+          <a mat-button [routerLink]="[]" transloco="button.close">Close</a>
           <button
-            *ngIf="(saveBehavior$ | async) !== SaveBehavior.Save"
-            mat-menu-item
-            transloco="button.save"
-            class="save-behavior-save"
-            (click)="onSaveBehavior()"
-          >Save
-          </button>
-          <button
-            *ngIf="(saveBehavior$ | async) !== SaveBehavior.SaveAndNext"
-            mat-menu-item
-            transloco="button.saveandnext"
-            class="save-behavior-saveandnext"
-            (click)="onSaveAndNextBehavior()"
-          >Save and next
-          </button>
-        </mat-menu>
-        <div class="button-group">
-          <button
-            mat-flat-button
-            color="primary"
-            class="save-button"
-            [transloco]="'button.' + (saveBehavior$ | async)"
-            (click)="onSave()"
-          >Save
-          </button>
-          <button
-            mat-flat-button
-            [mat-menu-trigger-for]="saveMenu"
-            color="primary"
-            class="menu-button"
-          >
-            <mat-icon>arrow_drop_down</mat-icon>
-          </button>
+            mat-button
+            type="button"
+            [disabled]="!message?.dirty"
+            transloco="button.reset"
+            (click)="onReset()"
+          >Reset</button>
         </div>
-        <a mat-button [routerLink]="[]" transloco="button.close">Close</a>
-        <button
-          mat-button
-          type="button"
-          [disabled]="!message?.dirty"
-          transloco="button.reset"
-          (click)="onReset()"
-        >Reset</button>
+        <div class="content">
+          @if (message) {
+            <ngx-codemirror
+              #editor
+              [(ngModel)]="message.value"
+              [autoFocus]="true"
+              [options]="options"
+            ></ngx-codemirror>
+          }
+        </div>
       </div>
-      <div class="content">
-        <ngx-codemirror
-          *ngIf="message"
-          #editor
-          [(ngModel)]="message.value"
-          [autoFocus]="true"
-          [options]="options"
-        ></ngx-codemirror>
-      </div>
-    </div>
-    <ng-template #noMessage>
+    } @else {
       <div class="editor editor-empty">
         <dev-empty-view icon="message">
           <dev-empty-view-header transloco="selection.none.title">Nothing selected</dev-empty-view-header>
@@ -88,26 +92,28 @@
           </dev-empty-view-content>
         </dev-empty-view>
       </div>
-    </ng-template>
+    }
     <div class="meta">
       <mat-tab-group #tabs>
         <mat-tab class="preview" [label]="t('message.preview')">
           <p [innerHTML]="message?.value" class="translation"></p>
         </mat-tab>
         <mat-tab [label]="t('messages.tab')">
-          <mat-card *ngFor="let message of messages" class="translation">
-            <mat-card-title
-              transloco="locale.displayName"
-              [translocoParams]="{name: message.localeName, displayName: message.localeDisplayName}"
-            >{{ message.localeDisplayName }}</mat-card-title>
-            <mat-card-content [innerHTML]="message.value"></mat-card-content>
-            <mat-card-actions>
-              <button (click)="onUseMessage(message)" class="use-value" mat-stroked-button>
-                <mat-icon [inline]="true">file_copy</mat-icon>&nbsp;
-                <span transloco="editor.usevalue.button">Use this value</span>
-              </button>
-            </mat-card-actions>
-          </mat-card>
+          @for (message of messages; track message) {
+            <mat-card class="translation">
+              <mat-card-title
+                transloco="locale.displayName"
+                [translocoParams]="{name: message.localeName, displayName: message.localeDisplayName}"
+              >{{ message.localeDisplayName }}</mat-card-title>
+              <mat-card-content [innerHTML]="message.value"></mat-card-content>
+              <mat-card-actions>
+                <button (click)="onUseMessage(message)" class="use-value" mat-stroked-button>
+                  <mat-icon [inline]="true">file_copy</mat-icon>&nbsp;
+                  <span transloco="editor.usevalue.button">Use this value</span>
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          }
         </mat-tab>
       </mat-tab-group>
     </div>

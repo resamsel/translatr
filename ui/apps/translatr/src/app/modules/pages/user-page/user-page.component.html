@@ -5,44 +5,50 @@
   [overlay]="true"
   [page]="(user$ | async)?.name"
   [showDashboardLink]="true"
->
+  >
   <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
-    <div *ngIf="user$ | async as user" class="container title">
-      <div class="content">
-        <img
-          *ngIf="user"
-          [md5Hash]="user.emailHash"
-          [size]="40"
-          borderColor="white"
-          borderWidth="2px"
-          class="image"
-          ngxGravatar
-          [alt]="user.name"
-        />
-        <div class="text">
-          <h1 class="page">{{user?.name}}</h1>
-          <p class="description">{{user?.username}}</p>
+    @if (user$ | async; as user) {
+      <div class="container title">
+        <div class="content">
+          @if (user) {
+            <img
+              [md5Hash]="user.emailHash"
+              [size]="40"
+              borderColor="white"
+              borderWidth="2px"
+              class="image"
+              ngxGravatar
+              [alt]="user.name"
+              />
+          }
+          <div class="text">
+            <h1 class="page">{{user?.name}}</h1>
+            <p class="description">{{user?.username}}</p>
+          </div>
         </div>
       </div>
-    </div>
-    <nav *ngIf="user$ | async as user" color="accent" mat-tab-nav-bar [tabPanel]="userTabPanel">
-      <div class="container dense">
-        <ng-container *ngFor="let child of children">
-          <a
-            #link="routerLinkActive"
-            *ngIf="canActivate$(child) | async"
-            mat-tab-link
-            [routerLinkActiveOptions]="{ exact: child.path === '' }"
-            routerLinkActive
-            [routerLink]="routerLink(user, child)"
-            [active]="link.isActive"
-          >
-            <mat-icon>{{ child.data.icon }}</mat-icon>
-            <span>{{ t(child.data.name) }}</span>
-          </a>
-        </ng-container>
-      </div>
-    </nav>
+    }
+    @if (user$ | async; as user) {
+      <nav color="accent" mat-tab-nav-bar [tabPanel]="userTabPanel">
+        <div class="container dense">
+          @for (child of children; track child) {
+            @if (canActivate$(child) | async) {
+              <a
+                #link="routerLinkActive"
+                mat-tab-link
+                [routerLinkActiveOptions]="{ exact: child.path === '' }"
+                routerLinkActive
+                [routerLink]="routerLink(user, child)"
+                [active]="link.isActive"
+                >
+                <mat-icon>{{ child.data.icon }}</mat-icon>
+                <span>{{ t(child.data.name) }}</span>
+              </a>
+            }
+          }
+        </div>
+      </nav>
+    }
   </header>
 
   <mat-tab-nav-panel #userTabPanel>

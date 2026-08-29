@@ -11,7 +11,7 @@ describe('AuthProviderService', () => {
   );
 
   it('should be created', () => {
-    const service: AuthClientService = TestBed.get(AuthClientService);
+    const service: AuthClientService = TestBed.inject(AuthClientService);
     expect(service).toBeTruthy();
   });
 });

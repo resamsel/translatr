@@ -1,4 +1,6 @@
-<ng-container *ngIf="projectLink">
+@if (projectLink) {
   <span transloco="project">Project</span>:
-  <a *ngIf="projectLink" [routerLink]="projectLink" class="link">{{ project.name }}</a>
-</ng-container>
+  @if (projectLink) {
+    <a [routerLink]="projectLink" class="link">{{ project.name }}</a>
+  }
+}

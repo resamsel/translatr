@@ -4,6 +4,9 @@
   "sourceRoot": "apps/lets-generate/src",
   "projectType": "application",
   "prefix": "lets-generate",
+  "tags": [
+    "app"
+  ],
   "generators": {},
   "targets": {
     "build": {
@@ -49,12 +52,8 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/lets-generate/jest.config.js",
-        "tsConfig": "apps/lets-generate/tsconfig.spec.json"
+        "jestConfig": "apps/lets-generate/jest.config.js"
       }
     }
-  },
-  "tags": [
-    "app"
-  ]
+  }
 }

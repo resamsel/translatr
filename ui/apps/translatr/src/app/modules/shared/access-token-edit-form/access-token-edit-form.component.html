@@ -7,36 +7,43 @@
         type="text"
         cdkFocusInitial
         formControlName="name">
-      <mat-error
-        *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']">
+      @if (nameFormControl.invalid && nameFormControl.errors['violation']) {
+        <mat-error
+          >
         {{ nameFormControl.errors["violation"] }}</mat-error>
+      }
     </mat-form-field>
   </section>
 
-  <section *ngIf="form.value.id" class="key">
-    <mat-form-field appearance="outline">
-      <mat-label transloco="accessToken.key">Key</mat-label>
-      <input [readonly]="true" formControlName="key" matInput type="text">
-    </mat-form-field>
-  </section>
+  @if (form.value.id) {
+    <section class="key">
+      <mat-form-field appearance="outline">
+        <mat-label transloco="accessToken.key">Key</mat-label>
+        <input [readonly]="true" formControlName="key" matInput type="text">
+      </mat-form-field>
+    </section>
+  }
 
   <section class="scopes">
     <h2 transloco="accessToken.scopes">Scopes</h2>
     <div>
-      <div *ngFor="let scopeType of scopeTypes" class="scope">
-        <h3 transloco="scope.type" [translocoParams]="{type: scopeType}">{{scopeType}}</h3>
-        <p>
-          <mat-checkbox
-            *ngFor="let scope of scopeMap[scopeType]"
-            [checked]="activeScopeMap[scope]"
-            (change)="onChangeScope(scope, $event)"
-          ><span transloco="scope.permission"
-                 [translocoParams]="{permission: scopePermission(scope)}">{{scopePermission(scope)}}</span>
-          </mat-checkbox>
+      @for (scopeType of scopeTypes; track scopeType) {
+        <div class="scope">
+          <h3 transloco="scope.type" [translocoParams]="{type: scopeType}">{{scopeType}}</h3>
+          <p>
+            @for (scope of scopeMap[scopeType]; track scope) {
+              <mat-checkbox
+                [checked]="activeScopeMap[scope]"
+                (change)="onChangeScope(scope, $event)"
+                ><span transloco="scope.permission"
+              [translocoParams]="{permission: scopePermission(scope)}">{{scopePermission(scope)}}</span>
+            </mat-checkbox>
+          }
         </p>
       </div>
-    </div>
-  </section>
+    }
+  </div>
+</section>
 
-  <ng-content></ng-content>
+<ng-content></ng-content>
 </form>

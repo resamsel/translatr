@@ -23,16 +23,17 @@
         </section>
 
         <div class="options">
-          <a
-            *ngFor="let provider of providers$ | async"
-            [ngClass]="'client-' + provider.key"
-            href="{{endpointUrl}}{{provider.url}}{{redirectUri$ | async}}"
-            mat-button
-            class="client"
-          >
-            <fa-icon [icon]="icons[provider.key]"></fa-icon>
-            {{names[provider.key]}}
-          </a>
+          @for (provider of providers$ | async; track provider) {
+            <a
+              [ngClass]="'client-' + provider.key"
+              href="{{endpointUrl}}{{provider.url}}{{redirectUri$ | async}}"
+              mat-button
+              class="client"
+              >
+              <fa-icon [icon]="icons[provider.key]"></fa-icon>
+              {{names[provider.key]}}
+            </a>
+          }
         </div>
       </div>
     </div>

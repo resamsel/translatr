@@ -79,10 +79,10 @@ describe('ProjectEffects', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store) as typeof store;
     store.pipe.mockReturnValue(of({}));
-    localeService = TestBed.get(LocaleService);
-    accessTokenService = TestBed.get(AccessTokenService);
+    localeService = TestBed.inject(LocaleService) as typeof localeService;
+    accessTokenService = TestBed.inject(AccessTokenService) as typeof accessTokenService;
   });
 
   describe('loadLocales$', () => {
@@ -97,7 +97,7 @@ describe('ProjectEffects', () => {
       };
       const criteria = {};
       localeService.find.mockReturnValueOnce(of(payload));
-      const effects: ProjectEffects = TestBed.get(ProjectEffects);
+      const effects: ProjectEffects = TestBed.inject(ProjectEffects);
       const target$ = effects.loadLocales$;
 
       // when
@@ -124,7 +124,7 @@ describe('ProjectEffects', () => {
       };
       const criteria = {};
       accessTokenService.find.mockReturnValueOnce(of(payload));
-      const effects: ProjectEffects = TestBed.get(ProjectEffects);
+      const effects: ProjectEffects = TestBed.inject(ProjectEffects);
       const target$ = effects.loadAccessTokens$;
 
       // when

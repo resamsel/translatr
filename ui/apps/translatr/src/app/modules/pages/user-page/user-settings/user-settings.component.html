@@ -14,18 +14,20 @@
             matInput
             [placeholder]="t('user.name')"
             type="text"
-          />
-          <mat-error
-            *ngIf="nameFormControl.invalid && nameFormControl.errors.maxlength"
-          >
-            {{ nameFormControl.errors.maxlength.actualLength }} characters exceeds limit
-            of {{ nameFormControl.errors.maxlength.requiredLength }} characters.
-          </mat-error>
-          <mat-error
-            *ngIf="nameFormControl.invalid && nameFormControl.errors['violation']"
-          >
-            {{ nameFormControl.errors['violation'] }}
-          </mat-error>
+            />
+          @if (nameFormControl.invalid && nameFormControl.errors.maxlength) {
+            <mat-error
+              >
+              {{ nameFormControl.errors.maxlength.actualLength }} characters exceeds limit
+              of {{ nameFormControl.errors.maxlength.requiredLength }} characters.
+            </mat-error>
+          }
+          @if (nameFormControl.invalid && nameFormControl.errors['violation']) {
+            <mat-error
+              >
+              {{ nameFormControl.errors['violation'] }}
+            </mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="username">
@@ -36,24 +38,27 @@
             [placeholder]="t('user.username')"
             matInput
             type="text"
-          />
-          <mat-error
-            *ngIf="usernameFormControl.invalid && usernameFormControl.errors.maxlength"
-          >
-            {{ usernameFormControl.errors.maxlength.actualLength }} characters exceeds limit
-            of {{ usernameFormControl.errors.maxlength.requiredLength }} characters.
-          </mat-error>
-          <mat-error
-            *ngIf="usernameFormControl.invalid && usernameFormControl.errors.pattern"
-            transloco="user.username.error.pattern"
-          >
-            Must match pattern [a-zA-Z0-9_.-]*
-          </mat-error>
-          <mat-error
-            *ngIf="usernameFormControl.invalid && usernameFormControl.errors['violation']"
-          >
-            {{ usernameFormControl.errors['violation'] }}
-          </mat-error>
+            />
+          @if (usernameFormControl.invalid && usernameFormControl.errors.maxlength) {
+            <mat-error
+              >
+              {{ usernameFormControl.errors.maxlength.actualLength }} characters exceeds limit
+              of {{ usernameFormControl.errors.maxlength.requiredLength }} characters.
+            </mat-error>
+          }
+          @if (usernameFormControl.invalid && usernameFormControl.errors.pattern) {
+            <mat-error
+              transloco="user.username.error.pattern"
+              >
+              Must match pattern [a-zA-Z0-9_.-]*
+            </mat-error>
+          }
+          @if (usernameFormControl.invalid && usernameFormControl.errors['violation']) {
+            <mat-error
+              >
+              {{ usernameFormControl.errors['violation'] }}
+            </mat-error>
+          }
         </mat-form-field>
         <div class="dialog-actions">
           <button
@@ -63,7 +68,7 @@
             mat-flat-button
             transloco="button.save"
             (click)="onSave()"
-          >Save
+            >Save
           </button>
         </div>
       </form>

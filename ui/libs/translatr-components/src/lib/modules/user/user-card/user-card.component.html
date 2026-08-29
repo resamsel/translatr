@@ -1,14 +1,15 @@
 <mat-card class="portrait">
-  <img
-    *ngIf="user"
-    mat-card-image
-    ngxGravatar
-    [md5Hash]="user.emailHash"
-    [round]="false"
-    [size]="160"
-    class="image"
-    [alt]="user.name"
-  />
+  @if (user) {
+    <img
+      mat-card-image
+      ngxGravatar
+      [md5Hash]="user.emailHash"
+      [round]="false"
+      [size]="160"
+      class="image"
+      [alt]="user.name"
+      />
+  }
   <mat-card-content>
     <h2 class="name ellipsis">{{ user?.name }}</h2>
     <p class="username ellipsis">{{ user?.username }}</p>
