@@ -4,7 +4,9 @@
     "types": [
       "node",
       "jest"
-    ]
+    ],
+    "module": "preserve",
+    "moduleResolution": "bundler"
   },
   "include": [
     "**/*.ts"

@@ -8,3 +8,5 @@
 
 # dependencies
 /node_modules
+
+.nx/self-healing

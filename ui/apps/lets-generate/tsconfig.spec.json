@@ -6,7 +6,8 @@
     "types": [
       "jest",
       "node"
-    ]
+    ],
+    "isolatedModules": true
   },
   "files": [
     "src/test-setup.ts"

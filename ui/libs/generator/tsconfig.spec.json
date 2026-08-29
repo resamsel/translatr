@@ -2,11 +2,13 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
+    "module": "preserve",
     "types": [
       "jest",
       "node"
-    ]
+    ],
+    "moduleResolution": "bundler",
+    "isolatedModules": true
   },
   "files": [
     "src/test-setup.ts"

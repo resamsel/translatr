@@ -12,11 +12,12 @@
         <h4 class="light green-text text-lighten-4 center description" transloco="main.subtitle">
           A modern and intuitive i18n tool
         </h4>
-        <a *ngIf="me$ | async; else signin" mat-flat-button color="accent" routerLink="dashboard"
-           transloco="dashboard.title">Dashboard</a>
-        <ng-template #signin>
+        @if (me$ | async) {
+          <a mat-flat-button color="accent" routerLink="dashboard"
+             transloco="dashboard.title">Dashboard</a>
+        } @else {
           <a mat-flat-button color="accent" routerLink="login" transloco="auth.login">Sign in</a>
-        </ng-template>
+        }
       </div>
       <div class="col image">
         <img src="assets/images/hexagon-large.svg" alt="">
@@ -190,11 +191,12 @@
       <h3 class="header center" transloco="trial.title">Try it out now</h3>
 
       <div class="center">
-        <a *ngIf="me$ | async; else signin" mat-flat-button color="accent" routerLink="dashboard"
-           transloco="dashboard.title">Dashboard</a>
-        <ng-template #signin>
+        @if (me$ | async) {
+          <a mat-flat-button color="accent" routerLink="dashboard"
+             transloco="dashboard.title">Dashboard</a>
+        } @else {
           <a mat-flat-button color="accent" routerLink="login" transloco="auth.login">Sign in</a>
-        </ng-template>
+        }
       </div>
     </section>
   </div>

@@ -77,8 +77,7 @@ export class FilterFieldComponent implements OnInit {
   @ViewChild('autocompleteInput') autocompleteInput: ElementRef;
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
-  // @ts-expect-error -- TS6133: private field is only "used" via @HostBinding's reflection, invisible to static analysis
-  @HostBinding('class') private readonly clazz = 'filter-field';
+  @HostBinding('class') protected readonly clazz = 'filter-field';
 
   filterControl = new FormControl('');
   autocompleteOptions: FilterFieldFilter[] = [];

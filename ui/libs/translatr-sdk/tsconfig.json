@@ -1,7 +1,14 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["node", "jest"]
+    "types": [
+      "node",
+      "jest"
+    ],
+    "module": "preserve",
+    "moduleResolution": "bundler"
   },
-  "include": ["**/*.ts"]
+  "include": [
+    "**/*.ts"
+  ]
 }
