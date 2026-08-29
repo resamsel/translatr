@@ -6,7 +6,8 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -45,6 +46,7 @@ const formToModel = (form: ProjectForm): Project => ({
   standalone: false,
   selector: 'app-project-owner-edit-form',
   templateUrl: './project-owner-edit-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-owner-edit-form.component.scss']
 })
 export class ProjectOwnerEditFormComponent

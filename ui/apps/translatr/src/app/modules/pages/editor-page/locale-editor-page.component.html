@@ -1,10 +1,10 @@
 <app-editor
   [me]="me$ | async"
-  [ownerName]="(locale$ | async)?.projectOwnerUsername"
-  [projectName]="(locale$ | async)?.projectName"
+  [ownerName]="$safeNavigationMigration((locale$ | async)?.projectOwnerUsername)"
+  [projectName]="$safeNavigationMigration((locale$ | async)?.projectName)"
   [backLink]="backLink"
   [message]="selectedMessage$ | async"
-  [messages]="(messages$ | async)?.list"
+  [messages]="$safeNavigationMigration((messages$ | async)?.list)"
   [name]="'locale.editor' | transloco"
   class="locale-editor"
   (nextItem)="onNextItem()"
@@ -36,7 +36,7 @@
       <a
         mat-icon-button
         [queryParams]="{
-          locale: (locale$ | async)?.name,
+          locale: $safeNavigationMigration((locale$ | async)?.name),
         }"
         [routerLink]="['../..', 'keys', selectedMessage.keyName]"
       >
@@ -62,7 +62,7 @@
         [class.active]="item.selected"
         [queryParams]="{ key: item.key.name }"
         [routerLink]="[]"
-        [ngClass]="{ warning: item.message?.dirty }"
+        [ngClass]="{ warning: $safeNavigationMigration(item.message?.dirty) }"
         mat-list-item
         queryParamsHandling="merge"
         class="key"

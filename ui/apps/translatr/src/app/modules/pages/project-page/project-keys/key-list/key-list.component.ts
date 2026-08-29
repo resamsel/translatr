@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Key, KeyCriteria, PagedList, Project } from '@dev/translatr-model';
@@ -11,6 +11,7 @@ import { FilterCriteria } from '../../../../shared/list-header/list-header.compo
   standalone: false,
   selector: 'app-key-list',
   templateUrl: './key-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./key-list.component.scss']
 })
 export class KeyListComponent {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Member, MemberCriteria, Project, User } from '@dev/translatr-model';
@@ -13,6 +13,7 @@ import { ProjectFacade } from '../../../shared/project-state';
   standalone: false,
   selector: 'app-project-members',
   templateUrl: './project-members.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-members.component.scss']
 })
 export class ProjectMembersComponent {

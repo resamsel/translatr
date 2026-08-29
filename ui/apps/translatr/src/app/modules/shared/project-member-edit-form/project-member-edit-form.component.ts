@@ -5,7 +5,8 @@ import {
   Inject,
   Input,
   OnInit,
-  Output
+  Output,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -43,6 +44,7 @@ const formToMember = (form: MemberForm): Member => {
   standalone: false,
   selector: 'app-project-member-edit-form',
   templateUrl: './project-member-edit-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-member-edit-form.component.scss']
 })
 export class ProjectMemberEditFormComponent

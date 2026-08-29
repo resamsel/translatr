@@ -33,8 +33,8 @@
           </h3>
           <p class="sub-title" matListItemLine>
             <span transloco="when.added">Added</span>&nbsp;
-            <span [matTooltip]="member?.whenCreated | date: 'full'">{{
-              member?.whenCreated | amTimeAgo
+            <span [matTooltip]="$safeNavigationMigration(member?.whenCreated) | date: 'full'">{{
+              $safeNavigationMigration(member?.whenCreated) | amTimeAgo
             }}</span>
           </p>
           @if (canTransferOwnership && member.userId === project.ownerId && ownerCount > 1) {

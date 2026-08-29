@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
@@ -24,6 +24,7 @@ const filterComparator = (a: Params, b: Params): boolean =>
   standalone: false,
   selector: 'app-key-editor-page',
   templateUrl: './key-editor-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./key-editor-page.component.scss']
 })
 export class KeyEditorPageComponent implements OnInit, OnDestroy {

@@ -26,7 +26,13 @@
     },
     "noUnusedLocals": true,
     "esModuleInterop": true,
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": [
+      "*"
+    ],
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "tmp"]
 }

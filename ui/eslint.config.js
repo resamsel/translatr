@@ -45,6 +45,13 @@ module.exports = tseslint.config(
       // regression pass -- deliberate follow-up work, not a CI blocker for the
       // nx/angular platform bump. Same rationale as prefer-standalone above.
       "@angular-eslint/prefer-inject": "warn",
+      // Promoted to an error in the angular-eslint v22 recommended set. Angular v22's
+      // official `change-detection-eager` migration added `ChangeDetectionStrategy.Eager`
+      // to every component in the codebase to preserve pre-v22 runtime change-detection
+      // behavior; moving all ~60 components to OnPush is a separate, deliberate refactor
+      // plus regression pass, not a CI blocker for the nx/angular platform bump. Same
+      // rationale as prefer-standalone / prefer-inject above.
+      "@angular-eslint/prefer-on-push-component-change-detection": "warn",
     },
   },
   {

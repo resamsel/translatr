@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HotkeysHelpComponent, HotkeysService } from '@ngneat/hotkeys';
 import { TranslocoService } from '@jsverse/transloco';
@@ -8,6 +8,7 @@ import { AppFacade } from './+state/app.facade';
 @Component({
   standalone: false,
   selector: 'app-root',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<router-outlet></router-outlet>'
 })
 export class AppComponent implements AfterViewInit {

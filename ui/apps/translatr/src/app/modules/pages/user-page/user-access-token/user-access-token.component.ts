@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { filter, take } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
@@ -7,6 +7,7 @@ import { UserFacade } from '../+state/user.facade';
   standalone: false,
   selector: 'app-user-access-token',
   templateUrl: './user-access-token.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-access-token.component.scss']
 })
 export class UserAccessTokenComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Inject, Injector, OnDestroy } from '@angular/core';
+import { Component, Inject, Injector, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, CanActivate, Route } from '@angular/router';
 import { Feature, User } from '@dev/translatr-model';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
@@ -11,6 +11,7 @@ import { USER_ROUTES } from './user-page.token';
   standalone: false,
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-page.component.scss']
 })
 export class UserPageComponent implements OnDestroy {

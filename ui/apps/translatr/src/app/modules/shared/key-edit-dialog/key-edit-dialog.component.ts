@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, Optional } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,6 +16,7 @@ interface Data {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './key-edit-dialog.component.html'
 })
 export class KeyEditDialogComponent extends BaseEditFormComponent<

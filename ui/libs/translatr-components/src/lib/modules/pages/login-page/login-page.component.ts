@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { AuthClient } from '@dev/translatr-model';
 import { AuthClientService } from '@dev/translatr-sdk';
@@ -10,6 +10,7 @@ import { filter, map, take } from 'rxjs/operators';
   standalone: false,
   selector: 'dev-login-page',
   templateUrl: './login-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./login-page.component.scss']
 })
 export class LoginPageComponent implements OnInit {

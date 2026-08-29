@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, NgModule, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { PagedList } from '@dev/translatr-model';
 import { defaultFilters, FilterCriteria } from '../../list-header/list-header.component';
 
 @Component({
   standalone: false,
   selector: 'app-nav-list',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockNavListComponent {

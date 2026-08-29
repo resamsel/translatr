@@ -15,5 +15,8 @@
   ],
   "include": [
     "apps/translatr/src/**/*.d.ts"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "strictTemplates": false
+  }
 }

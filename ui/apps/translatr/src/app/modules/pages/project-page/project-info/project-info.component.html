@@ -3,10 +3,10 @@
     <div class="container flex">
       <dev-project-infographic
         *featureFlag="Feature.ProjectInfographic"
-        [contributorCount]="(members$ | async)?.total | shortNumber"
-        [localeCount]="(locales$ | async)?.total | shortNumber"
-        [keyCount]="(keys$ | async)?.total | shortNumber"
-        [messageCount]="(latestMessages$ | async)?.total | shortNumber"
+        [contributorCount]="$safeNavigationMigration((members$ | async)?.total) | shortNumber"
+        [localeCount]="$safeNavigationMigration((locales$ | async)?.total) | shortNumber"
+        [keyCount]="$safeNavigationMigration((keys$ | async)?.total) | shortNumber"
+        [messageCount]="$safeNavigationMigration((latestMessages$ | async)?.total) | shortNumber"
       ></dev-project-infographic>
       <dev-metric
         [routerLink]="['/', project.ownerUsername]"
@@ -18,21 +18,21 @@
       <dev-metric
         routerLink="locales"
         [name]="t('locales')"
-        [value]="(locales$ | async)?.total | shortNumber"
+        [value]="$safeNavigationMigration((locales$ | async)?.total) | shortNumber"
         icon="language"
         class="locale count"
       ></dev-metric>
       <dev-metric
         routerLink="keys"
         [name]="t('keys')"
-        [value]="(keys$ | async)?.total | shortNumber"
+        [value]="$safeNavigationMigration((keys$ | async)?.total) | shortNumber"
         icon="vpn_key"
         class="key count"
       ></dev-metric>
       <dev-metric
         routerLink="members"
         [name]="t('members')"
-        [value]="(members$ | async)?.total | shortNumber"
+        [value]="$safeNavigationMigration((members$ | async)?.total) | shortNumber"
         icon="group"
         class="member count"
       ></dev-metric>

@@ -1,7 +1,7 @@
 <app-editor
   [me]="me$ | async"
-  [ownerName]="(key$ | async)?.projectOwnerUsername"
-  [projectName]="(key$ | async)?.projectName"
+  [ownerName]="$safeNavigationMigration((key$ | async)?.projectOwnerUsername)"
+  [projectName]="$safeNavigationMigration((key$ | async)?.projectName)"
   [backLink]="backLink"
   [message]="selectedMessage$ | async"
   [messages]="toMessages(messageItems$ | async)"
@@ -25,7 +25,7 @@
         matInput
         #keyInput
         class="selected-key"
-        [value]="(key$ | async)?.name"
+        [value]="$safeNavigationMigration((key$ | async)?.name)"
         (keydown.enter)="onKeyChange(keyInput.value)"
         [readonly]="true"
       />
@@ -36,8 +36,8 @@
         mat-icon-button
         [routerLink]="['../..', 'locales', selectedLocaleName$ | async]"
         [queryParams]="{
-          key: (key$ | async)?.name,
-          search: (key$ | async)?.name,
+          key: $safeNavigationMigration((key$ | async)?.name),
+          search: $safeNavigationMigration((key$ | async)?.name),
         }"
       >
         <mat-icon>compare_arrows</mat-icon>
@@ -62,7 +62,7 @@
         [class.active]="item.selected"
         [queryParams]="{ locale: item.locale.name }"
         [routerLink]="[]"
-        [ngClass]="{ warning: item.message?.dirty }"
+        [ngClass]="{ warning: $safeNavigationMigration(item.message?.dirty) }"
         mat-list-item
         queryParamsHandling="merge"
         class="locale"

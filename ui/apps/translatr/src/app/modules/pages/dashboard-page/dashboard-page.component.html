@@ -16,18 +16,18 @@
   <div class="container flex">
     @if (me$ | async) {
       <dev-metric
-        [routerLink]="['/', (me$ | async)?.username, 'projects']"
+        [routerLink]="['/', $safeNavigationMigration((me$ | async)?.username), 'projects']"
         [name]="t('projects.my.title')"
-        [value]="(myProjects$ | async)?.total | shortNumber"
+        [value]="$safeNavigationMigration((myProjects$ | async)?.total) | shortNumber"
         icon="library_books"
         class="my project count"
       ></dev-metric>
     }
     @if (me$ | async) {
       <dev-metric
-        [routerLink]="['/', (me$ | async)?.username, 'activity']"
+        [routerLink]="['/', $safeNavigationMigration((me$ | async)?.username), 'activity']"
         [name]="t('activity.my.title')"
-        [value]="(activities$ | async)?.total | shortNumber"
+        [value]="$safeNavigationMigration((activities$ | async)?.total) | shortNumber"
         icon="change_history"
         class="my activity count"
       ></dev-metric>
@@ -35,14 +35,14 @@
     <dev-metric
       routerLink="/projects"
       [name]="t('projects.title')"
-      [value]="(projects$ | async)?.total | shortNumber"
+      [value]="$safeNavigationMigration((projects$ | async)?.total) | shortNumber"
       icon="library_books"
       class="all project count"
     ></dev-metric>
     <dev-metric
       routerLink="/users"
       [name]="t('users.title')"
-      [value]="(users$ | async)?.total | shortNumber"
+      [value]="$safeNavigationMigration((users$ | async)?.total) | shortNumber"
       icon="group"
       class="user count"
     ></dev-metric>

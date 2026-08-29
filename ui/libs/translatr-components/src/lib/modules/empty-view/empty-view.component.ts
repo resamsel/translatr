@@ -1,9 +1,10 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'dev-empty-view',
   templateUrl: './empty-view.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./empty-view.component.scss']
 })
 export class EmptyViewComponent {

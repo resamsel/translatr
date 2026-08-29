@@ -1,4 +1,4 @@
-import { Component, Input, NgModule } from '@angular/core';
+import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Link } from '@dev/translatr-components';
 import { User } from '@dev/translatr-model';
@@ -6,6 +6,7 @@ import { User } from '@dev/translatr-model';
 @Component({
   standalone: false,
   selector: 'app-sidenav',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockSidenavComponent {

@@ -1,4 +1,4 @@
-import { Component, Optional } from '@angular/core';
+import { Component, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { LanguageSwicher } from '../language-swicher';
 
@@ -6,6 +6,7 @@ import { LanguageSwicher } from '../language-swicher';
   standalone: false,
   selector: 'app-auth-bar-language-switcher',
   templateUrl: './auth-bar-language-switcher.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./auth-bar-language-switcher.component.css']
 })
 export class AuthBarLanguageSwitcherComponent {

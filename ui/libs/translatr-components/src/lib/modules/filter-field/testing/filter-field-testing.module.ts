@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { FilterFieldFilter } from '@dev/translatr-components';
@@ -6,6 +6,7 @@ import { FilterFieldFilter } from '@dev/translatr-components';
 @Component({
   standalone: false,
   selector: 'dev-filter-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockFilterFieldComponent {

@@ -1,9 +1,10 @@
-import { Component, Input, NgModule } from '@angular/core';
+import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
 import { User } from '@dev/translatr-model';
 
 @Component({
   standalone: false,
   selector: 'user-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 export class MockUserCardComponent {
@@ -13,6 +14,7 @@ export class MockUserCardComponent {
 @Component({
   standalone: false,
   selector: 'app-user-card-link',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 export class MockUserCardLinkComponent {

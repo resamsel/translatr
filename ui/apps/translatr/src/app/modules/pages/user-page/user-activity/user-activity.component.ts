@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { User, UserCriteria } from '@dev/translatr-model';
 import { filter, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
@@ -7,6 +7,7 @@ import { UserFacade } from '../+state/user.facade';
   standalone: false,
   selector: 'app-user-activity',
   templateUrl: './user-activity.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-activity.component.scss']
 })
 export class UserActivityComponent implements OnInit {

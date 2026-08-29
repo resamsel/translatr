@@ -10,7 +10,7 @@
   </dev-filter-field>
 </div>
 
-<table mat-table [dataSource]="dataSource?.list" [trackBy]="trackByFn">
+<table mat-table [dataSource]="$safeNavigationMigration(dataSource?.list)" [trackBy]="trackByFn">
   <ng-container matColumnDef="selection">
     <th mat-header-cell *matHeaderCellDef>
       <mat-checkbox
@@ -66,8 +66,8 @@
 </table>
 
 <mat-paginator
-  [length]="dataSource?.total"
-  [pageIndex]="dataSource?.offset / dataSource?.limit"
-  [pageSize]="dataSource?.limit"
+  [length]="$safeNavigationMigration(dataSource?.total)"
+  [pageIndex]="$safeNavigationMigration(dataSource?.offset) / $safeNavigationMigration(dataSource?.limit)"
+  [pageSize]="$safeNavigationMigration(dataSource?.limit)"
   (page)="onPage($event)"
 ></mat-paginator>

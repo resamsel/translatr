@@ -1,4 +1,4 @@
-import { Component, Inject, Injector, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, CanActivate, Router } from '@angular/router';
 import { PagedList, Project, User } from '@dev/translatr-model';
@@ -13,6 +13,7 @@ import { USER_ROUTES } from '../user-page.token';
   standalone: false,
   selector: 'app-user-info',
   templateUrl: './user-info.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-info.component.scss']
 })
 export class UserInfoComponent implements OnInit {

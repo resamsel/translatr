@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Link } from '@dev/translatr-components';
 import { Feature, User } from '@dev/translatr-model';
@@ -11,6 +11,7 @@ import { environment } from '../../../../environments/environment';
   standalone: false,
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./sidenav.component.scss']
 })
 export class SidenavComponent {

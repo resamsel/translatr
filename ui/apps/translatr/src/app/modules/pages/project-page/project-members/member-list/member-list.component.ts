@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
@@ -15,6 +15,7 @@ import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edi
   standalone: false,
   selector: 'app-member-list',
   templateUrl: './member-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./member-list.component.scss']
 })
 export class MemberListComponent {

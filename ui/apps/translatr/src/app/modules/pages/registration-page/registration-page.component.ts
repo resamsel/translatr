@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConstraintViolationErrorInfo, Feature, User } from '@dev/translatr-model';
 import { UserService } from '@dev/translatr-sdk';
@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
   standalone: false,
   selector: 'app-registration-page',
   templateUrl: './registration-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./registration-page.component.scss']
 })
 export class RegistrationPageComponent {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,6 +14,7 @@ import { ProjectFacade } from '../../../shared/project-state';
   standalone: false,
   selector: 'app-project-settings',
   templateUrl: './project-settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./project-settings.component.scss']
 })
 export class ProjectSettingsComponent

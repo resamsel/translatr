@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   ConstraintViolation,
@@ -11,6 +11,7 @@ import {
   standalone: false,
   selector: 'dev-user-edit-form',
   templateUrl: './user-edit-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-edit-form.component.css']
 })
 export class UserEditFormComponent {

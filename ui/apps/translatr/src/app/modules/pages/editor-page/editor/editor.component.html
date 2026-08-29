@@ -103,7 +103,7 @@
     <div class="meta">
       <mat-tab-group #tabs>
         <mat-tab class="preview" [label]="t('message.preview')">
-          <p [innerHTML]="message?.value" class="translation"></p>
+          <p [innerHTML]="$safeNavigationMigration(message?.value)" class="translation"></p>
         </mat-tab>
         <mat-tab [label]="t('messages.tab')">
           @for (message of messages; track message) {

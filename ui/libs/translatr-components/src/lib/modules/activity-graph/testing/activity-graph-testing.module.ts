@@ -1,9 +1,10 @@
-import { Component, Input, NgModule } from '@angular/core';
+import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
 import { Aggregate } from '@dev/translatr-model';
 
 @Component({
   standalone: false,
   selector: 'dev-activity-graph',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 class MockActivityGraphComponent {

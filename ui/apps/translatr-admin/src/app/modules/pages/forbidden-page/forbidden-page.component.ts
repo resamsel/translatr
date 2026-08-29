@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AppFacade } from '../../../+state/app.facade';
 import { environment } from '../../../../environments/environment';
@@ -7,6 +7,7 @@ import { environment } from '../../../../environments/environment';
   standalone: false,
   selector: 'dev-forbidden-page',
   templateUrl: './forbidden-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./forbidden-page.component.scss']
 })
 export class ForbiddenPageComponent {

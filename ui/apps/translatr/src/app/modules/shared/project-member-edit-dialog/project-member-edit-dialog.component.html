@@ -1,7 +1,7 @@
-@if (data.member?.id === undefined) {
+@if ($safeNavigationMigration(data.member?.id) === undefined) {
   <h1 mat-dialog-title transloco="member.create.title">Add Project Member</h1>
 }
-@if (data.member?.id !== undefined) {
+@if ($safeNavigationMigration(data.member?.id) !== undefined) {
   <h1 mat-dialog-title transloco="member.edit.title">Edit Project Member</h1>
 }
 <div mat-dialog-content>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Params, Router } from '@angular/router';
 import { Feature, UserCriteria } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
@@ -11,6 +11,7 @@ import { UsersFacade } from './+state/users.facade';
   standalone: false,
   selector: 'app-projects-page',
   templateUrl: './users-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./users-page.component.scss']
 })
 export class UsersPageComponent implements OnInit, OnDestroy {
