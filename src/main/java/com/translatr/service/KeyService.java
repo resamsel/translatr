@@ -24,14 +24,16 @@ public class KeyService {
     private final ProjectRepository projectRepo;
     private final DtoMapper         mapper;
     private final ActivityLogger    activity;
+    private final ProgressService   progress;
 
     @Inject
     public KeyService(KeyRepository keyRepo, ProjectRepository projectRepo, DtoMapper mapper,
-                      ActivityLogger activity) {
+                      ActivityLogger activity, ProgressService progress) {
         this.keyRepo     = keyRepo;
         this.projectRepo = projectRepo;
         this.mapper      = mapper;
         this.activity    = activity;
+        this.progress    = progress;
     }
 
     private static final List<String> ORDERABLE = List.of("name", "whenCreated", "whenUpdated", "wordCount");
@@ -64,6 +66,10 @@ public class KeyService {
         long total = query.count();
         var list   = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());
+        if (QuerySupport.wants(c.fetch, "progress") && c.projectId != null && !list.isEmpty()) {
+            var byKey = progress.keyProgress(c.projectId);
+            list.forEach(d -> d.progress = byKey.getOrDefault(d.id, 0.0));
+        }
         return new PagedList<>(list, total, c.offset, c.limit);
     }
 

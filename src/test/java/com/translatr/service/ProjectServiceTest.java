@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +41,7 @@ class ProjectServiceTest {
     @Mock ProjectUserRepository memberRepo;
     @Mock DtoMapper             mapper;
     @Mock ActivityLogger        activity;
+    @Mock ProgressService       progress;
 
     @InjectMocks ProjectService service;
 
@@ -72,6 +74,122 @@ class ProjectServiceTest {
         assertThat(ql).contains("EXISTS (SELECT 1 FROM ProjectUser pu WHERE pu.project = p AND pu.user.id = ");
         assertThat(ql).contains("p.name = ");
         assertThat(ql).contains("lower(p.description) LIKE ");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void find_withFetchProgress_populatesProjectProgressFromProgressService() {
+        UUID id = UUID.randomUUID();
+        Project p = projectWithId(id);
+        ProjectDto dto = new ProjectDto();
+        dto.id = id;
+
+        PanacheQuery<Project> query = mock(PanacheQuery.class);
+        when(projectRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(p));
+        when(mapper.toDto(p)).thenReturn(dto);
+        when(progress.projectProgress(List.of(id))).thenReturn(Map.of(id, 0.4));
+
+        ProjectCriteria c = new ProjectCriteria();
+        c.fetch = "progress";
+        c.limit = 20;
+
+        var result = service.find(c);
+
+        assertThat(result.list.get(0).progress).isEqualTo(0.4);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void find_withoutFetchProgress_leavesProgressNullAndNeverQueriesProgress() {
+        UUID id = UUID.randomUUID();
+        Project p = projectWithId(id);
+        ProjectDto dto = new ProjectDto();
+        dto.id = id;
+
+        PanacheQuery<Project> query = mock(PanacheQuery.class);
+        when(projectRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(p));
+        when(mapper.toDto(p)).thenReturn(dto);
+
+        ProjectCriteria c = new ProjectCriteria();
+        c.limit = 20;
+
+        var result = service.find(c);
+
+        assertThat(result.list.get(0).progress).isNull();
+        verify(progress, never()).projectProgress(any());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void find_withFetchMembers_populatesMembers() {
+        UUID id = UUID.randomUUID();
+        Project p = projectWithId(id);
+        ProjectDto dto = new ProjectDto();
+        dto.id = id;
+
+        ProjectUser pu = new ProjectUser(ProjectRole.Manager);
+        MemberDto memberDto = new MemberDto();
+
+        PanacheQuery<Project> query = mock(PanacheQuery.class);
+        when(projectRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(p));
+        when(mapper.toDto(p)).thenReturn(dto);
+        when(memberRepo.list("project.id", id)).thenReturn(List.of(pu));
+        when(mapper.toDto(pu)).thenReturn(memberDto);
+
+        ProjectCriteria c = new ProjectCriteria();
+        c.fetch = "members";
+        c.limit = 20;
+
+        var result = service.find(c);
+
+        assertThat(result.list.get(0).members).containsExactly(memberDto);
+    }
+
+    // -------------------------------------------------------------------------
+    // getByOwnerAndName
+    // -------------------------------------------------------------------------
+
+    @Test
+    void getByOwnerAndName_withFetchMyrole_setsMyRoleFromMembership() {
+        UUID projectId = UUID.randomUUID();
+        UUID userId    = UUID.randomUUID();
+        Project p = projectWithId(projectId);
+        ProjectDto dto = new ProjectDto();
+        dto.id = projectId;
+
+        ProjectUser membership = new ProjectUser(ProjectRole.Manager);
+        when(projectRepo.findByOwnerUsernameAndName("alice", "acme")).thenReturn(Optional.of(p));
+        when(mapper.toDto(p)).thenReturn(dto);
+        when(memberRepo.findByProjectAndUser(projectId, userId)).thenReturn(Optional.of(membership));
+
+        ProjectDto result = service.getByOwnerAndName("alice", "acme", "myrole", userId);
+
+        assertThat(result.myRole).isEqualTo("Manager");
+    }
+
+    @Test
+    void getByOwnerAndName_withoutFetch_leavesMyRoleNullAndDoesNotQueryMembership() {
+        UUID projectId = UUID.randomUUID();
+        Project p = projectWithId(projectId);
+        ProjectDto dto = new ProjectDto();
+        dto.id = projectId;
+
+        when(projectRepo.findByOwnerUsernameAndName("alice", "acme")).thenReturn(Optional.of(p));
+        when(mapper.toDto(p)).thenReturn(dto);
+
+        ProjectDto result = service.getByOwnerAndName("alice", "acme", null, null);
+
+        assertThat(result.myRole).isNull();
+        verify(memberRepo, never()).findByProjectAndUser(any(), any());
     }
 
     // -------------------------------------------------------------------------

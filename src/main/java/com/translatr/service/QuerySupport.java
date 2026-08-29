@@ -36,6 +36,20 @@ final class QuerySupport {
         return s != null && !s.isBlank();
     }
 
+    /**
+     * Whether the {@code ?fetch=} query param opts into a given association/expansion. {@code fetch}
+     * is a comma-separated list (e.g. {@code count,progress}); matching is exact per token, so
+     * {@code featureFlags} never satisfies a check for {@code features}.
+     */
+    static boolean wants(String fetch, String token) {
+        if (fetch == null) {
+            return false;
+        }
+        return Arrays.stream(fetch.split(","))
+                     .map(String::trim)
+                     .anyMatch(token::equals);
+    }
+
     /** {@code %value%} for a case-insensitive {@code LIKE}, or {@code null} when there is nothing to match. */
     static String like(String search) {
         return hasText(search) ? "%" + search.toLowerCase() + "%" : null;

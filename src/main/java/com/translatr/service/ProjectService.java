@@ -20,7 +20,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,20 +32,18 @@ public class ProjectService {
     private final ProjectUserRepository memberRepo;
     private final DtoMapper             mapper;
     private final ActivityLogger        activity;
+    private final ProgressService       progress;
 
     @Inject
     public ProjectService(ProjectRepository projectRepo, UserRepository userRepo,
                            ProjectUserRepository memberRepo, DtoMapper mapper,
-                           ActivityLogger activity) {
+                           ActivityLogger activity, ProgressService progress) {
         this.projectRepo = projectRepo;
         this.userRepo    = userRepo;
         this.memberRepo  = memberRepo;
         this.mapper      = mapper;
         this.activity    = activity;
-    }
-
-    private static boolean wants(String fetch, String association) {
-        return fetch != null && Arrays.asList(fetch.split(",")).contains(association);
+        this.progress    = progress;
     }
 
     private void fetchMembers(ProjectDto dto) {
@@ -93,8 +90,12 @@ public class ProjectService {
         long total = query.count();
         List<ProjectDto> list = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());
-        if (wants(c.fetch, "members")) {
+        if (QuerySupport.wants(c.fetch, "members")) {
             list.forEach(this::fetchMembers);
+        }
+        if (QuerySupport.wants(c.fetch, "progress")) {
+            var byProject = progress.projectProgress(list.stream().map(d -> d.id).toList());
+            list.forEach(d -> d.progress = byProject.getOrDefault(d.id, 0.0));
         }
         return new PagedList<>(list, total, c.offset, c.limit);
     }
@@ -105,9 +106,29 @@ public class ProjectService {
                 .orElseThrow(NotFoundException::new));
     }
 
-    public ProjectDto getByOwnerAndName(String username, String name) {
-        return mapper.toDto(projectRepo.findByOwnerUsernameAndName(username, name)
-                .orElseThrow(NotFoundException::new));
+    /**
+     * @param fetch          the {@code ?fetch=} query param; {@code myrole} attaches the caller's
+     *                       {@link ProjectDto#myRole}, {@code members} / {@code progress} behave as
+     *                       on the list endpoint
+     * @param loggedInUserId the resolved caller, or {@code null} on an anonymous request (this route
+     *                       is {@code @PermitAll}); {@code myrole} is a no-op without it
+     */
+    public ProjectDto getByOwnerAndName(String username, String name, String fetch, UUID loggedInUserId) {
+        Project p = projectRepo.findByOwnerUsernameAndName(username, name)
+                .orElseThrow(NotFoundException::new);
+        ProjectDto dto = mapper.toDto(p);
+
+        if (QuerySupport.wants(fetch, "myrole") && loggedInUserId != null) {
+            memberRepo.findByProjectAndUser(p.id, loggedInUserId)
+                      .ifPresent(pu -> dto.myRole = pu.role != null ? pu.role.name() : null);
+        }
+        if (QuerySupport.wants(fetch, "members")) {
+            fetchMembers(dto);
+        }
+        if (QuerySupport.wants(fetch, "progress")) {
+            dto.progress = progress.projectProgress(List.of(p.id)).getOrDefault(p.id, 0.0);
+        }
+        return dto;
     }
 
     @Transactional
