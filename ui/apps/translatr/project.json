@@ -15,6 +15,7 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/translatr",
         "index": "apps/translatr/src/index.html",
@@ -66,11 +67,12 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "defaultConfiguration": "development",
+      "continuous": true,
       "options": {
         "proxyConfig": "proxy.conf.js"
       },
@@ -81,9 +83,7 @@
         "development": {
           "buildTarget": "translatr:build:development"
         }
-      },
-      "defaultConfiguration": "development",
-      "continuous": true
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",

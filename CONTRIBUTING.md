@@ -31,7 +31,7 @@ the feature you would like to see, why you need it, and how it should work.
 ## How to set up your environment and run tests
 
 The backend is a **Quarkus** application (Java 21, Gradle). The frontend is an
-**Angular 11** single-page app served by the
+**Angular 22** single-page app (Nx 23 workspace, Cypress 15 e2e) served by the
 [Quinoa](https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/)
 extension. Authentication is handled by **Keycloak**.
 
@@ -41,7 +41,7 @@ extension. Authentication is handled by **Keycloak**.
 |------|---------|-------|
 | Java JDK | 21 | Temurin / Corretto both work |
 | Docker + Docker Compose | any recent | runs PostgreSQL + Keycloak |
-| Node.js | 20 LTS | only needed for UI hot-reload; not required for the default dev flow |
+| Node.js | 22.12 (see `ui/.nvmrc`) | only needed for UI hot-reload; not required for the default dev flow |
 
 ### Running it (standard — no Node required)
 
@@ -72,7 +72,7 @@ directly via Quinoa. No Angular dev server or local Node installation is needed.
 
 4. Open [http://localhost:9000](http://localhost:9000).
 
-### Running it (UI hot-reload — requires Node 20 LTS)
+### Running it (UI hot-reload — requires Node 22.12)
 
 Use this when you are actively working on the Angular frontend and want instant
 browser refresh on file save.
@@ -108,9 +108,8 @@ browser refresh on file save.
 5. Open [http://localhost:9000](http://localhost:9000).
 
 > **Note on Node versions**
-> Angular 11 uses webpack 4. Node 22+ dropped `--openssl-legacy-provider`,
-> so **Node 20 LTS** is required for `npm start` / `npm run build`.
-> The `.node-version` file in `ui/` records the required version.
+> Use the Node version recorded in `ui/.nvmrc` (currently **22.12**) for
+> `npm start` / `npm run build`.
 
 ### Authorisation
 

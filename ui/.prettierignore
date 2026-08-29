@@ -10,3 +10,6 @@
 /node_modules
 
 .nx/self-healing
+
+/.nx/cache
+/.nx/workspace-data
