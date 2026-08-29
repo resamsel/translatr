@@ -13,6 +13,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,8 +36,23 @@ public class AccessTokenService {
         this.activity  = activity;
     }
 
+    private static final List<String> ORDERABLE =
+        List.of("name", "whenCreated", "whenUpdated", "scope");
+
     public PagedList<AccessTokenDto> find(AccessTokenCriteria c, UUID currentUserId) {
-        var query = tokenRepo.find("user.id = ?1 ORDER BY whenCreated DESC", currentUserId);
+        // The token list is always scoped to the authenticated user (currentUserId is authoritative;
+        // criteria.userId is never trusted here). On top of that honour ?search= and ?order=.
+        StringBuilder ql    = new StringBuilder("user.id = ?1");
+        List<Object>  params = new ArrayList<>();
+        params.add(currentUserId);
+
+        if (QuerySupport.hasText(c.search)) {
+            params.add(QuerySupport.like(c.search));
+            ql.append(" AND lower(name) LIKE ?").append(params.size());
+        }
+        ql.append(' ').append(QuerySupport.orderBy(c.order, ORDERABLE, "ORDER BY whenCreated DESC"));
+
+        var query  = tokenRepo.find(ql.toString(), params.toArray());
         long total = query.count();
         var list   = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());

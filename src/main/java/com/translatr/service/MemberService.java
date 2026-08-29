@@ -15,6 +15,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -36,10 +38,30 @@ public class MemberService {
         this.activity    = activity;
     }
 
+    private static final List<String> ORDERABLE = List.of("whenCreated", "whenUpdated", "role");
+
     public PagedList<MemberDto> find(MemberCriteria c) {
-        var query = memberRepo.find(
-                "(?1 IS NULL OR project.id = ?1) AND (?2 IS NULL OR user.id = ?2) ORDER BY whenCreated DESC",
-                c.projectId, c.userId);
+        // Port of ProjectUserRepositoryImpl.findQuery: honour projectId / userId / search / order.
+        StringBuilder ql    = new StringBuilder("FROM ProjectUser pu WHERE 1 = 1");
+        List<Object>  params = new ArrayList<>();
+
+        if (c.projectId != null) {
+            params.add(c.projectId);
+            ql.append(" AND pu.project.id = ?").append(params.size());
+        }
+        if (c.userId != null) {
+            params.add(c.userId);
+            ql.append(" AND pu.user.id = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.search)) {
+            params.add(QuerySupport.like(c.search));
+            int i = params.size();
+            ql.append(" AND (lower(pu.user.name) LIKE ?").append(i)
+              .append(" OR lower(pu.user.username) LIKE ?").append(i).append(')');
+        }
+        ql.append(' ').append(QuerySupport.orderBy(c.order, ORDERABLE, "ORDER BY whenCreated DESC"));
+
+        var query  = memberRepo.find(ql.toString(), params.toArray());
         long total = query.count();
         var list = query.page(c.offset / Math.max(c.limit, 1), c.limit).list()
                 .stream().map(mapper::toDto).collect(Collectors.toList());

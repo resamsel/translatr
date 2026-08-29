@@ -1,5 +1,6 @@
 package com.translatr.service;
 
+import com.translatr.criteria.ProjectCriteria;
 import com.translatr.dto.MemberDto;
 import com.translatr.dto.ProjectDto;
 import com.translatr.mapper.DtoMapper;
@@ -10,6 +11,7 @@ import com.translatr.model.ProjectUser;
 import com.translatr.model.User;
 import com.translatr.repository.ProjectRepository;
 import com.translatr.repository.ProjectUserRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,12 +20,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
@@ -37,6 +42,37 @@ class ProjectServiceTest {
     @Mock ActivityLogger        activity;
 
     @InjectMocks ProjectService service;
+
+    @SuppressWarnings("unchecked")
+    private String runFindAndCaptureQuery(ProjectCriteria c) {
+        PanacheQuery<Project> query = mock(PanacheQuery.class);
+        when(projectRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(0L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of());
+
+        service.find(c);
+
+        ArgumentCaptor<String> ql = ArgumentCaptor.forClass(String.class);
+        verify(projectRepo).find(ql.capture(), any(Object[].class));
+        return ql.getValue();
+    }
+
+    @Test
+    void find_translatesOwnerIdMemberIdNameAndSearch() {
+        ProjectCriteria c = new ProjectCriteria();
+        c.ownerId  = UUID.randomUUID();
+        c.memberId = UUID.randomUUID();
+        c.name     = "acme";
+        c.search   = "acm";
+        c.limit    = 20;
+
+        String ql = runFindAndCaptureQuery(c);
+        assertThat(ql).contains("p.owner.id = ");
+        assertThat(ql).contains("EXISTS (SELECT 1 FROM ProjectUser pu WHERE pu.project = p AND pu.user.id = ");
+        assertThat(ql).contains("p.name = ");
+        assertThat(ql).contains("lower(p.description) LIKE ");
+    }
 
     // -------------------------------------------------------------------------
     // get

@@ -1,5 +1,6 @@
 package com.translatr.service;
 
+import com.translatr.criteria.LocaleCriteria;
 import com.translatr.dto.LocaleDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
@@ -7,19 +8,24 @@ import com.translatr.model.Locale;
 import com.translatr.model.Project;
 import com.translatr.repository.LocaleRepository;
 import com.translatr.repository.ProjectRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
@@ -33,6 +39,47 @@ class LocaleServiceTest {
     @Mock ActivityLogger    activity;
 
     @InjectMocks LocaleService service;
+
+    @SuppressWarnings("unchecked")
+    private String runFindAndCaptureQuery(LocaleCriteria c) {
+        PanacheQuery<Locale> query = mock(PanacheQuery.class);
+        when(localeRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(0L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of());
+
+        service.find(c);
+
+        ArgumentCaptor<String> ql = ArgumentCaptor.forClass(String.class);
+        verify(localeRepo).find(ql.capture(), any(Object[].class));
+        return ql.getValue();
+    }
+
+    @Test
+    void find_translatesLocaleNameAndSearch() {
+        LocaleCriteria c = new LocaleCriteria();
+        c.projectId  = UUID.randomUUID();
+        c.localeName = "de";
+        c.search     = "germ";
+        c.limit      = 20;
+
+        String ql = runFindAndCaptureQuery(c);
+        assertThat(ql).contains("l.name = ");
+        assertThat(ql).contains("lower(l.name) LIKE ");
+    }
+
+    @Test
+    void find_translatesMissingWithKeyIntoNotExists() {
+        LocaleCriteria c = new LocaleCriteria();
+        c.projectId = UUID.randomUUID();
+        c.missing   = true;
+        c.keyId     = UUID.randomUUID();
+        c.limit     = 20;
+
+        String ql = runFindAndCaptureQuery(c);
+        assertThat(ql).contains("NOT EXISTS");
+        assertThat(ql).contains("m.key.id = ");
+    }
 
     @Test
     void get_throwsNotFound_whenLocaleMissing() {

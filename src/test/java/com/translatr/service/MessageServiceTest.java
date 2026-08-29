@@ -1,5 +1,6 @@
 package com.translatr.service;
 
+import com.translatr.criteria.MessageCriteria;
 import com.translatr.dto.MessageDto;
 import com.translatr.event.WordCountEventProducer;
 import com.translatr.mapper.DtoMapper;
@@ -11,19 +12,24 @@ import com.translatr.model.Project;
 import com.translatr.repository.KeyRepository;
 import com.translatr.repository.LocaleRepository;
 import com.translatr.repository.MessageRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
@@ -39,6 +45,50 @@ class MessageServiceTest {
     @Mock WordCountEventProducer wordCounts;
 
     @InjectMocks MessageService service;
+
+    @SuppressWarnings("unchecked")
+    private PanacheQuery<Message> stubEmptyQuery() {
+        PanacheQuery<Message> query = mock(PanacheQuery.class);
+        when(messageRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(0L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of());
+        return query;
+    }
+
+    private String capturedQuery() {
+        ArgumentCaptor<String> ql = ArgumentCaptor.forClass(String.class);
+        verify(messageRepo).find(ql.capture(), any(Object[].class));
+        return ql.getValue();
+    }
+
+    @Test
+    void find_translatesKeyNameIntoKeyNameFilter() {
+        stubEmptyQuery();
+
+        MessageCriteria c = new MessageCriteria();
+        c.projectId = UUID.randomUUID();
+        c.keyName   = "switch";
+        c.limit     = 20;
+
+        service.find(c);
+
+        assertThat(capturedQuery()).contains("key.name = ");
+    }
+
+    @Test
+    void find_translatesLocaleIdsCsvIntoInClause() {
+        stubEmptyQuery();
+
+        MessageCriteria c = new MessageCriteria();
+        c.projectId = UUID.randomUUID();
+        c.localeIds = UUID.randomUUID() + "," + UUID.randomUUID();
+        c.limit     = 20;
+
+        service.find(c);
+
+        assertThat(capturedQuery()).contains("locale.id IN ");
+    }
 
     @Test
     void get_throwsNotFound_whenMessageMissing() {

@@ -12,6 +12,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,10 +34,33 @@ public class KeyService {
         this.activity    = activity;
     }
 
+    private static final List<String> ORDERABLE = List.of("name", "whenCreated", "whenUpdated", "wordCount");
+
     public PagedList<KeyDto> find(KeyCriteria c) {
-        var query = c.projectId != null
-            ? keyRepo.find("project.id = ?1 ORDER BY name", c.projectId)
-            : keyRepo.findAll();
+        // Port of KeyRepositoryImpl.findBy: apply every populated criteria field, not just projectId.
+        StringBuilder ql    = new StringBuilder("FROM Key k WHERE 1 = 1");
+        List<Object>  params = new ArrayList<>();
+
+        if (c.projectId != null) {
+            params.add(c.projectId);
+            ql.append(" AND k.project.id = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.search)) {
+            params.add(QuerySupport.like(c.search));
+            ql.append(" AND lower(k.name) LIKE ?").append(params.size());
+        }
+        if (Boolean.TRUE.equals(c.missing)) {
+            // keys that have no translation (optionally: no translation in a specific locale)
+            ql.append(" AND NOT EXISTS (SELECT 1 FROM Message m WHERE m.key = k");
+            if (c.localeId != null) {
+                params.add(c.localeId);
+                ql.append(" AND m.locale.id = ?").append(params.size());
+            }
+            ql.append(')');
+        }
+        ql.append(' ').append(QuerySupport.orderBy(c.order, ORDERABLE, "ORDER BY name"));
+
+        var query  = keyRepo.find(ql.toString(), params.toArray());
         long total = query.count();
         var list   = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());

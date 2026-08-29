@@ -15,6 +15,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,8 +40,31 @@ public class UserService {
         this.config          = config;
     }
 
+    private static final List<String> ORDERABLE =
+        List.of("username", "name", "email", "whenCreated", "whenUpdated");
+
     public PagedList<UserDto> find(UserCriteria c) {
-        var query = userRepo.findAll();
+        // Port of UserRepositoryImpl.findBy: honour username / email / search / order, not findAll().
+        StringBuilder ql    = new StringBuilder("FROM User u WHERE 1 = 1");
+        List<Object>  params = new ArrayList<>();
+
+        if (QuerySupport.hasText(c.username)) {
+            params.add(c.username);
+            ql.append(" AND u.username = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.email)) {
+            params.add(c.email);
+            ql.append(" AND u.email = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.search)) {
+            params.add(QuerySupport.like(c.search));
+            int i = params.size();
+            ql.append(" AND (lower(u.name) LIKE ?").append(i)
+              .append(" OR lower(u.username) LIKE ?").append(i).append(')');
+        }
+        ql.append(' ').append(QuerySupport.orderBy(c.order, ORDERABLE, "ORDER BY username"));
+
+        var query  = userRepo.find(ql.toString(), params.toArray());
         long total = query.count();
         var list   = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());

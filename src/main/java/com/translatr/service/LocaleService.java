@@ -13,6 +13,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,10 +35,37 @@ public class LocaleService {
         this.activity    = activity;
     }
 
+    private static final List<String> ORDERABLE = List.of("name", "whenCreated", "whenUpdated", "wordCount");
+
     public PagedList<LocaleDto> find(LocaleCriteria c) {
-        var query = c.projectId != null
-            ? localeRepo.find("project.id = ?1 ORDER BY name", c.projectId)
-            : localeRepo.findAll();
+        // Port of LocaleRepositoryImpl.findBy: apply every populated criteria field, not just projectId.
+        StringBuilder ql    = new StringBuilder("FROM Locale l WHERE 1 = 1");
+        List<Object>  params = new ArrayList<>();
+
+        if (c.projectId != null) {
+            params.add(c.projectId);
+            ql.append(" AND l.project.id = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.localeName)) {
+            params.add(c.localeName);
+            ql.append(" AND l.name = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.search)) {
+            params.add(QuerySupport.like(c.search));
+            ql.append(" AND lower(l.name) LIKE ?").append(params.size());
+        }
+        if (Boolean.TRUE.equals(c.missing)) {
+            // locales that have no translation (optionally: no translation for a specific key)
+            ql.append(" AND NOT EXISTS (SELECT 1 FROM Message m WHERE m.locale = l");
+            if (c.keyId != null) {
+                params.add(c.keyId);
+                ql.append(" AND m.key.id = ?").append(params.size());
+            }
+            ql.append(')');
+        }
+        ql.append(' ').append(QuerySupport.orderBy(c.order, ORDERABLE, "ORDER BY name"));
+
+        var query  = localeRepo.find(ql.toString(), params.toArray());
         long total = query.count();
         var list   = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());

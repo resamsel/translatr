@@ -1,5 +1,6 @@
 package com.translatr.service;
 
+import com.translatr.criteria.MemberCriteria;
 import com.translatr.dto.MemberDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
@@ -10,19 +11,24 @@ import com.translatr.model.User;
 import com.translatr.repository.ProjectRepository;
 import com.translatr.repository.ProjectUserRepository;
 import com.translatr.repository.UserRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
@@ -37,6 +43,35 @@ class MemberServiceTest {
     @Mock ActivityLogger        activity;
 
     @InjectMocks MemberService service;
+
+    @SuppressWarnings("unchecked")
+    private String runFindAndCaptureQuery(MemberCriteria c) {
+        PanacheQuery<ProjectUser> query = mock(PanacheQuery.class);
+        when(memberRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(0L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of());
+
+        service.find(c);
+
+        ArgumentCaptor<String> ql = ArgumentCaptor.forClass(String.class);
+        verify(memberRepo).find(ql.capture(), any(Object[].class));
+        return ql.getValue();
+    }
+
+    @Test
+    void find_translatesProjectIdUserIdAndSearch() {
+        MemberCriteria c = new MemberCriteria();
+        c.projectId = UUID.randomUUID();
+        c.userId    = UUID.randomUUID();
+        c.search    = "ann";
+        c.limit     = 20;
+
+        String ql = runFindAndCaptureQuery(c);
+        assertThat(ql).contains("pu.project.id = ");
+        assertThat(ql).contains("pu.user.id = ");
+        assertThat(ql).contains("lower(pu.user.username) LIKE ");
+    }
 
     @Test
     void get_throwsNotFound_whenMemberMissing() {

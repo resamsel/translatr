@@ -1,6 +1,7 @@
 package com.translatr.service;
 
 import com.translatr.config.TranslatrConfig;
+import com.translatr.criteria.UserCriteria;
 import com.translatr.dto.UserDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
@@ -8,15 +9,18 @@ import com.translatr.model.User;
 import com.translatr.model.UserRole;
 import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -25,6 +29,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
@@ -39,6 +45,37 @@ class UserServiceTest {
     @Mock TranslatrConfig          config;
 
     @InjectMocks UserService service;
+
+    @SuppressWarnings("unchecked")
+    private String runFindAndCaptureQuery(UserCriteria c) {
+        PanacheQuery<User> query = mock(PanacheQuery.class);
+        when(userRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(0L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of());
+
+        service.find(c);
+
+        ArgumentCaptor<String> ql = ArgumentCaptor.forClass(String.class);
+        verify(userRepo).find(ql.capture(), any(Object[].class));
+        return ql.getValue();
+    }
+
+    @Test
+    void find_translatesUsernameEmailSearchAndOrder() {
+        UserCriteria c = new UserCriteria();
+        c.username = "jane";
+        c.email    = "jane@example.com";
+        c.search   = "jan";
+        c.order    = "username asc";
+        c.limit    = 20;
+
+        String ql = runFindAndCaptureQuery(c);
+        assertThat(ql).contains("u.username = ");
+        assertThat(ql).contains("u.email = ");
+        assertThat(ql).contains("lower(u.username) LIKE ");
+        assertThat(ql).endsWith("ORDER BY username ASC");
+    }
 
     // -------------------------------------------------------------------------
     // get
