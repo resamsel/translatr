@@ -1,0 +1,29 @@
+{
+  "list": [
+    {
+      "id": 1001,
+      "whenCreated": "2020-01-01T10:00:00.000Z",
+      "whenUpdated": "2020-01-01T10:00:00.000Z",
+      "name": "CI token",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "scope": "read:project,write:project"
+    },
+    {
+      "id": 1002,
+      "whenCreated": "2020-02-01T10:00:00.000Z",
+      "whenUpdated": "2020-02-01T10:00:00.000Z",
+      "name": "Local dev",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "scope": "read:project"
+    }
+  ],
+  "offset": 0,
+  "limit": 20,
+  "total": 2,
+  "hasPrev": false,
+  "hasNext": false
+}

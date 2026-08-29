@@ -1,0 +1,42 @@
+{
+  "list": [
+    {
+      "id": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "whenCreated": "2019-07-05T20:09:08.247Z",
+      "whenUpdated": "2019-07-05T20:09:08.247Z",
+      "name": "alpha",
+      "description": "First sample project",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4532",
+      "ownerName": "Jane Smith",
+      "ownerUsername": "janesmith",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc"
+    },
+    {
+      "id": "620782ef-1f54-4517-a40d-b35786a2621e",
+      "whenCreated": "2019-07-05T20:17:04.121Z",
+      "whenUpdated": "2019-07-05T20:17:04.121Z",
+      "name": "beta",
+      "description": "Second sample project",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4533",
+      "ownerName": "Bob Jones",
+      "ownerUsername": "bobjones",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc"
+    },
+    {
+      "id": "4173e88a-8d76-4350-9ad1-42039f8759cf",
+      "whenCreated": "2019-07-05T20:17:08.804Z",
+      "whenUpdated": "2019-07-05T20:17:08.804Z",
+      "name": "gamma",
+      "description": "Third sample project",
+      "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4534",
+      "ownerName": "Alice Wong",
+      "ownerUsername": "alicewong",
+      "ownerEmailHash": "6d041874043a1820c908f747e8a608bc"
+    }
+  ],
+  "offset": 0,
+  "limit": 20,
+  "total": 3,
+  "hasPrev": false,
+  "hasNext": false
+}
