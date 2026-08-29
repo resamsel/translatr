@@ -1,5 +1,6 @@
 package com.translatr.service;
 
+import com.translatr.criteria.KeyCriteria;
 import com.translatr.dto.KeyDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
@@ -7,19 +8,24 @@ import com.translatr.model.Key;
 import com.translatr.model.Project;
 import com.translatr.repository.KeyRepository;
 import com.translatr.repository.ProjectRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
@@ -33,6 +39,54 @@ class KeyServiceTest {
     @Mock ActivityLogger        activity;
 
     @InjectMocks KeyService service;
+
+    @SuppressWarnings("unchecked")
+    private String runFindAndCaptureQuery(KeyCriteria c) {
+        PanacheQuery<Key> query = mock(PanacheQuery.class);
+        when(keyRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(0L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of());
+
+        service.find(c);
+
+        ArgumentCaptor<String> ql = ArgumentCaptor.forClass(String.class);
+        verify(keyRepo).find(ql.capture(), any(Object[].class));
+        return ql.getValue();
+    }
+
+    @Test
+    void find_translatesSearchIntoNameLike() {
+        KeyCriteria c = new KeyCriteria();
+        c.projectId = UUID.randomUUID();
+        c.search    = "btn";
+        c.limit     = 20;
+
+        assertThat(runFindAndCaptureQuery(c)).contains("lower(k.name) LIKE ");
+    }
+
+    @Test
+    void find_translatesMissingWithLocaleIntoNotExists() {
+        KeyCriteria c = new KeyCriteria();
+        c.projectId = UUID.randomUUID();
+        c.missing   = true;
+        c.localeId  = UUID.randomUUID();
+        c.limit     = 20;
+
+        String ql = runFindAndCaptureQuery(c);
+        assertThat(ql).contains("NOT EXISTS");
+        assertThat(ql).contains("m.locale.id = ");
+    }
+
+    @Test
+    void find_translatesOrderParamIntoOrderBy() {
+        KeyCriteria c = new KeyCriteria();
+        c.projectId = UUID.randomUUID();
+        c.order     = "whenUpdated desc";
+        c.limit     = 20;
+
+        assertThat(runFindAndCaptureQuery(c)).endsWith("ORDER BY whenUpdated DESC");
+    }
 
     @Test
     void get_throwsNotFound_whenKeyMissing() {

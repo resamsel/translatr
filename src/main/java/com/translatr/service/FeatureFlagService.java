@@ -12,6 +12,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,9 +31,26 @@ public class FeatureFlagService {
         this.mapper          = mapper;
     }
 
+    private static final List<String> ORDERABLE = List.of("feature", "whenCreated", "whenUpdated");
+
     public PagedList<FeatureFlagDto> find(FeatureFlagCriteria c, UUID currentUserId) {
-        var query = featureFlagRepo.find(
-                "user.id = ?1 ORDER BY whenCreated DESC", currentUserId);
+        // Always scoped to the authenticated user (currentUserId is authoritative; criteria.userId is
+        // never trusted here). On top of that honour ?feature=, ?search= and ?order=.
+        StringBuilder ql    = new StringBuilder("user.id = ?1");
+        List<Object>  params = new ArrayList<>();
+        params.add(currentUserId);
+
+        if (QuerySupport.hasText(c.feature)) {
+            params.add(c.feature);
+            ql.append(" AND feature = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.search)) {
+            params.add(QuerySupport.like(c.search));
+            ql.append(" AND lower(feature) LIKE ?").append(params.size());
+        }
+        ql.append(' ').append(QuerySupport.orderBy(c.order, ORDERABLE, "ORDER BY whenCreated DESC"));
+
+        var query  = featureFlagRepo.find(ql.toString(), params.toArray());
         long total = query.count();
         var list = query.page(c.offset / Math.max(c.limit, 1), c.limit).list()
                 .stream().map(mapper::toDto).collect(Collectors.toList());

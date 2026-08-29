@@ -1,24 +1,30 @@
 package com.translatr.service;
 
+import com.translatr.criteria.AccessTokenCriteria;
 import com.translatr.dto.AccessTokenDto;
 import com.translatr.mapper.DtoMapper;
 import com.translatr.model.AccessToken;
 import com.translatr.model.ActionType;
 import com.translatr.model.User;
 import com.translatr.repository.AccessTokenRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
@@ -31,6 +37,34 @@ class AccessTokenServiceTest {
     @Mock ActivityLogger        activity;
 
     @InjectMocks AccessTokenService service;
+
+    @SuppressWarnings("unchecked")
+    private String runFindAndCaptureQuery(AccessTokenCriteria c, UUID currentUserId) {
+        PanacheQuery<AccessToken> query = mock(PanacheQuery.class);
+        when(tokenRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(0L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of());
+
+        service.find(c, currentUserId);
+
+        ArgumentCaptor<String> ql = ArgumentCaptor.forClass(String.class);
+        verify(tokenRepo).find(ql.capture(), any(Object[].class));
+        return ql.getValue();
+    }
+
+    @Test
+    void find_scopesToCurrentUser_andTranslatesSearchAndOrder() {
+        AccessTokenCriteria c = new AccessTokenCriteria();
+        c.search = "ci";
+        c.order  = "whenUpdated desc";
+        c.limit  = 20;
+
+        String ql = runFindAndCaptureQuery(c, UUID.randomUUID());
+        assertThat(ql).startsWith("user.id = ?1");
+        assertThat(ql).contains("lower(name) LIKE ");
+        assertThat(ql).endsWith("ORDER BY whenUpdated DESC");
+    }
 
     @Test
     void get_throwsNotFound_whenTokenMissing() {

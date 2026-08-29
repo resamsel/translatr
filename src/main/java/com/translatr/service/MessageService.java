@@ -14,6 +14,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -39,12 +41,50 @@ public class MessageService {
         this.wordCounts  = wordCounts;
     }
 
+    private static final List<String> ORDERABLE = List.of("key.name", "value", "whenCreated", "whenUpdated");
+
     public PagedList<MessageDto> find(MessageCriteria c) {
-        var query = c.projectId != null
-            ? messageRepo.find("locale.project.id = ?1 ORDER BY key.name", c.projectId)
-            : c.localeId != null
-                ? messageRepo.find("locale.id = ?1 ORDER BY key.name", c.localeId)
-                : messageRepo.findAll();
+        // Port of the old MessageRepositoryImpl.findBy: every criteria field that is set
+        // narrows the result, combined with AND. Dropping any of them (as the first
+        // Quarkus cut did) makes e.g. the key editor's
+        // ?projectId=..&keyName=..&localeIds=.. request return page 0 of *all* project
+        // messages, so it shows a different key's translations.
+        StringBuilder ql    = new StringBuilder("1 = 1");
+        List<Object>  params = new ArrayList<>();
+
+        if (c.projectId != null) {
+            params.add(c.projectId);
+            ql.append(" AND locale.project.id = ?").append(params.size());
+        }
+        if (c.localeId != null) {
+            params.add(c.localeId);
+            ql.append(" AND locale.id = ?").append(params.size());
+        }
+        List<UUID> localeIds = QuerySupport.uuidCsv(c.localeIds);
+        if (!localeIds.isEmpty()) {
+            params.add(localeIds);
+            ql.append(" AND locale.id IN ?").append(params.size());
+        }
+        if (c.keyId != null) {
+            params.add(c.keyId);
+            ql.append(" AND key.id = ?").append(params.size());
+        }
+        List<UUID> keyIds = QuerySupport.uuidCsv(c.keyIds);
+        if (!keyIds.isEmpty()) {
+            params.add(keyIds);
+            ql.append(" AND key.id IN ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.keyName)) {
+            params.add(c.keyName);
+            ql.append(" AND key.name = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.search)) {
+            params.add(QuerySupport.like(c.search));
+            ql.append(" AND lower(value) LIKE ?").append(params.size());
+        }
+        ql.append(' ').append(QuerySupport.orderBy(c.order, ORDERABLE, "ORDER BY key.name"));
+
+        var query  = messageRepo.find(ql.toString(), params.toArray());
         long total = query.count();
         var list   = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());

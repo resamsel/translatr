@@ -19,6 +19,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -53,10 +54,42 @@ public class ProjectService {
                 .stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
+    private static final List<String> ORDERABLE =
+        List.of("name", "whenCreated", "whenUpdated", "wordCount");
+
     public PagedList<ProjectDto> find(ProjectCriteria c) {
-        var query = projectRepo.find(
-            "deleted = false AND (owner.username = ?1 OR ?1 IS NULL) ORDER BY whenCreated DESC",
-            c.ownerUsername);
+        // Port of ProjectRepositoryImpl.findBy: apply every populated criteria field, not just ownerUsername.
+        StringBuilder ql    = new StringBuilder("FROM Project p WHERE p.deleted = false");
+        List<Object>  params = new ArrayList<>();
+
+        if (c.ownerId != null) {
+            params.add(c.ownerId);
+            ql.append(" AND p.owner.id = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.ownerUsername)) {
+            params.add(c.ownerUsername);
+            ql.append(" AND p.owner.username = ?").append(params.size());
+        }
+        if (c.memberId != null) {
+            params.add(c.memberId);
+            ql.append(" AND EXISTS (SELECT 1 FROM ProjectUser pu WHERE pu.project = p AND pu.user.id = ?")
+              .append(params.size()).append(')');
+        }
+        if (QuerySupport.hasText(c.name)) {
+            params.add(c.name);
+            ql.append(" AND p.name = ?").append(params.size());
+        }
+        if (QuerySupport.hasText(c.search)) {
+            params.add(QuerySupport.like(c.search));
+            int i = params.size();
+            ql.append(" AND (lower(p.name) LIKE ?").append(i)
+              .append(" OR lower(p.description) LIKE ?").append(i)
+              .append(" OR lower(p.owner.name) LIKE ?").append(i)
+              .append(" OR lower(p.owner.username) LIKE ?").append(i).append(')');
+        }
+        ql.append(' ').append(QuerySupport.orderBy(c.order, ORDERABLE, "ORDER BY whenCreated DESC"));
+
+        var query  = projectRepo.find(ql.toString(), params.toArray());
         long total = query.count();
         List<ProjectDto> list = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());
