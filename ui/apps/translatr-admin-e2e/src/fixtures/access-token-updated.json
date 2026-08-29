@@ -1,0 +1,10 @@
+{
+  "id": 1001,
+  "whenCreated": "2020-01-01T10:00:00.000Z",
+  "whenUpdated": "2020-03-01T10:00:00.000Z",
+  "name": "renamed",
+  "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+  "userName": "John Doe",
+  "userUsername": "johndoe",
+  "scope": "read:project,write:project"
+}

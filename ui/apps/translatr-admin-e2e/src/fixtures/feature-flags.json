@@ -1,0 +1,17 @@
+{
+  "list": [
+    {
+      "id": "f1000000-0000-0000-0000-000000000001",
+      "whenCreated": "2020-01-01T10:00:00.000Z",
+      "whenUpdated": "2020-01-01T10:00:00.000Z",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "feature": "language-switcher",
+      "enabled": true
+    }
+  ],
+  "offset": 0,
+  "limit": 20,
+  "total": 1,
+  "hasPrev": false,
+  "hasNext": false
+}

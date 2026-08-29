@@ -1,0 +1,41 @@
+{
+  "list": [
+    {
+      "id": "8e5fe15f-1e55-44a0-8916-c514095e2c3e",
+      "type": "Update",
+      "contentType": "dto.Project",
+      "whenCreated": "2019-10-15T18:56:06.125Z",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc",
+      "projectId": "1757e155-526e-4d18-949f-8ec87c5646e0",
+      "projectName": "alpha"
+    },
+    {
+      "id": "dbf75745-fbe0-4442-a79a-499752df700a",
+      "type": "Login",
+      "contentType": "dto.User",
+      "whenCreated": "2019-10-15T18:34:45.057Z",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    },
+    {
+      "id": "ad3601bd-abcb-410a-883b-7d1bc6c119a7",
+      "type": "Create",
+      "contentType": "dto.Key",
+      "whenCreated": "2019-10-15T18:31:13.829Z",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    }
+  ],
+  "offset": 0,
+  "limit": 20,
+  "total": 3,
+  "hasPrev": false,
+  "hasNext": false
+}
