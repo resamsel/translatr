@@ -2,11 +2,7 @@
   <ng-container>
     <mat-toolbar-row>
       @if (sidenav) {
-        <button
-          mat-icon-button
-          class="burger"
-          (click)="sidenav.toggle()"
-          >
+        <button mat-icon-button class="burger" (click)="sidenav.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
       }
@@ -17,7 +13,7 @@
             [routerLink]="backLink.routerLink"
             class="logo"
             [matTooltip]="backLink.name"
-            >
+          >
             <mat-icon>arrow_back</mat-icon>
           </a>
         }

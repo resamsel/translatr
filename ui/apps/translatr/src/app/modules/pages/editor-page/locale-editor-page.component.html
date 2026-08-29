@@ -9,13 +9,13 @@
   class="locale-editor"
   (nextItem)="onNextItem()"
   (previousItem)="onPreviousItem()"
-  >
+>
   <dev-filter-field
     (selected)="onSelected($event)"
     [filters]="filters"
     [selection]="selection$ | async"
     appearance="fill"
-    >
+  >
     <mat-icon matPrefix>search</mat-icon>
   </dev-filter-field>
 
@@ -26,22 +26,20 @@
     </button>
     <mat-menu #localeSelector="matMenu" [overlapTrigger]="true">
       @for (locale of (locales$ | async)?.list; track locale) {
-        <a
-          mat-menu-item
-          [routerLink]="['..', locale.name]"
-          queryParamsHandling="preserve"
-        >{{ locale.displayName }}</a>
+        <a mat-menu-item [routerLink]="['..', locale.name]" queryParamsHandling="preserve">{{
+          locale.displayName
+        }}</a>
       }
     </mat-menu>
     <div class="flex-spacer"></div>
     @if (selectedMessage$ | async; as selectedMessage) {
       <a
         mat-icon-button
-      [queryParams]="{
-        locale: (locale$ | async)?.name
-      }"
+        [queryParams]="{
+          locale: (locale$ | async)?.name,
+        }"
         [routerLink]="['../..', 'keys', selectedMessage.keyName]"
-        >
+      >
         <mat-icon>compare_arrows</mat-icon>
       </a>
     } @else {
@@ -58,17 +56,17 @@
     [criteria]="search$ | async"
     [empty]="empty"
     [nothingFound]="nothingFound"
-    >
+  >
     @for (item of (messageItems$ | async)?.list; track trackByFn($index, item)) {
       <a
         [class.active]="item.selected"
         [queryParams]="{ key: item.key.name }"
         [routerLink]="[]"
-        [ngClass]="{warning: item.message?.dirty}"
+        [ngClass]="{ warning: item.message?.dirty }"
         mat-list-item
         queryParamsHandling="merge"
         class="key"
-        >
+      >
         <h3 matLine>{{ item.key.name }}</h3>
         <p class="sub-title translation" matLine>
           @if (item.message) {
@@ -82,19 +80,22 @@
     <ng-template #empty>
       @if (locale$ | async; as locale) {
         <dev-empty-view icon="vpn_key">
-          <dev-empty-view-header transloco="keys.teaser.title">No keys defined</dev-empty-view-header>
+          <dev-empty-view-header transloco="keys.teaser.title"
+            >No keys defined</dev-empty-view-header
+          >
           <dev-empty-view-content transloco="keys.teaser.text" data-test="key-teaser">
             It seems there are no keys defined, yet - would you like to add one now?
           </dev-empty-view-content>
           @if (canCreateKey$ | async) {
             <dev-empty-view-actions>
               <button
-                (click)="openKeyDialog({projectId: locale.projectId})"
+                (click)="openKeyDialog({ projectId: locale.projectId })"
                 color="accent"
                 transloco="key.create.button"
                 mat-raised-button
                 data-test="create-key"
-                >Add key
+              >
+                Add key
               </button>
             </dev-empty-view-actions>
           }
@@ -104,20 +105,24 @@
     <ng-template #nothingFound>
       @if (locale$ | async; as locale) {
         <dev-empty-view icon="vpn_key">
-          <dev-empty-view-header transloco="keys.notfound.title">No keys found</dev-empty-view-header>
+          <dev-empty-view-header transloco="keys.notfound.title"
+            >No keys found</dev-empty-view-header
+          >
           <dev-empty-view-content transloco="keys.notfound.text" data-test="key-teaser">
-            Could not find any keys with the given filter. Try removing some filters or create a new key.
+            Could not find any keys with the given filter. Try removing some filters or create a new
+            key.
           </dev-empty-view-content>
           @if (search$ | async; as criteria) {
             <dev-empty-view-actions>
               @if ((canCreateKey$ | async) && criteria.search) {
                 <button
-                  (click)="openKeyDialog({projectId: locale.projectId, name: criteria.search})"
+                  (click)="openKeyDialog({ projectId: locale.projectId, name: criteria.search })"
                   color="accent"
                   transloco="key.create.button"
                   mat-raised-button
                   data-test="create-key"
-                  >Add key
+                >
+                  Add key
                 </button>
               }
             </dev-empty-view-actions>

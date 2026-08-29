@@ -4,8 +4,8 @@
     class="account-button"
     [matMenuTriggerFor]="userMenu"
     [matTooltip]="me?.name"
-    >
-    <img class="icon" ngxGravatar [email]="me.email" size="36" [alt]="me.name"/>
+  >
+    <img class="icon" ngxGravatar [email]="me.email" size="36" [alt]="me.name" />
   </button>
 }
 <mat-menu #userMenu="matMenu" xPosition="before">
@@ -14,18 +14,16 @@
   @if (me) {
     <a
       mat-menu-item
-      href="{{endpointUrl}}/logout"
+      href="{{ endpointUrl }}/logout"
       transloco="auth.logout"
-      [translocoParams]="{name: me.name}"
-    >Logout {{ me.name }} </a>
+      [translocoParams]="{ name: me.name }"
+      >Logout {{ me.name }}
+    </a>
   }
 </mat-menu>
 
 @if (!me) {
-  <a
-    routerLink="/login"
-    mat-button
-    >
+  <a routerLink="/login" mat-button>
     <mat-icon>group</mat-icon>
     <span transloco="auth.login">Sign in</span>
   </a>

@@ -3,15 +3,10 @@
     <ng-container [ngTemplateOutlet]="metric"></ng-container>
   </a>
 } @else {
-  <mat-card
-    [class.icon]="icon !== undefined"
-    matTooltip="{{name}}: {{value}}"
-    >
+  <mat-card [class.icon]="icon !== undefined" matTooltip="{{ name }}: {{ value }}">
     <mat-card-header>
       @if (value !== undefined) {
-        <mat-card-title
-          class="ellipsis"
-        >{{ value }}</mat-card-title>
+        <mat-card-title class="ellipsis">{{ value }}</mat-card-title>
       }
       @if (value === undefined) {
         <mat-card-title>-</mat-card-title>
@@ -26,15 +21,10 @@
   </mat-card>
 }
 <ng-template #metric>
-  <mat-card
-    [class.icon]="icon !== undefined"
-    matTooltip="{{name}}: {{value}}"
-    >
+  <mat-card [class.icon]="icon !== undefined" matTooltip="{{ name }}: {{ value }}">
     <mat-card-header>
       @if (value !== undefined) {
-        <mat-card-title
-          class="ellipsis"
-        >{{ value }}</mat-card-title>
+        <mat-card-title class="ellipsis">{{ value }}</mat-card-title>
       }
       @if (value === undefined) {
         <mat-card-title>-</mat-card-title>

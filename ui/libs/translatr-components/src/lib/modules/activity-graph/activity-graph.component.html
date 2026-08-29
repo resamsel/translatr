@@ -2,21 +2,14 @@
   <g transform="translate(0,0)">
     <!-- months -->
     @for (month of monthTexts; track trackById($index, month)) {
-      <text
-        [attr.x]="month.x"
-        [attr.y]="month.y"
-        [attr.class]="'month'"
-      >{{month.text}}</text>
+      <text [attr.x]="month.x" [attr.y]="month.y" [attr.class]="'month'">{{ month.text }}</text>
     }
 
     <!-- weekdays -->
     @for (weekday of weekdayTexts; track trackById($index, weekday)) {
-      <text
-        [attr.x]="weekday.x"
-        [attr.y]="weekday.y"
-        [attr.class]="'weekday'"
-        text-anchor="end"
-      >{{weekday.text}}</text>
+      <text [attr.x]="weekday.x" [attr.y]="weekday.y" [attr.class]="'weekday'" text-anchor="end">
+        {{ weekday.text }}
+      </text>
     }
 
     <!-- days -->
@@ -38,7 +31,7 @@
         [attr.y]="day.y"
         [attr.width]="day.width"
         [attr.height]="day.height"
-        matTooltip="{{day.title}}: {{day.value | shortNumber}}"
+        matTooltip="{{ day.title }}: {{ day.value | shortNumber }}"
         [attr.class]="'day q' + color(day.value / maxValue)"
       ></rect>
     }
@@ -59,11 +52,15 @@
       [attr.y]="height - 4"
       [attr.class]="'weekday'"
       text-anchor="end"
-    >{{t('contributions.legend.less')}}</text>
+    >
+      {{ t('contributions.legend.less') }}
+    </text>
     <text
       [attr.x]="width - 3 * cellSize + 4 - offset.right"
       [attr.y]="height - 4"
       [attr.class]="'weekday'"
-    >{{t('contributions.legend.more')}}</text>
+    >
+      {{ t('contributions.legend.more') }}
+    </text>
   </g>
 </svg>

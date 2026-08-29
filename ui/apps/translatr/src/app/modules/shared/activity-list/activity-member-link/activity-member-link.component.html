@@ -1,10 +1,17 @@
 @if (memberLink) {
   <span transloco="member">Member</span>:
-  <a [routerLink]="memberLink" class="link">{{ member?.userName }}
-    (<span transloco="member.role.value" [translocoParams]="{role: member?.role}">{{member?.role}}</span>)
+  <a [routerLink]="memberLink" class="link"
+    >{{ member?.userName }} (<span
+      transloco="member.role.value"
+      [translocoParams]="{ role: member?.role }"
+      >{{ member?.role }}</span
+    >)
   </a>
 } @else {
   <span transloco="member">Member</span>:
   {{ member?.userName }}
-  (<span transloco="member.role.value" [translocoParams]="{role: member?.role}">{{member?.role}}</span>)
+  (<span transloco="member.role.value" [translocoParams]="{ role: member?.role }">{{
+    member?.role
+  }}</span
+  >)
 }

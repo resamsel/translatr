@@ -23,7 +23,7 @@
           [class.disabled]="!row.enabled"
           [matTooltip]="row.enabled ? 'Enabled, toggle to disable' : 'Disabled, toggle to enable'"
           (click)="onToggle(row)"
-          >
+        >
           <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
         </button>
       </div>

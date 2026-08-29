@@ -1,7 +1,8 @@
 <ng-container *transloco="let t">
   @if (project$ | async; as project) {
     <div class="container flex">
-      <dev-project-infographic *featureFlag="Feature.ProjectInfographic"
+      <dev-project-infographic
+        *featureFlag="Feature.ProjectInfographic"
         [contributorCount]="(members$ | async)?.total | shortNumber"
         [localeCount]="(locales$ | async)?.total | shortNumber"
         [keyCount]="(keys$ | async)?.total | shortNumber"
@@ -12,29 +13,34 @@
         [name]="t('project.owner')"
         [value]="project.ownerName"
         icon="account_circle"
-      class="owner"></dev-metric>
+        class="owner"
+      ></dev-metric>
       <dev-metric
         routerLink="locales"
         [name]="t('locales')"
         [value]="(locales$ | async)?.total | shortNumber"
         icon="language"
-      class="locale count"></dev-metric>
+        class="locale count"
+      ></dev-metric>
       <dev-metric
         routerLink="keys"
         [name]="t('keys')"
         [value]="(keys$ | async)?.total | shortNumber"
         icon="vpn_key"
-      class="key count"></dev-metric>
+        class="key count"
+      ></dev-metric>
       <dev-metric
         routerLink="members"
         [name]="t('members')"
         [value]="(members$ | async)?.total | shortNumber"
         icon="group"
-      class="member count"></dev-metric>
+        class="member count"
+      ></dev-metric>
       <mat-card class="metric locales">
         <mat-card-header>
           <mat-card-title transloco="locales.recent.title">Recent Languages</mat-card-title>
-          <mat-card-subtitle transloco="locales.recent.text">Latest additions to this projects' languages.
+          <mat-card-subtitle transloco="locales.recent.text"
+            >Latest additions to this projects' languages.
           </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
@@ -44,19 +50,23 @@
             [pagedList]="latestLocales$ | async"
             [showMore]="false"
             loadingIcon="language"
-            >
+          >
             @for (locale of (latestLocales$ | async)?.list; track locale) {
-              <a
-                mat-list-item
-                [routerLink]="['locales', locale.name]">
+              <a mat-list-item [routerLink]="['locales', locale.name]">
                 <mat-icon matListItemIcon class="locale circle">language</mat-icon>
-                <h3 matListItemTitle>{{ locale.displayName }} <span class="sub-title">{{ locale.name }}</span></h3>
+                <h3 matListItemTitle>
+                  {{ locale.displayName }} <span class="sub-title">{{ locale.name }}</span>
+                </h3>
                 @if (locale.progress !== undefined) {
                   <mat-progress-bar
                     mode="determinate"
                     color="accent"
                     [value]="locale.progress * 100"
-                    [matTooltip]="t('locale.progress.tooltip', {progress: locale.progress * 100 | number:'1.0-1'})"
+                    [matTooltip]="
+                      t('locale.progress.tooltip', {
+                        progress: locale.progress * 100 | number: '1.0-1',
+                      })
+                    "
                     matListItemLine
                   ></mat-progress-bar>
                 }
@@ -65,7 +75,9 @@
           </app-nav-list>
           <ng-template #localesEmpty>
             <dev-empty-view icon="language">
-              <dev-empty-view-header transloco="locales.empty">No languages yet.</dev-empty-view-header>
+              <dev-empty-view-header transloco="locales.empty"
+                >No languages yet.</dev-empty-view-header
+              >
               <dev-empty-view-actions>
                 @if (canCreateLocale$ | async) {
                   <button
@@ -73,7 +85,8 @@
                     color="accent"
                     transloco="locale.create.button"
                     (click)="openLocaleCreationDialog(project)"
-                    >Add language
+                  >
+                    Add language
                   </button>
                 }
               </dev-empty-view-actions>
@@ -85,16 +98,19 @@
             <a
               mat-button
               [routerLink]="['locales']"
-              [queryParams]="{order: 'whenUpdated desc'}"
+              [queryParams]="{ order: 'whenUpdated desc' }"
               transloco="locales.recent.button"
-            >Show languages</a>
+              >Show languages</a
+            >
           </mat-card-actions>
         }
       </mat-card>
       <mat-card class="metric keys">
         <mat-card-header>
           <mat-card-title transloco="keys.recent.title">Recent Keys</mat-card-title>
-          <mat-card-subtitle transloco="keys.recent.text">Latest additions to this projects' keys.</mat-card-subtitle>
+          <mat-card-subtitle transloco="keys.recent.text"
+            >Latest additions to this projects' keys.</mat-card-subtitle
+          >
         </mat-card-header>
         <mat-card-content>
           <app-nav-list
@@ -103,11 +119,9 @@
             [pagedList]="latestKeys$ | async"
             [showMore]="false"
             loadingIcon="vpn_key"
-            >
+          >
             @for (key of (latestKeys$ | async)?.list; track key) {
-              <a
-                mat-list-item
-                [routerLink]="['keys', key.name]">
+              <a mat-list-item [routerLink]="['keys', key.name]">
                 <mat-icon matListItemIcon class="key circle">vpn_key</mat-icon>
                 <h3 matListItemTitle>{{ key.name }}</h3>
                 @if (key.progress !== undefined) {
@@ -115,7 +129,9 @@
                     mode="determinate"
                     color="accent"
                     [value]="key.progress * 100"
-                    [matTooltip]="t('key.progress.tooltip', {progress: key.progress * 100 | number:'1.0-1'})"
+                    [matTooltip]="
+                      t('key.progress.tooltip', { progress: key.progress * 100 | number: '1.0-1' })
+                    "
                     matListItemLine
                   ></mat-progress-bar>
                 }
@@ -132,7 +148,8 @@
                     color="accent"
                     transloco="key.create.button"
                     (click)="openKeyCreationDialog(project)"
-                    >Add key
+                  >
+                    Add key
                   </button>
                 }
               </dev-empty-view-actions>
@@ -144,16 +161,19 @@
             <a
               mat-button
               [routerLink]="['keys']"
-              [queryParams]="{order: 'whenUpdated desc'}"
+              [queryParams]="{ order: 'whenUpdated desc' }"
               transloco="keys.recent.button"
-            >Show keys</a>
+              >Show keys</a
+            >
           </mat-card-actions>
         }
       </mat-card>
       <mat-card class="metric messages">
         <mat-card-header>
           <mat-card-title transloco="messages.recent.title">Recent Translations</mat-card-title>
-          <mat-card-subtitle transloco="messages.recent.text">Latest translations of this project.</mat-card-subtitle>
+          <mat-card-subtitle transloco="messages.recent.text"
+            >Latest translations of this project.</mat-card-subtitle
+          >
         </mat-card-header>
         <mat-card-content>
           <app-nav-list
@@ -162,19 +182,21 @@
             [pagedList]="latestMessages$ | async"
             [showMore]="false"
             loadingIcon="message"
-            >
+          >
             @for (message of (latestMessages$ | async)?.list; track message) {
               <a
-                [queryParams]="{locale: message.localeName}"
+                [queryParams]="{ locale: message.localeName }"
                 [routerLink]="['keys', message.keyName]"
-                mat-list-item>
+                mat-list-item
+              >
                 <mat-icon class="message circle" matListItemIcon>message</mat-icon>
-                <h3 matListItemTitle>{{ message.keyName }} <span class="sub-title">{{ message.localeDisplayName }}</span></h3>
+                <h3 matListItemTitle>
+                  {{ message.keyName }}
+                  <span class="sub-title">{{ message.localeDisplayName }}</span>
+                </h3>
                 @if (message.wordCount !== undefined) {
-                  <p
-                    class="sub-title"
-                    matListItemLine
-                    >{{t('message.wordCount', { wordCount: message.wordCount })}}
+                  <p class="sub-title" matListItemLine>
+                    {{ t('message.wordCount', { wordCount: message.wordCount }) }}
                   </p>
                 }
               </a>
@@ -182,7 +204,9 @@
           </app-nav-list>
           <ng-template #messagesEmpty>
             <dev-empty-view icon="message">
-              <dev-empty-view-header transloco="messages.empty">No translations yet.</dev-empty-view-header>
+              <dev-empty-view-header transloco="messages.empty"
+                >No translations yet.</dev-empty-view-header
+              >
             </dev-empty-view>
           </ng-template>
         </mat-card-content>
@@ -208,33 +232,32 @@
               <mat-label transloco="filetype.label">File type</mat-label>
               <mat-select [(value)]="fileType">
                 @for (fileType of fileTypes; track fileType) {
-                  <mat-option [value]="fileType.type">{{fileType.name}}</mat-option>
+                  <mat-option [value]="fileType.type">{{ fileType.name }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label transloco="accessToken">Access token</mat-label>
               <mat-select [(value)]="accessTokenKey">
-                <mat-option value="${TRANSLATR_ACCESS_TOKEN}" transloco="source.environment">From environment (secure)
+                <mat-option value="${TRANSLATR_ACCESS_TOKEN}" transloco="source.environment"
+                  >From environment (secure)
                 </mat-option>
                 @for (accessToken of accessTokens$ | async; track accessToken) {
-                  <mat-option
-                    value="{{accessToken.key}}"
-                  >{{accessToken.name}}</mat-option>
+                  <mat-option value="{{ accessToken.key }}">{{ accessToken.name }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
             <!-- @formatter:off -->
             <pre class="language-yml"><code>translatr:
-              endpoint: {{endpointUrl}}
-              project_id: {{project.id}}
-              access_token: {{accessTokenKey}}
-              pull:
-              file_type: {{fileType}}
-              target: {{targets[fileType]}}
-              push:
-              file_type: {{fileType}}
-            target: {{targets[fileType]}}</code></pre>
+  endpoint: {{endpointUrl}}
+  project_id: {{project.id}}
+  access_token: {{accessTokenKey}}
+  pull:
+    file_type: {{fileType}}
+    target: {{targets[fileType]}}
+  push:
+    file_type: {{fileType}}
+    target: {{targets[fileType]}}</code></pre>
             <!-- @formatter:on -->
           </mat-card-content>
         </mat-card>

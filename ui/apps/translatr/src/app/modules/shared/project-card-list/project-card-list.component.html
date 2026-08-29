@@ -7,10 +7,9 @@
   [loadingListLength]="3"
   [showMore]="showMore"
   [showMoreLink]="showMoreLink"
-  >
+>
   @for (project of projects?.list; track trackByFn($index, project)) {
-    <app-project-card-link
-    [project]="project"></app-project-card-link>
+    <app-project-card-link [project]="project"></app-project-card-link>
   }
   <ng-template #empty>
     <app-project-empty-view

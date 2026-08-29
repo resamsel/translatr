@@ -6,8 +6,9 @@
         [routerLink]="messageLink"
         class="link"
         transloco="locale.displayName"
-        [translocoParams]="{name: message.localeName, displayName: message.localeDisplayName}"
-      >{{ message.localeDisplayName }} ({{ message.localeName }})</a>
+        [translocoParams]="{ name: message.localeName, displayName: message.localeDisplayName }"
+        >{{ message.localeDisplayName }} ({{ message.localeName }})</a
+      >
     }
     @case ('key') {
       <span transloco="key">Key</span>:

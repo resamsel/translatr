@@ -1,23 +1,18 @@
 @if (!data.project?.id) {
-  <h1
-    mat-dialog-title
-    transloco="project.create.title"
-    >Create project
-  </h1>
+  <h1 mat-dialog-title transloco="project.create.title">Create project</h1>
 }
 @if (data.project?.id) {
   <h1
     mat-dialog-title
     transloco="project.edit.title"
-    [translocoParams]="{name: data.project.name}"
-    >Edit {{ data.project.name }}
+    [translocoParams]="{ name: data.project.name }"
+  >
+    Edit {{ data.project.name }}
   </h1>
 }
 <div mat-dialog-content [formGroup]="form">
   @if (form.errors && form.errors['']) {
-    <mat-error>{{
-      form.errors['']
-    }}</mat-error>
+    <mat-error>{{ form.errors[''] }}</mat-error>
   }
   <mat-form-field>
     <input
@@ -26,11 +21,9 @@
       [placeholder]="'project.name' | transloco"
       formControlName="name"
       cdkFocusInitial
-      />
+    />
     @if (form.get('name').errors) {
-      <mat-error>{{
-        form.get('name').errors.violation
-      }}</mat-error>
+      <mat-error>{{ form.get('name').errors.violation }}</mat-error>
     }
   </mat-form-field>
   <mat-form-field>
@@ -40,9 +33,7 @@
       formControlName="description"
     ></textarea>
     @if (form.get('description').errors) {
-      <mat-error>{{
-        form.get('description').errors.violation
-      }}</mat-error>
+      <mat-error>{{ form.get('description').errors.violation }}</mat-error>
     }
   </mat-form-field>
 </div>
@@ -53,7 +44,8 @@
     (click)="onSubmit()"
     [disabled]="form.invalid"
     transloco="button.save"
-    >Save
+  >
+    Save
   </button>
   <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
 </div>

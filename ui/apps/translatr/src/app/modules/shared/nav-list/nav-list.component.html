@@ -20,9 +20,7 @@
       }
     </div>
     @if (showMore && pagedList?.hasNext && direction === 'column') {
-      <div
-        class="more-column"
-        >
+      <div class="more-column">
         <ng-container *ngTemplateOutlet="more"></ng-container>
       </div>
     }
@@ -42,9 +40,7 @@
       @for (i of loadingList; track i) {
         <mat-list-item class="item">
           @if (showLoadingAvatar) {
-            <mat-icon class="icon" matListItemIcon
-              >{{loadingIcon}}
-            </mat-icon>
+            <mat-icon class="icon" matListItemIcon>{{ loadingIcon }} </mat-icon>
           }
           <h3 matListItemTitle>
             <span class="title"></span>
@@ -57,10 +53,7 @@
         @for (i of loadingList; track i) {
           <mat-card class="portrait">
             @if (showLoadingAvatar) {
-              <mat-icon
-                class="icon"
-                matCardImage>{{loadingIcon}}
-              </mat-icon>
+              <mat-icon class="icon" matCardImage>{{ loadingIcon }} </mat-icon>
             }
             <mat-card-content>
               <h2>
@@ -83,7 +76,8 @@
       class="more"
       [routerLink]="showMoreLink"
       transloco="button.more"
-    >Load more</a>
+      >Load more</a
+    >
   }
   @if (showMoreLink === undefined) {
     <a
@@ -93,7 +87,7 @@
       [queryParams]="queryParams"
       [routerLink]="[]"
       transloco="button.more"
-    >Load more</a>
+      >Load more</a
+    >
   }
 </ng-template>
-

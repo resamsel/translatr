@@ -8,35 +8,35 @@
         cdkFocusInitial
         formControlName="user"
         [matAutocomplete]="auto"
-        [readonly]="userFormControl.value.id !== undefined">
+        [readonly]="userFormControl.value.id !== undefined"
+      />
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
         @for (user of users; track user) {
-          <mat-option [value]="user">
-            {{ user.username }} -- {{ user.name }}
-          </mat-option>
+          <mat-option [value]="user"> {{ user.username }} -- {{ user.name }} </mat-option>
         }
       </mat-autocomplete>
       @if (userFormControl.invalid && userFormControl.errors['violation']) {
-        <mat-error
-          >
-        {{ userFormControl.errors['violation'] }}</mat-error>
+        <mat-error> {{ userFormControl.errors['violation'] }}</mat-error>
       }
     </mat-form-field>
     <mat-form-field>
       <mat-label transloco="member.role">Role</mat-label>
-      <mat-select [disabled]="roleFormControl.value === 'Owner' && !canModifyOwner" formControlName="role">
+      <mat-select
+        [disabled]="roleFormControl.value === 'Owner' && !canModifyOwner"
+        formControlName="role"
+      >
         @for (role of roles; track role) {
           <mat-option
             [disabled]="role === 'Owner' && !canModifyOwner"
             [value]="role"
             transloco="member.role.value"
-            [translocoParams]="{role: role}"
-          >{{role}}</mat-option>
+            [translocoParams]="{ role: role }"
+            >{{ role }}</mat-option
+          >
         }
       </mat-select>
       @if (roleFormControl.invalid && roleFormControl.errors['violation']) {
-        <mat-error
-          >
+        <mat-error>
           {{ roleFormControl.errors['violation'] }}
         </mat-error>
       }

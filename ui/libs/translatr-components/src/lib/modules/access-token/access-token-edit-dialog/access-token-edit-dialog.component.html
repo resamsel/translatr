@@ -1,16 +1,8 @@
 @if (data.accessToken?.id) {
-  <h1
-    mat-dialog-title
-    transloco="accessToken.edit"
-    >Edit access token
-  </h1>
+  <h1 mat-dialog-title transloco="accessToken.edit">Edit access token</h1>
 }
 @if (!data.accessToken?.id) {
-  <h1
-    mat-dialog-title
-    transloco="accessToken.create.title"
-    >Create Access Token
-  </h1>
+  <h1 mat-dialog-title transloco="accessToken.create.title">Create Access Token</h1>
 }
 <div mat-dialog-content [formGroup]="form">
   @if (form.errors && form.errors['']) {
@@ -23,7 +15,7 @@
       [placeholder]="'accessToken.name' | transloco"
       formControlName="name"
       cdkFocusInitial
-      />
+    />
     @if (form.get('name').errors) {
       <mat-error>{{ form.get('name').errors.violation }}</mat-error>
     }
@@ -47,7 +39,8 @@
     (click)="onSubmit()"
     [disabled]="form.invalid"
     transloco="button.save"
-    >Save
+  >
+    Save
   </button>
   <button mat-button transloco="button.cancel" (click)="dialogRef.close()">Cancel</button>
 </div>

@@ -4,7 +4,7 @@
   [backLink]="backLink"
   [me]="me"
   [elevated]="false"
-  >
+>
   <ng-container ngProjectAs="app-search-bar">
     <ng-content select="app-search-bar"></ng-content>
   </ng-container>
@@ -32,7 +32,8 @@
                 transloco="button.save"
                 class="save-behavior-save"
                 (click)="onSaveBehavior()"
-                >Save
+              >
+                Save
               </button>
             }
             @if ((saveBehavior$ | async) !== SaveBehavior.SaveAndNext) {
@@ -41,7 +42,8 @@
                 transloco="button.saveandnext"
                 class="save-behavior-saveandnext"
                 (click)="onSaveAndNextBehavior()"
-                >Save and next
+              >
+                Save and next
               </button>
             }
           </mat-menu>
@@ -52,14 +54,15 @@
               class="save-button"
               [transloco]="'button.' + (saveBehavior$ | async)"
               (click)="onSave()"
-              >Save
+            >
+              Save
             </button>
             <button
               mat-flat-button
               [mat-menu-trigger-for]="saveMenu"
               color="primary"
               class="menu-button"
-              >
+            >
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
           </div>
@@ -70,7 +73,9 @@
             [disabled]="!message?.dirty"
             transloco="button.reset"
             (click)="onReset()"
-          >Reset</button>
+          >
+            Reset
+          </button>
         </div>
         <div class="content">
           @if (message) {
@@ -86,7 +91,9 @@
     } @else {
       <div class="editor editor-empty">
         <dev-empty-view icon="message">
-          <dev-empty-view-header transloco="selection.none.title">Nothing selected</dev-empty-view-header>
+          <dev-empty-view-header transloco="selection.none.title"
+            >Nothing selected</dev-empty-view-header
+          >
           <dev-empty-view-content transloco="selection.none.text">
             Selecting anything in the list opens the editor and additional options.
           </dev-empty-view-content>
@@ -103,8 +110,12 @@
             <mat-card class="translation">
               <mat-card-title
                 transloco="locale.displayName"
-                [translocoParams]="{name: message.localeName, displayName: message.localeDisplayName}"
-              >{{ message.localeDisplayName }}</mat-card-title>
+                [translocoParams]="{
+                  name: message.localeName,
+                  displayName: message.localeDisplayName,
+                }"
+                >{{ message.localeDisplayName }}</mat-card-title
+              >
               <mat-card-content [innerHTML]="message.value"></mat-card-content>
               <mat-card-actions>
                 <button (click)="onUseMessage(message)" class="use-value" mat-stroked-button>

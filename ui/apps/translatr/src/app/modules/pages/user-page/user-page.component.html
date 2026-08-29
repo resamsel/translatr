@@ -5,8 +5,8 @@
   [overlay]="true"
   [page]="(user$ | async)?.name"
   [showDashboardLink]="true"
-  >
-  <header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
+>
+  <header [featureFlagClass]="{ 'header-graphic': Feature.HeaderGraphic }" class="header">
     @if (user$ | async; as user) {
       <div class="container title">
         <div class="content">
@@ -19,11 +19,11 @@
               class="image"
               ngxGravatar
               [alt]="user.name"
-              />
+            />
           }
           <div class="text">
-            <h1 class="page">{{user?.name}}</h1>
-            <p class="description">{{user?.username}}</p>
+            <h1 class="page">{{ user?.name }}</h1>
+            <p class="description">{{ user?.username }}</p>
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@
                 routerLinkActive
                 [routerLink]="routerLink(user, child)"
                 [active]="link.isActive"
-                >
+              >
                 <mat-icon>{{ child.data.icon }}</mat-icon>
                 <span>{{ t(child.data.name) }}</span>
               </a>
