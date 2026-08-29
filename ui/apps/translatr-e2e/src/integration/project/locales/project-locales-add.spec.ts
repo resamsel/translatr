@@ -61,4 +61,30 @@ describe('Project Locales Add Locale', () => {
     // then
     page.getDialog().should('have.length', 0);
   });
+
+  it('should add the locale and open the new language on save', () => {
+    // given
+    cy.intercept('POST', '/api/locale', { fixture: 'johndoe/p1/locale-created' }).as('createLocale');
+    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales-added' });
+    cy.intercept('/api/johndoe/p1/locales/fr', { fixture: 'johndoe/p1/locale-created' });
+
+    // when
+    page.navigateTo();
+    page.getFloatingActionButton().click();
+    page
+      .getDialog()
+      .find('mat-form-field.name input')
+      .type('fr');
+    page
+      .getDialog()
+      .find('button[transloco="button.save"], button.save')
+      .click();
+
+    // then
+    cy.wait('@createLocale')
+      .its('request.body')
+      .should('deep.include', { name: 'fr' });
+    page.getDialog().should('have.length', 0);
+    cy.url().should('match', /\/johndoe\/p1\/locales\/fr$/);
+  });
 });
