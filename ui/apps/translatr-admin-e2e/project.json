@@ -10,7 +10,7 @@
     "e2e": {
       "executor": "@nx/cypress:cypress",
       "options": {
-        "cypressConfig": "apps/translatr-admin-e2e/cypress.json",
+        "cypressConfig": "apps/translatr-admin-e2e/cypress.config.js",
         "devServerTarget": "translatr-admin:serve"
       },
       "configurations": {
