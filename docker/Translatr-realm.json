@@ -759,11 +759,16 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "05d9a16b-5999-49f7-b26d-996bd414c849",
       "redirectUris": [
-        "http://localhost:9000/authenticate/*",
-        "http://localhost:9000/ui"
+        "http://localhost:9000/*",
+        "http://localhost:4200/*",
+        "http://localhost:4210/*",
+        "http://localhost:4211/*"
       ],
       "webOrigins": [
-        "http://localhost:9000"
+        "http://localhost:9000",
+        "http://localhost:4200",
+        "http://localhost:4210",
+        "http://localhost:4211"
       ],
       "notBefore": 0,
       "bearerOnly": false,
