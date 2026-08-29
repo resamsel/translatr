@@ -51,3 +51,7 @@ Thumbs.db
 .nx/polygraph
 .nx/self-healing
 .nx/migrate-runs
+
+.nx/cache
+.nx/workspace-data
+.claude/settings.local.json
