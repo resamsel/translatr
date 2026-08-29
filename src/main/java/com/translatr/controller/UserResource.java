@@ -40,6 +40,9 @@ public class UserResource {
         return userService.getByUsername(username);
     }
 
+    // The UI calls this as ?fetch=features (translatr) and ?fetch=featureFlags (translatr-admin);
+    // both read user.features. UserService.get() always folds the UserFeatureFlag rows into that
+    // map, so the fetch param needs no handling here - it is intentionally a no-op.
     @GET  @Path("/me") @Authenticated
     public UserDto me() {
         User user = currentUserResolver.resolve();

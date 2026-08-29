@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +38,7 @@ class KeyServiceTest {
     @Mock ProjectRepository     projectRepo;
     @Mock DtoMapper             mapper;
     @Mock ActivityLogger        activity;
+    @Mock ProgressService       progress;
 
     @InjectMocks KeyService service;
 
@@ -86,6 +88,58 @@ class KeyServiceTest {
         c.limit     = 20;
 
         assertThat(runFindAndCaptureQuery(c)).endsWith("ORDER BY whenUpdated DESC");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void find_withFetchProgress_populatesKeyProgressFromProgressService() {
+        UUID projectId = UUID.randomUUID();
+        Key k = new Key();
+        k.id = UUID.randomUUID();
+        KeyDto kDto = new KeyDto();
+        kDto.id = k.id;
+
+        PanacheQuery<Key> query = mock(PanacheQuery.class);
+        when(keyRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(k));
+        when(mapper.toDto(k)).thenReturn(kDto);
+        when(progress.keyProgress(projectId)).thenReturn(Map.of(k.id, 0.5));
+
+        KeyCriteria c = new KeyCriteria();
+        c.projectId = projectId;
+        c.fetch     = "count,progress";
+        c.limit     = 20;
+
+        var result = service.find(c);
+
+        assertThat(result.list.get(0).progress).isEqualTo(0.5);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void find_withoutFetchProgress_leavesProgressNullAndNeverQueriesProgress() {
+        Key k = new Key();
+        k.id = UUID.randomUUID();
+        KeyDto kDto = new KeyDto();
+        kDto.id = k.id;
+
+        PanacheQuery<Key> query = mock(PanacheQuery.class);
+        when(keyRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(k));
+        when(mapper.toDto(k)).thenReturn(kDto);
+
+        KeyCriteria c = new KeyCriteria();
+        c.projectId = UUID.randomUUID();
+        c.limit     = 20;
+
+        var result = service.find(c);
+
+        assertThat(result.list.get(0).progress).isNull();
+        verify(progress, never()).keyProgress(any());
     }
 
     @Test

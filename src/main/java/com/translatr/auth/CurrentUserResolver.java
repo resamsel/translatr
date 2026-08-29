@@ -6,6 +6,7 @@ import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotAuthorizedException;
+import java.util.Optional;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 /**
@@ -42,5 +43,17 @@ public class CurrentUserResolver {
                 "oidc", jwt.getSubject(), jwt.getClaim("name"), jwt.getClaim("email"));
         // Reconcile the Admin role with the caller's Keycloak groups on every OIDC login.
         return userService.syncOidcRole(user.id, jwt.getGroups());
+    }
+
+    /**
+     * Like {@link #resolve()} but returns empty instead of throwing when the request is anonymous.
+     * For {@code @PermitAll} routes that merely <em>personalise</em> their response for a signed-in
+     * caller (e.g. {@code ?fetch=myrole}) and must still serve anonymous requests.
+     */
+    public Optional<User> resolveOptional() {
+        if (identity == null || identity.isAnonymous()) {
+            return Optional.empty();
+        }
+        return Optional.of(resolve());
     }
 }

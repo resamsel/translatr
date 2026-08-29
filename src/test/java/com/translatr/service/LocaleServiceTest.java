@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +38,7 @@ class LocaleServiceTest {
     @Mock ProjectRepository projectRepo;
     @Mock DtoMapper         mapper;
     @Mock ActivityLogger    activity;
+    @Mock ProgressService   progress;
 
     @InjectMocks LocaleService service;
 
@@ -48,7 +50,7 @@ class LocaleServiceTest {
         when(query.page(anyInt(), anyInt())).thenReturn(query);
         when(query.list()).thenReturn(List.of());
 
-        service.find(c);
+        service.find(c, java.util.Locale.ENGLISH);
 
         ArgumentCaptor<String> ql = ArgumentCaptor.forClass(String.class);
         verify(localeRepo).find(ql.capture(), any(Object[].class));
@@ -82,11 +84,123 @@ class LocaleServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    void find_withFetchProgress_populatesLocaleProgressFromProgressService() {
+        UUID projectId = UUID.randomUUID();
+        Locale de = new Locale();
+        de.id = UUID.randomUUID();
+        LocaleDto deDto = new LocaleDto();
+        deDto.id = de.id;
+
+        PanacheQuery<Locale> query = mock(PanacheQuery.class);
+        when(localeRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(de));
+        when(mapper.toDto(de)).thenReturn(deDto);
+        when(progress.localeProgress(projectId)).thenReturn(Map.of(de.id, 0.75));
+
+        LocaleCriteria c = new LocaleCriteria();
+        c.projectId = projectId;
+        c.fetch     = "count,progress";
+        c.limit     = 20;
+
+        var result = service.find(c, java.util.Locale.ENGLISH);
+
+        assertThat(result.list.get(0).progress).isEqualTo(0.75);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void find_withoutFetchProgress_leavesProgressNullAndNeverQueriesProgress() {
+        Locale de = new Locale();
+        de.id = UUID.randomUUID();
+        LocaleDto deDto = new LocaleDto();
+        deDto.id = de.id;
+
+        PanacheQuery<Locale> query = mock(PanacheQuery.class);
+        when(localeRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(de));
+        when(mapper.toDto(de)).thenReturn(deDto);
+
+        LocaleCriteria c = new LocaleCriteria();
+        c.projectId = UUID.randomUUID();
+        c.limit     = 20;
+
+        var result = service.find(c, java.util.Locale.ENGLISH);
+
+        assertThat(result.list.get(0).progress).isNull();
+        verify(progress, never()).localeProgress(any());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void find_stampsLocaleDisplayNameInTheViewersLanguage() {
+        Locale en = new Locale();
+        en.id = UUID.randomUUID();
+        LocaleDto enDto = new LocaleDto();
+        enDto.id   = en.id;
+        enDto.name = "en";
+
+        PanacheQuery<Locale> query = mock(PanacheQuery.class);
+        when(localeRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(en));
+        when(mapper.toDto(en)).thenReturn(enDto);
+
+        LocaleCriteria c = new LocaleCriteria();
+        c.projectId = UUID.randomUUID();
+        c.limit     = 20;
+
+        var result = service.find(c, java.util.Locale.GERMAN);
+
+        assertThat(result.list.get(0).displayName).isEqualTo("Englisch");
+    }
+
+    @Test
+    void get_stampsLocaleDisplayNameInTheViewersLanguage() {
+        UUID id = UUID.randomUUID();
+        Locale de = new Locale();
+        de.id = id;
+        LocaleDto deDto = new LocaleDto();
+        deDto.id   = id;
+        deDto.name = "de";
+        when(localeRepo.findByIdOptional(id)).thenReturn(Optional.of(de));
+        when(mapper.toDto(de)).thenReturn(deDto);
+
+        var result = service.get(id, java.util.Locale.ENGLISH);
+
+        assertThat(result.displayName).isEqualTo("German");
+    }
+
+    @Test
+    void getByOwnerAndProjectNameAndName_stampsLocaleDisplayName() {
+        Project project = new Project("proj");
+        project.id = UUID.randomUUID();
+        Locale fr = new Locale();
+        fr.id = UUID.randomUUID();
+        LocaleDto frDto = new LocaleDto();
+        frDto.id   = fr.id;
+        frDto.name = "fr";
+
+        when(projectRepo.findByOwnerUsernameAndName("alice", "proj")).thenReturn(Optional.of(project));
+        when(localeRepo.findByProjectAndName(project.id, "fr")).thenReturn(Optional.of(fr));
+        when(mapper.toDto(fr)).thenReturn(frDto);
+
+        var result = service.getByOwnerAndProjectNameAndName("alice", "proj", "fr", java.util.Locale.ENGLISH);
+
+        assertThat(result.displayName).isEqualTo("French");
+    }
+
+    @Test
     void get_throwsNotFound_whenLocaleMissing() {
         UUID id = UUID.randomUUID();
         when(localeRepo.findByIdOptional(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.get(id))
+        assertThatThrownBy(() -> service.get(id, java.util.Locale.ENGLISH))
                 .isInstanceOf(NotFoundException.class);
     }
 

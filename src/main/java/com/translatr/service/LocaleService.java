@@ -8,6 +8,7 @@ import com.translatr.model.ActionType;
 import com.translatr.model.Locale;
 import com.translatr.repository.LocaleRepository;
 import com.translatr.repository.ProjectRepository;
+import com.translatr.util.LocaleDisplayNameUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -25,19 +26,30 @@ public class LocaleService {
     private final ProjectRepository projectRepo;
     private final DtoMapper         mapper;
     private final ActivityLogger    activity;
+    private final ProgressService   progress;
 
     @Inject
     public LocaleService(LocaleRepository localeRepo, ProjectRepository projectRepo, DtoMapper mapper,
-                         ActivityLogger activity) {
+                         ActivityLogger activity, ProgressService progress) {
         this.localeRepo  = localeRepo;
         this.projectRepo = projectRepo;
         this.mapper      = mapper;
         this.activity    = activity;
+        this.progress    = progress;
     }
 
     private static final List<String> ORDERABLE = List.of("name", "whenCreated", "whenUpdated", "wordCount");
 
-    public PagedList<LocaleDto> find(LocaleCriteria c) {
+    /**
+     * Stamps {@link LocaleDto#displayName} - the human name of {@code locale.name} rendered in
+     * {@code viewerLocale} (the signed-in user's preferred language, resolved by the resource;
+     * never {@code null}).
+     */
+    private void stampDisplayName(LocaleDto dto, java.util.Locale viewerLocale) {
+        dto.displayName = LocaleDisplayNameUtils.formatDisplayName(dto.name, viewerLocale);
+    }
+
+    public PagedList<LocaleDto> find(LocaleCriteria c, java.util.Locale viewerLocale) {
         // Port of LocaleRepositoryImpl.findBy: apply every populated criteria field, not just projectId.
         StringBuilder ql    = new StringBuilder("FROM Locale l WHERE 1 = 1");
         List<Object>  params = new ArrayList<>();
@@ -69,20 +81,30 @@ public class LocaleService {
         long total = query.count();
         var list   = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());
+        list.forEach(d -> stampDisplayName(d, viewerLocale));
+        if (QuerySupport.wants(c.fetch, "progress") && c.projectId != null && !list.isEmpty()) {
+            var byLocale = progress.localeProgress(c.projectId);
+            list.forEach(d -> d.progress = byLocale.getOrDefault(d.id, 0.0));
+        }
         return new PagedList<>(list, total, c.offset, c.limit);
     }
 
-    public LocaleDto get(UUID id) {
-        return mapper.toDto(localeRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
+    public LocaleDto get(UUID id, java.util.Locale viewerLocale) {
+        LocaleDto dto = mapper.toDto(localeRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
+        stampDisplayName(dto, viewerLocale);
+        return dto;
     }
 
-    public LocaleDto getByOwnerAndProjectNameAndName(String username, String projectName, String localeName) {
+    public LocaleDto getByOwnerAndProjectNameAndName(String username, String projectName, String localeName,
+                                                     java.util.Locale viewerLocale) {
         var project = projectRepo.findByOwnerUsernameAndName(username, projectName)
                 .orElseThrow(NotFoundException::new);
-        return mapper.toDto(
+        LocaleDto dto = mapper.toDto(
                 localeRepo.findByProjectAndName(project.id, localeName)
                           .orElseThrow(NotFoundException::new)
         );
+        stampDisplayName(dto, viewerLocale);
+        return dto;
     }
 
     @Transactional

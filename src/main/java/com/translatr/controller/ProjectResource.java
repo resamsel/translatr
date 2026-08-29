@@ -44,8 +44,14 @@ public class ProjectResource {
     @Path("/{username}/{projectName}")
     @PermitAll
     public ProjectDto getByOwnerAndName(@PathParam("username") String username,
-                                        @PathParam("projectName") String name) {
-        return projectService.getByOwnerAndName(username, name);
+                                        @PathParam("projectName") String name,
+                                        @QueryParam("fetch") String fetch) {
+        // Only resolve the caller when ?fetch=myrole asks for it - otherwise this @PermitAll route
+        // stays free of per-request user resolution (which, for OIDC, also re-syncs the role).
+        UUID loggedInUserId = fetch != null && fetch.contains("myrole")
+                ? currentUserResolver.resolveOptional().map(u -> u.id).orElse(null)
+                : null;
+        return projectService.getByOwnerAndName(username, name, fetch, loggedInUserId);
     }
 
     @POST
