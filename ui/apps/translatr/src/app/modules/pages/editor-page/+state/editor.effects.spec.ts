@@ -51,8 +51,8 @@ describe('EditorEffects', () => {
       ]
     });
 
-    effects = TestBed.get(EditorEffects);
-    localeService = TestBed.get(LocaleService);
+    effects = TestBed.inject(EditorEffects) as typeof effects;
+    localeService = TestBed.inject(LocaleService) as typeof localeService;
   });
 
   describe('loadLocales$', () => {

@@ -4,6 +4,9 @@
   "sourceRoot": "apps/translatr-admin/src",
   "projectType": "application",
   "prefix": "dev",
+  "tags": [
+    "app"
+  ],
   "generators": {
     "@schematics/angular:component": {
       "style": "scss"
@@ -78,7 +81,8 @@
           "buildTarget": "translatr-admin:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -102,8 +106,5 @@
         "tsConfig": "apps/translatr-admin/tsconfig.spec.json"
       }
     }
-  },
-  "tags": [
-    "app"
-  ]
+  }
 }

@@ -63,8 +63,8 @@ describe('AppEffects', () => {
       ]
     });
 
-    effects = TestBed.get(AppEffects);
-    userService = TestBed.get(UserService);
+    effects = TestBed.inject(AppEffects) as typeof effects;
+    userService = TestBed.inject(UserService) as typeof userService;
   });
 
   describe('loadMe$', () => {

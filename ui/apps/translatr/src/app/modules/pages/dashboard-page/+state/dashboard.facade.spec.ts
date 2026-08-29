@@ -21,8 +21,8 @@ describe('DashboardFacade', () => {
       ]
     });
 
-    store = TestBed.get(Store);
-    facade = TestBed.get(DashboardFacade);
+    store = TestBed.inject(Store) as typeof store;
+    facade = TestBed.inject(DashboardFacade) as typeof facade;
   });
 
   describe('loadActivities', () => {

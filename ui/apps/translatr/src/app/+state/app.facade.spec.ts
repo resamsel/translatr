@@ -22,9 +22,9 @@ describe('AppFacade', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store) as typeof store;
     store.pipe.mockReturnValue(mockObservable());
-    facade = TestBed.get(AppFacade);
+    facade = TestBed.inject(AppFacade) as typeof facade;
   });
 
   describe('loadMe', () => {

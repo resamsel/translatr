@@ -10,29 +10,32 @@
       <ng-content select="mat-toolbar-row"></ng-content>
     </ng-container>
 
-    <a
-      *ngIf="showDashboardLink"
-      mat-icon-button
-      [matTooltip]="t('dashboard.title')"
-      routerLink="/dashboard">
-      <mat-icon>view_quilt</mat-icon>
-    </a>
+    @if (showDashboardLink) {
+      <a
+        mat-icon-button
+        [matTooltip]="t('dashboard.title')"
+        routerLink="/dashboard">
+        <mat-icon>view_quilt</mat-icon>
+      </a>
+    }
 
     <app-auth-bar-language-switcher
       *featureFlag="Feature.LanguageSwitcher"
       [matTooltip]="'language.switcher' | transloco"
     ></app-auth-bar-language-switcher>
     <app-auth-bar-item [me]="me" [endpointUrl]="endpointUrl">
-      <a mat-menu-item *ngIf="me" [routerLink]="['/', me.username]" transloco="user.profile">
-        Profile
-      </a>
-      <ng-container *ngIf="isAdmin(me)">
+      @if (me) {
+        <a mat-menu-item [routerLink]="['/', me.username]" transloco="user.profile">
+          Profile
+        </a>
+      }
+      @if (isAdmin(me)) {
         <mat-divider></mat-divider>
         <a mat-menu-item [href]="adminUrl" target="_blank">
           <span transloco="admin.title">Admin</span>
           <mat-icon [inline]="true">launch</mat-icon>
         </a>
-      </ng-container>
+      }
     </app-auth-bar-item>
   </app-navbar>
 

@@ -3,7 +3,7 @@
   [elevated]="false"
   [overlay]="true"
   [page]="t('registration.title')"
->
+  >
   <header class="header header-graphic">
     <div class="container title">
       <div class="content">
@@ -15,15 +15,17 @@
   <div class="container narrow">
     <mat-card>
       <mat-card-title transloco="registration.title">User Registration</mat-card-title>
-      <mat-card-subtitle *ngIf="profile$ | async as profile">
-        <span class="client client-{{profile.clientName}}">
-          <fa-icon [icon]="icons[profile.clientName]"></fa-icon>
-          <span
-            transloco="client.name"
-            [translocoParams]="{clientName: profile.clientName}"
-          >{{profile.clientName}}</span>
-        </span>
-      </mat-card-subtitle>
+      @if (profile$ | async; as profile) {
+        <mat-card-subtitle>
+          <span class="client client-{{profile.clientName}}">
+            <fa-icon [icon]="icons[profile.clientName]"></fa-icon>
+            <span
+              transloco="client.name"
+              [translocoParams]="{clientName: profile.clientName}"
+            >{{profile.clientName}}</span>
+          </span>
+        </mat-card-subtitle>
+      }
       <mat-card-content>
         <dev-user-edit-form
           #editForm
@@ -39,7 +41,7 @@
           (click)="editForm.onSubmit()"
           [disabled]="editForm.form.invalid"
           transloco="button.save"
-        >Save
+          >Save
         </button>
       </mat-card-actions>
     </mat-card>

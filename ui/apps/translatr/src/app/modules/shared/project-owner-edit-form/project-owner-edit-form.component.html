@@ -9,13 +9,17 @@
         formControlName="user"
         [matAutocomplete]="auto">
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-        <mat-option *ngFor="let user of users" [value]="user">
-          {{ user.userUsername }} -- {{ user.userName }}
-        </mat-option>
+        @for (user of users; track user) {
+          <mat-option [value]="user">
+            {{ user.userUsername }} -- {{ user.userName }}
+          </mat-option>
+        }
       </mat-autocomplete>
-      <mat-error
-        *ngIf="userFormControl.invalid && userFormControl.errors['violation']">
+      @if (userFormControl.invalid && userFormControl.errors['violation']) {
+        <mat-error
+          >
         {{ userFormControl.errors['violation'] }}</mat-error>
+      }
     </mat-form-field>
   </section>
 

@@ -10,7 +10,7 @@ describe('AccessTokenServiceService', () => {
   );
 
   it('should be created', () => {
-    const service: AccessTokenService = TestBed.get(AccessTokenService);
+    const service: AccessTokenService = TestBed.inject(AccessTokenService);
     expect(service).toBeTruthy();
   });
 });

@@ -1,37 +1,44 @@
 <mat-toolbar [class.mat-elevation-z2]="elevated" [color]="overlay ? undefined : 'primary'">
   <ng-container>
     <mat-toolbar-row>
-      <button
-        *ngIf="sidenav"
-        mat-icon-button
-        class="burger"
-        (click)="sidenav.toggle()"
-      >
-        <mat-icon>menu</mat-icon>
-      </button>
-      <ng-container *ngIf="backLink; else logo">
-        <a
-          *ngIf="!sidenav"
+      @if (sidenav) {
+        <button
           mat-icon-button
-          [routerLink]="backLink.routerLink"
-          class="logo"
-          [matTooltip]="backLink.name"
-        >
-          <mat-icon>arrow_back</mat-icon>
-        </a>
+          class="burger"
+          (click)="sidenav.toggle()"
+          >
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
+      @if (backLink) {
+        @if (!sidenav) {
+          <a
+            mat-icon-button
+            [routerLink]="backLink.routerLink"
+            class="logo"
+            [matTooltip]="backLink.name"
+            >
+            <mat-icon>arrow_back</mat-icon>
+          </a>
+        }
         <a [class.has-page]="!overlay && page" [routerLink]="backLink.routerLink" class="title">
           <span>{{ backLink.name }}</span>
         </a>
-      </ng-container>
-      <ng-template #logo>
-        <a *ngIf="showLogo && !sidenav" class="logo" mat-icon-button routerLink="/">
-          <mat-icon>translate</mat-icon>
-        </a>
-        <a *ngIf="showLogo" [class.has-page]="!overlay && page" class="title" routerLink="/">
-          <span>{{ title }}</span>
-        </a>
-      </ng-template>
-      <span *ngIf="!overlay && page" class="page">{{ page }}</span>
+      } @else {
+        @if (showLogo && !sidenav) {
+          <a class="logo" mat-icon-button routerLink="/">
+            <mat-icon>translate</mat-icon>
+          </a>
+        }
+        @if (showLogo) {
+          <a [class.has-page]="!overlay && page" class="title" routerLink="/">
+            <span>{{ title }}</span>
+          </a>
+        }
+      }
+      @if (!overlay && page) {
+        <span class="page">{{ page }}</span>
+      }
 
       <ng-content select="app-search-bar"></ng-content>
       <ng-content select="dev-filter-field"></ng-content>

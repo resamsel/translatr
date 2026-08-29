@@ -29,8 +29,8 @@ describe('DashboardEffects', () => {
       ]
     });
 
-    effects = TestBed.get(DashboardEffects);
-    activityService = TestBed.get(ActivityService);
+    effects = TestBed.inject(DashboardEffects) as typeof effects;
+    activityService = TestBed.inject(ActivityService) as typeof activityService;
   });
 
   describe('loadActivities$', () => {

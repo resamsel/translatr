@@ -70,9 +70,9 @@ describe('AppEffects', () => {
       ]
     });
 
-    store = TestBed.get(Store);
-    userService = TestBed.get(UserService);
-    projectService = TestBed.get(ProjectService);
+    store = TestBed.inject(Store) as typeof store;
+    userService = TestBed.inject(UserService) as typeof userService;
+    projectService = TestBed.inject(ProjectService) as typeof projectService;
   });
 
   describe('loadMe$', () => {
@@ -80,7 +80,7 @@ describe('AppEffects', () => {
       // given
       const user: User = { id: '1', name: 'user', username: 'username' };
       userService.me.mockReturnValueOnce(of(user));
-      const effects: AppEffects = TestBed.get(AppEffects);
+      const effects: AppEffects = TestBed.inject(AppEffects);
       const target$ = effects.loadMe$;
 
       // when
@@ -101,7 +101,7 @@ describe('AppEffects', () => {
       const user: User = { id: '1', name: 'user', username: 'username', preferredLanguage: 'de' };
       userService.update.mockReturnValue(of(user));
       store.select.mockReturnValue(of(user));
-      const effects: AppEffects = TestBed.get(AppEffects);
+      const effects: AppEffects = TestBed.inject(AppEffects);
       const target$ = effects.updatePreferredLanguage$;
 
       // when
@@ -150,7 +150,7 @@ describe('AppEffects', () => {
         offset: 0
       };
       userService.find.mockReturnValueOnce(of(payload));
-      const effects: AppEffects = TestBed.get(AppEffects);
+      const effects: AppEffects = TestBed.inject(AppEffects);
       const target$ = effects.loadUsers$;
 
       // when
@@ -170,7 +170,7 @@ describe('AppEffects', () => {
       // given
       const payload: Project = { name: 'A' };
       projectService.byOwnerAndName.mockReturnValueOnce(of(payload));
-      const effects: AppEffects = TestBed.get(AppEffects);
+      const effects: AppEffects = TestBed.inject(AppEffects);
       const target$ = effects.loadProject$;
 
       // when
@@ -190,7 +190,7 @@ describe('AppEffects', () => {
       // given
       const payload: Project = { name: 'A' };
       projectService.create.mockReturnValueOnce(of(payload));
-      const effects: AppEffects = TestBed.get(AppEffects);
+      const effects: AppEffects = TestBed.inject(AppEffects);
       const target$ = effects.createProject$;
 
       // when
@@ -210,7 +210,7 @@ describe('AppEffects', () => {
       // given
       const payload: Project = { name: 'A' };
       projectService.update.mockReturnValueOnce(of(payload));
-      const effects: AppEffects = TestBed.get(AppEffects);
+      const effects: AppEffects = TestBed.inject(AppEffects);
       const target$ = effects.updateProject$;
 
       // when

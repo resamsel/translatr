@@ -63,8 +63,8 @@ describe('UserEffects', () => {
       ]
     });
 
-    userService = TestBed.get(UserService);
-    activityService = TestBed.get(ActivityService);
+    userService = TestBed.inject(UserService) as typeof userService;
+    activityService = TestBed.inject(ActivityService) as typeof activityService;
     accessTokenService = TestBed.inject(AccessTokenService) as AccessTokenService & {
       delete: jest.Mock;
     };
@@ -80,7 +80,7 @@ describe('UserEffects', () => {
         username: 'username'
       };
       userService.byUsername.mockReturnValueOnce(of(user));
-      const effects: UserEffects = TestBed.get(UserEffects);
+      const effects: UserEffects = TestBed.inject(UserEffects);
       const target$ = effects.loadUser$;
 
       // when
@@ -106,7 +106,7 @@ describe('UserEffects', () => {
         offset: 0
       };
       activityService.aggregated.mockReturnValueOnce(of(payload));
-      const effects: UserEffects = TestBed.get(UserEffects);
+      const effects: UserEffects = TestBed.inject(UserEffects);
       const target$ = effects.loadActivityAggregated$;
 
       // when
@@ -131,7 +131,7 @@ describe('UserEffects', () => {
         userId: '1'
       };
       accessTokenService.delete.mockReturnValueOnce(of(payload));
-      const effects: UserEffects = TestBed.get(UserEffects);
+      const effects: UserEffects = TestBed.inject(UserEffects);
       const target$ = effects.deleteAccessToken$;
 
       // when

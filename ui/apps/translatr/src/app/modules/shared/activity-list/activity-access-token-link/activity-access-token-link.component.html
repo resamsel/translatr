@@ -1,7 +1,6 @@
-<ng-container *ngIf="accessTokenLink; else accessTokenPlain">
+@if (accessTokenLink) {
   <span transloco="accessToken">Access token</span>:
   <a [routerLink]="accessTokenLink" class="link">{{ accessToken?.name }}</a>
-</ng-container>
-<ng-template #accessTokenPlain>
+} @else {
   <span transloco="accessToken">Access token</span>: {{ accessToken?.name }}
-</ng-template>
+}

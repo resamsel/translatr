@@ -4,22 +4,23 @@
       <button
         mat-icon-button
         (click)="sidenav.toggle()"
-      >
+        >
         <mat-icon>arrow_back</mat-icon>
       </button>
       <span>Translatr Admin</span>
     </mat-toolbar>
     <mat-nav-list routerLinkActive>
-      <a
-        mat-list-item
-        *ngFor="let child of children"
-        [routerLink]="[routerLink(child)]"
-        (click)="sidenav.close()"
-        [class.list-item-active]="isLinkActive(routerLink(child))"
-      >
-        <mat-icon mat-list-icon>{{ child.data.icon }}</mat-icon>
-        {{ child.data.name }}
-      </a>
+      @for (child of children; track child) {
+        <a
+          mat-list-item
+          [routerLink]="[routerLink(child)]"
+          (click)="sidenav.close()"
+          [class.list-item-active]="isLinkActive(routerLink(child))"
+          >
+          <mat-icon mat-list-icon>{{ child.data.icon }}</mat-icon>
+          {{ child.data.name }}
+        </a>
+      }
     </mat-nav-list>
   </mat-sidenav>
 

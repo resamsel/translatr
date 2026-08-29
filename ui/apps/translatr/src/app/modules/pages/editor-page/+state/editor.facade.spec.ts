@@ -30,7 +30,7 @@ describe('EditorFacade', () => {
     });
 
     store = TestBed.inject(Store) as Store<EditorState> & { dispatch: jest.Mock; pipe: jest.Mock };
-    facade = TestBed.inject(EditorFacade);
+    facade = TestBed.inject(EditorFacade) as typeof facade;
   });
 
   describe('loadLocales', () => {

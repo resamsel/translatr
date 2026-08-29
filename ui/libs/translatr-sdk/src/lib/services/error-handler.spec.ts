@@ -9,7 +9,7 @@ describe('ErrorHandler', () => {
   );
 
   it('should be created', () => {
-    const service: ErrorHandler = TestBed.get(ErrorHandler);
+    const service: ErrorHandler = TestBed.inject(ErrorHandler);
     expect(service).toBeTruthy();
   });
 });

@@ -42,7 +42,7 @@ describe('LoginPageComponent', () => {
   );
 
   beforeEach(() => {
-    authProviderService = TestBed.get(AuthClientService);
+    authProviderService = TestBed.inject(AuthClientService) as typeof authProviderService;
     authProviderService.find.mockReturnValue(mockObservable());
 
     fixture = TestBed.createComponent(LoginPageComponent);

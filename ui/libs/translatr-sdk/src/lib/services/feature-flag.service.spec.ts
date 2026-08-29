@@ -10,7 +10,7 @@ describe('FeatureFlagService', () => {
   );
 
   it('should be created', () => {
-    const service: FeatureFlagService = TestBed.get(FeatureFlagService);
+    const service: FeatureFlagService = TestBed.inject(FeatureFlagService);
     expect(service).toBeTruthy();
   });
 });

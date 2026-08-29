@@ -1,54 +1,59 @@
 <svg preserveAspectRatio="xMinYMin meet" [attr.viewBox]="viewBox" *transloco="let t">
   <g transform="translate(0,0)">
     <!-- months -->
-    <text
-      *ngFor="let month of monthTexts; trackBy: trackById"
-      [attr.x]="month.x"
-      [attr.y]="month.y"
-      [attr.class]="'month'"
-    >{{month.text}}</text>
+    @for (month of monthTexts; track trackById($index, month)) {
+      <text
+        [attr.x]="month.x"
+        [attr.y]="month.y"
+        [attr.class]="'month'"
+      >{{month.text}}</text>
+    }
 
     <!-- weekdays -->
-    <text
-      *ngFor="let weekday of weekdayTexts; trackBy: trackById"
-      [attr.x]="weekday.x"
-      [attr.y]="weekday.y"
-      [attr.class]="'weekday'"
-      text-anchor="end"
-    >{{weekday.text}}</text>
+    @for (weekday of weekdayTexts; track trackById($index, weekday)) {
+      <text
+        [attr.x]="weekday.x"
+        [attr.y]="weekday.y"
+        [attr.class]="'weekday'"
+        text-anchor="end"
+      >{{weekday.text}}</text>
+    }
 
     <!-- days -->
-    <rect
-      *ngFor="let day of dayRects; trackBy: trackById"
-      [attr.x]="day.x"
-      [attr.y]="day.y"
-      [attr.width]="day.width"
-      [attr.height]="day.height"
-      [matTooltip]="day.title"
-      [attr.class]="'day'"
-    ></rect>
+    @for (day of dayRects; track trackById($index, day)) {
+      <rect
+        [attr.x]="day.x"
+        [attr.y]="day.y"
+        [attr.width]="day.width"
+        [attr.height]="day.height"
+        [matTooltip]="day.title"
+        [attr.class]="'day'"
+      ></rect>
+    }
 
     <!-- data -->
-    <rect
-      *ngFor="let day of dataRects; trackBy: trackById"
-      [attr.x]="day.x"
-      [attr.y]="day.y"
-      [attr.width]="day.width"
-      [attr.height]="day.height"
-      matTooltip="{{day.title}}: {{day.value | shortNumber}}"
-      [attr.class]="'day q' + color(day.value / maxValue)"
-    ></rect>
+    @for (day of dataRects; track trackById($index, day)) {
+      <rect
+        [attr.x]="day.x"
+        [attr.y]="day.y"
+        [attr.width]="day.width"
+        [attr.height]="day.height"
+        matTooltip="{{day.title}}: {{day.value | shortNumber}}"
+        [attr.class]="'day q' + color(day.value / maxValue)"
+      ></rect>
+    }
 
     <!-- legend -->
-    <rect
-      *ngFor="let day of legendRects; trackBy: trackById"
-      [attr.x]="day.x"
-      [attr.y]="day.y"
-      [attr.width]="day.width"
-      [attr.height]="day.height"
-      [matTooltip]="day.title"
-      [attr.class]="'day ' + day.clazz || ''"
-    ></rect>
+    @for (day of legendRects; track trackById($index, day)) {
+      <rect
+        [attr.x]="day.x"
+        [attr.y]="day.y"
+        [attr.width]="day.width"
+        [attr.height]="day.height"
+        [matTooltip]="day.title"
+        [attr.class]="'day ' + day.clazz || ''"
+      ></rect>
+    }
     <text
       [attr.x]="width - (3 + numberOfColors + 1) * cellSize - 8 - offset.right"
       [attr.y]="height - 4"

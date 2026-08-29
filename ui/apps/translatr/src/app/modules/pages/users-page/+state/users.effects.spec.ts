@@ -27,7 +27,7 @@ describe('UsersEffects', () => {
       ]
     });
 
-    userService = TestBed.get(UserService);
+    userService = TestBed.inject(UserService) as typeof userService;
   });
 
   describe('loadUsers$', () => {
@@ -42,7 +42,7 @@ describe('UsersEffects', () => {
       };
       const criteria = {};
       userService.find.mockReturnValueOnce(of(payload));
-      const effects: UsersEffects = TestBed.get(UsersEffects);
+      const effects: UsersEffects = TestBed.inject(UsersEffects);
       const target$ = effects.loadUsers$;
 
       // when

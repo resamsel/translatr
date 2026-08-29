@@ -39,6 +39,12 @@ module.exports = tseslint.config(
       // eslint --fix attempt here broke the build) -- tracked as separate, deliberate
       // follow-up work rather than blocked on in CI in the meantime.
       "@angular-eslint/prefer-standalone": "warn",
+      // Promoted to an error in the angular-eslint v20 recommended set. The codebase
+      // uses constructor parameter injection throughout; converting to inject() means
+      // running Angular's official schematic across ~265 call sites plus a full
+      // regression pass -- deliberate follow-up work, not a CI blocker for the
+      // nx/angular platform bump. Same rationale as prefer-standalone above.
+      "@angular-eslint/prefer-inject": "warn",
     },
   },
   {

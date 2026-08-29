@@ -4,87 +4,94 @@
   [showMore]="showMore"
   [showMoreLink]="showMoreLink"
   (filter)="onFilter($event)"
->
-  <mat-list-item
-    *ngFor="let activity of activities?.list; trackBy: trackByFn"
-    [ngClass]="iconType(activity.contentType)"
-    class="activity-list-item"
   >
-    <div class="timestamp sub-title">
-      <span [matTooltip]="activity.whenCreated | date: 'full'">{{
-        activity.whenCreated | amTimeAgo
-        }}</span>
-    </div>
-    <mat-icon
+  @for (activity of activities?.list; track trackByFn($index, activity)) {
+    <mat-list-item
       [ngClass]="iconType(activity.contentType)"
-      class="circle"
-      matListItemIcon
-    >{{icon(activity.contentType)}}</mat-icon>
-    <h3 class="activity-content" matListItemTitle>
-      <a
-        *ngIf="relativeTo !== 'user'"
-        [routerLink]="['/', activity.userUsername]"
-        class="link user-name"
-      >{{activity.userName}}</a>
-      <span transloco="activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}"></span>
-      <ng-container *ngIf="contentTypeOf(activity) as contentType">
-        <ng-container [ngSwitch]="contentType">
-          <ng-container *ngSwitchCase="'project'">
-            <app-activity-project-link
-              *ngIf="relativeTo !== 'project'"
-              [project]="project(activity)"
-            ></app-activity-project-link>
-          </ng-container>
-          <ng-container *ngSwitchCase="'locale'">
-            <app-activity-project-link
-              *ngIf="relativeTo !== 'project'"
-              [project]="projectOf(locale(activity))"
-            ></app-activity-project-link>
-            <app-activity-locale-link
-              [locale]="locale(activity)"
-            ></app-activity-locale-link>
-          </ng-container>
-          <ng-container *ngSwitchCase="'key'">
-            <app-activity-project-link
-              *ngIf="relativeTo !== 'project'"
-              [project]="projectOf(key(activity))"
-            ></app-activity-project-link>
-            <app-activity-key-link
-              [key]="key(activity)"
-            ></app-activity-key-link>
-          </ng-container>
-          <ng-container *ngSwitchCase="'message'">
-            <app-activity-project-link
-              *ngIf="relativeTo !== 'project'"
-              [project]="projectOf(message(activity))"
-            ></app-activity-project-link>
-            <app-activity-message-link
-              [message]="message(activity)"
-              target="key"
-            ></app-activity-message-link>
-            <app-activity-message-link
-              [message]="message(activity)"
-              target="locale"
-            ></app-activity-message-link>
-          </ng-container>
-          <ng-container *ngSwitchCase="'projectuser'">
-            <app-activity-project-link
-              *ngIf="relativeTo !== 'project'"
-              [project]="projectOf(member(activity))"
-            ></app-activity-project-link>
-            <app-activity-member-link
-              [member]="member(activity)"
-            ></app-activity-member-link>
-          </ng-container>
-          <ng-container *ngSwitchCase="'accesstoken'">
-            <app-activity-access-token-link
-              [accessToken]="accessToken(activity)"
-            ></app-activity-access-token-link>
-          </ng-container>
-        </ng-container>
-      </ng-container>
-    </h3>
-  </mat-list-item>
+      class="activity-list-item"
+      >
+      <div class="timestamp sub-title">
+        <span [matTooltip]="activity.whenCreated | date: 'full'">{{
+          activity.whenCreated | amTimeAgo
+        }}</span>
+      </div>
+      <mat-icon
+        [ngClass]="iconType(activity.contentType)"
+        class="circle"
+        matListItemIcon
+      >{{icon(activity.contentType)}}</mat-icon>
+      <h3 class="activity-content" matListItemTitle>
+        @if (relativeTo !== 'user') {
+          <a
+            [routerLink]="['/', activity.userUsername]"
+            class="link user-name"
+          >{{activity.userName}}</a>
+        }
+        <span transloco="activity.{{contentTypeOf(activity)}}.{{activity.type.toLowerCase()}}"></span>
+        @if (contentTypeOf(activity); as contentType) {
+          @switch (contentType) {
+            @case ('project') {
+              @if (relativeTo !== 'project') {
+                <app-activity-project-link
+                  [project]="project(activity)"
+                ></app-activity-project-link>
+              }
+            }
+            @case ('locale') {
+              @if (relativeTo !== 'project') {
+                <app-activity-project-link
+                  [project]="projectOf(locale(activity))"
+                ></app-activity-project-link>
+              }
+              <app-activity-locale-link
+                [locale]="locale(activity)"
+              ></app-activity-locale-link>
+            }
+            @case ('key') {
+              @if (relativeTo !== 'project') {
+                <app-activity-project-link
+                  [project]="projectOf(key(activity))"
+                ></app-activity-project-link>
+              }
+              <app-activity-key-link
+                [key]="key(activity)"
+              ></app-activity-key-link>
+            }
+            @case ('message') {
+              @if (relativeTo !== 'project') {
+                <app-activity-project-link
+                  [project]="projectOf(message(activity))"
+                ></app-activity-project-link>
+              }
+              <app-activity-message-link
+                [message]="message(activity)"
+                target="key"
+              ></app-activity-message-link>
+              <app-activity-message-link
+                [message]="message(activity)"
+                target="locale"
+              ></app-activity-message-link>
+            }
+            @case ('projectuser') {
+              @if (relativeTo !== 'project') {
+                <app-activity-project-link
+                  [project]="projectOf(member(activity))"
+                ></app-activity-project-link>
+              }
+              <app-activity-member-link
+                [member]="member(activity)"
+              ></app-activity-member-link>
+            }
+            @case ('accesstoken') {
+              <app-activity-access-token-link
+                [accessToken]="accessToken(activity)"
+              ></app-activity-access-token-link>
+            }
+          }
+        }
+      </h3>
+    </mat-list-item>
+  }
 </app-nav-list>
 
 <ng-template #empty>

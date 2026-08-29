@@ -32,9 +32,9 @@ describe('UserFacade', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store) as typeof store;
     store.pipe.mockReturnValue(mockObservable());
-    facade = TestBed.get(UserFacade);
+    facade = TestBed.inject(UserFacade) as typeof facade;
   });
 
   describe('loadUser', () => {

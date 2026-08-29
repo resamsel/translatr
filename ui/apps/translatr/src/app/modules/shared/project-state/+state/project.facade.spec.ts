@@ -31,9 +31,9 @@ describe('ProjectFacade', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store) as typeof store;
     store.pipe.mockReturnValue(mockObservable());
-    facade = TestBed.get(ProjectFacade);
+    facade = TestBed.inject(ProjectFacade) as typeof facade;
   });
 
   describe('loadLocales', () => {

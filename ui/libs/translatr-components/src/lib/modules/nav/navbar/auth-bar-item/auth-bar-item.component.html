@@ -1,29 +1,32 @@
-<button
-  *ngIf="me"
-  mat-icon-button
-  class="account-button"
-  [matMenuTriggerFor]="userMenu"
-  [matTooltip]="me?.name"
->
-  <img class="icon" ngxGravatar [email]="me.email" size="36" [alt]="me.name"/>
-</button>
+@if (me) {
+  <button
+    mat-icon-button
+    class="account-button"
+    [matMenuTriggerFor]="userMenu"
+    [matTooltip]="me?.name"
+    >
+    <img class="icon" ngxGravatar [email]="me.email" size="36" [alt]="me.name"/>
+  </button>
+}
 <mat-menu #userMenu="matMenu" xPosition="before">
   <ng-content></ng-content>
   <mat-divider></mat-divider>
-  <a
-    *ngIf="me"
-    mat-menu-item
-    href="{{endpointUrl}}/logout"
-    transloco="auth.logout"
-    [translocoParams]="{name: me.name}"
-  >Logout {{ me.name }} </a>
+  @if (me) {
+    <a
+      mat-menu-item
+      href="{{endpointUrl}}/logout"
+      transloco="auth.logout"
+      [translocoParams]="{name: me.name}"
+    >Logout {{ me.name }} </a>
+  }
 </mat-menu>
 
-<a
-  *ngIf="!me"
-  routerLink="/login"
-  mat-button
->
-  <mat-icon>group</mat-icon>
-  <span transloco="auth.login">Sign in</span>
-</a>
+@if (!me) {
+  <a
+    routerLink="/login"
+    mat-button
+    >
+    <mat-icon>group</mat-icon>
+    <span transloco="auth.login">Sign in</span>
+  </a>
+}

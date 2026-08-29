@@ -10,22 +10,23 @@
     Toggle a feature for your account. Only the features defined in the app are listed.
   </p>
 
-  <div class="feature-row" *ngFor="let row of rows$ | async">
-    <div class="feature-name">
-      <div class="title">{{ featureNames[row.feature] || row.feature }}</div>
-      <div class="sub-title">{{ row.feature }}</div>
+  @for (row of rows$ | async; track row) {
+    <div class="feature-row">
+      <div class="feature-name">
+        <div class="title">{{ featureNames[row.feature] || row.feature }}</div>
+        <div class="sub-title">{{ row.feature }}</div>
+      </div>
+      <div class="feature-actions">
+        <button
+          mat-icon-button
+          [class.enabled]="row.enabled"
+          [class.disabled]="!row.enabled"
+          [matTooltip]="row.enabled ? 'Enabled, toggle to disable' : 'Disabled, toggle to enable'"
+          (click)="onToggle(row)"
+          >
+          <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+        </button>
+      </div>
     </div>
-
-    <div class="feature-actions">
-      <button
-        mat-icon-button
-        [class.enabled]="row.enabled"
-        [class.disabled]="!row.enabled"
-        [matTooltip]="row.enabled ? 'Enabled, toggle to disable' : 'Disabled, toggle to enable'"
-        (click)="onToggle(row)"
-      >
-        <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-      </button>
-    </div>
-  </div>
+  }
 </div>
