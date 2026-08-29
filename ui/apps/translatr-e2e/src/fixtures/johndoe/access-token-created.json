@@ -1,0 +1,11 @@
+{
+  "id": "a1000000-0000-0000-0000-000000000009",
+  "whenCreated": "2020-03-01T10:00:00.000Z",
+  "whenUpdated": "2020-03-01T10:00:00.000Z",
+  "name": "New token",
+  "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+  "userName": "John Doe",
+  "userUsername": "johndoe",
+  "scope": "project:read",
+  "key": "tk_live_ONE_TIME_SECRET_abcdef123456"
+}

@@ -1,0 +1,13 @@
+{
+  "error": {
+    "type": "ConstraintViolationException",
+    "message": "Constraint violations detected",
+    "violations": [
+      {
+        "message": "Username already taken",
+        "field": "username",
+        "invalidValue": null
+      }
+    ]
+  }
+}
