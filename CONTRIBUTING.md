@@ -41,7 +41,7 @@ extension. Authentication is handled by **Keycloak**.
 |------|---------|-------|
 | Java JDK | 21 | Temurin / Corretto both work |
 | Docker + Docker Compose | any recent | runs PostgreSQL + Keycloak |
-| Node.js | 22.12 (see `ui/.nvmrc`) | only needed for UI hot-reload; not required for the default dev flow |
+| Node.js | 24 (see `ui/.nvmrc`) | only needed for UI hot-reload; not required for the default dev flow |
 
 ### Running it (standard — no Node required)
 
@@ -72,7 +72,7 @@ directly via Quinoa. No Angular dev server or local Node installation is needed.
 
 4. Open [http://localhost:9000](http://localhost:9000).
 
-### Running it (UI hot-reload — requires Node 22.12)
+### Running it (UI hot-reload — requires Node 24)
 
 Use this when you are actively working on the Angular frontend and want instant
 browser refresh on file save.
@@ -108,7 +108,7 @@ browser refresh on file save.
 5. Open [http://localhost:9000](http://localhost:9000).
 
 > **Note on Node versions**
-> Use the Node version recorded in `ui/.nvmrc` (currently **22.12**) for
+> Use the Node version recorded in `ui/.nvmrc` (currently **24**) for
 > `npm start` / `npm run build`.
 
 ### Authorisation
