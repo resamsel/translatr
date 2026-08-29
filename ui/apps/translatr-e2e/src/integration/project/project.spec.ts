@@ -27,4 +27,39 @@ describe('Project', () => {
     // then
     page.getPageName().should('have.text', 'johndoe/p1');
   });
+
+  it('should show locale, key and member counts on the overview', () => {
+    // given
+
+    // when
+    page.navigateTo();
+
+    // then
+    cy.get('app-project-info').should('exist');
+    cy.get('app-project-info dev-metric.locale.count mat-card-title').should('have.text', '2');
+    cy.get('app-project-info dev-metric.key.count mat-card-title').should('have.text', '2');
+    cy.get('app-project-info dev-metric.member.count mat-card-title').should('have.text', '4');
+  });
+
+  it('should render the infographic when its feature flag is present', () => {
+    // given
+    cy.intercept('/api/me?fetch=features', { fixture: 'me-infographic' });
+
+    // when
+    page.navigateTo();
+
+    // then
+    cy.get('dev-project-infographic').should('exist');
+  });
+
+  it('should not render the infographic without its feature flag', () => {
+    // given
+
+    // when
+    page.navigateTo();
+
+    // then
+    cy.get('app-project-info').should('exist');
+    cy.get('dev-project-infographic').should('not.exist');
+  });
 });

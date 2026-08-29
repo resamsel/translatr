@@ -1,0 +1,25 @@
+{
+  "id": "9d4f7c21-0b3e-4a6f-9c2d-7e1a5b8c3f40",
+  "whenCreated": "2020-05-14T19:03:23.363Z",
+  "whenUpdated": "2020-05-14T19:03:23.363Z",
+  "name": "newproj",
+  "ownerId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+  "ownerName": "John Doe",
+  "ownerUsername": "johndoe",
+  "ownerEmailHash": "6d041874043a1820c908f747e8a608bc",
+  "members": [
+    {
+      "id": 30001,
+      "whenCreated": "2020-05-14T19:03:23.363Z",
+      "whenUpdated": "2020-05-14T19:03:23.363Z",
+      "role": "Owner",
+      "projectId": "9d4f7c21-0b3e-4a6f-9c2d-7e1a5b8c3f40",
+      "projectName": "newproj",
+      "projectOwnerUsername": "johndoe",
+      "userId": "5e15a05d-c583-45a0-84fa-1e770b2a4531",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    }
+  ]
+}

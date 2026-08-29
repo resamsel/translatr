@@ -1,0 +1,29 @@
+{
+  "list": [
+    {
+      "id": "aaaaaaaa-0000-0000-0000-000000000001",
+      "type": "Login",
+      "contentType": "dto.User",
+      "whenCreated": "2019-10-16T10:00:00.000Z",
+      "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    },
+    {
+      "id": "aaaaaaaa-0000-0000-0000-000000000002",
+      "type": "Login",
+      "contentType": "dto.User",
+      "whenCreated": "2019-10-16T09:00:00.000Z",
+      "userId": "e6e779ae-99ce-4b56-8b6a-30c9423d647d",
+      "userName": "John Doe",
+      "userUsername": "johndoe",
+      "userEmailHash": "6d041874043a1820c908f747e8a608bc"
+    }
+  ],
+  "offset": 0,
+  "limit": 8,
+  "total": 2,
+  "hasPrev": true,
+  "hasNext": false
+}
