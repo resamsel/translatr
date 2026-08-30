@@ -58,6 +58,8 @@ describe('Admin Users', () => {
     // when
     page.navigateTo();
     page.getEditButton('Jane Smith').click();
+    // given: the row's role prefills as Admin before we change it
+    page.getDialog().find('mat-select[formControlName="role"]').should('contain.text', 'Admin');
     page.getDialog().find('mat-select[formControlName="role"]').click();
     cy.get('mat-option').contains('User').click();
     page.getDialog().find('button[transloco="button.save"]').click();

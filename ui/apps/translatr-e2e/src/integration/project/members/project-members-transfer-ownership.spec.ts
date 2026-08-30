@@ -63,7 +63,9 @@ describe('Project Members Transfer Ownership', () => {
     page.getDialogSaveButton().click();
 
     // then
-    cy.wait('@updateProject');
+    cy.wait('@updateProject').its('request.body').should('deep.include', {
+      ownerId: '5e15a05d-c583-45a0-84fa-1e770b2a4534'
+    });
     page.getDialog().should('have.length', 0);
     cy.url().should('include', '/johndoe/p1/members');
   });
