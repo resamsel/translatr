@@ -7,35 +7,40 @@
 
 .activity-list-item.mat-mdc-list-item {
   position: relative;
+  height: auto;
+  align-items: flex-start;
 
-  &.mat-2-line,
-  &.mat-3-line,
-  &.mat-multi-line {
-    height: auto;
+  // Reserve a left gutter for the absolutely-positioned timestamp column.
+  padding-left: 88px;
 
-    .mat-mdc-list-item-icon,
-    .timestamp,
-    .mdc-list-item__primary-text {
-      align-self: flex-start;
-    }
-
-    ::ng-deep .mdc-list-item__content {
-      padding-top: 12px;
-      padding-bottom: 12px;
-    }
+  @include medium {
+    padding-left: 112px;
   }
 
-  &:before {
+  // Leading icon and the content block align to the top of the row rather
+  // than being vertically centred, so multi-line entries read top-down.
+  ::ng-deep .mdc-list-item__start {
+    align-self: flex-start;
+    margin-top: 16px;
+  }
+
+  ::ng-deep .mdc-list-item__content {
+    align-self: flex-start;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  // Vertical connector joining consecutive activity icons.
+  &::before {
     content: '';
-    height: calc(100% - 36px);
-    border-left-width: 2px;
-    border-left-style: solid;
     position: absolute;
-    left: 140px;
-    top: 46px;
+    left: 115px;
+    top: 56px;
+    height: calc(100% - 40px);
+    border-left: 2px solid rgba(0, 0, 0, 0.2);
 
     @include medium {
-      left: 170px;
+      left: 139px;
     }
   }
 
@@ -43,16 +48,23 @@
     white-space: normal;
   }
 
+  // Timestamp: a right-aligned column pinned into the reserved left gutter.
+  // After the MDC upgrade unmarked projected content lands in the item's
+  // secondary-text row, which dropped the timestamp below the entry.
   .timestamp {
-    order: -1;
-    width: 90px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 76px;
+    padding: 15px 12px 0 8px;
+    margin: 0;
+    box-sizing: border-box;
     text-align: right;
-    padding-right: 16px;
-    flex-shrink: 0;
-    line-height: 28px;
+    line-height: 20px;
 
     @include medium {
-      width: 120px;
+      width: 92px;
+      padding-right: 16px;
     }
   }
 }
