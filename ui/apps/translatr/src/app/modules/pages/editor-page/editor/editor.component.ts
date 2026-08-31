@@ -123,7 +123,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
       this.hotkeysService
         .addShortcut({
           allowIn: ['TEXTAREA'],
-          keys: 'control.enter',
+          keys: 'meta.enter',
           description: 'Save translation',
           group: 'Saving'
         })
@@ -133,7 +133,7 @@ export class EditorComponent implements AfterViewChecked, OnDestroy {
       this.hotkeysService
         .addShortcut({
           allowIn: ['TEXTAREA'],
-          keys: 'control.shift.enter',
+          keys: 'meta.shift.enter',
           description: 'Save and go to next item',
           group: 'Saving'
         })
