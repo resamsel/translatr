@@ -67,8 +67,8 @@
         queryParamsHandling="merge"
         class="locale"
       >
-        <h3 matLine>{{ item.locale.displayName }}</h3>
-        <p class="sub-title translation" matLine>
+        <h3 matListItemTitle>{{ item.locale.displayName }}</h3>
+        <p class="sub-title translation" matListItemLine>
           @if (item.message) {
             <span>{{ item.message.value }}</span>
           } @else {
