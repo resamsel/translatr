@@ -1,0 +1,6 @@
+// The card is wrapped in a bare <a>. Without an explicit colour it renders
+// with the user-agent link colour (blue/purple); inherit the surrounding
+// text colour so the card reads as content, not a hyperlink.
+a {
+  color: inherit;
+}
