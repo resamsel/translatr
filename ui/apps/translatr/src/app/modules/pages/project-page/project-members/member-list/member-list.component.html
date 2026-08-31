@@ -37,43 +37,45 @@
               $safeNavigationMigration(member?.whenCreated) | amTimeAgo
             }}</span>
           </p>
-          @if (canTransferOwnership && member.userId === project.ownerId && ownerCount > 1) {
-            <button
-              [matTooltip]="t('project.transferOwnership.button')"
-              class="edit"
-              mat-icon-button
-              (click)="onTransferOwnership($event)"
-            >
-              <mat-icon>swap_horiz</mat-icon>
-            </button>
-          } @else {
-            @if (
-              canCreate &&
-              (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) &&
-              (canTransferOwnership || member.userId !== project.ownerId)
-            ) {
+          <span matListItemMeta class="list-item-actions">
+            @if (canTransferOwnership && member.userId === project.ownerId && ownerCount > 1) {
               <button
-                mat-icon-button
+                [matTooltip]="t('project.transferOwnership.button')"
                 class="edit"
-                [matTooltip]="t('button.edit')"
-                (click)="onEdit(member, $event)"
+                mat-icon-button
+                (click)="onTransferOwnership($event)"
               >
-                <mat-icon>edit</mat-icon>
+                <mat-icon>swap_horiz</mat-icon>
               </button>
+            } @else {
+              @if (
+                canCreate &&
+                (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) &&
+                (canTransferOwnership || member.userId !== project.ownerId)
+              ) {
+                <button
+                  mat-icon-button
+                  class="edit"
+                  [matTooltip]="t('button.edit')"
+                  (click)="onEdit(member, $event)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
+              @if (
+                canDelete &&
+                (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) &&
+                (canTransferOwnership || member.userId !== project.ownerId)
+              ) {
+                <confirm-button
+                  [tooltip]="t('button.delete')"
+                  class="delete"
+                  icon="delete"
+                  (confirm)="onDelete(member)"
+                ></confirm-button>
+              }
             }
-            @if (
-              canDelete &&
-              (member.role !== 'Owner' || (canModifyOwner && ownerCount > 1)) &&
-              (canTransferOwnership || member.userId !== project.ownerId)
-            ) {
-              <confirm-button
-                [tooltip]="t('button.delete')"
-                class="delete"
-                icon="delete"
-                (confirm)="onDelete(member)"
-              ></confirm-button>
-            }
-          }
+          </span>
         </a>
       }
     </app-nav-list>

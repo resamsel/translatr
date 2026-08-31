@@ -31,41 +31,43 @@
               matListItemLine
             ></mat-progress-bar>
           }
-          <button
-            (click)="$event.stopPropagation(); $event.preventDefault()"
-            [matMenuTriggerFor]="menu"
-            [matTooltip]="t('locale.download.button')"
-            class="download"
-            mat-icon-button
-            type="button"
-          >
-            <mat-icon>cloud_download</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            @for (fileType of fileTypes; track fileType) {
-              <a href="/api/locale/{{ locale.id }}/export/{{ fileType.type }}" mat-menu-item>{{
-                fileType.name
-              }}</a>
-            }
-          </mat-menu>
-          @if (canCreate) {
+          <span matListItemMeta class="list-item-actions">
             <button
-              (click)="onEdit(locale, $event)"
-              class="edit"
-              [matTooltip]="t('button.edit')"
+              (click)="$event.stopPropagation(); $event.preventDefault()"
+              [matMenuTriggerFor]="menu"
+              [matTooltip]="t('locale.download.button')"
+              class="download"
               mat-icon-button
+              type="button"
             >
-              <mat-icon>edit</mat-icon>
+              <mat-icon>cloud_download</mat-icon>
             </button>
-          }
-          @if (canDelete) {
-            <confirm-button
-              [tooltip]="t('button.delete')"
-              icon="delete"
-              class="delete"
-              (confirm)="onDelete(locale)"
-            ></confirm-button>
-          }
+            <mat-menu #menu="matMenu">
+              @for (fileType of fileTypes; track fileType) {
+                <a href="/api/locale/{{ locale.id }}/export/{{ fileType.type }}" mat-menu-item>{{
+                  fileType.name
+                }}</a>
+              }
+            </mat-menu>
+            @if (canCreate) {
+              <button
+                (click)="onEdit(locale, $event)"
+                class="edit"
+                [matTooltip]="t('button.edit')"
+                mat-icon-button
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            }
+            @if (canDelete) {
+              <confirm-button
+                [tooltip]="t('button.delete')"
+                icon="delete"
+                class="delete"
+                (confirm)="onDelete(locale)"
+              ></confirm-button>
+            }
+          </span>
         </a>
       }
     </app-nav-list>

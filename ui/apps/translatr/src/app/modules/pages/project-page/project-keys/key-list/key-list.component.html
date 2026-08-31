@@ -29,24 +29,26 @@
               matListItemLine
             ></mat-progress-bar>
           }
-          @if (canCreate) {
-            <button
-              [matTooltip]="t('button.edit')"
-              mat-icon-button
-              class="edit"
-              (click)="onEdit(key, $event)"
-            >
-              <mat-icon>edit</mat-icon>
-            </button>
-          }
-          @if (canDelete) {
-            <confirm-button
-              [tooltip]="t('button.delete')"
-              icon="delete"
-              class="delete"
-              (confirm)="onDelete(key)"
-            ></confirm-button>
-          }
+          <span matListItemMeta class="list-item-actions">
+            @if (canCreate) {
+              <button
+                [matTooltip]="t('button.edit')"
+                mat-icon-button
+                class="edit"
+                (click)="onEdit(key, $event)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            }
+            @if (canDelete) {
+              <confirm-button
+                [tooltip]="t('button.delete')"
+                icon="delete"
+                class="delete"
+                (confirm)="onDelete(key)"
+              ></confirm-button>
+            }
+          </span>
         </a>
       }
     </app-nav-list>

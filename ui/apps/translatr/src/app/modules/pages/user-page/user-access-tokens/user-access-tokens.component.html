@@ -20,12 +20,14 @@
           }}</span>
         </p>
         @if (canModify$ | async) {
-          <confirm-button
-            [tooltip]="t('button.delete')"
-            icon="delete"
-            class="delete"
-            (confirm)="onDelete(accessToken)"
-          ></confirm-button>
+          <span matListItemMeta class="list-item-actions">
+            <confirm-button
+              [tooltip]="t('button.delete')"
+              icon="delete"
+              class="delete"
+              (confirm)="onDelete(accessToken)"
+            ></confirm-button>
+          </span>
         }
       </a>
     }
