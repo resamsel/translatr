@@ -391,6 +391,13 @@ pre[class*='language-']:before {
 
 header {
   .mat-mdc-tab-nav-bar {
+    // Sit the tab bar on a darker strip, the way it looked before the
+    // MDC upgrade. Without it the transparent MDC tab bar leaves the
+    // bottom of the header reading as a washed-out half-transparent grey
+    // band against the vivid header colour. A translucent black overlay
+    // works on every header colour (orange project / blue user page).
+    background-color: rgba(0, 0, 0, 0.15);
+
     .mat-mdc-tab-label,
     .mat-mdc-tab-link {
       color: rgba(255, 255, 255, 0.7);
