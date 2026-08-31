@@ -267,17 +267,29 @@ a .mat-mdc-card {
     padding: 0 8px;
     min-width: auto;
 
-    > span {
+    // MDC nests the label as
+    //   a > .mdc-tab__content > .mdc-tab__text-label > (mat-icon + span)
+    // Keep the content wrapper a centred flexbox so the label sits in the
+    // vertical middle of the tab strip, and drive the icon/label swap off
+    // the authored elements rather than `> span`.
+    .mdc-tab__content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .mdc-tab__text-label > span {
       display: none;
     }
 
     @include medium {
       padding: 0 12px;
 
-      > .mat-icon {
+      .mat-icon {
         display: none;
       }
-      > span {
+      .mdc-tab__text-label > span {
         display: inline;
       }
     }
@@ -286,7 +298,7 @@ a .mat-mdc-card {
       min-width: 120px;
       padding: 0 24px;
 
-      > .mat-icon {
+      .mat-icon {
         display: inline-block;
       }
     }
@@ -379,8 +391,8 @@ pre[class*='language-']:before {
     opacity: 1;
   }
 
-  .mat-mdc-tab-label-active:not(.mat-mdc-tab-disabled) {
-    color: white;
+  a.mat-mdc-tab-link.mdc-tab--active:not(.mat-mdc-tab-disabled) {
+    color: #fff;
   }
 }
 
@@ -393,9 +405,10 @@ header {
     // works on every header colour (orange project / blue user page).
     background-color: rgba(0, 0, 0, 0.15);
 
-    .mat-mdc-tab-label,
+    // Inactive tabs: a legible light grey against the header colour.
+    // The active tab is pure white (set above via `.mdc-tab--active`).
     .mat-mdc-tab-link {
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.8);
     }
   }
 }
