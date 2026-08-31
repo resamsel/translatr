@@ -35,6 +35,11 @@
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
+  "overrides": {
+    "braces": "^3.0.3",
+    "micromatch": "^4.0.8",
+    "flatted": "^3.3.4"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/resamsel/translatr.git"
