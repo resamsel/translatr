@@ -12,7 +12,7 @@
     "@oclif/config": "1.17.0",
     "@oclif/plugin-help": "3.2.0",
     "dotenv": "^16.0.0",
-    "simple-git": "2.24.0",
+    "simple-git": "^3.36.0",
     "tslib": "1.14.1"
   },
   "devDependencies": {
@@ -67,8 +67,12 @@
       "js"
     ],
     "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.tsx?$": "ts-jest",
+      "node_modules[/\\\\]simple-git[/\\\\].+\\.js$": "./jest.simple-git-transform.js"
     },
+    "transformIgnorePatterns": [
+      "node_modules[/\\\\](?!simple-git[/\\\\])"
+    ],
     "testMatch": [
       "**/*.spec.ts"
     ],
