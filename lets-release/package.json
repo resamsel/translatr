@@ -94,7 +94,10 @@
       "text",
       "text-summary"
     ],
-    "testResultsProcessor": "jest-junit"
+    "reporters": [
+      "default",
+      "jest-junit"
+    ]
   },
   "jest-junit": {
     "suiteName": "Let's Release Tests",
