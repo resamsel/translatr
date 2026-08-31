@@ -14,7 +14,7 @@
           (click)="sidenav.close()"
           [class.list-item-active]="isLinkActive(routerLink(child))"
         >
-          <mat-icon mat-list-icon>{{ child.data.icon }}</mat-icon>
+          <mat-icon matListItemIcon>{{ child.data.icon }}</mat-icon>
           {{ child.data.name }}
         </a>
       }
