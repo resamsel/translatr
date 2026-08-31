@@ -67,8 +67,8 @@
         queryParamsHandling="merge"
         class="key"
       >
-        <h3 matLine>{{ item.key.name }}</h3>
-        <p class="sub-title translation" matLine>
+        <h3 matListItemTitle>{{ item.key.name }}</h3>
+        <p class="sub-title translation" matListItemLine>
           @if (item.message) {
             <span>{{ item.message.value }}</span>
           } @else {
