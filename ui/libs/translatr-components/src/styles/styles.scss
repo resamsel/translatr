@@ -302,7 +302,6 @@ a .mat-mdc-card {
   }
 }
 
-.mat-list-base .mat-list-item .mat-list-icon.circle,
 .mat-icon.circle {
   font-size: 22px;
   line-height: 24px;
@@ -360,10 +359,6 @@ pre[class*='language-']:before {
   &.pin-bottom {
     position: fixed;
     bottom: 32px;
-  }
-
-  &.mat-fab .mat-icon {
-    color: #fff;
   }
 }
 

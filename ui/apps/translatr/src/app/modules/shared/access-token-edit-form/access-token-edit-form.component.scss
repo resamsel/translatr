@@ -1,9 +1,5 @@
 @use 'mixins' as *;
 
-.mat-form-field {
-  display: block;
-}
-
 .scopes > div {
   display: flex;
   flex-flow: row wrap;
@@ -16,16 +12,8 @@
       margin-bottom: 8px;
     }
 
-    .mat-checkbox {
-      display: block;
-    }
-
     @include small {
       width: 45%;
-
-      .mat-checkbox {
-        width: 160px;
-      }
     }
 
     @include medium {

@@ -19,12 +19,6 @@ $light-theme: mat.m2-define-light-theme((
 .light-theme {
   background-color: #f5f5f5;
 
-  .mat-focused {
-    &.mat-form-field.search {
-      box-shadow: 0 0 4px 2px mat.m2-get-color-from-palette($light-accent);
-    }
-  }
-
   .mat-mdc-card-title .sub-title,
   .mat-mdc-list-item .sub-title,
   .mdc-list-item__primary-text .sub-title {
