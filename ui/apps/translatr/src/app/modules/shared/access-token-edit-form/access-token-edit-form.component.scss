@@ -1,5 +1,12 @@
 @use 'mixins' as *;
 
+// Element selectors: Material 22 (MDC) renders these hosts as
+// `.mat-mdc-form-field` / `.mat-mdc-checkbox`, so the old class rules
+// (`.mat-form-field`, `.mat-checkbox`) no longer matched.
+mat-form-field {
+  display: block;
+}
+
 .scopes > div {
   display: flex;
   flex-flow: row wrap;
@@ -12,8 +19,16 @@
       margin-bottom: 8px;
     }
 
+    mat-checkbox {
+      display: block;
+    }
+
     @include small {
       width: 45%;
+
+      mat-checkbox {
+        width: 160px;
+      }
     }
 
     @include medium {

@@ -1,0 +1,5 @@
+// Element selector: Material 22 (MDC) renders the host as `.mat-mdc-form-field`,
+// so the old `.mat-form-field` class rule no longer matched.
+mat-form-field {
+  display: block;
+}
