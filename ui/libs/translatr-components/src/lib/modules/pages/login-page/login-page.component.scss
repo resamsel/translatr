@@ -53,7 +53,8 @@
   flex-direction: column;
 
   .options {
-    .mat-button {
+    // Material 22 (MDC) renders `mat-button` as `.mat-mdc-button`.
+    .mat-mdc-button {
       display: block;
       width: 100%;
       margin: 8px 0;
