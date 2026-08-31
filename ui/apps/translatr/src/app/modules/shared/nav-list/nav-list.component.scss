@@ -17,13 +17,15 @@
     box-shadow: inset 4px 0 0 transparent;
   }
 
-  // Keep trailing action buttons in a row and vertically centred,
-  // even when the item is a two-line / three-line MDC item.
-  .mdc-list-item__end {
+  // Keep the trailing action buttons ([matListItemMeta]) in a row and
+  // vertically centred, even when the item is a two- / three-line MDC item.
+  // The double class beats MDC's own `.mdc-list-item__end` rule.
+  .mat-mdc-list-item-meta.list-item-actions {
     display: flex;
     flex-direction: row;
     align-items: center;
     align-self: center;
+    gap: 4px;
   }
 }
 
