@@ -17,14 +17,29 @@
     box-shadow: inset 4px 0 0 transparent;
   }
 
-  // Keep the trailing action buttons ([matListItemMeta]) in a row and
-  // vertically centred, even when the item is a two- / three-line MDC item.
+  // Vertically centre the row contents. MDC pins the leading icon and the
+  // trailing meta slot to the top (with a `margin-top`) on multi-line items,
+  // which left the icon, the edit/delete buttons and the text sitting high
+  // with a heavier gap at the bottom. The activity list has its own
+  // top-aligned layout, so leave it out.
+  .mat-mdc-list-item.mdc-list-item:not(.activity-list-item) {
+    align-items: center;
+
+    .mdc-list-item__start,
+    .mdc-list-item__content,
+    .mat-mdc-list-item-meta {
+      align-self: center;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  // Keep the trailing action buttons ([matListItemMeta]) in a row.
   // The double class beats MDC's own `.mdc-list-item__end` rule.
   .mat-mdc-list-item-meta.list-item-actions {
     display: flex;
     flex-direction: row;
     align-items: center;
-    align-self: center;
     gap: 4px;
   }
 }

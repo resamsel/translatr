@@ -10,6 +10,11 @@
   height: auto;
   align-items: flex-start;
 
+  // No coloured left-edge bar on activity rows. `!important` beats the
+  // per-content-type `.translatr.light-theme .message.mat-mdc-list-item`
+  // rule in the global stylesheet.
+  box-shadow: none !important;
+
   // Reserve a left gutter for the absolutely-positioned timestamp column.
   padding-left: 92px;
 
@@ -26,8 +31,17 @@
 
   ::ng-deep .mdc-list-item__content {
     align-self: flex-start;
-    padding-top: 14px;
-    padding-bottom: 14px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  // Drop MDC's baseline struts on the primary text so the first line of the
+  // content sits at the top of the row, level with the timestamp column.
+  ::ng-deep .mdc-list-item__primary-text {
+    &::before,
+    &::after {
+      display: none;
+    }
   }
 
   // Vertical connector joining consecutive activity icons.
@@ -56,11 +70,11 @@
     left: 0;
     top: 0;
     width: 84px;
-    padding: 15px 12px 0 8px;
+    padding: 16px 12px 0 8px;
     margin: 0;
     box-sizing: border-box;
     text-align: right;
-    line-height: 20px;
+    line-height: 18px;
 
     @include medium {
       width: 108px;
