@@ -11,10 +11,10 @@
   align-items: flex-start;
 
   // Reserve a left gutter for the absolutely-positioned timestamp column.
-  padding-left: 88px;
+  padding-left: 92px;
 
   @include medium {
-    padding-left: 112px;
+    padding-left: 124px;
   }
 
   // Leading icon and the content block align to the top of the row rather
@@ -34,13 +34,13 @@
   &::before {
     content: '';
     position: absolute;
-    left: 115px;
+    left: 119px;
     top: 56px;
     height: calc(100% - 40px);
     border-left: 2px solid rgba(0, 0, 0, 0.2);
 
     @include medium {
-      left: 139px;
+      left: 151px;
     }
   }
 
@@ -55,7 +55,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 76px;
+    width: 84px;
     padding: 15px 12px 0 8px;
     margin: 0;
     box-sizing: border-box;
@@ -63,7 +63,7 @@
     line-height: 20px;
 
     @include medium {
-      width: 92px;
+      width: 108px;
       padding-right: 16px;
     }
   }
