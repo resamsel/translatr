@@ -1,0 +1,6 @@
+[
+  { "feature": "project-cli-card", "defaultEnabled": false, "global": null, "userOverride": null, "userOverrideId": null, "effective": false },
+  { "feature": "project-infographic", "defaultEnabled": false, "global": null, "userOverride": null, "userOverrideId": null, "effective": false },
+  { "feature": "header-graphic", "defaultEnabled": false, "global": true, "userOverride": null, "userOverrideId": null, "effective": true },
+  { "feature": "language-switcher", "defaultEnabled": false, "global": null, "userOverride": true, "userOverrideId": "f1000000-0000-0000-0000-000000000001", "effective": true }
+]

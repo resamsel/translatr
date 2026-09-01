@@ -5,55 +5,59 @@ describe('Admin Feature Flags', () => {
 
   beforeEach(() => {
     page = new FeatureFlagsPage();
-
     cy.clearCookies();
-
     cy.intercept('/api/me*', { fixture: 'me' });
-    cy.intercept('/api/featureflags*', { fixture: 'feature-flags' });
+    cy.intercept('/api/featureflags/resolved', { fixture: 'resolved-features' });
   });
 
-  it('should render the Features page with one row per known feature', () => {
-    // given
-
-    // when
+  it('renders one row per known feature with its global-default line', () => {
     page.navigateTo();
-
-    // then
     page.getPageName().should('have.text', 'Features');
     page.getRows().should('have.length', 4);
-    page.getToggle('language-switcher').find('mat-icon').should('have.text', 'toggle_on');
-    page.getToggle('project-infographic').find('mat-icon').should('have.text', 'toggle_off');
+    page.getGlobalDefaultLine('header-graphic').should('contain.text', 'Global default: on');
+    page.getGlobalDefaultLine('project-cli-card').should('contain.text', 'Global default: off');
   });
 
-  it('should CREATE a flag (POST) when toggling a feature that has no row yet', () => {
-    // given
+  it('CREATE: toggling a feature with no override, away from the default, POSTs enabled=true', () => {
     cy.intercept('POST', '/api/featureflag', { fixture: 'feature-flag-created' }).as('create');
 
-    // when
     page.navigateTo();
     page.getToggle('project-infographic').click();
 
-    // then
     cy.wait('@create')
       .its('request.body')
       .should('deep.include', { feature: 'project-infographic', enabled: true });
-    page.getToggle('project-infographic').find('mat-icon').should('have.text', 'toggle_on');
-    page.getToggle('project-infographic').should('have.class', 'enabled');
   });
 
-  it('should UPDATE a flag (PUT) when toggling a feature that already has a row', () => {
-    // given
-    cy.intercept('PUT', '/api/featureflag', { fixture: 'feature-flag-updated' }).as('update');
+  it('DELETE: toggling an override back to the global default removes the row', () => {
+    // After the override is deleted the app re-fetches /api/featureflags/resolved;
+    // that reload must reflect language-switcher back at its global default (off).
+    let overrideRemoved = false;
+    cy.intercept('GET', '/api/featureflags/resolved', req =>
+      req.reply(
+        overrideRemoved
+          ? [
+              { feature: 'project-cli-card', defaultEnabled: false, global: null, userOverride: null, userOverrideId: null, effective: false },
+              { feature: 'project-infographic', defaultEnabled: false, global: null, userOverride: null, userOverrideId: null, effective: false },
+              { feature: 'header-graphic', defaultEnabled: false, global: true, userOverride: null, userOverrideId: null, effective: true },
+              { feature: 'language-switcher', defaultEnabled: false, global: null, userOverride: null, userOverrideId: null, effective: false }
+            ]
+          : { fixture: 'resolved-features' }
+      )
+    );
 
-    // when
+    cy.intercept('DELETE', '/api/featureflag/f1000000-0000-0000-0000-000000000001', req => {
+      overrideRemoved = true;
+      req.reply({ body: { id: 'f1000000-0000-0000-0000-000000000001' } });
+    }).as('remove');
+
     page.navigateTo();
+    // language-switcher: override ON, global default OFF → toggling off returns to default
     page.getToggle('language-switcher').click();
 
-    // then
-    cy.wait('@update')
-      .its('request.body')
-      .should('deep.include', { feature: 'language-switcher', enabled: false });
+    cy.wait('@remove')
+      .its('request.method')
+      .should('equal', 'DELETE');
     page.getToggle('language-switcher').find('mat-icon').should('have.text', 'toggle_off');
-    page.getToggle('language-switcher').should('have.class', 'disabled');
   });
 });

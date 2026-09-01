@@ -6,6 +6,15 @@ export class FeatureFlagsPage extends Page {
     return this;
   }
 
+  navigateToGlobal(): FeatureFlagsPage {
+    cy.visit('/featureflags/global');
+    return this;
+  }
+
+  getGlobalDefaultLine(featureKey: string): Cypress.Chainable<JQuery<HTMLElement>> {
+    return this.getRow(featureKey).find('.feature-name .sub-title').last();
+  }
+
   getRows(): Cypress.Chainable<JQuery<HTMLElement>> {
     return cy.get('.feature-row');
   }
