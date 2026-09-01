@@ -3,6 +3,7 @@ export * from './access-token.service';
 export * from './activity.service';
 export * from './auth-client.service';
 export * from './feature-flag.service';
+export * from './global-feature-flag.service';
 export * from './error-handler';
 export * from './http-header';
 export * from './key.service';
