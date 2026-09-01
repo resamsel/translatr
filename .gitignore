@@ -139,3 +139,6 @@ fabric.properties
 /build/
 /.gradle/
 /ui/.nx
+
+# Superpowers brainstorming scratch
+.superpowers/
