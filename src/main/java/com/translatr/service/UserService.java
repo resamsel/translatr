@@ -9,7 +9,6 @@ import com.translatr.model.ActionType;
 import com.translatr.model.LinkedAccount;
 import com.translatr.model.User;
 import com.translatr.model.UserRole;
-import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -24,17 +23,17 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class UserService {
 
-    private final UserRepository            userRepo;
-    private final UserFeatureFlagRepository featureFlagRepo;
-    private final DtoMapper                 mapper;
-    private final ActivityLogger            activity;
-    private final TranslatrConfig           config;
+    private final UserRepository   userRepo;
+    private final FeatureResolver  featureResolver;
+    private final DtoMapper        mapper;
+    private final ActivityLogger   activity;
+    private final TranslatrConfig  config;
 
     @Inject
-    public UserService(UserRepository userRepo, UserFeatureFlagRepository featureFlagRepo, DtoMapper mapper,
+    public UserService(UserRepository userRepo, FeatureResolver featureResolver, DtoMapper mapper,
                        ActivityLogger activity, TranslatrConfig config) {
         this.userRepo        = userRepo;
-        this.featureFlagRepo = featureFlagRepo;
+        this.featureResolver = featureResolver;
         this.mapper          = mapper;
         this.activity        = activity;
         this.config          = config;
@@ -83,12 +82,10 @@ public class UserService {
         return dto;
     }
 
-    // The frontend reads the current user's enabled features off Record<Feature, boolean> —
-    // UserFeatureFlag rows are per-(user, feature) toggles, so fold them into that shape here
-    // rather than exposing the raw entity list.
+    // UserDto.features is the current user's effective feature map (override → global → default),
+    // resolved by FeatureResolver so it always covers every known Feature.
     private void attachFeatures(UserDto dto) {
-        dto.features = featureFlagRepo.listByUser(dto.id).stream()
-                .collect(Collectors.toMap(f -> f.feature, f -> f.enabled));
+        dto.features = featureResolver.resolveAll(dto.id);
     }
 
     @Transactional
