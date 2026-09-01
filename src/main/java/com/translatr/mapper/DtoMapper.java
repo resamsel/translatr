@@ -167,4 +167,14 @@ public class DtoMapper {
         if (f.user != null) d.userId = f.user.id;
         return d;
     }
+
+    public GlobalFeatureFlagDto toDto(FeatureFlag f) {
+        if (f == null) return null;
+        GlobalFeatureFlagDto d = new GlobalFeatureFlagDto();
+        d.id          = f.id;
+        d.whenCreated = f.whenCreated;
+        d.feature     = f.feature;
+        d.enabled     = f.enabled;
+        return d;
+    }
 }

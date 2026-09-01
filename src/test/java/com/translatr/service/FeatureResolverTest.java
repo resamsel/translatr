@@ -71,4 +71,35 @@ class FeatureResolverTest {
         assertThat(result).doesNotContainKey("legacy-flag");
         assertThat(result).hasSize(Feature.values().length);
     }
+
+    @Test
+    void resolveDetail_reportsDefaultGlobalOverrideAndEffective() {
+        UUID overrideId = UUID.randomUUID();
+        UserFeatureFlag override = UserFeatureFlag.of(overrideId, null, "language-switcher", true);
+        when(userFlagRepo.listByUser(userId)).thenReturn(List.of(override));
+        when(globalFlagRepo.listAll())
+            .thenReturn(List.of(com.translatr.model.FeatureFlag.of("header-graphic", true)));
+
+        var detail = resolver.resolveDetail(userId);
+
+        assertThat(detail).hasSize(Feature.values().length);
+
+        var ls = detail.stream().filter(d -> d.feature.equals("language-switcher")).findFirst().orElseThrow();
+        assertThat(ls.defaultEnabled).isFalse();
+        assertThat(ls.global).isNull();
+        assertThat(ls.userOverride).isTrue();
+        assertThat(ls.userOverrideId).isEqualTo(overrideId);
+        assertThat(ls.effective).isTrue();
+
+        var hg = detail.stream().filter(d -> d.feature.equals("header-graphic")).findFirst().orElseThrow();
+        assertThat(hg.global).isTrue();
+        assertThat(hg.userOverride).isNull();
+        assertThat(hg.userOverrideId).isNull();
+        assertThat(hg.effective).isTrue();
+
+        var cli = detail.stream().filter(d -> d.feature.equals("project-cli-card")).findFirst().orElseThrow();
+        assertThat(cli.global).isNull();
+        assertThat(cli.userOverride).isNull();
+        assertThat(cli.effective).isFalse();
+    }
 }
