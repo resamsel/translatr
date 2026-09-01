@@ -3,11 +3,14 @@ import {
   AccessToken,
   Activity,
   ActivityCriteria,
+  Feature,
   FeatureFlagCriteria,
+  GlobalFeatureFlag,
   PagedList,
   Project,
   ProjectCriteria,
   RequestCriteria,
+  ResolvedFeature,
   User,
   UserFeatureFlag
 } from '@dev/translatr-model';
@@ -107,6 +110,26 @@ export enum AppActionTypes {
   DeleteFeatureFlags = '[FeatureFlags Page] Delete FeatureFlags',
   FeatureFlagsDeleted = '[Translatr API] FeatureFlags Deleted',
   FeatureFlagsDeleteError = '[Translatr API] FeatureFlags Delete Error',
+
+  // Resolved Features
+
+  LoadResolvedFeatures = '[FeatureFlags Page] Load Resolved Features',
+  ResolvedFeaturesLoaded = '[Translatr API] Resolved Features Loaded',
+  ResolvedFeaturesLoadError = '[Translatr API] Resolved Features Load Error',
+
+  // Global Feature Flags
+
+  LoadGlobalFeatureFlags = '[Global FeatureFlags Page] Load Global FeatureFlags',
+  GlobalFeatureFlagsLoaded = '[Translatr API] Global FeatureFlags Loaded',
+  GlobalFeatureFlagsLoadError = '[Translatr API] Global FeatureFlags Load Error',
+
+  SetGlobalFeatureFlag = '[Global FeatureFlags Page] Set Global FeatureFlag',
+  GlobalFeatureFlagSet = '[Translatr API] Global FeatureFlag Set',
+  GlobalFeatureFlagSetError = '[Translatr API] Global FeatureFlag Set Error',
+
+  DeleteGlobalFeatureFlag = '[Global FeatureFlags Page] Delete Global FeatureFlag',
+  GlobalFeatureFlagDeleted = '[Translatr API] Global FeatureFlag Deleted',
+  GlobalFeatureFlagDeleteError = '[Translatr API] Global FeatureFlag Delete Error',
 
   UpdatePreferredLanguage = '[Admin Page] Update Preferred Language'
 }
@@ -503,6 +526,78 @@ export class UpdatePreferredLanguage implements Action {
   constructor(public payload: string) {}
 }
 
+// Resolved Features
+
+export class LoadResolvedFeatures implements Action {
+  readonly type = AppActionTypes.LoadResolvedFeatures;
+}
+
+export class ResolvedFeaturesLoaded implements Action {
+  readonly type = AppActionTypes.ResolvedFeaturesLoaded;
+
+  constructor(public payload: ResolvedFeature[]) {}
+}
+
+export class ResolvedFeaturesLoadError implements Action {
+  readonly type = AppActionTypes.ResolvedFeaturesLoadError;
+
+  constructor(public payload: HttpErrorResponse) {}
+}
+
+// Global Feature Flags
+
+export class LoadGlobalFeatureFlags implements Action {
+  readonly type = AppActionTypes.LoadGlobalFeatureFlags;
+}
+
+export class GlobalFeatureFlagsLoaded implements Action {
+  readonly type = AppActionTypes.GlobalFeatureFlagsLoaded;
+
+  constructor(public payload: GlobalFeatureFlag[]) {}
+}
+
+export class GlobalFeatureFlagsLoadError implements Action {
+  readonly type = AppActionTypes.GlobalFeatureFlagsLoadError;
+
+  constructor(public payload: HttpErrorResponse) {}
+}
+
+export class SetGlobalFeatureFlag implements Action {
+  readonly type = AppActionTypes.SetGlobalFeatureFlag;
+
+  constructor(public payload: { feature: Feature; enabled: boolean }) {}
+}
+
+export class GlobalFeatureFlagSet implements Action {
+  readonly type = AppActionTypes.GlobalFeatureFlagSet;
+
+  constructor(public payload: GlobalFeatureFlag) {}
+}
+
+export class GlobalFeatureFlagSetError implements Action {
+  readonly type = AppActionTypes.GlobalFeatureFlagSetError;
+
+  constructor(public payload: HttpErrorResponse) {}
+}
+
+export class DeleteGlobalFeatureFlag implements Action {
+  readonly type = AppActionTypes.DeleteGlobalFeatureFlag;
+
+  constructor(public payload: string) {}
+}
+
+export class GlobalFeatureFlagDeleted implements Action {
+  readonly type = AppActionTypes.GlobalFeatureFlagDeleted;
+
+  constructor(public payload: string) {}
+}
+
+export class GlobalFeatureFlagDeleteError implements Action {
+  readonly type = AppActionTypes.GlobalFeatureFlagDeleteError;
+
+  constructor(public payload: HttpErrorResponse) {}
+}
+
 export type AppAction =
   // Users
   | LoadLoggedInUser
@@ -572,4 +667,18 @@ export type AppAction =
   | DeleteFeatureFlags
   | FeatureFlagsDeleted
   | FeatureFlagsDeleteError
+  // Resolved Features
+  | LoadResolvedFeatures
+  | ResolvedFeaturesLoaded
+  | ResolvedFeaturesLoadError
+  // Global Feature Flags
+  | LoadGlobalFeatureFlags
+  | GlobalFeatureFlagsLoaded
+  | GlobalFeatureFlagsLoadError
+  | SetGlobalFeatureFlag
+  | GlobalFeatureFlagSet
+  | GlobalFeatureFlagSetError
+  | DeleteGlobalFeatureFlag
+  | GlobalFeatureFlagDeleted
+  | GlobalFeatureFlagDeleteError
   | UpdatePreferredLanguage;

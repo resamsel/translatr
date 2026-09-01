@@ -1,8 +1,10 @@
 import {
   AccessToken,
   Activity,
+  GlobalFeatureFlag,
   PagedList,
   Project,
+  ResolvedFeature,
   User,
   UserFeatureFlag
 } from '@dev/translatr-model';
@@ -17,6 +19,8 @@ export interface AppState {
   accessTokens?: PagedList<AccessToken>;
   activities?: PagedList<Activity>;
   featureFlags?: PagedList<UserFeatureFlag>;
+  resolvedFeatures?: ResolvedFeature[];
+  globalFeatureFlags?: GlobalFeatureFlag[];
 }
 
 export interface AppPartialState {
@@ -177,34 +181,40 @@ export function appReducer(state: AppState = initialState, action: AppAction): A
         featureFlags: action.payload
       };
     case AppActionTypes.FeatureFlagCreated:
-      return {
-        ...state,
-        featureFlags: {
-          ...state.featureFlags,
-          list: [action.payload, ...state.featureFlags.list],
-          total: state.featureFlags.total + 1
-        }
-      };
+      return state.featureFlags
+        ? {
+            ...state,
+            featureFlags: {
+              ...state.featureFlags,
+              list: [action.payload, ...state.featureFlags.list],
+              total: state.featureFlags.total + 1
+            }
+          }
+        : state;
     case AppActionTypes.FeatureFlagUpdated:
-      return {
-        ...state,
-        featureFlags: {
-          ...state.featureFlags,
-          list: state.featureFlags.list.map((featureFlag: UserFeatureFlag) =>
-            featureFlag.id === action.payload.id ? action.payload : featureFlag
-          )
-        }
-      };
+      return state.featureFlags
+        ? {
+            ...state,
+            featureFlags: {
+              ...state.featureFlags,
+              list: state.featureFlags.list.map((featureFlag: UserFeatureFlag) =>
+                featureFlag.id === action.payload.id ? action.payload : featureFlag
+              )
+            }
+          }
+        : state;
     case AppActionTypes.FeatureFlagDeleted:
-      return {
-        ...state,
-        featureFlags: {
-          ...state.featureFlags,
-          list: state.featureFlags.list.filter(
-            (featureFlag: UserFeatureFlag) => featureFlag.id !== action.payload.id
-          )
-        }
-      };
+      return state.featureFlags
+        ? {
+            ...state,
+            featureFlags: {
+              ...state.featureFlags,
+              list: state.featureFlags.list.filter(
+                (featureFlag: UserFeatureFlag) => featureFlag.id !== action.payload.id
+              )
+            }
+          }
+        : state;
     case AppActionTypes.FeatureFlagsDeleted:
       return {
         ...state,
@@ -214,6 +224,22 @@ export function appReducer(state: AppState = initialState, action: AppAction): A
             action.payload.find((deleted: UserFeatureFlag) => featureFlag.id !== deleted.id)
           )
         }
+      };
+
+    // Resolved Features
+
+    case AppActionTypes.ResolvedFeaturesLoaded:
+      return {
+        ...state,
+        resolvedFeatures: action.payload
+      };
+
+    // Global Feature Flags
+
+    case AppActionTypes.GlobalFeatureFlagsLoaded:
+      return {
+        ...state,
+        globalFeatureFlags: action.payload
       };
 
     default:

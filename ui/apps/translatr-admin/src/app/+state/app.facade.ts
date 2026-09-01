@@ -6,9 +6,11 @@ import {
   Feature,
   FeatureFlagCriteria,
   FeatureFlagFacade,
+  GlobalFeatureFlag,
   Project,
   ProjectCriteria,
   RequestCriteria,
+  ResolvedFeature,
   User,
   UserFeatureFlag
 } from '@dev/translatr-model';
@@ -24,6 +26,7 @@ import {
   DeleteAccessTokens,
   DeleteFeatureFlag,
   DeleteFeatureFlags,
+  DeleteGlobalFeatureFlag,
   DeleteProject,
   DeleteProjects,
   DeleteUser,
@@ -31,10 +34,13 @@ import {
   LoadAccessTokens,
   LoadActivities,
   LoadFeatureFlags,
+  LoadGlobalFeatureFlags,
   LoadLoggedInUser,
   LoadProjects,
+  LoadResolvedFeatures,
   LoadUser,
   LoadUsers,
+  SetGlobalFeatureFlag,
   UpdateAccessToken,
   UpdateFeatureFlag,
   UpdatePreferredLanguage,
@@ -113,6 +119,22 @@ export class AppFacade extends FeatureFlagFacade {
   );
   readonly featureFlagsDeleted$ = this.actions$.pipe(
     ofType(AppActionTypes.FeatureFlagsDeleted, AppActionTypes.FeatureFlagsDeleteError)
+  );
+
+  readonly resolvedFeatures$: Observable<ResolvedFeature[] | undefined> = this.store.pipe(
+    select(appQuery.getResolvedFeatures)
+  );
+
+  readonly globalFeatureFlags$: Observable<GlobalFeatureFlag[] | undefined> = this.store.pipe(
+    select(appQuery.getGlobalFeatureFlags)
+  );
+  readonly globalFeatureFlagChanged$ = this.actions$.pipe(
+    ofType(
+      AppActionTypes.GlobalFeatureFlagSet,
+      AppActionTypes.GlobalFeatureFlagSetError,
+      AppActionTypes.GlobalFeatureFlagDeleted,
+      AppActionTypes.GlobalFeatureFlagDeleteError
+    )
   );
 
   user$(userId: string): Observable<User | undefined> {
@@ -238,6 +260,22 @@ export class AppFacade extends FeatureFlagFacade {
 
   unloadFeatureFlags() {
     this.unloadFeatureFlags$.next();
+  }
+
+  loadResolvedFeatures(): void {
+    this.store.dispatch(new LoadResolvedFeatures());
+  }
+
+  loadGlobalFeatureFlags(): void {
+    this.store.dispatch(new LoadGlobalFeatureFlags());
+  }
+
+  setGlobalFeatureFlag(feature: Feature, enabled: boolean): void {
+    this.store.dispatch(new SetGlobalFeatureFlag({ feature, enabled }));
+  }
+
+  deleteGlobalFeatureFlag(id: string): void {
+    this.store.dispatch(new DeleteGlobalFeatureFlag(id));
   }
 
   updatePreferredLanguage(language: string): void {

@@ -1,4 +1,8 @@
-import { LoggedInUserLoaded } from './app.actions';
+import {
+  GlobalFeatureFlagsLoaded,
+  LoggedInUserLoaded,
+  ResolvedFeaturesLoaded
+} from './app.actions';
 import { appReducer, initialState } from './app.reducer';
 
 describe('Admin Reducer', () => {
@@ -13,6 +17,30 @@ describe('Admin Reducer', () => {
 
       // then
       expect(actual.me).toBeDefined();
+    });
+  });
+
+  describe('feature flags', () => {
+    it('stores resolved features on ResolvedFeaturesLoaded', () => {
+      const state = appReducer(
+        initialState,
+        new ResolvedFeaturesLoaded([{ feature: 'header-graphic' } as any])
+      );
+
+      expect(state.resolvedFeatures).toEqual([{ feature: 'header-graphic' }]);
+    });
+
+    it('stores global feature flags on GlobalFeatureFlagsLoaded', () => {
+      const state = appReducer(
+        initialState,
+        new GlobalFeatureFlagsLoaded([
+          { id: 'g1', feature: 'header-graphic', enabled: true } as any
+        ])
+      );
+
+      expect(state.globalFeatureFlags).toEqual([
+        { id: 'g1', feature: 'header-graphic', enabled: true }
+      ]);
     });
   });
 

@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import {
   AccessToken,
   Activity,
+  GlobalFeatureFlag,
   PagedList,
   Project,
+  ResolvedFeature,
   User,
   UserFeatureFlag
 } from '@dev/translatr-model';
@@ -11,13 +13,14 @@ import {
   AccessTokenService,
   ActivityService,
   FeatureFlagService,
+  GlobalFeatureFlagService,
   ProjectService,
   UserService
 } from '@dev/translatr-sdk';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import {
   AccessTokenDeleted,
   AccessTokenDeleteError,
@@ -36,6 +39,7 @@ import {
   DeleteAccessTokens,
   DeleteFeatureFlag,
   DeleteFeatureFlags,
+  DeleteGlobalFeatureFlag,
   DeleteProject,
   DeleteProjects,
   DeleteUser,
@@ -50,10 +54,18 @@ import {
   FeatureFlagsLoadError,
   FeatureFlagUpdated,
   FeatureFlagUpdateError,
+  GlobalFeatureFlagDeleted,
+  GlobalFeatureFlagDeleteError,
+  GlobalFeatureFlagsLoaded,
+  GlobalFeatureFlagsLoadError,
+  GlobalFeatureFlagSet,
+  GlobalFeatureFlagSetError,
   LoadAccessTokens,
   LoadActivities,
   LoadFeatureFlags,
+  LoadGlobalFeatureFlags,
   LoadProjects,
+  LoadResolvedFeatures,
   LoadUser,
   LoadUsers,
   LoggedInUserLoaded,
@@ -66,6 +78,9 @@ import {
   ProjectsLoadError,
   ProjectUpdated,
   ProjectUpdateError,
+  ResolvedFeaturesLoaded,
+  ResolvedFeaturesLoadError,
+  SetGlobalFeatureFlag,
   UpdateAccessToken,
   UpdateFeatureFlag,
   UpdatePreferredLanguage,
@@ -275,7 +290,10 @@ export class AppEffects {
     ofType(AppActionTypes.CreateFeatureFlag),
     switchMap((action: CreateFeatureFlag) =>
       this.featureFlagService.create(action.payload).pipe(
-        map((payload: UserFeatureFlag) => new FeatureFlagCreated(payload)),
+        mergeMap((payload: UserFeatureFlag) => [
+          new FeatureFlagCreated(payload),
+          new LoadResolvedFeatures()
+        ]),
         catchError(error => of(new FeatureFlagCreateError(error)))
       )
     )
@@ -285,7 +303,10 @@ export class AppEffects {
     ofType(AppActionTypes.UpdateFeatureFlag),
     switchMap((action: UpdateFeatureFlag) =>
       this.featureFlagService.update(action.payload).pipe(
-        map((payload: UserFeatureFlag) => new FeatureFlagUpdated(payload)),
+        mergeMap((payload: UserFeatureFlag) => [
+          new FeatureFlagUpdated(payload),
+          new LoadResolvedFeatures()
+        ]),
         catchError(error => of(new FeatureFlagUpdateError(error)))
       )
     )
@@ -295,7 +316,10 @@ export class AppEffects {
     ofType(AppActionTypes.DeleteFeatureFlag),
     switchMap((action: DeleteFeatureFlag) =>
       this.featureFlagService.delete(action.payload.id).pipe(
-        map((payload: UserFeatureFlag) => new FeatureFlagDeleted(payload)),
+        mergeMap((payload: UserFeatureFlag) => [
+          new FeatureFlagDeleted(payload),
+          new LoadResolvedFeatures()
+        ]),
         catchError(error => of(new FeatureFlagDeleteError(error)))
       )
     )
@@ -310,6 +334,58 @@ export class AppEffects {
           map((payload: UserFeatureFlag[]) => new FeatureFlagsDeleted(payload)),
           catchError(error => of(new FeatureFlagsDeleteError(error)))
         )
+    )
+  ));
+
+  // Resolved Features
+
+  loadResolvedFeatures$ = createEffect(() => this.actions$.pipe(
+    ofType(AppActionTypes.LoadResolvedFeatures),
+    switchMap(() =>
+      this.featureFlagService.resolved().pipe(
+        map((payload: ResolvedFeature[]) => new ResolvedFeaturesLoaded(payload)),
+        catchError(error => of(new ResolvedFeaturesLoadError(error)))
+      )
+    )
+  ));
+
+  // Global Feature Flags
+
+  loadGlobalFeatureFlags$ = createEffect(() => this.actions$.pipe(
+    ofType(AppActionTypes.LoadGlobalFeatureFlags),
+    switchMap(() =>
+      this.globalFeatureFlagService.list().pipe(
+        map((payload: GlobalFeatureFlag[]) => new GlobalFeatureFlagsLoaded(payload)),
+        catchError(error => of(new GlobalFeatureFlagsLoadError(error)))
+      )
+    )
+  ));
+
+  setGlobalFeatureFlag$ = createEffect(() => this.actions$.pipe(
+    ofType(AppActionTypes.SetGlobalFeatureFlag),
+    switchMap((action: SetGlobalFeatureFlag) =>
+      this.globalFeatureFlagService.set(action.payload.feature, action.payload.enabled).pipe(
+        mergeMap((payload: GlobalFeatureFlag) => [
+          new GlobalFeatureFlagSet(payload),
+          new LoadGlobalFeatureFlags(),
+          new LoadResolvedFeatures()
+        ]),
+        catchError(error => of(new GlobalFeatureFlagSetError(error)))
+      )
+    )
+  ));
+
+  deleteGlobalFeatureFlag$ = createEffect(() => this.actions$.pipe(
+    ofType(AppActionTypes.DeleteGlobalFeatureFlag),
+    switchMap((action: DeleteGlobalFeatureFlag) =>
+      this.globalFeatureFlagService.delete(action.payload).pipe(
+        mergeMap(() => [
+          new GlobalFeatureFlagDeleted(action.payload),
+          new LoadGlobalFeatureFlags(),
+          new LoadResolvedFeatures()
+        ]),
+        catchError(error => of(new GlobalFeatureFlagDeleteError(error)))
+      )
     )
   ));
 
@@ -333,6 +409,7 @@ export class AppEffects {
     private readonly projectService: ProjectService,
     private readonly accessTokenService: AccessTokenService,
     private readonly activityService: ActivityService,
-    private readonly featureFlagService: FeatureFlagService
+    private readonly featureFlagService: FeatureFlagService,
+    private readonly globalFeatureFlagService: GlobalFeatureFlagService
   ) {}
 }
