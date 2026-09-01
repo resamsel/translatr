@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use 'mixins' as *;
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 $dark-primary: mat.m2-define-palette(mat.$m2-green-palette, 700, 500, 900);
@@ -18,6 +19,8 @@ $dark-theme: mat.m2-define-dark-theme((
 
 .dark-theme {
   background-color: #121212;
+
+  @include header-tab-nav-on-dark;
 
   h1,
   h2,

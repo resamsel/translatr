@@ -21,3 +21,24 @@
     @content;
   }
 }
+
+// The project + user page headers sit an accent `mat-tab-nav-bar` on a
+// fixed vivid background (orange / blue). Material's themed tokens there —
+// dark grey inactive labels, amber active label + ink bar — read poorly,
+// so pin the labels, icons and indicator to white. The doubled class
+// outranks Material's own `.<theme> .mat-mdc-tab-nav-bar[.mat-accent]`
+// token blocks (specificity 0,3,0), which a rule outside the theme scope
+// cannot beat. Included from the `.light-theme` / `.dark-theme` blocks.
+@mixin header-tab-nav-on-dark() {
+  header .mat-mdc-tab-nav-bar.mat-mdc-tab-nav-bar {
+    --mat-tab-inactive-label-text-color: rgba(255, 255, 255, 0.7);
+    --mat-tab-inactive-focus-label-text-color: rgba(255, 255, 255, 0.7);
+    --mat-tab-inactive-hover-label-text-color: #fff;
+    --mat-tab-active-label-text-color: #fff;
+    --mat-tab-active-focus-label-text-color: #fff;
+    --mat-tab-active-hover-label-text-color: #fff;
+    --mat-tab-active-indicator-color: #fff;
+    --mat-tab-active-focus-indicator-color: #fff;
+    --mat-tab-active-hover-indicator-color: #fff;
+  }
+}

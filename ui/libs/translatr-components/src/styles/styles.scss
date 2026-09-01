@@ -405,11 +405,10 @@ header {
     // works on every header colour (orange project / blue user page).
     background-color: rgba(0, 0, 0, 0.15);
 
-    // Inactive tabs: a legible light grey against the header colour.
-    // The active tab is pure white (set above via `.mdc-tab--active`).
-    .mat-mdc-tab-link {
-      color: rgba(255, 255, 255, 0.8);
-    }
+    // Label, icon + ink-bar colours for this strip are set in the theme
+    // blocks via the `header-tab-nav-on-dark` mixin — they have to
+    // outrank Material's themed `.<theme> .mat-mdc-tab-nav-bar.mat-accent`
+    // tokens, which a rule out here cannot.
   }
 }
 
