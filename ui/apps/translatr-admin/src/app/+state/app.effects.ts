@@ -331,7 +331,10 @@ export class AppEffects {
       this.featureFlagService
         .deleteAll(action.payload.map((featureFlag: UserFeatureFlag) => featureFlag.id))
         .pipe(
-          map((payload: UserFeatureFlag[]) => new FeatureFlagsDeleted(payload)),
+          mergeMap((payload: UserFeatureFlag[]) => [
+            new FeatureFlagsDeleted(payload),
+            new LoadResolvedFeatures()
+          ]),
           catchError(error => of(new FeatureFlagsDeleteError(error)))
         )
     )

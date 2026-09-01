@@ -1,7 +1,5 @@
 package com.translatr.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.UUID;
 
 /**
@@ -9,7 +7,6 @@ import java.util.UUID;
  * setting (or null), the caller's own override (value + row id, or null) and the resulting
  * effective value.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResolvedFeatureDto {
     public String  feature;
     public boolean defaultEnabled;

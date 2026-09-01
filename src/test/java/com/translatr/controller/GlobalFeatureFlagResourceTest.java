@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 @QuarkusTest
 class GlobalFeatureFlagResourceTest {
@@ -28,9 +29,13 @@ class GlobalFeatureFlagResourceTest {
             .when().get("/api/featureflags/resolved")
             .then()
             .statusCode(200)
+            .body("size()", is(com.translatr.model.Feature.values().length))
             .body("feature", hasItem("language-switcher"))
             .body("find { it.feature == 'language-switcher' }.effective", is(false))
-            .body("find { it.feature == 'language-switcher' }.defaultEnabled", is(false));
+            .body("find { it.feature == 'language-switcher' }.defaultEnabled", is(false))
+            // a feature with no global row and no user override still emits the nullable keys
+            .body("find { it.feature == 'project-cli-card' }.global", nullValue())
+            .body("find { it.feature == 'project-cli-card' }.userOverride", nullValue());
     }
 
     @Test
