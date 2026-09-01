@@ -142,3 +142,6 @@ fabric.properties
 
 # Superpowers brainstorming scratch
 .superpowers/
+
+# Claude Code local workspace
+.claude/
