@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../../guards/auth.guard';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { DashboardFeatureFlagsPageComponent } from './dashboard-feature-flags-page/dashboard-feature-flags-page.component';
+import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
+import { DashboardGlobalFeatureFlagsComponent } from './dashboard-global-feature-flags/dashboard-global-feature-flags.component';
 import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
 import { DashboardPageComponent } from './dashboard-page.component';
 import { DASHBOARD_ROUTES } from './dashboard-page.token';
@@ -64,7 +66,30 @@ export const routes: Routes = [
         data: {
           icon: 'flag',
           name: 'Feature Flags'
-        }
+        },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'user'
+          },
+          {
+            component: DashboardFeatureFlagsComponent,
+            path: 'user',
+            data: {
+              icon: 'person',
+              name: 'featureFlags.tab.user'
+            }
+          },
+          {
+            component: DashboardGlobalFeatureFlagsComponent,
+            path: 'global',
+            data: {
+              icon: 'public',
+              name: 'featureFlags.tab.global'
+            }
+          }
+        ]
       }
     ]
   }

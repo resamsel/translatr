@@ -29,7 +29,7 @@
       </div>
     }
     @if (user$ | async; as user) {
-      <nav color="accent" mat-tab-nav-bar [tabPanel]="userTabPanel">
+      <nav color="accent" mat-tab-nav-bar [tabPanel]="userTabPanel" mat-stretch-tabs="false">
         <div class="container dense">
           @for (child of children; track child) {
             @if (canActivate$(child) | async) {

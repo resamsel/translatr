@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { DashboardFeatureFlagsPageComponent } from './dashboard-feature-flags-page.component';
 
@@ -16,6 +17,7 @@ describe('DashboardFeatureFlagsPageComponent', () => {
         imports: [
           NoopAnimationsModule,
           MatTabsModule,
+          RouterTestingModule,
           TranslocoTestingModule.forRoot({
             langs: { en: { 'featureFlags.tab.user': 'User', 'featureFlags.tab.global': 'Global' } },
             translocoConfig: { availableLangs: ['en'], defaultLang: 'en' }
@@ -32,10 +34,12 @@ describe('DashboardFeatureFlagsPageComponent', () => {
     fixture.detectChanges();
   });
 
-  it('renders a User and a Global tab', () => {
+  it('renders a User and a Global tab link in the header', () => {
     const labels = Array.from(
-      fixture.nativeElement.querySelectorAll('.mat-mdc-tab .mdc-tab__text-label')
-    ).map((el: HTMLElement) => el.textContent?.trim());
-    expect(labels).toEqual(['User', 'Global']);
+      fixture.nativeElement.querySelectorAll(
+        'header nav[mat-tab-nav-bar] a.mat-mdc-tab-link .mdc-tab__text-label > span'
+      )
+    ) as HTMLElement[];
+    expect(labels.map(el => el.textContent?.trim())).toEqual(['User', 'Global']);
   });
 });
