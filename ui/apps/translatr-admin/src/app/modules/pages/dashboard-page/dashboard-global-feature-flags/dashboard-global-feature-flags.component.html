@@ -14,7 +14,7 @@
   @for (row of rows$ | async; track row) {
     <div class="feature-row">
       <div class="feature-name">
-        <div class="title">{{ featureNames[row.feature] || row.feature }}</div>
+        <div class="title">{{ 'feature.name.' + row.feature | transloco }}</div>
         <div class="sub-title">{{ row.feature }}</div>
         <div class="sub-title">Default: {{ row.defaultEnabled ? 'on' : 'off' }}</div>
       </div>

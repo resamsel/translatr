@@ -14,14 +14,6 @@ export interface FeatureRow {
   enabled: boolean;
 }
 
-/** Human-readable labels for the {@link Feature} enum values. */
-const featureNames: Record<Feature, string> = {
-  [Feature.ProjectCliCard]: 'Project CLI integration card',
-  [Feature.ProjectInfographic]: 'Project infographic',
-  [Feature.HeaderGraphic]: 'Header graphic',
-  [Feature.LanguageSwitcher]: 'Language switcher'
-};
-
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +23,6 @@ const featureNames: Record<Feature, string> = {
 })
 export class DashboardFeatureFlagsComponent implements OnInit, OnDestroy {
   readonly Feature = Feature;
-  readonly featureNames = featureNames;
 
   private readonly me$ = this.facade.me$.pipe(filter(x => !!x));
 

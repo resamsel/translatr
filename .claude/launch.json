@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Start UI",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "port": 4210
+    },
+    {
+      "name": "Start Admin",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:admin"],
+      "port": 4211
+    }
+  ]
+}
