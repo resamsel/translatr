@@ -1,21 +1,29 @@
-<header class="header">
+<header class="header" *transloco="let t">
   <div class="container title">
     <div class="content">
-      <h1 class="page">{{ 'featureFlags.title' | transloco }}</h1>
+      <h1 class="page">{{ t('featureFlags.title') }}</h1>
     </div>
   </div>
+  <nav mat-tab-nav-bar color="accent" [tabPanel]="featureFlagsTabPanel" mat-stretch-tabs="false">
+    <div class="container dense">
+      @for (child of children; track child.path) {
+        <a
+          #link="routerLinkActive"
+          [routerLink]="child.path"
+          mat-tab-link
+          routerLinkActive
+          [active]="link.isActive"
+        >
+          <mat-icon>{{ child.icon }}</mat-icon>
+          <span>{{ t(child.name) }}</span>
+        </a>
+      }
+    </div>
+  </nav>
 </header>
-<div class="container">
-  <mat-tab-group animationDuration="0ms" mat-stretch-tabs="false">
-    <mat-tab [label]="'featureFlags.tab.user' | transloco">
-      <ng-template matTabContent>
-        <dev-dashboard-feature-flags></dev-dashboard-feature-flags>
-      </ng-template>
-    </mat-tab>
-    <mat-tab [label]="'featureFlags.tab.global' | transloco">
-      <ng-template matTabContent>
-        <dev-dashboard-global-feature-flags></dev-dashboard-global-feature-flags>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
-</div>
+
+<mat-tab-nav-panel #featureFlagsTabPanel>
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
+</mat-tab-nav-panel>

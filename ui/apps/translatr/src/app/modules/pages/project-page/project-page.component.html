@@ -16,7 +16,7 @@
       </div>
     }
     @if (project$ | async; as project) {
-      <nav mat-tab-nav-bar color="accent" [tabPanel]="projectTabPanel">
+      <nav mat-tab-nav-bar color="accent" [tabPanel]="projectTabPanel" mat-stretch-tabs="false">
         <div class="container dense">
           @for (child of children; track child) {
             @if ((childrenActive$ | async)[child.path]) {
