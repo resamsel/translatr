@@ -1,14 +1,26 @@
 import { Page } from './page.po';
 
 export class FeatureFlagsPage extends Page {
+  /** The tabbed Feature Flags page opens on the "User" tab. */
   navigateTo(): FeatureFlagsPage {
     cy.visit('/featureflags');
     return this;
   }
 
+  /** Open the page and switch to the "Global" tab. */
   navigateToGlobal(): FeatureFlagsPage {
-    cy.visit('/featureflags/global');
+    this.navigateTo();
+    this.selectTab('Global');
     return this;
+  }
+
+  selectTab(label: string): FeatureFlagsPage {
+    cy.get('[role="tab"]').contains(label).click();
+    return this;
+  }
+
+  getActiveTab(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('[role="tab"][aria-selected="true"]');
   }
 
   getGlobalDefaultLine(featureKey: string): Cypress.Chainable<JQuery<HTMLElement>> {

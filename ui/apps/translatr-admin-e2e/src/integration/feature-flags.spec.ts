@@ -12,7 +12,8 @@ describe('Admin Feature Flags', () => {
 
   it('renders one row per known feature with its global-default line', () => {
     page.navigateTo();
-    page.getPageName().should('have.text', 'Features');
+    page.getPageName().should('have.text', 'Feature Flags');
+    page.getActiveTab().should('contain.text', 'User');
     page.getRows().should('have.length', 4);
     page.getGlobalDefaultLine('header-graphic').should('contain.text', 'Global default: on');
     page.getGlobalDefaultLine('project-cli-card').should('contain.text', 'Global default: off');

@@ -1,34 +1,25 @@
-<header class="header">
-  <div class="container title">
-    <div class="content">
-      <h1 class="page">Global Feature Flags</h1>
+<p class="hint">
+  Toggle a feature for everyone. Off falls back to the feature’s hardcoded default; a per-user
+  override still wins over this.
+</p>
+
+@for (row of rows$ | async; track row) {
+  <div class="feature-row">
+    <div class="feature-name">
+      <div class="title">{{ 'feature.name.' + row.feature | transloco }}</div>
+      <div class="sub-title">{{ row.feature }}</div>
+      <div class="sub-title">Default: {{ row.defaultEnabled ? 'on' : 'off' }}</div>
+    </div>
+    <div class="feature-actions">
+      <button
+        mat-icon-button
+        [class.enabled]="row.enabled"
+        [class.disabled]="!row.enabled"
+        [matTooltip]="row.enabled ? 'Enabled globally, toggle to disable' : 'Disabled, toggle to enable globally'"
+        (click)="onToggle(row)"
+      >
+        <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+      </button>
     </div>
   </div>
-</header>
-<div class="container">
-  <p class="hint">
-    Toggle a feature for everyone. Off falls back to the feature’s hardcoded default; a per-user
-    override still wins over this.
-  </p>
-
-  @for (row of rows$ | async; track row) {
-    <div class="feature-row">
-      <div class="feature-name">
-        <div class="title">{{ 'feature.name.' + row.feature | transloco }}</div>
-        <div class="sub-title">{{ row.feature }}</div>
-        <div class="sub-title">Default: {{ row.defaultEnabled ? 'on' : 'off' }}</div>
-      </div>
-      <div class="feature-actions">
-        <button
-          mat-icon-button
-          [class.enabled]="row.enabled"
-          [class.disabled]="!row.enabled"
-          [matTooltip]="row.enabled ? 'Enabled globally, toggle to disable' : 'Disabled, toggle to enable globally'"
-          (click)="onToggle(row)"
-        >
-          <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-        </button>
-      </div>
-    </div>
-  }
-</div>
+}

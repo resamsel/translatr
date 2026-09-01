@@ -33,6 +33,7 @@ import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoModule } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
+import { DashboardFeatureFlagsPageComponent } from './dashboard-feature-flags-page/dashboard-feature-flags-page.component';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
 import { DashboardGlobalFeatureFlagsComponent } from './dashboard-global-feature-flags/dashboard-global-feature-flags.component';
 import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
@@ -50,6 +51,7 @@ import { DashboardUsersComponent } from './dashboard-users/dashboard-users.compo
     DashboardProjectsComponent,
     DashboardAccessTokensComponent,
     DashboardUserComponent,
+    DashboardFeatureFlagsPageComponent,
     DashboardFeatureFlagsComponent,
     DashboardGlobalFeatureFlagsComponent
   ],
