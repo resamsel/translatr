@@ -7,7 +7,6 @@ import com.translatr.mapper.DtoMapper;
 import com.translatr.model.ActionType;
 import com.translatr.model.User;
 import com.translatr.model.UserRole;
-import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.ws.rs.NotFoundException;
@@ -18,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +37,7 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
 
     @Mock UserRepository            userRepo;
-    @Mock UserFeatureFlagRepository featureFlagRepo;
+    @Mock FeatureResolver           featureResolver;
     @Mock DtoMapper                 mapper;
     @Mock ActivityLogger            activity;
     @Mock TranslatrConfig          config;
@@ -99,11 +97,29 @@ class UserServiceTest {
 
         when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
         when(mapper.toDto(user)).thenReturn(dto);
-        when(featureFlagRepo.listByUser(id)).thenReturn(Collections.emptyList());
+        when(featureResolver.resolveAll(id)).thenReturn(java.util.Map.of("language-switcher", false));
 
         UserDto result = service.get(id);
 
         assertThat(result.id).isEqualTo(id);
+    }
+
+    @Test
+    void get_attachesResolvedFeatures() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+        UserDto dto = new UserDto();
+        dto.id = id;
+
+        when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
+        when(mapper.toDto(user)).thenReturn(dto);
+        when(featureResolver.resolveAll(id))
+            .thenReturn(java.util.Map.of("header-graphic", true, "language-switcher", false));
+
+        UserDto result = service.get(id);
+
+        assertThat(result.features).containsEntry("header-graphic", true);
+        assertThat(result.features).containsEntry("language-switcher", false);
     }
 
     // -------------------------------------------------------------------------
