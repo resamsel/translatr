@@ -1,4 +1,7 @@
 import {
+  FeatureFlagCreated,
+  FeatureFlagDeleted,
+  FeatureFlagUpdated,
   GlobalFeatureFlagsLoaded,
   LoggedInUserLoaded,
   ResolvedFeaturesLoaded
@@ -41,6 +44,26 @@ describe('Admin Reducer', () => {
       expect(state.globalFeatureFlags).toEqual([
         { id: 'g1', feature: 'header-graphic', enabled: true }
       ]);
+    });
+  });
+
+  describe('feature flag mutations with no featureFlags slice loaded', () => {
+    it('returns state unchanged on FeatureFlagCreated', () => {
+      expect(
+        appReducer(initialState, new FeatureFlagCreated({ id: 'f1' } as any))
+      ).toBe(initialState);
+    });
+
+    it('returns state unchanged on FeatureFlagUpdated', () => {
+      expect(
+        appReducer(initialState, new FeatureFlagUpdated({ id: 'f1' } as any))
+      ).toBe(initialState);
+    });
+
+    it('returns state unchanged on FeatureFlagDeleted', () => {
+      expect(
+        appReducer(initialState, new FeatureFlagDeleted({ id: 'f1' } as any))
+      ).toBe(initialState);
     });
   });
 

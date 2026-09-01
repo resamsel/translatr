@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Feature, features, GlobalFeatureFlag, ResolvedFeature } from '@dev/translatr-model';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { Action } from '@ngrx/store';
+import { AppActionTypes } from '../../../../+state/app.actions';
 import { AppFacade } from '../../../../+state/app.facade';
 
 export interface GlobalFeatureRow {
@@ -26,8 +29,10 @@ const featureNames: Record<Feature, string> = {
   templateUrl: './dashboard-global-feature-flags.component.html',
   styleUrls: ['./dashboard-global-feature-flags.component.scss']
 })
-export class DashboardGlobalFeatureFlagsComponent implements OnInit {
+export class DashboardGlobalFeatureFlagsComponent implements OnInit, OnDestroy {
   readonly featureNames = featureNames;
+
+  private readonly destroy$ = new Subject<void>();
 
   readonly rows$: Observable<GlobalFeatureRow[]> = combineLatest([
     this.facade.resolvedFeatures$,
@@ -47,11 +52,31 @@ export class DashboardGlobalFeatureFlagsComponent implements OnInit {
     )
   );
 
-  constructor(private readonly facade: AppFacade) {}
+  constructor(private readonly facade: AppFacade, readonly snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.facade.loadResolvedFeatures();
     this.facade.loadGlobalFeatureFlags();
+
+    this.facade.globalFeatureFlagChanged$
+      .pipe(
+        filter(
+          (action: Action) =>
+            action.type === AppActionTypes.GlobalFeatureFlagSetError ||
+            action.type === AppActionTypes.GlobalFeatureFlagDeleteError
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.snackBar.open('Global feature flag could not be updated', 'Dismiss', {
+          duration: 8000
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onToggle(row: GlobalFeatureRow): void {

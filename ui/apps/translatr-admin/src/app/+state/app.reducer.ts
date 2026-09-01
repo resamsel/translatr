@@ -216,15 +216,17 @@ export function appReducer(state: AppState = initialState, action: AppAction): A
           }
         : state;
     case AppActionTypes.FeatureFlagsDeleted:
-      return {
-        ...state,
-        featureFlags: {
-          ...state.featureFlags,
-          list: state.featureFlags.list.filter((featureFlag: UserFeatureFlag) =>
-            action.payload.find((deleted: UserFeatureFlag) => featureFlag.id !== deleted.id)
-          )
-        }
-      };
+      return state.featureFlags
+        ? {
+            ...state,
+            featureFlags: {
+              ...state.featureFlags,
+              list: state.featureFlags.list.filter((featureFlag: UserFeatureFlag) =>
+                action.payload.find((deleted: UserFeatureFlag) => featureFlag.id !== deleted.id)
+              )
+            }
+          }
+        : state;
 
     // Resolved Features
 

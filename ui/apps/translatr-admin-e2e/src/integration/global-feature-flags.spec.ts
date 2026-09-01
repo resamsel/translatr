@@ -33,7 +33,7 @@ describe('Admin Global Feature Flags', () => {
 
   it('POSTs enabled=false when disabling a globally-enabled feature', () => {
     cy.intercept('POST', '/api/featureflag/global', {
-      body: { id: 'g0000000-0000-0000-0000-000000000001', feature: 'header-graphic', enabled: false }
+      body: { id: 'a0000000-0000-0000-0000-000000000001', feature: 'header-graphic', enabled: false }
     }).as('set');
 
     page.navigateToGlobal();
