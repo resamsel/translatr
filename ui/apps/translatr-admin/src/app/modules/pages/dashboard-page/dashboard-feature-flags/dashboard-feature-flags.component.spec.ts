@@ -11,25 +11,57 @@ import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags.compon
 describe('DashboardFeatureFlagsComponent', () => {
   let component: DashboardFeatureFlagsComponent;
   let fixture: ComponentFixture<DashboardFeatureFlagsComponent>;
-  let facade: {
-    me$: any;
-    featureFlags$: any;
-    loadFeatureFlags: jest.Mock;
-    createFeatureFlag: jest.Mock;
-    updateFeatureFlag: jest.Mock;
-    unloadFeatureFlags: jest.Mock;
-  };
+  let facade: any;
 
   const me = { id: 'user-1' };
+
+  const resolved = [
+    // language-switcher: user override ON, global default OFF
+    {
+      feature: Feature.LanguageSwitcher,
+      defaultEnabled: false,
+      global: null,
+      userOverride: true,
+      userOverrideId: 'ff-ls',
+      effective: true
+    },
+    // header-graphic: no override, global ON
+    {
+      feature: Feature.HeaderGraphic,
+      defaultEnabled: false,
+      global: true,
+      userOverride: null,
+      userOverrideId: null,
+      effective: true
+    },
+    // project-cli-card: nothing set, default OFF
+    {
+      feature: Feature.ProjectCliCard,
+      defaultEnabled: false,
+      global: null,
+      userOverride: null,
+      userOverrideId: null,
+      effective: false
+    },
+    {
+      feature: Feature.ProjectInfographic,
+      defaultEnabled: false,
+      global: null,
+      userOverride: null,
+      userOverrideId: null,
+      effective: false
+    }
+  ];
 
   beforeEach(
     waitForAsync(() => {
       facade = {
         me$: of(me),
-        featureFlags$: of({ list: [], total: 0, offset: 0, limit: 20 }),
-        loadFeatureFlags: jest.fn(),
+        resolvedFeatures$: of(resolved),
+        loadResolvedFeatures: jest.fn(),
         createFeatureFlag: jest.fn(),
         updateFeatureFlag: jest.fn(),
+        deleteFeatureFlag: jest.fn(),
         unloadFeatureFlags: jest.fn()
       };
 
@@ -47,44 +79,46 @@ describe('DashboardFeatureFlagsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('loads resolved features on init', () => {
+    expect(facade.loadResolvedFeatures).toHaveBeenCalled();
   });
 
-  it('loads the current user\'s feature flags on init', () => {
-    expect(facade.loadFeatureFlags).toHaveBeenCalledWith({ userId: 'user-1' });
-  });
-
-  it('renders one row per available feature', done => {
+  it('renders one row per feature with the global default and effective value', done => {
     component.rows$.subscribe(rows => {
       expect(rows.map(r => r.feature)).toEqual(features);
-      expect(rows.every(r => r.enabled === false)).toBe(true);
+      const hg = rows.find(r => r.feature === Feature.HeaderGraphic);
+      expect(hg.globalDefault).toBe(true); // global ?? defaultEnabled
+      expect(hg.enabled).toBe(true); // effective
+      const cli = rows.find(r => r.feature === Feature.ProjectCliCard);
+      expect(cli.globalDefault).toBe(false);
       done();
     });
   });
 
-  it('creates a flag when toggling a feature that has no row yet', () => {
-    component.onToggle({ feature: Feature.ProjectCliCard, enabled: false });
-
+  it('CREATE: toggling a feature with no override, away from the default, POSTs enabled=true', () => {
+    const row = { feature: Feature.ProjectCliCard, globalDefault: false, userOverrideId: null, enabled: false };
+    component.onToggle(row as any);
     expect(facade.createFeatureFlag).toHaveBeenCalledWith({
       userId: 'user-1',
       feature: Feature.ProjectCliCard,
       enabled: true
     });
+  });
+
+  it('DELETE: toggling an override back to the global default removes the row', () => {
+    const row = { feature: Feature.LanguageSwitcher, globalDefault: false, userOverrideId: 'ff-ls', enabled: true };
+    component.onToggle(row as any);
+    expect(facade.deleteFeatureFlag).toHaveBeenCalledWith({ id: 'ff-ls' });
     expect(facade.updateFeatureFlag).not.toHaveBeenCalled();
   });
 
-  it('updates the existing row when toggling a feature that already has one', () => {
-    const flag = {
-      id: 'ff-1',
-      userId: 'user-1',
-      feature: Feature.ProjectInfographic,
-      enabled: true
-    } as any;
-
-    component.onToggle({ feature: Feature.ProjectInfographic, flag, enabled: true });
-
-    expect(facade.updateFeatureFlag).toHaveBeenCalledWith({ ...flag, enabled: false });
-    expect(facade.createFeatureFlag).not.toHaveBeenCalled();
+  it('UPDATE: toggling an existing override away from the default flips enabled', () => {
+    // header-graphic global ON, imagine the user already had an override row ff-hg = true.
+    // globalDefault must be `true` here so that flipping enabled true->false moves AWAY from
+    // the default (the UPDATE path); with globalDefault=false this row is identical to the
+    // DELETE case and would hit the delete-on-return-to-default branch instead.
+    const row = { feature: Feature.HeaderGraphic, globalDefault: true, userOverrideId: 'ff-hg', enabled: true };
+    component.onToggle(row as any);
+    expect(facade.updateFeatureFlag).toHaveBeenCalledWith({ id: 'ff-hg', feature: Feature.HeaderGraphic, enabled: false });
   });
 });
