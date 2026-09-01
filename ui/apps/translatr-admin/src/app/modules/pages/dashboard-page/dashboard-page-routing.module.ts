@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../../guards/auth.guard';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
+import { DashboardGlobalFeatureFlagsComponent } from './dashboard-global-feature-flags/dashboard-global-feature-flags.component';
 import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
 import { DashboardPageComponent } from './dashboard-page.component';
 import { DASHBOARD_ROUTES } from './dashboard-page.token';
@@ -56,6 +57,14 @@ export const routes: Routes = [
         data: {
           icon: 'vpn_key',
           name: 'Access Tokens'
+        }
+      },
+      {
+        component: DashboardGlobalFeatureFlagsComponent,
+        path: 'featureflags/global',
+        data: {
+          icon: 'flag',
+          name: 'Global Feature Flags'
         }
       },
       {

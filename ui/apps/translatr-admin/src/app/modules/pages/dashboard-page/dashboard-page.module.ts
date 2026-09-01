@@ -33,6 +33,7 @@ import { TimeAgoModule } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
 import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
+import { DashboardGlobalFeatureFlagsComponent } from './dashboard-global-feature-flags/dashboard-global-feature-flags.component';
 import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
 import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
 import { DashboardPageComponent } from './dashboard-page.component';
@@ -48,7 +49,8 @@ import { DashboardUsersComponent } from './dashboard-users/dashboard-users.compo
     DashboardProjectsComponent,
     DashboardAccessTokensComponent,
     DashboardUserComponent,
-    DashboardFeatureFlagsComponent
+    DashboardFeatureFlagsComponent,
+    DashboardGlobalFeatureFlagsComponent
   ],
   imports: [
     CommonModule,
