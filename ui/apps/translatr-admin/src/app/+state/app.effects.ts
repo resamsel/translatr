@@ -38,7 +38,6 @@ import {
   DeleteAccessToken,
   DeleteAccessTokens,
   DeleteFeatureFlag,
-  DeleteFeatureFlags,
   DeleteGlobalFeatureFlag,
   DeleteProject,
   DeleteProjects,
@@ -48,10 +47,6 @@ import {
   FeatureFlagCreateError,
   FeatureFlagDeleted,
   FeatureFlagDeleteError,
-  FeatureFlagsDeleted,
-  FeatureFlagsDeleteError,
-  FeatureFlagsLoaded,
-  FeatureFlagsLoadError,
   FeatureFlagUpdated,
   FeatureFlagUpdateError,
   GlobalFeatureFlagDeleted,
@@ -62,7 +57,6 @@ import {
   GlobalFeatureFlagSetError,
   LoadAccessTokens,
   LoadActivities,
-  LoadFeatureFlags,
   LoadGlobalFeatureFlags,
   LoadProjects,
   LoadResolvedFeatures,
@@ -276,16 +270,6 @@ export class AppEffects {
 
   // Feature Flags
 
-  loadFeatureFlags$ = createEffect(() => this.actions$.pipe(
-    ofType(AppActionTypes.LoadFeatureFlags),
-    switchMap((action: LoadFeatureFlags) =>
-      this.featureFlagService.find(action.payload).pipe(
-        map((payload: PagedList<UserFeatureFlag>) => new FeatureFlagsLoaded(payload)),
-        catchError(error => of(new FeatureFlagsLoadError(error)))
-      )
-    )
-  ));
-
   createFeatureFlag$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.CreateFeatureFlag),
     switchMap((action: CreateFeatureFlag) =>
@@ -322,21 +306,6 @@ export class AppEffects {
         ]),
         catchError(error => of(new FeatureFlagDeleteError(error)))
       )
-    )
-  ));
-
-  deleteFeatureFlags$ = createEffect(() => this.actions$.pipe(
-    ofType(AppActionTypes.DeleteFeatureFlags),
-    switchMap((action: DeleteFeatureFlags) =>
-      this.featureFlagService
-        .deleteAll(action.payload.map((featureFlag: UserFeatureFlag) => featureFlag.id))
-        .pipe(
-          mergeMap((payload: UserFeatureFlag[]) => [
-            new FeatureFlagsDeleted(payload),
-            new LoadResolvedFeatures()
-          ]),
-          catchError(error => of(new FeatureFlagsDeleteError(error)))
-        )
     )
   ));
 

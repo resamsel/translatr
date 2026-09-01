@@ -4,7 +4,6 @@ import {
   Activity,
   ActivityCriteria,
   Feature,
-  FeatureFlagCriteria,
   GlobalFeatureFlag,
   PagedList,
   Project,
@@ -91,10 +90,6 @@ export enum AppActionTypes {
 
   // Feature Flags
 
-  LoadFeatureFlags = '[FeatureFlags Page] Load FeatureFlags',
-  FeatureFlagsLoaded = '[Translatr API] FeatureFlags Loaded',
-  FeatureFlagsLoadError = '[Translatr API] FeatureFlags Load Error',
-
   CreateFeatureFlag = '[FeatureFlags Page] Create FeatureFlag',
   FeatureFlagCreated = '[Translatr API] FeatureFlag Created',
   FeatureFlagCreateError = '[Translatr API] FeatureFlag Create Error',
@@ -106,10 +101,6 @@ export enum AppActionTypes {
   DeleteFeatureFlag = '[FeatureFlags Page] Delete FeatureFlag',
   FeatureFlagDeleted = '[Translatr API] FeatureFlag Deleted',
   FeatureFlagDeleteError = '[Translatr API] FeatureFlag Delete Error',
-
-  DeleteFeatureFlags = '[FeatureFlags Page] Delete FeatureFlags',
-  FeatureFlagsDeleted = '[Translatr API] FeatureFlags Deleted',
-  FeatureFlagsDeleteError = '[Translatr API] FeatureFlags Delete Error',
 
   // Resolved Features
 
@@ -430,24 +421,6 @@ export class ActivitiesLoaded implements Action {
 
 // Feature Flags
 
-export class LoadFeatureFlags implements Action {
-  readonly type = AppActionTypes.LoadFeatureFlags;
-
-  constructor(public payload?: FeatureFlagCriteria) {}
-}
-
-export class FeatureFlagsLoadError implements Action {
-  readonly type = AppActionTypes.FeatureFlagsLoadError;
-
-  constructor(public payload: HttpErrorResponse) {}
-}
-
-export class FeatureFlagsLoaded implements Action {
-  readonly type = AppActionTypes.FeatureFlagsLoaded;
-
-  constructor(public payload: PagedList<UserFeatureFlag>) {}
-}
-
 export class CreateFeatureFlag implements Action {
   readonly type = AppActionTypes.CreateFeatureFlag;
 
@@ -500,24 +473,6 @@ export class FeatureFlagDeleted implements Action {
   readonly type = AppActionTypes.FeatureFlagDeleted;
 
   constructor(public payload: UserFeatureFlag) {}
-}
-
-export class DeleteFeatureFlags implements Action {
-  readonly type = AppActionTypes.DeleteFeatureFlags;
-
-  constructor(public payload: UserFeatureFlag[]) {}
-}
-
-export class FeatureFlagsDeleteError implements Action {
-  readonly type = AppActionTypes.FeatureFlagsDeleteError;
-
-  constructor(public payload: HttpErrorResponse) {}
-}
-
-export class FeatureFlagsDeleted implements Action {
-  readonly type = AppActionTypes.FeatureFlagsDeleted;
-
-  constructor(public payload: UserFeatureFlag[]) {}
 }
 
 export class UpdatePreferredLanguage implements Action {
@@ -652,9 +607,6 @@ export type AppAction =
   | ActivitiesLoaded
   | ActivitiesLoadError
   // Feature Flags
-  | LoadFeatureFlags
-  | FeatureFlagsLoaded
-  | FeatureFlagsLoadError
   | CreateFeatureFlag
   | FeatureFlagCreated
   | FeatureFlagCreateError
@@ -664,9 +616,6 @@ export type AppAction =
   | DeleteFeatureFlag
   | FeatureFlagDeleted
   | FeatureFlagDeleteError
-  | DeleteFeatureFlags
-  | FeatureFlagsDeleted
-  | FeatureFlagsDeleteError
   // Resolved Features
   | LoadResolvedFeatures
   | ResolvedFeaturesLoaded

@@ -4,7 +4,6 @@ import {
   AccessToken,
   ActivityCriteria,
   Feature,
-  FeatureFlagCriteria,
   FeatureFlagFacade,
   GlobalFeatureFlag,
   Project,
@@ -25,7 +24,6 @@ import {
   DeleteAccessToken,
   DeleteAccessTokens,
   DeleteFeatureFlag,
-  DeleteFeatureFlags,
   DeleteGlobalFeatureFlag,
   DeleteProject,
   DeleteProjects,
@@ -33,7 +31,6 @@ import {
   DeleteUsers,
   LoadAccessTokens,
   LoadActivities,
-  LoadFeatureFlags,
   LoadGlobalFeatureFlags,
   LoadLoggedInUser,
   LoadProjects,
@@ -111,14 +108,8 @@ export class AppFacade extends FeatureFlagFacade {
 
   // Feature Flags
 
-  readonly unloadFeatureFlags$ = new Subject<void>();
-
-  readonly featureFlags$ = this.store.pipe(select(appQuery.getFeatureFlags));
   readonly featureFlagDeleted$ = this.actions$.pipe(
     ofType(AppActionTypes.FeatureFlagDeleted, AppActionTypes.FeatureFlagDeleteError)
-  );
-  readonly featureFlagsDeleted$ = this.actions$.pipe(
-    ofType(AppActionTypes.FeatureFlagsDeleted, AppActionTypes.FeatureFlagsDeleteError)
   );
 
   readonly resolvedFeatures$: Observable<ResolvedFeature[] | undefined> = this.store.pipe(
@@ -231,10 +222,6 @@ export class AppFacade extends FeatureFlagFacade {
 
   // Feature Flags
 
-  loadFeatureFlags(criteria: FeatureFlagCriteria) {
-    this.store.dispatch(new LoadFeatureFlags(criteria));
-  }
-
   createFeatureFlag(featureFlag: Partial<UserFeatureFlag>): void {
     this.store.dispatch(new CreateFeatureFlag(featureFlag as UserFeatureFlag));
   }
@@ -247,19 +234,11 @@ export class AppFacade extends FeatureFlagFacade {
     this.store.dispatch(new DeleteFeatureFlag(featureFlag));
   }
 
-  deleteFeatureFlags(featureFlags: UserFeatureFlag[]) {
-    this.store.dispatch(new DeleteFeatureFlags(featureFlags));
-  }
-
   hasFeatures$(flags: Feature | Feature[]): Observable<boolean> {
     return this.me$.pipe(
       filter(x => !!x),
       map(user => (user.features ? coerceArray(flags).every(flag => user.features[flag]) : false))
     );
-  }
-
-  unloadFeatureFlags() {
-    this.unloadFeatureFlags$.next();
   }
 
   loadResolvedFeatures(): void {

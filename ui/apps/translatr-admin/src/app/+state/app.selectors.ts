@@ -22,8 +22,6 @@ const getAccessTokens = createSelector(getAppState, (state: AppState) => state.a
 
 const getActivities = createSelector(getAppState, (state: AppState) => state.activities);
 
-const getFeatureFlags = createSelector(getAppState, (state: AppState) => state.featureFlags);
-
 const getResolvedFeatures = createSelector(
   getAppState,
   (state: AppState) => state.resolvedFeatures
@@ -41,7 +39,6 @@ export const appQuery = {
   getProjects,
   getAccessTokens,
   getActivities,
-  getFeatureFlags,
   getResolvedFeatures,
   getGlobalFeatureFlags
 };

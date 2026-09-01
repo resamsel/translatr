@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Feature, features, ResolvedFeature, UserFeatureFlag } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export interface FeatureRow {
   templateUrl: './dashboard-feature-flags.component.html',
   styleUrls: ['./dashboard-feature-flags.component.scss']
 })
-export class DashboardFeatureFlagsComponent implements OnInit, OnDestroy {
+export class DashboardFeatureFlagsComponent implements OnInit {
   readonly Feature = Feature;
 
   private readonly me$ = this.facade.me$.pipe(filter(x => !!x));
@@ -72,9 +72,5 @@ export class DashboardFeatureFlagsComponent implements OnInit, OnDestroy {
       .subscribe(me =>
         this.facade.createFeatureFlag({ userId: me.id, feature: row.feature, enabled: desired })
       );
-  }
-
-  ngOnDestroy(): void {
-    this.facade.unloadFeatureFlags();
   }
 }
