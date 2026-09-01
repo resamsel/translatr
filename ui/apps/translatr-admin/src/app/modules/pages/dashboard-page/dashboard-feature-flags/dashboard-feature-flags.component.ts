@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { Feature, features, UserFeatureFlag } from '@dev/translatr-model';
-import { combineLatest, Observable } from 'rxjs';
+import { Feature, features, ResolvedFeature, UserFeatureFlag } from '@dev/translatr-model';
+import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 
 export interface FeatureRow {
   feature: Feature;
-  /** The current user's flag row for this feature, if one exists yet. */
-  flag?: UserFeatureFlag;
+  /** `global ?? defaultEnabled` — the value the user gets with no override. */
+  globalDefault: boolean;
+  /** Id of the user's override row, if one exists. */
+  userOverrideId: string | null;
+  /** Effective value for the current user. */
   enabled: boolean;
 }
 
@@ -32,17 +35,17 @@ export class DashboardFeatureFlagsComponent implements OnInit, OnDestroy {
 
   private readonly me$ = this.facade.me$.pipe(filter(x => !!x));
 
-  /** One row per available Feature, joined with the current user's stored flags. */
-  readonly rows$: Observable<FeatureRow[]> = combineLatest([
-    this.facade.featureFlags$,
-    this.facade.me$
-  ]).pipe(
-    map(([page, me]) =>
+  readonly rows$: Observable<FeatureRow[]> = this.facade.resolvedFeatures$.pipe(
+    map((resolved: ResolvedFeature[] | undefined) =>
       features.map(feature => {
-        const flag = (page?.list ?? []).find(
-          f => f.feature === feature && (!me || f.userId === me.id)
-        );
-        return { feature, flag, enabled: !!flag?.enabled };
+        const r = (resolved ?? []).find(x => x.feature === feature);
+        const globalDefault = r ? (r.global ?? r.defaultEnabled) : false;
+        return {
+          feature,
+          globalDefault,
+          userOverrideId: r?.userOverrideId ?? null,
+          enabled: r ? r.effective : false
+        };
       })
     )
   );
@@ -50,20 +53,33 @@ export class DashboardFeatureFlagsComponent implements OnInit, OnDestroy {
   constructor(private readonly facade: AppFacade) {}
 
   ngOnInit(): void {
-    this.me$
-      .pipe(take(1))
-      .subscribe(me => this.facade.loadFeatureFlags({ userId: me.id }));
+    this.facade.loadResolvedFeatures();
   }
 
   onToggle(row: FeatureRow): void {
-    if (row.flag) {
-      this.facade.updateFeatureFlag({ ...row.flag, enabled: !row.flag.enabled });
+    const desired = !row.enabled;
+
+    // Returning to the value the user would get anyway → drop the override entirely.
+    if (desired === row.globalDefault) {
+      if (row.userOverrideId) {
+        this.facade.deleteFeatureFlag({ id: row.userOverrideId } as UserFeatureFlag);
+      }
       return;
     }
+
+    if (row.userOverrideId) {
+      this.facade.updateFeatureFlag({
+        id: row.userOverrideId,
+        feature: row.feature,
+        enabled: desired
+      } as UserFeatureFlag);
+      return;
+    }
+
     this.me$
       .pipe(take(1))
       .subscribe(me =>
-        this.facade.createFeatureFlag({ userId: me.id, feature: row.feature, enabled: true })
+        this.facade.createFeatureFlag({ userId: me.id, feature: row.feature, enabled: desired })
       );
   }
 

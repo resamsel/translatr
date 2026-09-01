@@ -7,7 +7,7 @@
 </header>
 <div class="container">
   <p class="hint">
-    Toggle a feature for your account. Only the features defined in the app are listed.
+    Toggle a feature for your account. “Global default” is what you get without an override.
   </p>
 
   @for (row of rows$ | async; track row) {
@@ -15,6 +15,7 @@
       <div class="feature-name">
         <div class="title">{{ featureNames[row.feature] || row.feature }}</div>
         <div class="sub-title">{{ row.feature }}</div>
+        <div class="sub-title">Global default: {{ row.globalDefault ? 'on' : 'off' }}</div>
       </div>
       <div class="feature-actions">
         <button
