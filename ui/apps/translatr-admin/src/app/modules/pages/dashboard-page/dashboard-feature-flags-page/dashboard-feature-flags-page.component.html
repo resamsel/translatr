@@ -1,0 +1,21 @@
+<header class="header">
+  <div class="container title">
+    <div class="content">
+      <h1 class="page">{{ 'featureFlags.title' | transloco }}</h1>
+    </div>
+  </div>
+</header>
+<div class="container">
+  <mat-tab-group animationDuration="0ms" mat-stretch-tabs="false">
+    <mat-tab [label]="'featureFlags.tab.user' | transloco">
+      <ng-template matTabContent>
+        <dev-dashboard-feature-flags></dev-dashboard-feature-flags>
+      </ng-template>
+    </mat-tab>
+    <mat-tab [label]="'featureFlags.tab.global' | transloco">
+      <ng-template matTabContent>
+        <dev-dashboard-global-feature-flags></dev-dashboard-global-feature-flags>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>

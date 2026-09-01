@@ -13,7 +13,8 @@ describe('Admin Global Feature Flags', () => {
 
   it('renders one row per known feature with its default', () => {
     page.navigateToGlobal();
-    page.getPageName().should('have.text', 'Global Feature Flags');
+    page.getPageName().should('have.text', 'Feature Flags');
+    page.getActiveTab().should('contain.text', 'Global');
     page.getRows().should('have.length', 4);
     page.getToggle('header-graphic').find('mat-icon').should('have.text', 'toggle_on');
     page.getToggle('language-switcher').find('mat-icon').should('have.text', 'toggle_off');

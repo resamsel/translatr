@@ -1,33 +1,24 @@
-<header class="header">
-  <div class="container title">
-    <div class="content">
-      <h1 class="page">Features</h1>
+<p class="hint">
+  Toggle a feature for your account. “Global default” is what you get without an override.
+</p>
+
+@for (row of rows$ | async; track row) {
+  <div class="feature-row">
+    <div class="feature-name">
+      <div class="title">{{ 'feature.name.' + row.feature | transloco }}</div>
+      <div class="sub-title">{{ row.feature }}</div>
+      <div class="sub-title">Global default: {{ row.globalDefault ? 'on' : 'off' }}</div>
+    </div>
+    <div class="feature-actions">
+      <button
+        mat-icon-button
+        [class.enabled]="row.enabled"
+        [class.disabled]="!row.enabled"
+        [matTooltip]="row.enabled ? 'Enabled, toggle to disable' : 'Disabled, toggle to enable'"
+        (click)="onToggle(row)"
+      >
+        <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+      </button>
     </div>
   </div>
-</header>
-<div class="container">
-  <p class="hint">
-    Toggle a feature for your account. “Global default” is what you get without an override.
-  </p>
-
-  @for (row of rows$ | async; track row) {
-    <div class="feature-row">
-      <div class="feature-name">
-        <div class="title">{{ 'feature.name.' + row.feature | transloco }}</div>
-        <div class="sub-title">{{ row.feature }}</div>
-        <div class="sub-title">Global default: {{ row.globalDefault ? 'on' : 'off' }}</div>
-      </div>
-      <div class="feature-actions">
-        <button
-          mat-icon-button
-          [class.enabled]="row.enabled"
-          [class.disabled]="!row.enabled"
-          [matTooltip]="row.enabled ? 'Enabled, toggle to disable' : 'Disabled, toggle to enable'"
-          (click)="onToggle(row)"
-        >
-          <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-        </button>
-      </div>
-    </div>
-  }
-</div>
+}
