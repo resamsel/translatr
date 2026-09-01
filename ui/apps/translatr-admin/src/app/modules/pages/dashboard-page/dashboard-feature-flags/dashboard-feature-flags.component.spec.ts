@@ -62,8 +62,7 @@ describe('DashboardFeatureFlagsComponent', () => {
         loadResolvedFeatures: jest.fn(),
         createFeatureFlag: jest.fn(),
         updateFeatureFlag: jest.fn(),
-        deleteFeatureFlag: jest.fn(),
-        unloadFeatureFlags: jest.fn()
+        deleteFeatureFlag: jest.fn()
       };
 
       TestBed.configureTestingModule({

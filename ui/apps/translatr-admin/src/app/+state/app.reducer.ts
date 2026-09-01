@@ -5,8 +5,7 @@ import {
   PagedList,
   Project,
   ResolvedFeature,
-  User,
-  UserFeatureFlag
+  User
 } from '@dev/translatr-model';
 import { AppAction, AppActionTypes } from './app.actions';
 
@@ -18,7 +17,6 @@ export interface AppState {
   projects?: PagedList<Project>;
   accessTokens?: PagedList<AccessToken>;
   activities?: PagedList<Activity>;
-  featureFlags?: PagedList<UserFeatureFlag>;
   resolvedFeatures?: ResolvedFeature[];
   globalFeatureFlags?: GlobalFeatureFlag[];
 }
@@ -172,61 +170,6 @@ export function appReducer(state: AppState = initialState, action: AppAction): A
         ...state,
         activities: action.payload
       };
-
-    // Feature Flags
-
-    case AppActionTypes.FeatureFlagsLoaded:
-      return {
-        ...state,
-        featureFlags: action.payload
-      };
-    case AppActionTypes.FeatureFlagCreated:
-      return state.featureFlags
-        ? {
-            ...state,
-            featureFlags: {
-              ...state.featureFlags,
-              list: [action.payload, ...state.featureFlags.list],
-              total: state.featureFlags.total + 1
-            }
-          }
-        : state;
-    case AppActionTypes.FeatureFlagUpdated:
-      return state.featureFlags
-        ? {
-            ...state,
-            featureFlags: {
-              ...state.featureFlags,
-              list: state.featureFlags.list.map((featureFlag: UserFeatureFlag) =>
-                featureFlag.id === action.payload.id ? action.payload : featureFlag
-              )
-            }
-          }
-        : state;
-    case AppActionTypes.FeatureFlagDeleted:
-      return state.featureFlags
-        ? {
-            ...state,
-            featureFlags: {
-              ...state.featureFlags,
-              list: state.featureFlags.list.filter(
-                (featureFlag: UserFeatureFlag) => featureFlag.id !== action.payload.id
-              )
-            }
-          }
-        : state;
-    case AppActionTypes.FeatureFlagsDeleted:
-      return state.featureFlags
-        ? {
-            ...state,
-            featureFlags: {
-              ...state.featureFlags,
-              list: state.featureFlags.list.filter((featureFlag: UserFeatureFlag) =>
-                action.payload.find((deleted: UserFeatureFlag) => featureFlag.id !== deleted.id)
-              )
-            }
-          }
-        : state;
 
     // Resolved Features
 
