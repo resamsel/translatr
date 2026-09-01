@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Feature, features } from '@dev/translatr-model';
 import { of, Subject } from 'rxjs';
 import { AppActionTypes } from '../../../../+state/app.actions';
@@ -40,7 +41,13 @@ describe('DashboardGlobalFeatureFlagsComponent', () => {
       };
       TestBed.configureTestingModule({
         declarations: [DashboardGlobalFeatureFlagsComponent],
-        imports: [NoopAnimationsModule, MatButtonModule, MatIconModule, MatTooltipModule],
+        imports: [
+          NoopAnimationsModule,
+          MatButtonModule,
+          MatIconModule,
+          MatTooltipModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
+        ],
         providers: [
           { provide: AppFacade, useValue: facade },
           { provide: MatSnackBar, useValue: snackBar }

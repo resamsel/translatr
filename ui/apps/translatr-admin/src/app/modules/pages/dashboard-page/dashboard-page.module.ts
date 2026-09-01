@@ -28,6 +28,7 @@ import {
   UserCardModule,
   UserEditDialogModule
 } from '@dev/translatr-components';
+import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoModule } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
@@ -84,7 +85,8 @@ import { DashboardUsersComponent } from './dashboard-users/dashboard-users.compo
     MatToolbarModule,
     MetricModule,
     MatTooltipModule,
-    ShortNumberModule
+    ShortNumberModule,
+    TranslocoModule
   ],
   providers: []
 })

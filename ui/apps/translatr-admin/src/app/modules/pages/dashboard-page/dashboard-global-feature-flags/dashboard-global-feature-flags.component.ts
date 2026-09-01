@@ -15,13 +15,6 @@ export interface GlobalFeatureRow {
   enabled: boolean;
 }
 
-const featureNames: Record<Feature, string> = {
-  [Feature.ProjectCliCard]: 'Project CLI integration card',
-  [Feature.ProjectInfographic]: 'Project infographic',
-  [Feature.HeaderGraphic]: 'Header graphic',
-  [Feature.LanguageSwitcher]: 'Language switcher'
-};
-
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,8 +23,6 @@ const featureNames: Record<Feature, string> = {
   styleUrls: ['./dashboard-global-feature-flags.component.scss']
 })
 export class DashboardGlobalFeatureFlagsComponent implements OnInit, OnDestroy {
-  readonly featureNames = featureNames;
-
   private readonly destroy$ = new Subject<void>();
 
   readonly rows$: Observable<GlobalFeatureRow[]> = combineLatest([

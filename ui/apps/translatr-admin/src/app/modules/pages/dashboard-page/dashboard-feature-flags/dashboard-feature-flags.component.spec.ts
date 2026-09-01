@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Feature, features } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../../+state/app.facade';
@@ -67,7 +68,13 @@ describe('DashboardFeatureFlagsComponent', () => {
 
       TestBed.configureTestingModule({
         declarations: [DashboardFeatureFlagsComponent],
-        imports: [NoopAnimationsModule, MatButtonModule, MatIconModule, MatTooltipModule],
+        imports: [
+          NoopAnimationsModule,
+          MatButtonModule,
+          MatIconModule,
+          MatTooltipModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
+        ],
         providers: [{ provide: AppFacade, useValue: facade }]
       }).compileComponents();
     })
