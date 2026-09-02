@@ -30,6 +30,7 @@
     "build": "npm run lint && npm run test && npm run e2e && npm run build:prod",
     "prebuild:prod": "npm run buildinfo",
     "build:prod": "npm run build:ui:prod && npm run build:admin:prod",
+    "prebuild:ui:prod": "npm run buildinfo",
     "build:ui:prod": "nx build translatr --configuration production --output-path ../public/ui",
     "build:admin:prod": "nx build translatr-admin --configuration production --output-path ../public/admin",
     "build:lets-generate": "nx build lets-generate",
