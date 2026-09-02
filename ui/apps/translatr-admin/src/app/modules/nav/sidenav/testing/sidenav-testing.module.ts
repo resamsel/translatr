@@ -7,7 +7,7 @@ import { User } from '@dev/translatr-model';
   standalone: false,
   selector: 'app-sidenav',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: ''
+  template: '<ng-content></ng-content>'
 })
 class MockSidenavComponent {
   @Input() page: string;

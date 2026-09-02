@@ -1,19 +1,11 @@
 @use 'mixins' as *;
 
-.sidenav-content {
+// `app-sidenav` is the page chrome inside `<mat-sidenav-content>`: a flex column
+// so the footer sits below the (growing) routed content.
+:host {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  z-index: 0;
-}
-
-.mat-sidenav-container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
+  min-height: 100%;
 }
 
 .main-container {

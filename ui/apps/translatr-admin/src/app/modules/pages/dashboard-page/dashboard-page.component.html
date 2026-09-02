@@ -1,17 +1,24 @@
-<app-sidenav [me]="me$ | async" [overlay]="true" [page]="activePage()" [sidenav]="sidenav">
-  <mat-sidenav #sidenav mode="side" class="sidenav">
-    <mat-toolbar>
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <span>Translatr Admin</span>
-    </mat-toolbar>
+<mat-sidenav-container class="admin-shell">
+  <mat-sidenav
+    #sidenav
+    class="sidenav"
+    [mode]="(isLarge$ | async) ? 'side' : 'over'"
+    [opened]="isLarge$ | async"
+  >
+    @if ((isLarge$ | async) === false) {
+      <mat-toolbar>
+        <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span>Translatr Admin</span>
+      </mat-toolbar>
+    }
     <mat-nav-list routerLinkActive>
       @for (child of children; track child) {
         <a
           mat-list-item
           [routerLink]="[routerLink(child)]"
-          (click)="sidenav.close()"
+          (click)="sidenav.mode === 'over' && sidenav.close()"
           [class.list-item-active]="isLinkActive(routerLink(child))"
         >
           <mat-icon matListItemIcon>{{ child.data.icon }}</mat-icon>
@@ -21,7 +28,11 @@
     </mat-nav-list>
   </mat-sidenav>
 
-  <div class="content">
-    <router-outlet></router-outlet>
-  </div>
-</app-sidenav>
+  <mat-sidenav-content>
+    <app-sidenav [me]="me$ | async" [overlay]="true" [page]="activePage()" [sidenav]="sidenav">
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+    </app-sidenav>
+  </mat-sidenav-content>
+</mat-sidenav-container>
