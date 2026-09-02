@@ -1,6 +1,7 @@
 package com.translatr.controller;
 
 import com.translatr.config.TranslatrConfig;
+import io.quarkus.arc.profile.IfBuildProfile;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -14,10 +15,14 @@ import java.net.URI;
  *
  * <p>Quarkus OIDC's RP-initiated logout ({@code quarkus.oidc.logout.post-logout-path=/ui})
  * builds {@code post_logout_redirect_uri} relative to the backend origin, so after Keycloak
- * logout the browser lands on {@code <backend>/ui}. The SPA is actually reached at
- * {@link TranslatrConfig#redirectBase()}{@code + "/ui"} (a separate dev-server origin in dev,
- * the same origin in prod), so forward there — the same target the login flow uses.</p>
+ * logout the browser lands on {@code <backend>/ui}. In dev the SPA lives on a separate
+ * dev-server origin ({@link TranslatrConfig#redirectBase()}{@code + "/ui"}), so bounce there.
+ *
+ * <p>Dev-only: in prod the SPA is served from this same origin by Quinoa under {@code /ui},
+ * so a JAX-RS resource on {@code @Path("/ui")} would both shadow Quinoa's SPA routing for
+ * {@code /ui/**} and 303-loop {@code <backend>/ui} onto itself.
  */
+@IfBuildProfile("dev")
 @Path("/ui")
 public class UiLandingResource {
 

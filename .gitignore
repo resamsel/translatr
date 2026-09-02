@@ -139,6 +139,8 @@ fabric.properties
 /build/
 /.gradle/
 /ui/.nx
+# Quinoa's package.json fingerprint marker (written next to ui-dir on build)
+/.quinoa/
 
 # Superpowers brainstorming scratch
 .superpowers/
