@@ -1,13 +1,26 @@
 @use 'mixins' as *;
 
-@include large {
-  ::ng-deep .main-container {
-    display: flex;
-  }
+// The shell fills the viewport; `<mat-sidenav-content>` scrolls within it.
+.admin-shell {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+}
 
+.sidenav {
+  width: 240px;
+}
+
+@include large {
+  // From `large` up the drawer is docked (`mode="side"` + open); Material pushes
+  // `<mat-sidenav-content>` aside on its own.
   .sidenav {
-    display: flex;
-    width: 240px;
+    // The in-drawer toolbar (back arrow + title) only makes sense while the
+    // sidebar is a dismissible overlay; when it is permanent it just repeats
+    // the app header.
+    mat-toolbar {
+      display: none;
+    }
 
     .mat-mdc-nav-list {
       margin-top: 32px;
@@ -22,13 +35,5 @@
         }
       }
     }
-  }
-
-  .topnav {
-    display: none;
-  }
-
-  .content {
-    flex-grow: 1;
   }
 }

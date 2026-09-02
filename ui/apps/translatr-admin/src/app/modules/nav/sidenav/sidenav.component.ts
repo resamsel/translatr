@@ -1,10 +1,7 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Link } from '@dev/translatr-components';
 import { Feature, User } from '@dev/translatr-model';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -26,10 +23,4 @@ export class SidenavComponent {
   readonly uiUrl = environment.uiUrl;
 
   readonly Feature = Feature;
-
-  isHandset$: Observable<boolean> = this.breakpointObserver
-    .observe(Breakpoints.Handset)
-    .pipe(map(result => result.matches));
-
-  constructor(private breakpointObserver: BreakpointObserver) {}
 }
