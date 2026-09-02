@@ -19,6 +19,12 @@ class TranslatrConfigTest {
     @ConfigProperty(name = "quarkus.oidc.authentication.scopes")
     List<String> oidcScopes;
 
+    // After the Keycloak code exchange Quarkus lands on redirect-path (/authenticate) and
+    // would drop the original ?redirect_uri=. Restoring the original request URI is what
+    // lets LoginResource.login() re-run authenticated and 303 to the requested route (#245).
+    @ConfigProperty(name = "quarkus.oidc.authentication.restore-path-after-redirect")
+    boolean restorePathAfterRedirect;
+
     @Test
     void testDefaults() {
         assertThat(config.auth().providers()).isNotBlank();
@@ -28,5 +34,10 @@ class TranslatrConfigTest {
     @Test
     void requestsMicroprofileJwtScope_forTheGroupsClaim() {
         assertThat(oidcScopes).contains("microprofile-jwt");
+    }
+
+    @Test
+    void restoresOriginalRequestUri_afterLoginRedirect() {
+        assertThat(restorePathAfterRedirect).isTrue();
     }
 }
