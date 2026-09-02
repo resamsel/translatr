@@ -12,6 +12,7 @@ import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -113,7 +114,7 @@ public class LoginResource {
         if (origin.equals(originOf(safeUri(config.redirectBase())))) {
             return true;
         }
-        return config.allowedRedirectOrigins().stream()
+        return config.allowedRedirectOrigins().orElseGet(List::of).stream()
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .map(LoginResource::safeUri)

@@ -20,8 +20,7 @@ public interface TranslatrConfig {
      * {@code /ui}. Needed when the admin SPA is served from a different origin than {@code redirectBase}.
      * Env: {@code ALLOWED_REDIRECT_ORIGINS} (comma-separated).
      */
-    @WithDefault("")
-    List<String> allowedRedirectOrigins();
+    Optional<List<String>> allowedRedirectOrigins();
 
     Optional<String> admins();
 
