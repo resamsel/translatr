@@ -99,3 +99,15 @@ tasks.named("quarkusDev") {
     dependsOn(copyUiToBuild)
 }
 
+// ---------------------------------------------------------------------------
+// Heroku deployment entry point
+// ---------------------------------------------------------------------------
+// The heroku/gradle buildpack runs `./gradlew stage` when a `stage` task
+// exists. Build the Quarkus fast-jar (build/quarkus-app/) only — the test
+// suite needs a database and runs in CI, not on the dyno build.
+tasks.register("stage") {
+    description = "Builds the Quarkus fast-jar for Heroku deployment (no tests)."
+    group = "build"
+    dependsOn("quarkusBuild")
+}
+
