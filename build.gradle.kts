@@ -61,6 +61,15 @@ openApiGenerate {
     outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.path)
     apiPackage.set("com.translatr.generated.api")
     modelPackage.set("com.translatr.dto")
+    // Three additional generator options required to match the brief's contract and avoid
+    // unwanted runtime dependencies:
+    // - useTags=true: without it, jaxrs-spec groups by path prefix (/api/...) and names the
+    //   interface ApiApi instead of OidcProvidersApi; we need it to use the openapi.yaml
+    //   tags field (tags: [oidc-providers]) to derive the correct interface name.
+    // - useSwaggerAnnotations=false, openApiNullable=false: the default templates emit Swagger
+    //   1.x annotations and JsonNullable, requiring io.swagger:swagger-annotations and
+    //   org.openapitools:jackson-databind-nullable. This project standardizes on MicroProfile
+    //   OpenAPI + plain Jackson, so we disable both to avoid pulling in unused dependencies.
     configOptions.set(
         mapOf(
             "interfaceOnly" to "true",
@@ -79,6 +88,11 @@ openApiGenerate {
     )
     // ErrorResponse already exists as a hand-written class at com.translatr.dto.ErrorResponse;
     // restrict codegen to the models we actually want generated so it isn't duplicated.
+    // When any of models/apis/supportingFiles global properties is set, openapi-generator's
+    // DefaultGenerator switches to "selective generation" mode: unlisted categories default to OFF.
+    // We set models to filter it, but must also explicitly re-enable apis and supportingFiles
+    // (empty string = "generate all") or OidcProvidersApi.java and supporting files would stop
+    // being generated. If adding a second resource, keep apis/supportingFiles present.
     globalProperties.set(
         mapOf(
             "models" to "OidcProviderStatus",
