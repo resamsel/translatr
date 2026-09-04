@@ -93,6 +93,10 @@ openApiGenerate {
     // We set models to filter it, but must also explicitly re-enable apis and supportingFiles
     // (empty string = "generate all") or OidcProvidersApi.java and supporting files would stop
     // being generated. If adding a second resource, keep apis/supportingFiles present.
+    // Action item: when migrating a new resource that introduces a new schema, add that
+    // schema's name to the "models" comma-separated list below — a schema left off this
+    // list is silently not generated, which surfaces later as a Java/TS compile error
+    // (missing class/module), not as an obvious openapi-generator failure.
     globalProperties.set(
         mapOf(
             "models" to "OidcProviderStatus",
@@ -106,8 +110,11 @@ tasks.named("compileJava") {
     dependsOn("openApiGenerate")
 }
 
-// Only include the new com/translatr package tree — legacy Play sources in
-// src/main/java/{dto,models,…} are migrated phase-by-phase and excluded until ready.
+// src/main/java now contains only the com/translatr package tree (the last legacy
+// Play package, src/main/java/dto, was removed once its contents migrated). The
+// explicit include() below is what also pulls in the openapi-generator output
+// srcDir added further down — keep both in sync if the generated package ever
+// moves outside com/translatr.
 sourceSets {
     main {
         java {

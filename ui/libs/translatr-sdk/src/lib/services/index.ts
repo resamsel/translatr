@@ -2,6 +2,7 @@ export * from './abstract.service';
 export * from './access-token.service';
 export * from './activity.service';
 export * from './auth-client.service';
+export * from '../generated/model/oidcProviderStatus';
 export * from './feature-flag.service';
 export * from './global-feature-flag.service';
 export * from './error-handler';

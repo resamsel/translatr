@@ -7,6 +7,7 @@ sections in order to know what and how to work on something.
 1. [How to suggest a new feature](#how-to-suggest-a-new-feature)
 1. [How to set up your environment and run tests](#how-to-set-up-your-environment-and-run-tests)
 1. [How to add support for a new file format](#how-to-add-support-for-a-new-file-format)
+1. [Contract-first OpenAPI (in progress)](#contract-first-openapi-in-progress)
 1. [Pull request guidelines](#pull-request-guidelines)
 
 ## How to file a bug report
@@ -326,6 +327,39 @@ To be able to validate importing and exporting unit tests need to be added. See 
 
 With the changes above, create a pull request. That PR should be handled quite easily and is added in the next version.
 See [Pull request guidelines](#pull-request-guidelines) for details.
+
+## Contract-first OpenAPI (in progress)
+
+`src/main/resources/META-INF/openapi.yaml` is the source of truth for **migrated**
+resources only. Everything else is still discovered by MicroProfile OpenAPI scanning
+annotated JAX-RS resource classes; smallrye merges both into the document served at
+runtime.
+
+To migrate a resource to contract-first, in order:
+
+1. Add or extend that resource's paths and schemas in `openapi.yaml`.
+2. If you introduce a new schema, add its name to `build.gradle.kts`'s
+   `openApiGenerate.globalProperties["models"]` comma-separated list. A schema left
+   off that list is silently not generated — it surfaces later as a compile error,
+   not as an obvious spec problem.
+3. Make the Java resource class `implement` the generated interface instead of
+   hand-declaring JAX-RS annotations (`@GET`, `@Path`, etc.).
+4. Add the resource class to `mp.openapi.scan.exclude.classes` in
+   `application.properties` so MicroProfile OpenAPI stops also scanning it.
+5. On the frontend, repoint the hand-written Angular service to the generated
+   model/client under `ui/libs/translatr-sdk/src/lib/generated/`.
+
+**Base-path gotcha:** an Angular component or service that constructor-injects a
+generated `*Service` directly gets a broken absolute `http://localhost` base URL —
+the generated `BaseService`'s hardcoded fallback — unless the app registers a root
+`BASE_PATH`/`Configuration` provider, which neither Angular app currently does. Until
+someone adds that root-level provider, construct the service manually with
+`new Configuration({ basePath: '' })` instead, as
+`ui/libs/translatr-sdk/src/lib/services/auth-client.service.ts` does; every new
+generated-service consumer must replicate this workaround for now.
+
+See `docs/superpowers/specs/2026-09-04-contract-first-openapi-design.md` for the
+full design rationale.
 
 ## Publishing Docker Image
 
