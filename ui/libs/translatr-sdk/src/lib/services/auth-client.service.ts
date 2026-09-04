@@ -17,7 +17,12 @@ export class AuthClientService {
   // not do. Passing an explicit Configuration with basePath: '' keeps
   // requests relative (e.g. '/api/oidc-providers'), matching how the rest
   // of this app calls the backend from whatever origin it's actually served
-  // from.
+  // from. The second positional constructor argument ('') below is the
+  // generated class's own basePath parameter — it's non-optional in the
+  // generated constructor signature, but its value is redundant here because
+  // the explicit Configuration passed as the third argument takes precedence
+  // over it at request time. Keep passing it; it's required-but-ignored, not
+  // dead code to delete.
   private readonly oidcProvidersService: OidcProvidersService;
 
   constructor(private readonly http: HttpClient) {
