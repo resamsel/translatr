@@ -61,6 +61,12 @@ public class LoginResource {
             @PathParam("provider") String provider,
             @QueryParam("redirect_uri") String redirectUri) {
 
+        TranslatrConfig.OidcProviderConfig p = config.auth().oidc().get(provider);
+        if (p == null || p.clientId().map(String::isBlank).orElse(true)) {
+            throw new jakarta.ws.rs.NotFoundException(
+                    "unknown or unconfigured auth provider: " + provider);
+        }
+
         return Response.seeOther(resolveTarget(redirectUri)).build();
     }
 
