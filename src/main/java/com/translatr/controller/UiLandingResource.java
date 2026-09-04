@@ -13,9 +13,8 @@ import java.net.URI;
 /**
  * Landing point for {@code GET /ui} on the backend origin.
  *
- * <p>Quarkus OIDC's RP-initiated logout ({@code quarkus.oidc.logout.post-logout-path=/ui})
- * builds {@code post_logout_redirect_uri} relative to the backend origin, so after Keycloak
- * logout the browser lands on {@code <backend>/ui}. In dev the SPA lives on a separate
+ * <p>Two flows land here on the backend origin: the OIDC login redirect (post-authentication),
+ * and {@link LogoutResource}'s local-session-clear redirect. In dev the SPA lives on a separate
  * dev-server origin ({@link TranslatrConfig#redirectBase()}{@code + "/ui"}), so bounce there.
  *
  * <p>Excluded from the {@code prod} build: there the SPA is served from this same origin by
