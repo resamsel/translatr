@@ -19,9 +19,14 @@ import java.util.Locale;
 import org.jboss.logging.Logger;
 
 /**
- * Resolves a per-request OIDC tenant from the {@code /login/{provider}} path (initial challenge) or
- * from the tenant id Quarkus already stashed on the {@link RoutingContext} from the
- * authorization-code state / session cookie (callback + later requests).
+ * Resolves a per-request OIDC tenant from the {@code /login/{provider}} path (initial challenge) or,
+ * when the path names no provider, from the tenant id Quarkus already stashed on the
+ * {@link RoutingContext} from the authorization-code state / session cookie (callback + later
+ * requests).
+ *
+ * <p>The path wins on purpose: Quarkus stamps the tenant attribute from the first session cookie on
+ * <em>every</em> request, so preferring it would make provider switching impossible for anyone who
+ * already has a session.
  *
  * <p>Returns {@code null} when the request is not an OIDC login, or names a provider that is absent
  * / has no {@code client-id} / has an unknown {@code provider} preset. With the static default
@@ -46,9 +51,13 @@ public class TranslatrTenantConfigResolver implements TenantConfigResolver {
     @Override
     public Uni<OidcTenantConfig> resolve(
             RoutingContext context, OidcRequestContext<OidcTenantConfig> requestContext) {
-        String tenantId = context.get(OidcUtils.TENANT_ID_ATTRIBUTE);
+        // Path FIRST: OidcAuthenticationMechanism#setTenantIdAttribute stamps TENANT_ID_ATTRIBUTE
+        // from the first q_session*/q_auth* cookie on every request, including /login/{provider}.
+        // Reading it first would pin a user with an existing session to that session's provider
+        // forever. /authenticate and all non-/login paths yield null here and fall through.
+        String tenantId = tenantIdFromPath(context.normalizedPath());
         if (tenantId == null) {
-            tenantId = tenantIdFromPath(context.normalizedPath());
+            tenantId = context.get(OidcUtils.TENANT_ID_ATTRIBUTE);
         }
         if (tenantId == null) {
             return Uni.createFrom().nullItem();
@@ -84,6 +93,11 @@ public class TranslatrTenantConfigResolver implements TenantConfigResolver {
         }
         authentication.end();
 
+        // NB: no logout().path(...) here on purpose. Quarkus's RP-initiated logout builds a redirect
+        // straight off OidcConfigurationMetadata#getEndSessionUri, which is null for every social
+        // preset in our roster (Google, GitHub, Facebook, Apple, X publish no end_session_endpoint)
+        // and would NPE. GET /logout is served by LogoutResource as a local session clear instead;
+        // see resamsel/translatr#258 for real IdP-side logout.
         p.clientSecret()
                 .filter(s -> !s.isBlank())
                 .ifPresent(s -> b.credentials().clientSecret(s).end());

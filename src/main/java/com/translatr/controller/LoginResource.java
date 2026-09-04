@@ -20,14 +20,16 @@ import java.util.Locale;
  *
  * <p>{@code @Authenticated} causes Quarkus OIDC (hybrid mode) to call
  * {@code HttpAuthenticationMechanism.sendChallenge()} when there is no session.
- * For browser requests ({@code Accept: text/html}) that issues a 302 redirect to
- * Keycloak; for AJAX/API requests it returns 401. The
- * {@code ExceptionMappers.UnauthorizedMapper} has been intentionally removed so
- * it cannot intercept the exception before {@code sendChallenge()} runs.</p>
+ * For browser requests ({@code Accept: text/html}) that issues a redirect to the
+ * authorization endpoint of the provider that {@code TranslatrTenantConfigResolver}
+ * resolved from the {@code /login/{provider}} path; for AJAX/API requests it returns
+ * 401. The {@code ExceptionMappers.UnauthorizedMapper} has been intentionally removed
+ * so it cannot intercept the exception before {@code sendChallenge()} runs.</p>
  *
- * <p>After Keycloak authenticates the user, Quarkus restores the original request
- * URI ({@code quarkus.oidc.authentication.restore-path-after-redirect=true}) and
- * the browser lands back here <em>with a session</em> and the original
+ * <p>After the provider authenticates the user, Quarkus restores the original request
+ * URI — {@code authentication.restore-path-after-redirect} is set on the per-tenant
+ * {@code OidcTenantConfig} the resolver builds, not by a static property — and the
+ * browser lands back here <em>with a session</em> and the original
  * {@code ?redirect_uri=}. This method then 303s to that route, so re-authenticating
  * mid-session returns the user to where they were (#245).</p>
  *

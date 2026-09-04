@@ -82,9 +82,29 @@ class AuthProviderStatusServiceTest {
 
     @Test
     void unknownPreset_reportsError() {
-        var x = svc("x", Map.of("x", p("gooogle", null, "id", "secret"))).evaluateAll().get(0);
+        var x = svc("typo", Map.of("typo", p("gooogle", null, "id", "secret"))).evaluateAll().get(0);
         assertThat(x.errors()).contains("unknown provider preset 'gooogle'");
         assertThat(x.active()).isFalse();
+    }
+
+    /**
+     * KNOWN_PRESETS is derived from OidcTenantConfig.Provider, so every preset the resolver accepts
+     * is reported as valid here — including `x`, which a hardcoded copy of the list had missed.
+     */
+    @Test
+    void everyQuarkusPresetIsKnown() {
+        for (var preset : new String[] {"google", "github", "microsoft", "apple", "x"}) {
+            var s = svc(preset, Map.of(preset, p(preset, null, "id", "secret"))).evaluateAll().get(0);
+            assertThat(s.errors()).as("preset %s", preset).isEmpty();
+            assertThat(s.active()).as("preset %s", preset).isTrue();
+        }
+    }
+
+    /** AUTH_PROVIDERS=google,google must not render two identical login buttons. */
+    @Test
+    void duplicateListedProvider_isReportedOnce() {
+        var s = svc("google,google", Map.of("google", p("google", null, "gid", "gsecret"))).evaluateAll();
+        assertThat(s).extracting(OidcProviderStatus::key).containsExactly("google");
     }
 
     @Test
