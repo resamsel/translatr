@@ -2,13 +2,16 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -36,6 +39,7 @@ import { AccessTokensComponent } from '../access-tokens/access-tokens.component'
 import { FeatureFlagsPageComponent } from '../feature-flags-page/feature-flags-page.component';
 import { FeatureFlagsComponent } from '../feature-flags/feature-flags.component';
 import { GlobalFeatureFlagsComponent } from '../global-feature-flags/global-feature-flags.component';
+import { HealthComponent } from '../health/health.component';
 import { InfoComponent } from '../info/info.component';
 import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
 import { DashboardPageComponent } from './dashboard-page.component';
@@ -53,7 +57,8 @@ import { UsersComponent } from '../users/users.component';
     UserComponent,
     FeatureFlagsPageComponent,
     FeatureFlagsComponent,
-    GlobalFeatureFlagsComponent
+    GlobalFeatureFlagsComponent,
+    HealthComponent
   ],
   imports: [
     CommonModule,
@@ -70,6 +75,9 @@ import { UsersComponent } from '../users/users.component';
     ReactiveFormsModule,
     MatIconModule,
     MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
     MatTabsModule,
     MatTableModule,
     MatDialogModule,

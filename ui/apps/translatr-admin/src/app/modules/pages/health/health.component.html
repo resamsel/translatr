@@ -1,0 +1,82 @@
+<ng-container *transloco="let t">
+  <section class="health-section">
+    <div class="section-head">
+      <h2>{{ t('health.providers.heading') }}</h2>
+      <button
+        mat-icon-button
+        [attr.aria-label]="t('health.providers.refresh')"
+        [matTooltip]="t('health.providers.refresh')"
+        (click)="refresh()"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+
+    <p class="hint">{{ t('health.providers.hint') }}</p>
+
+    @if (vm$ | async; as vm) {
+      @switch (vm.status) {
+        @case ('loading') {
+          <mat-progress-spinner class="loading" mode="indeterminate" [diameter]="32"></mat-progress-spinner>
+        }
+        @case ('error') {
+          <div class="error">
+            <span>{{ t('health.providers.error.load') }}</span>
+            <button mat-button color="primary" (click)="refresh()">
+              {{ t('health.providers.refresh') }}
+            </button>
+          </div>
+        }
+        @case ('loaded') {
+          @if (vm.providers.length === 0) {
+            <p class="empty">{{ t('health.providers.empty') }}</p>
+          }
+          @for (provider of vm.providers; track provider.key) {
+            <mat-card class="provider-card" [class]="'status-' + statusOf(provider)">
+              <mat-card-header>
+                <mat-card-title>{{ provider.key }}</mat-card-title>
+                <span class="chip">{{ t('health.providers.status.' + statusOf(provider)) }}</span>
+              </mat-card-header>
+              <mat-card-content>
+                <dl>
+                  <dt>{{ t('health.providers.field.provider') }}</dt>
+                  <dd>{{ provider.provider || t('health.providers.custom') }}</dd>
+
+                  <dt>{{ t('health.providers.field.authServerUrl') }}</dt>
+                  <dd>{{ provider.authServerUrl || '—' }}</dd>
+
+                  <dt>{{ t('health.providers.field.clientId') }}</dt>
+                  <dd>{{ provider.clientId || '—' }}</dd>
+
+                  <dt>{{ t('health.providers.field.clientSecret') }}</dt>
+                  <dd>{{ provider.clientSecret || '—' }}</dd>
+
+                  <dt>{{ t('health.providers.field.scopes') }}</dt>
+                  <dd>
+                    @if (provider.scopes.length) {
+                      <mat-chip-set>
+                        @for (scope of provider.scopes; track scope) {
+                          <mat-chip disableRipple>{{ scope }}</mat-chip>
+                        }
+                      </mat-chip-set>
+                    } @else {
+                      —
+                    }
+                  </dd>
+                </dl>
+
+                @if (provider.errors.length) {
+                  <ul class="errors">
+                    @for (error of provider.errors; track error) {
+                      <li>{{ error }}</li>
+                    }
+                  </ul>
+                }
+              </mat-card-content>
+            </mat-card>
+          }
+        }
+      }
+    }
+  </section>
+</ng-container>
