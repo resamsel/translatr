@@ -6,12 +6,12 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Feature, features } from '@dev/translatr-model';
 import { of } from 'rxjs';
-import { AppFacade } from '../../../../+state/app.facade';
-import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags.component';
+import { AppFacade } from '../../../+state/app.facade';
+import { FeatureFlagsComponent } from './feature-flags.component';
 
-describe('DashboardFeatureFlagsComponent', () => {
-  let component: DashboardFeatureFlagsComponent;
-  let fixture: ComponentFixture<DashboardFeatureFlagsComponent>;
+describe('FeatureFlagsComponent', () => {
+  let component: FeatureFlagsComponent;
+  let fixture: ComponentFixture<FeatureFlagsComponent>;
   let facade: any;
 
   const me = { id: 'user-1' };
@@ -66,7 +66,7 @@ describe('DashboardFeatureFlagsComponent', () => {
       };
 
       TestBed.configureTestingModule({
-        declarations: [DashboardFeatureFlagsComponent],
+        declarations: [FeatureFlagsComponent],
         imports: [
           NoopAnimationsModule,
           MatButtonModule,
@@ -80,7 +80,7 @@ describe('DashboardFeatureFlagsComponent', () => {
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardFeatureFlagsComponent);
+    fixture = TestBed.createComponent(FeatureFlagsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

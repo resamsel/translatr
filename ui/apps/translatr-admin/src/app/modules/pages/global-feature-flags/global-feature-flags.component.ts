@@ -4,8 +4,8 @@ import { Feature, features, GlobalFeatureFlag, ResolvedFeature } from '@dev/tran
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
-import { AppActionTypes } from '../../../../+state/app.actions';
-import { AppFacade } from '../../../../+state/app.facade';
+import { AppActionTypes } from '../../../+state/app.actions';
+import { AppFacade } from '../../../+state/app.facade';
 
 export interface GlobalFeatureRow {
   feature: Feature;
@@ -18,11 +18,11 @@ export interface GlobalFeatureRow {
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'dev-dashboard-global-feature-flags',
-  templateUrl: './dashboard-global-feature-flags.component.html',
-  styleUrls: ['./dashboard-global-feature-flags.component.scss']
+  selector: 'dev-global-feature-flags',
+  templateUrl: './global-feature-flags.component.html',
+  styleUrls: ['./global-feature-flags.component.scss']
 })
-export class DashboardGlobalFeatureFlagsComponent implements OnInit, OnDestroy {
+export class GlobalFeatureFlagsComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   readonly rows$: Observable<GlobalFeatureRow[]> = combineLatest([

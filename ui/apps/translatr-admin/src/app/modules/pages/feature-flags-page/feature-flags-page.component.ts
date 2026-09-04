@@ -16,11 +16,11 @@ interface FeatureFlagsTab {
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'dev-dashboard-feature-flags-page',
-  templateUrl: './dashboard-feature-flags-page.component.html',
-  styleUrls: ['./dashboard-feature-flags-page.component.scss']
+  selector: 'dev-feature-flags-page',
+  templateUrl: './feature-flags-page.component.html',
+  styleUrls: ['./feature-flags-page.component.scss']
 })
-export class DashboardFeatureFlagsPageComponent {
+export class FeatureFlagsPageComponent {
   readonly children: FeatureFlagsTab[] = [
     { path: 'user', icon: 'person', name: 'featureFlags.tab.user' },
     { path: 'global', icon: 'public', name: 'featureFlags.tab.global' }

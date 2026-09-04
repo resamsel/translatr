@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../../guards/auth.guard';
-import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
-import { DashboardFeatureFlagsPageComponent } from './dashboard-feature-flags-page/dashboard-feature-flags-page.component';
-import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
-import { DashboardGlobalFeatureFlagsComponent } from './dashboard-global-feature-flags/dashboard-global-feature-flags.component';
-import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
+import { AccessTokensComponent } from '../access-tokens/access-tokens.component';
+import { FeatureFlagsPageComponent } from '../feature-flags-page/feature-flags-page.component';
+import { FeatureFlagsComponent } from '../feature-flags/feature-flags.component';
+import { GlobalFeatureFlagsComponent } from '../global-feature-flags/global-feature-flags.component';
+import { InfoComponent } from '../info/info.component';
 import { DashboardPageComponent } from './dashboard-page.component';
 import { DASHBOARD_ROUTES } from './dashboard-page.token';
-import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
-import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
-import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
+import { ProjectsComponent } from '../projects/projects.component';
+import { UserComponent } from '../user/user.component';
+import { UsersComponent } from '../users/users.component';
 
 export const routes: Routes = [
   {
@@ -19,7 +19,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        component: DashboardInfoComponent,
+        component: InfoComponent,
         path: '',
         data: {
           icon: 'view_quilt',
@@ -34,18 +34,18 @@ export const routes: Routes = [
         },
         children: [
           {
-            component: DashboardUsersComponent,
+            component: UsersComponent,
             path: '',
             pathMatch: 'full'
           },
           {
-            component: DashboardUserComponent,
+            component: UserComponent,
             path: ':id'
           }
         ]
       },
       {
-        component: DashboardProjectsComponent,
+        component: ProjectsComponent,
         path: 'projects',
         data: {
           icon: 'library_books',
@@ -53,7 +53,7 @@ export const routes: Routes = [
         }
       },
       {
-        component: DashboardAccessTokensComponent,
+        component: AccessTokensComponent,
         path: 'accesstokens',
         data: {
           icon: 'vpn_key',
@@ -61,7 +61,7 @@ export const routes: Routes = [
         }
       },
       {
-        component: DashboardFeatureFlagsPageComponent,
+        component: FeatureFlagsPageComponent,
         path: 'featureflags',
         data: {
           icon: 'flag',
@@ -74,7 +74,7 @@ export const routes: Routes = [
             redirectTo: 'user'
           },
           {
-            component: DashboardFeatureFlagsComponent,
+            component: FeatureFlagsComponent,
             path: 'user',
             data: {
               icon: 'person',
@@ -82,7 +82,7 @@ export const routes: Routes = [
             }
           },
           {
-            component: DashboardGlobalFeatureFlagsComponent,
+            component: GlobalFeatureFlagsComponent,
             path: 'global',
             data: {
               icon: 'public',

@@ -14,13 +14,13 @@ import {
 } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { TimeAgoModule } from '@dev/translatr-components';
-import { AppFacade } from '../../../../+state/app.facade';
+import { AppFacade } from '../../../+state/app.facade';
 
-import { DashboardAccessTokensComponent } from './dashboard-access-tokens.component';
+import { AccessTokensComponent } from './access-tokens.component';
 
-describe('DashboardAccessTokensComponent', () => {
-  let component: DashboardAccessTokensComponent;
-  let fixture: ComponentFixture<DashboardAccessTokensComponent>;
+describe('AccessTokensComponent', () => {
+  let component: AccessTokensComponent;
+  let fixture: ComponentFixture<AccessTokensComponent>;
   let facade: any;
   let dialog: { open: jest.Mock };
 
@@ -39,7 +39,7 @@ describe('DashboardAccessTokensComponent', () => {
       dialog = { open: jest.fn() };
 
       TestBed.configureTestingModule({
-        declarations: [DashboardAccessTokensComponent],
+        declarations: [AccessTokensComponent],
         imports: [
           FeatureFlagTestingModule,
           EntityTableTestingModule,
@@ -64,7 +64,7 @@ describe('DashboardAccessTokensComponent', () => {
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardAccessTokensComponent);
+    fixture = TestBed.createComponent(AccessTokensComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

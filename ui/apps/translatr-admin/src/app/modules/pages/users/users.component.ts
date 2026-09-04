@@ -17,8 +17,8 @@ import {
   UserDeleteError,
   UsersDeleted,
   UsersDeleteError
-} from '../../../../+state/app.actions';
-import { AppFacade } from '../../../../+state/app.facade';
+} from '../../../+state/app.actions';
+import { AppFacade } from '../../../+state/app.facade';
 
 export const mapToAllowedRoles = () =>
   map((me?: User): UserRole[] => [UserRole.User, ...(isAdmin(me) ? [UserRole.Admin] : [])]);
@@ -26,11 +26,11 @@ export const mapToAllowedRoles = () =>
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'dev-dashboard-users',
-  templateUrl: './dashboard-users.component.html',
-  styleUrls: ['./dashboard-users.component.scss']
+  selector: 'dev-users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.scss']
 })
-export class DashboardUsersComponent implements OnDestroy {
+export class UsersComponent implements OnDestroy {
   readonly displayedColumns = ['name', 'username', 'email', 'when_created', 'role', 'actions'];
 
   me$ = this.facade.me$;

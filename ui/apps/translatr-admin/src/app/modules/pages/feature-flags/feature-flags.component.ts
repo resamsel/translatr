@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Feature, features, ResolvedFeature, UserFeatureFlag } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
-import { AppFacade } from '../../../../+state/app.facade';
+import { AppFacade } from '../../../+state/app.facade';
 
 export interface FeatureRow {
   feature: Feature;
@@ -17,11 +17,11 @@ export interface FeatureRow {
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'dev-dashboard-feature-flags',
-  templateUrl: './dashboard-feature-flags.component.html',
-  styleUrls: ['./dashboard-feature-flags.component.scss']
+  selector: 'dev-feature-flags',
+  templateUrl: './feature-flags.component.html',
+  styleUrls: ['./feature-flags.component.scss']
 })
-export class DashboardFeatureFlagsComponent implements OnInit {
+export class FeatureFlagsComponent implements OnInit {
   readonly Feature = Feature;
 
   private readonly me$ = this.facade.me$.pipe(filter(x => !!x));

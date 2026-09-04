@@ -18,18 +18,18 @@ import {
   AccessTokensDeleted,
   AccessTokensDeleteError,
   AppActionTypes
-} from '../../../../+state/app.actions';
-import { AppFacade } from '../../../../+state/app.facade';
-import { environment } from '../../../../../environments/environment';
+} from '../../../+state/app.actions';
+import { AppFacade } from '../../../+state/app.facade';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'dev-dashboard-access-tokens',
-  templateUrl: './dashboard-access-tokens.component.html',
-  styleUrls: ['./dashboard-access-tokens.component.scss']
+  selector: 'dev-access-tokens',
+  templateUrl: './access-tokens.component.html',
+  styleUrls: ['./access-tokens.component.scss']
 })
-export class DashboardAccessTokensComponent implements OnDestroy {
+export class AccessTokensComponent implements OnDestroy {
   displayedColumns = ['name', 'user', 'scopes', 'when_created', 'actions'];
 
   me$ = this.facade.me$;

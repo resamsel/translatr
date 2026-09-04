@@ -2,17 +2,17 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ShortNumberModule } from '@dev/translatr-components';
 import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
-import { AppFacade } from '../../../../+state/app.facade';
-import { DashboardInfoComponent } from './dashboard-info.component';
+import { AppFacade } from '../../../+state/app.facade';
+import { InfoComponent } from './info.component';
 
-describe('DashboardInfoComponent', () => {
-  let component: DashboardInfoComponent;
-  let fixture: ComponentFixture<DashboardInfoComponent>;
+describe('InfoComponent', () => {
+  let component: InfoComponent;
+  let fixture: ComponentFixture<InfoComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [DashboardInfoComponent],
+        declarations: [InfoComponent],
         imports: [
           FeatureFlagTestingModule,
           MetricTestingModule,
@@ -36,7 +36,7 @@ describe('DashboardInfoComponent', () => {
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardInfoComponent);
+    fixture = TestBed.createComponent(InfoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -7,13 +7,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Feature, features } from '@dev/translatr-model';
 import { of, Subject } from 'rxjs';
-import { AppActionTypes } from '../../../../+state/app.actions';
-import { AppFacade } from '../../../../+state/app.facade';
-import { DashboardGlobalFeatureFlagsComponent } from './dashboard-global-feature-flags.component';
+import { AppActionTypes } from '../../../+state/app.actions';
+import { AppFacade } from '../../../+state/app.facade';
+import { GlobalFeatureFlagsComponent } from './global-feature-flags.component';
 
-describe('DashboardGlobalFeatureFlagsComponent', () => {
-  let component: DashboardGlobalFeatureFlagsComponent;
-  let fixture: ComponentFixture<DashboardGlobalFeatureFlagsComponent>;
+describe('GlobalFeatureFlagsComponent', () => {
+  let component: GlobalFeatureFlagsComponent;
+  let fixture: ComponentFixture<GlobalFeatureFlagsComponent>;
   let facade: any;
   let snackBar: { open: jest.Mock };
   let globalFeatureFlagChanged$: Subject<any>;
@@ -40,7 +40,7 @@ describe('DashboardGlobalFeatureFlagsComponent', () => {
         deleteGlobalFeatureFlag: jest.fn()
       };
       TestBed.configureTestingModule({
-        declarations: [DashboardGlobalFeatureFlagsComponent],
+        declarations: [GlobalFeatureFlagsComponent],
         imports: [
           NoopAnimationsModule,
           MatButtonModule,
@@ -57,7 +57,7 @@ describe('DashboardGlobalFeatureFlagsComponent', () => {
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardGlobalFeatureFlagsComponent);
+    fixture = TestBed.createComponent(GlobalFeatureFlagsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
