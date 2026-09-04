@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: Translatr API
+  version: 1.0.0
+paths:
+  /api/oidc-providers:
+    get:
+      operationId: listOidcProviders
+      summary: List OIDC provider configuration and diagnostics (admin).
+      tags:
+        - oidc-providers
+      responses:
+        '200':
+          description: Provider status list; client secret masked.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OidcProviderStatus'
+        '403':
+          description: Caller is not an admin.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    OidcProviderStatus:
+      type: object
+      description: Configuration and diagnostics for one auth provider (admin only).
+      properties:
+        key:
+          type: string
+          readOnly: true
+          description: 'Provider key, e.g. "google".'
+        listed:
+          type: boolean
+          readOnly: true
+          description: Present in AUTH_PROVIDERS.
+        active:
+          type: boolean
+          readOnly: true
+          description: Listed AND fully configured AND no errors — usable now.
+        provider:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Quarkus built-in preset name, or null (Keycloak).
+        authServerUrl:
+          type: string
+          readOnly: true
+          nullable: true
+          description: OIDC issuer URL; returned verbatim (not a credential).
+        clientId:
+          type: string
+          readOnly: true
+          nullable: true
+          description: OAuth client id; returned verbatim (not a credential).
+        clientSecret:
+          type: string
+          readOnly: true
+          nullable: true
+          description: >-
+            Masked as "***len:<N>***" where <N> is the configured secret's
+            length, or null when no secret is configured. The real secret is
+            never returned.
+        scopes:
+          type: array
+          items:
+            type: string
+          readOnly: true
+          description: Effective scope list (possibly empty).
+        errors:
+          type: array
+          items:
+            type: string
+          readOnly: true
+          description: Configuration problems (empty when healthy).
+      required:
+        - key
+        - listed
+        - active
+        - scopes
+        - errors
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+      required:
+        - status
+        - message
