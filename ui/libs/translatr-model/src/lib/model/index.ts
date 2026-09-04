@@ -25,6 +25,7 @@ export * from './member-role';
 export * from './message';
 export * from './message-criteria';
 export * from './not-found-error-info';
+export * from './oidc-provider-status';
 export * from './paged-list';
 export * from './permission-error-info';
 export * from './profile';
