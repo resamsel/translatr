@@ -117,9 +117,15 @@ browser refresh on file save.
 At least one auth provider must be configured. The recommended choice for local
 development is Keycloak (started automatically by `docker-compose up`).
 
-> **Logout.** `GET /logout` is temporarily a local session clear only, pending
-> [#258](https://github.com/resamsel/translatr/issues/258) — there is no
-> end-session redirect back to the provider yet.
+> **Logout.** `GET /logout` (`LogoutResource`) is a *local* logout: it expires the
+> Quarkus OIDC cookies the browser sent (`q_session*`, `q_auth*`, `q_post_logout*`)
+> and redirects to `<redirect-base>/ui`. It deliberately does **not** use Quarkus'
+> RP-initiated logout, which redirects to the provider's `end_session_endpoint` —
+> Google, GitHub, Facebook, Apple and X publish none, so it would fail for most of
+> the roster. You stay signed in *at the identity provider*, so the next
+> `/login/{provider}` may complete without another password prompt. Signing out at
+> the provider is tracked in
+> [#258](https://github.com/resamsel/translatr/issues/258).
 
 #### Keycloak (recommended)
 

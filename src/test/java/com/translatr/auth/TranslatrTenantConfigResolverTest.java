@@ -82,7 +82,6 @@ class TranslatrTenantConfigResolverTest {
     @Test
     void resolve_returnsNull_forUnknownProvider() {
         var resolver = newResolver(Map.of());
-        when(ctx.get(OidcUtils.TENANT_ID_ATTRIBUTE)).thenReturn(null);
         when(ctx.normalizedPath()).thenReturn("/login/nonesuch");
 
         assertThat(resolver.resolve(ctx, null).await().indefinitely()).isNull();
@@ -92,7 +91,6 @@ class TranslatrTenantConfigResolverTest {
     void resolve_returnsNull_forUnknownPresetName() {
         var resolver =
                 newResolver(Map.of("bogus", provider("nosuchpreset", null, "cid", "csecret", List.of("email"))));
-        when(ctx.get(OidcUtils.TENANT_ID_ATTRIBUTE)).thenReturn(null);
         when(ctx.normalizedPath()).thenReturn("/login/bogus");
 
         assertThat(resolver.resolve(ctx, null).await().indefinitely()).isNull();
@@ -101,7 +99,6 @@ class TranslatrTenantConfigResolverTest {
     @Test
     void resolve_buildsPresetConfig_fromPath() {
         var resolver = newResolver(Map.of("google", provider("google", null, "gid", "gsecret", List.of("email", "profile"))));
-        when(ctx.get(OidcUtils.TENANT_ID_ATTRIBUTE)).thenReturn(null);
         when(ctx.normalizedPath()).thenReturn("/login/google");
 
         OidcTenantConfig built = resolver.resolve(ctx, null).await().indefinitely();
@@ -119,11 +116,35 @@ class TranslatrTenantConfigResolverTest {
         assertThat(built.authentication().restorePathAfterRedirect()).isTrue();
     }
 
+    /**
+     * OidcAuthenticationMechanism#setTenantIdAttribute stamps TENANT_ID_ATTRIBUTE from the first
+     * {@code q_session} / {@code q_auth} cookie on every request, so a user who already has a
+     * Keycloak session carries "keycloak" into GET /login/google. The path has to win, or provider
+     * switching is impossible for anyone with a session.
+     */
     @Test
-    void resolve_prefersQuarkusResolvedTenantId_overPath() {
+    void resolve_prefersPath_overConflictingAttribute() {
+        var resolver = newResolver(Map.of(
+                "google", provider("google", null, "gid", "gsecret", List.of("email")),
+                "keycloak",
+                provider(null, "http://kc/realms/Translatr", "kid", "ksecret", List.of("microprofile-jwt"))));
+        lenient().when(ctx.get(OidcUtils.TENANT_ID_ATTRIBUTE)).thenReturn("keycloak");
+        when(ctx.normalizedPath()).thenReturn("/login/google");
+
+        OidcTenantConfig built = resolver.resolve(ctx, null).await().indefinitely();
+
+        assertThat(built).isNotNull();
+        assertThat(built.tenantId()).contains("google");
+        assertThat(built.clientId()).contains("gid");
+    }
+
+    /** /authenticate (and every other non-/login path) has no provider segment, so the attribute wins. */
+    @Test
+    void resolve_fallsBackToAttribute_whenPathNamesNoProvider() {
         var resolver = newResolver(Map.of(
                 "keycloak",
                 provider(null, "http://kc/realms/Translatr", "kid", "ksecret", List.of("microprofile-jwt"))));
+        when(ctx.normalizedPath()).thenReturn("/authenticate");
         when(ctx.get(OidcUtils.TENANT_ID_ATTRIBUTE)).thenReturn("keycloak");
 
         OidcTenantConfig built = resolver.resolve(ctx, null).await().indefinitely();
@@ -137,10 +158,24 @@ class TranslatrTenantConfigResolverTest {
         assertThat(built.authentication().restorePathAfterRedirect()).isTrue();
     }
 
+    /**
+     * Quarkus' RP-initiated logout would redirect to the provider's end_session_endpoint, which the
+     * social presets do not publish; GET /logout is served by LogoutResource instead.
+     */
+    @Test
+    void resolve_leavesLogoutPathUnset() {
+        var resolver = newResolver(Map.of("google", provider("google", null, "gid", "gsecret", List.of())));
+        when(ctx.normalizedPath()).thenReturn("/login/google");
+
+        OidcTenantConfig built = resolver.resolve(ctx, null).await().indefinitely();
+
+        assertThat(built).isNotNull();
+        assertThat(built.logout().path()).isEmpty();
+    }
+
     @Test
     void resolve_returnsNull_whenClientIdMissing() {
         var resolver = newResolver(Map.of("google", provider("google", null, null, null, List.of())));
-        when(ctx.get(OidcUtils.TENANT_ID_ATTRIBUTE)).thenReturn(null);
         when(ctx.normalizedPath()).thenReturn("/login/google");
 
         assertThat(resolver.resolve(ctx, null).await().indefinitely()).isNull();
@@ -149,7 +184,6 @@ class TranslatrTenantConfigResolverTest {
     @Test
     void resolve_leavesScopesUnset_whenNoneConfigured() {
         var resolver = newResolver(Map.of("google", provider("google", null, "gid", "gsecret", null)));
-        when(ctx.get(OidcUtils.TENANT_ID_ATTRIBUTE)).thenReturn(null);
         when(ctx.normalizedPath()).thenReturn("/login/google");
 
         OidcTenantConfig built = resolver.resolve(ctx, null).await().indefinitely();

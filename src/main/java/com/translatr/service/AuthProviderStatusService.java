@@ -12,14 +12,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class AuthProviderStatusService {
 
-    // Mirrors io.quarkus.oidc.OidcTenantConfig.Provider (kept as strings to avoid the OIDC runtime here).
-    private static final Set<String> KNOWN_PRESETS = Set.of(
-            "google", "github", "facebook", "twitter", "apple", "microsoft",
-            "spotify", "discord", "twitch", "mastodon", "linkedin", "slack", "strava");
+    // Derived from the enum TranslatrTenantConfigResolver actually resolves against, so the two can
+    // never drift (a hardcoded copy silently lost `x` when Quarkus added it).
+    private static final Set<String> KNOWN_PRESETS =
+            Arrays.stream(io.quarkus.oidc.runtime.OidcTenantConfig.Provider.values())
+                    .map(p -> p.name().toLowerCase(Locale.ROOT))
+                    .collect(Collectors.toUnmodifiableSet());
 
     private final TranslatrConfig config;
 
@@ -29,11 +32,13 @@ public class AuthProviderStatusService {
     }
 
     public List<OidcProviderStatus> evaluateAll() {
-        List<String> listed = Arrays.stream(config.auth().providers().split(","))
-                .map(String::trim).filter(s -> !s.isEmpty()).toList();
-        Set<String> listedSet = new LinkedHashSet<>(listed);
+        // LinkedHashSet: first-seen order, but `AUTH_PROVIDERS=google,google` must not render two
+        // identical login buttons.
+        Set<String> listedSet = Arrays.stream(config.auth().providers().split(","))
+                .map(String::trim).filter(s -> !s.isEmpty())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        List<String> order = new ArrayList<>(listed);
+        List<String> order = new ArrayList<>(listedSet);
         new TreeSet<>(config.auth().oidc().keySet()).stream()
                 .filter(k -> !listedSet.contains(k))
                 .forEach(order::add);

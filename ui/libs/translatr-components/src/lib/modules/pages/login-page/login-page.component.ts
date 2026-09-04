@@ -55,9 +55,16 @@ export class LoginPageComponent implements OnInit {
         take(1),
         filter(([providers]) => providers.length === 1)
       )
-      .subscribe(
-        ([providers, redirectUri]: [AuthClient[], string]) =>
-          (window.location.href = `${this.endpointUrl}${providers[0].url}${redirectUri}`)
+      .subscribe(([providers, redirectUri]: [AuthClient[], string]) =>
+        this.navigateTo(`${this.endpointUrl}${providers[0].url}${redirectUri}`)
       );
+  }
+
+  /**
+   * Seam for tests: jsdom >= 24 makes `window.location` and its `href` non-configurable, so the
+   * assignment cannot be stubbed from the outside.
+   */
+  navigateTo(url: string): void {
+    window.location.href = url;
   }
 }

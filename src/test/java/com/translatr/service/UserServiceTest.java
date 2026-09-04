@@ -333,7 +333,7 @@ class UserServiceTest {
     }
 
     @Test
-    void syncOidcRole_isSafe_whenGroupsEmptyAndNoEmailClaim() {
+    void syncOidcRole_isSafe_whenGroupsNullAndNoEmailClaim() {
         UUID id   = UUID.randomUUID();
         User user = userWithId(id);
         user.role = UserRole.User;
@@ -342,7 +342,9 @@ class UserServiceTest {
         lenient().when(config.adminGroup()).thenReturn("translatr-admin");
         lenient().when(config.adminEmails()).thenReturn(Set.of());
 
-        service.syncOidcRole(id, jwt(Set.of(), null));
+        // Social providers really do return null (not an empty set) from getGroups(); this exercises
+        // the `groups == null` guard in inAdminGroup.
+        service.syncOidcRole(id, jwt(null, null));
 
         assertThat(user.role).isEqualTo(UserRole.User);
     }
