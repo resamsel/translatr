@@ -43,6 +43,9 @@ testem.log
 Thumbs.db
 /libs/translatr-model/src/build-info.ts
 
+# openapi-generator output (regenerated at build/test time, see package.json)
+/libs/translatr-sdk/src/lib/generated
+
 /oclif.manifest.json
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
