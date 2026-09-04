@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthClient } from '@dev/translatr-model';
+import { AuthClient, OidcProviderStatus } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,5 +11,9 @@ export class AuthClientService {
 
   find(): Observable<AuthClient[]> {
     return this.http.get<AuthClient[]>('/api/authclients');
+  }
+
+  getProviderStatus(): Observable<OidcProviderStatus[]> {
+    return this.http.get<OidcProviderStatus[]>('/api/oidc-providers');
   }
 }

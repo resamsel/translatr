@@ -4,7 +4,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFacebook, faGithub, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import {
+  faApple,
+  faFacebook,
+  faGithub,
+  faGoogle,
+  faMicrosoft,
+  faTwitter
+} from '@fortawesome/free-brands-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NavbarModule } from '../../nav/navbar/navbar.module';
@@ -27,6 +34,6 @@ import { LoginPageComponent } from './login-page.component';
 })
 export class LoginPageModule {
   constructor(readonly library: FaIconLibrary) {
-    library.addIcons(faGoogle, faGithub, faFacebook, faTwitter, faKey);
+    library.addIcons(faGoogle, faGithub, faFacebook, faTwitter, faKey, faMicrosoft, faApple);
   }
 }

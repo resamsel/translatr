@@ -19,14 +19,18 @@ export class LoginPageComponent implements OnInit {
     google: 'Google',
     facebook: 'Facebook',
     twitter: 'Twitter',
-    github: 'GitHub'
+    github: 'GitHub',
+    microsoft: 'Microsoft',
+    apple: 'Apple'
   };
   icons = {
     google: ['fab', 'google'],
     keycloak: ['fas', 'key'],
     github: ['fab', 'github'],
     facebook: ['fab', 'facebook'],
-    twitter: ['fab', 'twitter']
+    twitter: ['fab', 'twitter'],
+    microsoft: ['fab', 'microsoft'],
+    apple: ['fab', 'apple']
   };
 
   readonly providers$ = this.authProviderService
