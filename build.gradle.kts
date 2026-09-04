@@ -1,6 +1,7 @@
 plugins {
     java
     id("io.quarkus")
+    id("org.openapi.generator") version "7.14.0"
 }
 
 repositories {
@@ -54,12 +55,50 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
+openApiGenerate {
+    generatorName.set("jaxrs-spec")
+    inputSpec.set("$rootDir/src/main/resources/META-INF/openapi.yaml")
+    outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.path)
+    apiPackage.set("com.translatr.generated.api")
+    modelPackage.set("com.translatr.dto")
+    configOptions.set(
+        mapOf(
+            "interfaceOnly" to "true",
+            "useJakartaEe" to "true",
+            "dateLibrary" to "java8",
+            "returnResponse" to "false",
+            "useTags" to "true",
+            "useSwaggerAnnotations" to "false",
+            "openApiNullable" to "false"
+        )
+    )
+    importMappings.set(
+        mapOf(
+            "ErrorResponse" to "com.translatr.dto.ErrorResponse"
+        )
+    )
+    // ErrorResponse already exists as a hand-written class at com.translatr.dto.ErrorResponse;
+    // restrict codegen to the models we actually want generated so it isn't duplicated.
+    globalProperties.set(
+        mapOf(
+            "models" to "OidcProviderStatus",
+            "apis" to "",
+            "supportingFiles" to ""
+        )
+    )
+}
+
+tasks.named("compileJava") {
+    dependsOn("openApiGenerate")
+}
+
 // Only include the new com/translatr package tree — legacy Play sources in
 // src/main/java/{dto,models,…} are migrated phase-by-phase and excluded until ready.
 sourceSets {
     main {
         java {
             include("com/translatr/**")
+            srcDir(layout.buildDirectory.dir("generated/openapi/src/gen/java"))
         }
     }
     test {
