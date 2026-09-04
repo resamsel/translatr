@@ -22,7 +22,7 @@ class TranslatrConfigTest {
         // Keycloak only emits the `groups` claim (realm roles) when this scope is
         // requested; syncOidcRole depends on it to grant/revoke Admin.
         assertThat(config.auth().oidc()).containsKey("keycloak");
-        assertThat(config.auth().oidc().get("keycloak").scopes()).contains("microprofile-jwt");
+        assertThat(config.auth().oidc().get("keycloak").scopes().orElseThrow()).contains("microprofile-jwt");
     }
 
     @Test
