@@ -5,6 +5,7 @@ import { AccessTokensComponent } from '../access-tokens/access-tokens.component'
 import { FeatureFlagsPageComponent } from '../feature-flags-page/feature-flags-page.component';
 import { FeatureFlagsComponent } from '../feature-flags/feature-flags.component';
 import { GlobalFeatureFlagsComponent } from '../global-feature-flags/global-feature-flags.component';
+import { HealthComponent } from '../health/health.component';
 import { InfoComponent } from '../info/info.component';
 import { DashboardPageComponent } from './dashboard-page.component';
 import { DASHBOARD_ROUTES } from './dashboard-page.token';
@@ -58,6 +59,14 @@ export const routes: Routes = [
         data: {
           icon: 'vpn_key',
           name: 'Access Tokens'
+        }
+      },
+      {
+        component: HealthComponent,
+        path: 'health',
+        data: {
+          icon: 'health_and_safety',
+          name: 'Health'
         }
       },
       {
