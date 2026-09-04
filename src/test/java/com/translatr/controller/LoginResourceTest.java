@@ -102,4 +102,27 @@ class LoginResourceTest {
             .statusCode(303)
             .header("Location", equalTo("https://allowed.example.com/admin/dashboard"));
     }
+
+    @Test
+    @TestSecurity(user = "testuser", roles = "User")
+    void unknownProvider_returns404() {
+        given()
+            .redirects().follow(false)
+            .when().get("/login/nonesuch")
+            .then()
+            .statusCode(404);
+    }
+
+    @Test
+    @TestSecurity(user = "testuser", roles = "User")
+    void configuredProvider_stillRedirects() {
+        // keycloak is configured in the default test profile (translatr.auth.providers=keycloak)
+        given()
+            .redirects().follow(false)
+            .queryParam("redirect_uri", "/ui/x")
+            .when().get("/login/keycloak")
+            .then()
+            .statusCode(303)
+            .header("Location", equalTo("http://localhost:8081/ui/x"));
+    }
 }
