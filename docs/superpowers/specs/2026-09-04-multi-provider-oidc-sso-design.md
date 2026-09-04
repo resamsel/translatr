@@ -399,16 +399,25 @@ Browser                Quarkus (TranslatrTenantConfigResolver)         Provider
 Unknown / unconfigured provider:
 
 ```
-  │  GET /login/gooogle  ──▶ resolver: no config for "gooogle" → null
-  │  ◀──────────────────────  404 {"code":404,"message":"unknown or unconfigured auth provider: gooogle"}
+  authenticated re-login   GET /login/gooogle ─▶ LoginResource guard → NotFoundException
+                           ◀── 404 {"status":404,"message":"unknown or unconfigured auth provider: gooogle"}
+
+  anonymous                GET /login/gooogle ─▶ resolver returns null; default tenant disabled
+                           ◀── 401 (auth layer cannot issue a challenge for an unknown tenant)
 ```
+
+`LoginResource#login` gains an explicit guard: if `translatr.auth.oidc.<provider>`
+is absent or has a blank `client-id`, it throws `jakarta.ws.rs.NotFoundException`
+(→ existing `NotFoundMapper` → 404). For an anonymous request the OIDC challenge
+runs first, the resolver returns `null`, and with the default tenant disabled the
+request ends as a plain 401 — acceptable, since no provider redirect is possible.
 
 ## Error handling (summary)
 
 | Situation | Behaviour |
 |---|---|
 | Provider in `AUTH_PROVIDERS`, no `client-id` | absent from `/api/authclients`; `errors` on `/api/oidc-providers`; **app boots** |
-| `GET /login/<unconfigured or unknown>` | 404 `ErrorResponse` |
+| `GET /login/<unconfigured or unknown>` | authenticated re-login → 404 `ErrorResponse` (LoginResource guard); anonymous → 401 (resolver returns null, default tenant disabled) |
 | Configured block whose name is not in `AUTH_PROVIDERS` | shown on `/api/oidc-providers` with `listed:false`; not on `/api/authclients` |
 | Zero active providers | `/api/authclients` returns `[]`; login page shows an empty list; startup `WARN`; app boots |
 | `provider=` not a Quarkus `Provider` constant | that provider inactive + `errors` entry; not a crash |
