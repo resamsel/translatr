@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Feature, User } from '@dev/translatr-model';
-import { AppFacade } from '../../../../+state/app.facade';
+import { AppFacade } from '../../../+state/app.facade';
 
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'dev-dashboard-info',
-  templateUrl: './dashboard-info.component.html',
-  styleUrls: ['./dashboard-info.component.scss']
+  selector: 'dev-info',
+  templateUrl: './info.component.html',
+  styleUrls: ['./info.component.scss']
 })
-export class DashboardInfoComponent {
+export class InfoComponent {
   users$ = this.facade.users$;
   projects$ = this.facade.projects$;
   accessTokens$ = this.facade.accessTokens$;

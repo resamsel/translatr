@@ -14,18 +14,18 @@ import {
 } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { TimeAgoModule } from '@dev/translatr-components';
-import { AppFacade } from '../../../../+state/app.facade';
+import { AppFacade } from '../../../+state/app.facade';
 
-import { DashboardUsersComponent } from './dashboard-users.component';
+import { ProjectsComponent } from './projects.component';
 
-describe('UsersComponent', () => {
-  let component: DashboardUsersComponent;
-  let fixture: ComponentFixture<DashboardUsersComponent>;
+describe('ProjectsComponent', () => {
+  let component: ProjectsComponent;
+  let fixture: ComponentFixture<ProjectsComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [DashboardUsersComponent],
+        declarations: [ProjectsComponent],
         imports: [
           FeatureFlagTestingModule,
           EntityTableTestingModule,
@@ -45,10 +45,10 @@ describe('UsersComponent', () => {
             provide: AppFacade,
             useFactory: () => ({
               me$: mockObservable(),
-              userDeleted$: mockObservable(),
-              usersDeleted$: mockObservable(),
-              unloadUsers$: mockObservable(),
-              unloadUsers: jest.fn()
+              projectDeleted$: mockObservable(),
+              projectsDeleted$: mockObservable(),
+              unloadProjects$: mockObservable(),
+              unloadProjects: jest.fn()
             })
           },
           {
@@ -65,7 +65,7 @@ describe('UsersComponent', () => {
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardUsersComponent);
+    fixture = TestBed.createComponent(ProjectsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

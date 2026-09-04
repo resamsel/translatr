@@ -32,28 +32,28 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoModule } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { DashboardAccessTokensComponent } from './dashboard-access-tokens/dashboard-access-tokens.component';
-import { DashboardFeatureFlagsPageComponent } from './dashboard-feature-flags-page/dashboard-feature-flags-page.component';
-import { DashboardFeatureFlagsComponent } from './dashboard-feature-flags/dashboard-feature-flags.component';
-import { DashboardGlobalFeatureFlagsComponent } from './dashboard-global-feature-flags/dashboard-global-feature-flags.component';
-import { DashboardInfoComponent } from './dashboard-info/dashboard-info.component';
+import { AccessTokensComponent } from '../access-tokens/access-tokens.component';
+import { FeatureFlagsPageComponent } from '../feature-flags-page/feature-flags-page.component';
+import { FeatureFlagsComponent } from '../feature-flags/feature-flags.component';
+import { GlobalFeatureFlagsComponent } from '../global-feature-flags/global-feature-flags.component';
+import { InfoComponent } from '../info/info.component';
 import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
 import { DashboardPageComponent } from './dashboard-page.component';
-import { DashboardProjectsComponent } from './dashboard-projects/dashboard-projects.component';
-import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
-import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
+import { ProjectsComponent } from '../projects/projects.component';
+import { UserComponent } from '../user/user.component';
+import { UsersComponent } from '../users/users.component';
 
 @NgModule({
   declarations: [
     DashboardPageComponent,
-    DashboardUsersComponent,
-    DashboardInfoComponent,
-    DashboardProjectsComponent,
-    DashboardAccessTokensComponent,
-    DashboardUserComponent,
-    DashboardFeatureFlagsPageComponent,
-    DashboardFeatureFlagsComponent,
-    DashboardGlobalFeatureFlagsComponent
+    UsersComponent,
+    InfoComponent,
+    ProjectsComponent,
+    AccessTokensComponent,
+    UserComponent,
+    FeatureFlagsPageComponent,
+    FeatureFlagsComponent,
+    GlobalFeatureFlagsComponent
   ],
   imports: [
     CommonModule,

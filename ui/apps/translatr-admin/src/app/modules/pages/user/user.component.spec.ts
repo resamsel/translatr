@@ -10,18 +10,18 @@ import {
 } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoModule } from '@dev/translatr-components';
-import { AppFacade } from '../../../../+state/app.facade';
+import { AppFacade } from '../../../+state/app.facade';
 
-import { DashboardUserComponent } from './dashboard-user.component';
+import { UserComponent } from './user.component';
 
-describe('DashboardUserComponent', () => {
-  let component: DashboardUserComponent;
-  let fixture: ComponentFixture<DashboardUserComponent>;
+describe('UserComponent', () => {
+  let component: UserComponent;
+  let fixture: ComponentFixture<UserComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [DashboardUserComponent],
+        declarations: [UserComponent],
         imports: [
           FeatureFlagTestingModule,
           UserCardTestingModule,
@@ -41,7 +41,7 @@ describe('DashboardUserComponent', () => {
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardUserComponent);
+    fixture = TestBed.createComponent(UserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

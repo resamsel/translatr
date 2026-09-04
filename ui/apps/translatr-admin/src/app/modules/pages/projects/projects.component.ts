@@ -17,18 +17,18 @@ import {
   ProjectDeleteError,
   ProjectsDeleted,
   ProjectsDeleteError
-} from '../../../../+state/app.actions';
-import { AppFacade } from '../../../../+state/app.facade';
-import { environment } from '../../../../../environments/environment';
+} from '../../../+state/app.actions';
+import { AppFacade } from '../../../+state/app.facade';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'dev-dashboard-projects',
-  templateUrl: './dashboard-projects.component.html',
-  styleUrls: ['./dashboard-projects.component.scss']
+  selector: 'dev-projects',
+  templateUrl: './projects.component.html',
+  styleUrls: ['./projects.component.scss']
 })
-export class DashboardProjectsComponent implements OnDestroy {
+export class ProjectsComponent implements OnDestroy {
   displayedColumns = ['name', 'description', 'owner', 'when_created', 'actions'];
 
   me$ = this.facade.me$;

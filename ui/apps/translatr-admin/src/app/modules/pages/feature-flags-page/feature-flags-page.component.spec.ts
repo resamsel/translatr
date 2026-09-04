@@ -4,16 +4,16 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { DashboardFeatureFlagsPageComponent } from './dashboard-feature-flags-page.component';
+import { FeatureFlagsPageComponent } from './feature-flags-page.component';
 
-describe('DashboardFeatureFlagsPageComponent', () => {
-  let component: DashboardFeatureFlagsPageComponent;
-  let fixture: ComponentFixture<DashboardFeatureFlagsPageComponent>;
+describe('FeatureFlagsPageComponent', () => {
+  let component: FeatureFlagsPageComponent;
+  let fixture: ComponentFixture<FeatureFlagsPageComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [DashboardFeatureFlagsPageComponent],
+        declarations: [FeatureFlagsPageComponent],
         imports: [
           NoopAnimationsModule,
           MatTabsModule,
@@ -29,7 +29,7 @@ describe('DashboardFeatureFlagsPageComponent', () => {
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardFeatureFlagsPageComponent);
+    fixture = TestBed.createComponent(FeatureFlagsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
