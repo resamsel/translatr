@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { OidcProviderStatus } from '@dev/translatr-model';
 import { AuthClientService } from '@dev/translatr-sdk';
+import { OidcProviderStatus } from '../../../../../../../libs/translatr-sdk/src/lib/generated/model/oidcProviderStatus';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 

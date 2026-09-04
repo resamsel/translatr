@@ -7,10 +7,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { OidcProviderStatus } from '@dev/translatr-model';
 import { AuthClientService } from '@dev/translatr-sdk';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Subject, of, throwError } from 'rxjs';
+import { OidcProviderStatus } from '../../../../../../../libs/translatr-sdk/src/lib/generated/model/oidcProviderStatus';
 import { HealthComponent } from './health.component';
 
 const provider = (over: Partial<OidcProviderStatus>): OidcProviderStatus => ({
