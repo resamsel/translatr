@@ -16,9 +16,11 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @ApplicationScoped
 public class UserService {
@@ -146,19 +148,25 @@ public class UserService {
     }
 
     /**
-     * Reconciles a user's {@link UserRole} with their Keycloak group membership on every
-     * OIDC login: holding {@link TranslatrConfig#adminGroup()} grants {@code Admin}, losing
-     * it demotes back to {@code User}. {@code groups} is the OIDC {@code groups} claim;
-     * Keycloak's "full group path" form ({@code /translatr-admin}) is accepted too. Only the
-     * OIDC login path calls this — access-token identities keep their stored role.
+     * Reconciles a user's {@link UserRole} with their identity on every OIDC login:
+     * holding {@link TranslatrConfig#adminGroup()} in the {@code groups} claim, OR having
+     * an {@code email} claim listed in {@link TranslatrConfig#adminEmails()} ({@code ADMINS}),
+     * grants {@code Admin}; losing both demotes back to {@code User}. {@code groups} is the
+     * OIDC {@code groups} claim; Keycloak's "full group path" form ({@code /translatr-admin})
+     * is accepted too. The {@code ADMINS} e-mail path applies to every provider — social
+     * logins carry no {@code groups} claim, so it is their only route to Admin. Only the OIDC
+     * login path calls this — access-token identities keep their stored role.
      */
     @Transactional
-    public User syncOidcRole(UUID userId, Set<String> groups) {
+    public User syncOidcRole(UUID userId, JsonWebToken jwt) {
         User user = userRepo.findById(userId);
         if (user == null) {
             return null;
         }
-        UserRole desired = inAdminGroup(groups) ? UserRole.Admin : UserRole.User;
+        String email = jwt.getClaim("email");
+        boolean admin = inAdminGroup(jwt.getGroups())
+                || (email != null && config.adminEmails().contains(email.toLowerCase(Locale.ROOT)));
+        UserRole desired = admin ? UserRole.Admin : UserRole.User;
         if (user.role != desired) {
             user.role = desired;
         }
