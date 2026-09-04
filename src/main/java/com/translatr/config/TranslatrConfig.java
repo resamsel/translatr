@@ -72,8 +72,13 @@ public interface TranslatrConfig {
         Optional<String> authServerUrl();
         Optional<String> clientId();
         Optional<String> clientSecret();
-        @WithDefault("")
-        List<String> scopes();
+        /**
+         * Absent (no {@code scopes=} property) resolves to {@link Optional#empty()} — a bare
+         * {@code List} with an empty-string default resolves to {@code null} under SmallRye Config
+         * and would fail {@code @ConfigMapping} resolution ({@code SRCFG00040}) for any provider
+         * entry without scopes, which must never break boot.
+         */
+        Optional<List<String>> scopes();
     }
 
     interface SearchConfig {
