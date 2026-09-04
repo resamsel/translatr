@@ -34,10 +34,9 @@ services:
       ADMIN_ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
       DATABASE_DRIVER: org.postgresql.Driver
       DATABASE_URL: "postgres://translatr:translatr@database:5432/translatr"
-      KEYCLOAK_HOST: sso:8080
-      KEYCLOAK_PROTOCOL: http
-      KEYCLOAK_CLIENT_ID: translatr-localhost
-      KEYCLOAK_CLIENT_SECRET: 05d9a16b-5999-49f7-b26d-996bd414c849
+      OIDC_KEYCLOAK_AUTH_SERVER_URL: http://sso:8080/realms/Translatr
+      OIDC_KEYCLOAK_CLIENT_ID: translatr-localhost
+      OIDC_KEYCLOAK_CLIENT_SECRET: 05d9a16b-5999-49f7-b26d-996bd414c849
       LOGLEVEL_ROOT: DEBUG
   loadgenerator:
     image: resamsel/translatr-loadgenerator:3.1.0-20

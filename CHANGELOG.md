@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased]
+
+**Implemented enhancements:**
+
+- Support any Quarkus OIDC provider (Google, GitHub, Facebook, Twitter/X, Microsoft, Apple, …) for SSO, selected by configuration [\#255](https://github.com/resamsel/translatr/issues/255)
+
+**Fixed bugs:**
+
+- App no longer fails to boot when an auth provider in `AUTH_PROVIDERS` is unconfigured [\#255](https://github.com/resamsel/translatr/issues/255)
+
+**Breaking changes:**
+
+- Keycloak env vars renamed: `KEYCLOAK_CLIENT_ID` → `OIDC_KEYCLOAK_CLIENT_ID`, `KEYCLOAK_CLIENT_SECRET` → `OIDC_KEYCLOAK_CLIENT_SECRET`, `KEYCLOAK_HOST`+`KEYCLOAK_REALM` → `OIDC_KEYCLOAK_AUTH_SERVER_URL` (full issuer URL)
+
 ## [v3.3.2](https://github.com/resamsel/translatr/tree/v3.3.2) (2022-04-16)
 
 [Full Changelog](https://github.com/resamsel/translatr/compare/v3.3.1...v3.3.2)

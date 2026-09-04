@@ -29,11 +29,11 @@ spec:
               value: "keycloak"
             - name: DATABASE_URL
               value: "postgres://translatr:translatr@postgres-postgresql.translatr.svc.cluster.local:5432/translatr"
-            - name: KEYCLOAK_HOST
-              value: "sso.repanzar.com"
-            - name: KEYCLOAK_CLIENT_ID
+            - name: OIDC_KEYCLOAK_AUTH_SERVER_URL
+              value: "http://sso.repanzar.com/realms/Translatr"
+            - name: OIDC_KEYCLOAK_CLIENT_ID
               value: "translatr-minikube"
-            - name: KEYCLOAK_CLIENT_SECRET
+            - name: OIDC_KEYCLOAK_CLIENT_SECRET
               value: "05d9a16b-5999-49f7-b26d-996bd414c849"
             - name: LOGLEVEL_ROOT
               value: "DEBUG"

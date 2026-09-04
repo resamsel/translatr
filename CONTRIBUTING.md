@@ -58,8 +58,9 @@ directly via Quinoa. No Angular dev server or local Node installation is needed.
 
    ```
    AUTH_PROVIDERS=keycloak
-   KEYCLOAK_CLIENT_ID=translatr-localhost
-   KEYCLOAK_CLIENT_SECRET=<your-secret>
+   OIDC_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/realms/Translatr
+   OIDC_KEYCLOAK_CLIENT_ID=translatr-localhost
+   OIDC_KEYCLOAK_CLIENT_SECRET=<your-secret>
    ```
 
 3. **Start Quarkus in dev mode** — the `copyUiToBuild` task runs automatically
@@ -116,15 +117,20 @@ browser refresh on file save.
 At least one auth provider must be configured. The recommended choice for local
 development is Keycloak (started automatically by `docker-compose up`).
 
+> **Logout.** `GET /logout` is temporarily a local session clear only, pending
+> [#258](https://github.com/resamsel/translatr/issues/258) — there is no
+> end-session redirect back to the provider yet.
+
 #### Keycloak (recommended)
 
-The `docker-compose.yml` starts a Keycloak instance on port **8088** and
+The `docker-compose.yml` starts a Keycloak instance on port **8080** and
 imports the `docker/Translatr-realm.json` realm automatically.
 
 ```
 export AUTH_PROVIDERS=keycloak
-export KEYCLOAK_CLIENT_ID=translatr-localhost
-export KEYCLOAK_CLIENT_SECRET=<client-secret-from-realm>
+export OIDC_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/realms/Translatr
+export OIDC_KEYCLOAK_CLIENT_ID=translatr-localhost
+export OIDC_KEYCLOAK_CLIENT_SECRET=<client-secret-from-realm>
 ```
 
 #### Google
@@ -133,8 +139,8 @@ Credentials can be retrieved from the [Google Cloud Resource Manager page](https
 
 ```
 export AUTH_PROVIDERS=google
-export GOOGLE_CLIENT_ID=...
-export GOOGLE_CLIENT_SECRET=...
+export OIDC_GOOGLE_CLIENT_ID=...
+export OIDC_GOOGLE_CLIENT_SECRET=...
 ```
 
 #### GitHub
@@ -143,9 +149,21 @@ Credentials can be retrieved from the [Register a new OAuth application page](ht
 
 ```
 export AUTH_PROVIDERS=github
-export GITHUB_CLIENT_ID=...
-export GITHUB_CLIENT_SECRET=...
+export OIDC_GITHUB_CLIENT_ID=...
+export OIDC_GITHUB_CLIENT_SECRET=...
 ```
+
+#### Any other provider
+
+`facebook`, `twitter`, `microsoft`, `apple` work the same way —
+`OIDC_<PROVIDER>_CLIENT_ID` / `OIDC_<PROVIDER>_CLIENT_SECRET` and add `<provider>`
+to `AUTH_PROVIDERS`. A provider not in the built-in roster can be added with
+`TRANSLATR_AUTH_OIDC_<NAME>_PROVIDER` (a Quarkus preset such as `spotify`) plus
+the same id/secret vars. Register the redirect URI `<backend-origin>/authenticate`
+with the provider. List several at once: `AUTH_PROVIDERS=keycloak,google,github`.
+A listed provider with no credentials is skipped at startup (logged), never a
+boot failure. `GET /api/oidc-providers` (admin) shows each provider's status and
+any configuration errors.
 
 ### Testing
 
