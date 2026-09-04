@@ -3,7 +3,8 @@
 Date: 2026-09-04
 Status: Draft (pending spec review)
 Issue: [#255](https://github.com/resamsel/translatr/issues/255) — "Only Keycloak can be used as auth provider"
-Related: [#256](https://github.com/resamsel/translatr/issues/256) — contract-first OpenAPI migration (out of scope here)
+Related: [#256](https://github.com/resamsel/translatr/issues/256) — contract-first OpenAPI migration (out of scope here);
+[#257](https://github.com/resamsel/translatr/issues/257) — live discovery probe for the diagnostics endpoint (follow-up)
 Branch context: `fix/245-preserve-redirect-uri-on-relogin` → new branch off `main`
 
 ## Goal
@@ -256,11 +257,13 @@ tenants produced by the resolver.
 Per issue discussion, the `ADMINS` e-mail list is **additive** to the OIDC
 `groups` check and is applied on **every** OIDC login, any provider.
 
-- `UserService.syncOidcRole` gains an `email` parameter:
+- `UserService.syncOidcRole` takes the whole `JsonWebToken` instead of a bare
+  `Set<String>` (avoids another signature change when it next needs a claim):
 
   ```java
-  public User syncOidcRole(UUID userId, Set<String> groups, String email) {
-      boolean isAdmin = inAdminGroup(groups)
+  public User syncOidcRole(UUID userId, JsonWebToken jwt) {
+      String email = jwt.getClaim("email");
+      boolean isAdmin = inAdminGroup(jwt.getGroups())
               || (email != null && adminEmails().contains(email.toLowerCase(Locale.ROOT)));
       UserRole desired = isAdmin ? UserRole.Admin : UserRole.User;
       // …unchanged reconcile/persist…
@@ -268,9 +271,10 @@ Per issue discussion, the `ADMINS` e-mail list is **additive** to the OIDC
   ```
 
   Still reconciles both directions: a user in neither the admin group nor the
-  `ADMINS` list is demoted to `User` on next login.
-- `CurrentUserResolver#resolve()` passes `jwt.getClaim("email")` into the call
-  (already read for `findOrCreate`).
+  `ADMINS` list is demoted to `User` on next login. `inAdminGroup(Set<String>)`
+  is unchanged; `jwt.getGroups()` returns an empty set for social providers.
+- `CurrentUserResolver#resolve()` passes its injected `jwt` straight through:
+  `userService.syncOidcRole(user.id, jwt)`.
 - `adminEmails()` derives from `TranslatrConfig.admins()` (now live).
 - Social providers: roster scopes (`email` / `user:email` / …) ensure the
   `email` claim is present; Keycloak keeps `microprofile-jwt` for `groups`.
@@ -299,23 +303,17 @@ Per provider it computes:
 | `provider` | built-in preset name, or `null` (Keycloak) |
 | `authServerUrl` | shown in full — not a credential; needed to debug discovery/redirect issues |
 | `clientId` | shown in full — not a credential |
-| `clientSecret` | **always masked**: the constant `"••••••••"` when a non-blank secret is configured, `null` when not. A caller reads "is a secret set?" as `clientSecret != null`. The real value is never serialised. |
+| `clientSecret` | **always masked** as `"***len:<N>***"` where `<N>` is the configured secret's character length (e.g. `"***len:36***"`), or `null` when no secret is configured. A caller reads "is a secret set?" as `clientSecret != null`, and the length aids debugging (wrong/truncated secret) without revealing the value. The real secret is never serialised. |
 | `scopes` | effective scope list |
 | `errors` | `List<String>`, e.g. `"client-id is missing"`, `"client-secret is missing"`, `"unknown provider preset 'gooogle'"`, `"auth-server-url is required for a provider without a built-in preset"`, `"auth-server-url unreachable: <reason>"` |
 
-Error sources:
-
-- **Config validation** (always): missing `client-id` / `client-secret`;
-  `provider()` not a `OidcTenantConfig.Provider` constant; no preset **and** no
-  `auth-server-url`; configured block whose name is not in `AUTH_PROVIDERS`
-  (reported as `listed:false`, not an error).
-- **Live discovery probe** (admin endpoint only, best-effort): a short-timeout
-  GET of the well-known discovery document for providers that have an
-  `auth-server-url` or a preset with a known issuer; failure adds an
-  `auth-server-url unreachable: …` error but does **not** flip a
-  config-complete provider's `active` to false on the public list (the public
-  list uses config validation only, so a transient probe failure can't hide a
-  working provider).
+Error sources (v1 — **static config validation only**): missing `client-id` /
+`client-secret`; `provider()` not a `OidcTenantConfig.Provider` constant; no
+preset **and** no `auth-server-url`; configured block whose name is not in
+`AUTH_PROVIDERS` (reported as `listed:false`, not an error). A **live discovery
+probe** (GET of the well-known document, `auth-server-url unreachable: …`
+errors) is deliberately deferred to
+[#257](https://github.com/resamsel/translatr/issues/257).
 
 **Startup log.** An `@Observes StartupEvent` observer calls `evaluateAll()`
 once and logs, e.g.:
@@ -349,10 +347,12 @@ The new endpoint and DTO are annotated so `/api/openapi` describes them
 authoritatively, and the hand-written TS types are written **to that schema**:
 
 - `OidcProviderStatusDto` — `@Schema(name = "OidcProviderStatus", description = …)`;
-  every field annotated; `clientSecret` and `clientId` and `authServerUrl`
-  `@Schema(readOnly = true, nullable = true)`; `clientSecret` description states
-  it is masked and that `null` means "no secret configured"; `key` / `listed` /
-  `active` / `scopes` / `errors` `readOnly`, `errors` and `scopes`
+  every field annotated. `clientSecret`, `clientId`, `authServerUrl`
+  `@Schema(readOnly = true, nullable = true)`; only `clientSecret` is masked
+  (`"***len:<N>***"` / `null`), its description stating the value is masked,
+  `null` means "no secret configured", and the number is the character length;
+  `clientId` and `authServerUrl` are returned verbatim. `key` / `listed` /
+  `active` / `scopes` / `errors` `readOnly`; `errors` and `scopes`
   `@Schema(required = true)` (always present, possibly empty).
 - `OidcProviderResource#list()` — `@Operation(summary = "List OIDC provider
   configuration and diagnostics (admin)")`, `@APIResponse(responseCode = "200",
@@ -412,7 +412,7 @@ Unknown / unconfigured provider:
 | Configured block whose name is not in `AUTH_PROVIDERS` | shown on `/api/oidc-providers` with `listed:false`; not on `/api/authclients` |
 | Zero active providers | `/api/authclients` returns `[]`; login page shows an empty list; startup `WARN`; app boots |
 | `provider=` not a Quarkus `Provider` constant | that provider inactive + `errors` entry; not a crash |
-| Keycloak `auth-server-url` unreachable | per-tenant `connectionDelay` retry at use; `/api/oidc-providers` probe adds an `errors` entry |
+| Keycloak `auth-server-url` unreachable | per-tenant `connectionDelay` retry at use (live probe on the diagnostics endpoint is [#257](https://github.com/resamsel/translatr/issues/257)) |
 | Non-admin calls `/api/oidc-providers` | 403 |
 
 ## Testing
@@ -429,17 +429,20 @@ Unknown / unconfigured provider:
   listed+no-secret → `!active` + `"client-secret is missing"`;
   configured+not-listed → `listed:false`; bad preset name →
   `"unknown provider preset …"`; no preset + no `auth-server-url` → error.
-  **Masking:** `clientSecret` is the mask constant when a secret is set and
-  `null` otherwise; the real secret string never appears in any field.
-- `UserServiceTest` (`syncOidcRole` 3-arg) — email in `ADMINS` → `Admin`;
-  group match → `Admin`; neither → `User`; was `Admin`, now neither → demoted;
-  `email == null` path safe.
+  **Masking:** `clientSecret` matches `^\*\*\*len:\d+\*\*\*$` with `<N>` equal
+  to the configured secret's length when a secret is set, and is `null`
+  otherwise; the real secret string never appears in any field.
+- `UserServiceTest` (`syncOidcRole(UUID, JsonWebToken)`) — with a stub/mock
+  `JsonWebToken`: email claim in `ADMINS` → `Admin`; `groups` contains the
+  admin group → `Admin`; neither → `User`; was `Admin`, now neither → demoted;
+  missing `email` claim and empty `groups` → safe (`User`).
 
 **Backend — integration (`@QuarkusTest` + `quarkus-test-security`):**
 
 - `OidcProviderResourceTest` — non-admin authenticated → 403; admin → 200,
-  body contains the provider with `clientSecret == "••••••••"`, and the real
-  configured secret value is **asserted absent** from the raw response body.
+  body contains the provider with `clientSecret` matching `***len:<N>***`
+  (`<N>` = configured secret length), and the real configured secret value is
+  **asserted absent** from the raw response body.
 - `AuthClientsResourceTest` — profile with
   `AUTH_PROVIDERS=keycloak,google,github` and only `keycloak` + `google`
   credentialed → `GET /api/authclients` is exactly `[keycloak, google]`.
@@ -512,17 +515,15 @@ auth are untouched.
 - Changing `AccessTokenAuthMechanism`, `mp.jwt` bearer semantics, or the
   `/api/authclients` public contract.
 
-## Open questions for review
+## Decisions locked during review
 
-1. **`clientId` / `authServerUrl` shown in full** on `/api/oidc-providers`
-   (admin-only). They are not credentials and are needed to debug redirect-URI
-   and discovery problems. OK, or mask `clientId` too?
-2. **Live discovery probe** on the admin endpoint — worth the complexity for
-   v1, or ship config-validation errors only and add the probe later?
-3. **Roster breadth** in `application.properties` — ship all seven
-   (keycloak, google, github, facebook, twitter, microsoft, apple), or just
-   the issue's set (keycloak, google, facebook, twitter) plus github, and let
-   the rest be pure `TRANSLATR_AUTH_OIDC_*` config?
-4. **`syncOidcRole` signature** — add a third `email` param (spec's choice), or
-   pass the whole `JsonWebToken` / a small context object to avoid future
-   signature churn?
+1. **Masking** — only `clientSecret` is masked, as `"***len:<N>***"` (character
+   length kept for debugging). `clientId` and `authServerUrl` are returned in
+   full on the admin-only endpoint.
+2. **Live discovery probe** — deferred to
+   [#257](https://github.com/resamsel/translatr/issues/257); v1 ships static
+   config-validation errors only.
+3. **Roster** — ship all seven providers (keycloak, google, github, facebook,
+   twitter, microsoft, apple) in `application.properties`.
+4. **`syncOidcRole`** — takes the whole `JsonWebToken`, not a bare `email` /
+   `groups` argument.
