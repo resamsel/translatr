@@ -280,43 +280,69 @@ class UserServiceTest {
     // syncOidcRole
     // -------------------------------------------------------------------------
 
+    private org.eclipse.microprofile.jwt.JsonWebToken jwt(Set<String> groups, String email) {
+        var token = mock(org.eclipse.microprofile.jwt.JsonWebToken.class);
+        lenient().when(token.getGroups()).thenReturn(groups);
+        lenient().when(token.<String>getClaim("email")).thenReturn(email);
+        return token;
+    }
+
     @Test
     void syncOidcRole_promotesToAdmin_whenTheAdminGroupIsPresent() {
         UUID id   = UUID.randomUUID();
         User user = userWithId(id);
         user.role = UserRole.User;
 
-        when(config.adminGroup()).thenReturn("translatr-admin");
         when(userRepo.findById(id)).thenReturn(user);
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        lenient().when(config.adminEmails()).thenReturn(Set.of());
 
-        service.syncOidcRole(id, Set.of("translator", "translatr-admin"));
+        service.syncOidcRole(id, jwt(Set.of("translator", "translatr-admin"), "x@example.com"));
 
         assertThat(user.role).isEqualTo(UserRole.Admin);
     }
 
     @Test
-    void syncOidcRole_demotesToUser_whenTheAdminGroupIsAbsent() {
+    void syncOidcRole_promotesToAdmin_whenEmailIsInAdminsList() {
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+        user.role = UserRole.User;
+
+        when(userRepo.findById(id)).thenReturn(user);
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        when(config.adminEmails()).thenReturn(Set.of("boss@example.com"));
+
+        service.syncOidcRole(id, jwt(Set.of("translator"), "Boss@Example.com"));
+
+        assertThat(user.role).isEqualTo(UserRole.Admin);
+    }
+
+    @Test
+    void syncOidcRole_demotesToUser_whenNeitherGroupNorEmailMatches() {
         UUID id   = UUID.randomUUID();
         User user = userWithId(id);
         user.role = UserRole.Admin;
 
-        when(config.adminGroup()).thenReturn("translatr-admin");
         when(userRepo.findById(id)).thenReturn(user);
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        when(config.adminEmails()).thenReturn(Set.of("boss@example.com"));
 
-        service.syncOidcRole(id, Set.of("translator"));
+        service.syncOidcRole(id, jwt(Set.of("translator"), "someone@example.com"));
 
         assertThat(user.role).isEqualTo(UserRole.User);
     }
 
     @Test
-    void syncOidcRole_demotesToUser_whenGroupsAreNull() {
+    void syncOidcRole_isSafe_whenGroupsEmptyAndNoEmailClaim() {
         UUID id   = UUID.randomUUID();
         User user = userWithId(id);
-        user.role = UserRole.Admin;
+        user.role = UserRole.User;
 
         when(userRepo.findById(id)).thenReturn(user);
+        lenient().when(config.adminGroup()).thenReturn("translatr-admin");
+        lenient().when(config.adminEmails()).thenReturn(Set.of());
 
-        service.syncOidcRole(id, null);
+        service.syncOidcRole(id, jwt(Set.of(), null));
 
         assertThat(user.role).isEqualTo(UserRole.User);
     }
@@ -327,10 +353,11 @@ class UserServiceTest {
         User user = userWithId(id);
         user.role = UserRole.User;
 
-        when(config.adminGroup()).thenReturn("translatr-admin");
         when(userRepo.findById(id)).thenReturn(user);
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        lenient().when(config.adminEmails()).thenReturn(Set.of());
 
-        service.syncOidcRole(id, Set.of("/translatr-admin"));
+        service.syncOidcRole(id, jwt(Set.of("/translatr-admin"), null));
 
         assertThat(user.role).isEqualTo(UserRole.Admin);
     }
@@ -341,10 +368,11 @@ class UserServiceTest {
         User user = userWithId(id);
         user.role = UserRole.Admin;
 
-        when(config.adminGroup()).thenReturn("translatr-admin");
         when(userRepo.findById(id)).thenReturn(user);
+        when(config.adminGroup()).thenReturn("translatr-admin");
+        lenient().when(config.adminEmails()).thenReturn(Set.of());
 
-        service.syncOidcRole(id, Set.of("translatr-admin"));
+        service.syncOidcRole(id, jwt(Set.of("translatr-admin"), null));
 
         assertThat(user.role).isEqualTo(UserRole.Admin);
     }
