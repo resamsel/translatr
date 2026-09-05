@@ -1,19 +1,7 @@
-import { ProjectEmbedded } from './project-embedded';
-import { Temporal } from './temporal';
+import { MessagePayload } from '../generated/model/messagePayload';
 
-export interface Message extends ProjectEmbedded, Temporal {
-  id?: string;
-
-  localeId: string;
-  localeName?: string;
-  localeDisplayName?: string;
-
-  keyId: string;
-  keyName?: string;
-
-  value: string;
-  wordCount?: number;
-
+export interface Message extends MessagePayload {
+  projectOwnerUsername?: string;
   dirty?: boolean;
   originalValue?: string;
 }
