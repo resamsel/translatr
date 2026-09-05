@@ -176,24 +176,45 @@ migrated "all at once" to keep the docs endpoint accurate.
 ### 3. Frontend codegen
 
 - Add `openapi-generator-cli` (npm) targeting the `typescript-angular`
-  generator (or `typescript-fetch` for the low-level client — decided during
-  implementation based on which produces cleaner output against
-  `AbstractService`'s call shape; not a contract-level decision). Wire it as
-  an Nx target on `translatr-model` (models) and `translatr-sdk` (client),
-  running before `build`/`test`/`lint`. Output is gitignored, generated fresh
-  every run — same guarantee as the backend.
+  generator. Wire it as an Nx target on `translatr-model` (models) and
+  `translatr-sdk` (client), running before `build`/`test`/`lint`. Output is
+  gitignored, generated fresh every run — same guarantee as the backend.
 - What's generated: TS model interfaces 1:1 with the backend DTOs, plus a
   low-level per-resource API client.
-- What stays hand-written: `AbstractService<DTO, CRITERIA>` and the
-  per-resource `*Service` classes — refactored to call the generated client
-  instead of raw `HttpClient.get/post/...`, but keeping their current
-  external API (constructor shape, method signatures, bespoke methods like
-  `ProjectService#activity`/`#addMember`) so consuming components need no
-  changes. The `Accept-Language` header injection, temporal conversion, and
-  centralized `ErrorHandler` all stay exactly as they are today, just wrapped
-  around calls into generated code instead of `HttpClient` directly. The
-  `facade/` layer is unaffected — it doesn't touch DTOs shaped differently by
-  this change.
+- **Two different frontend consumption shapes, discovered when scoping the
+  `AccessTokenResource` migration — not one uniform pattern:**
+  - **Bespoke one-off services** (e.g. `AuthClientService.getProviderStatus()`,
+    the pilot) call `HttpClient` directly with no shared abstraction in the
+    way. These get the full treatment from §3's original plan: refactored to
+    call the generated client instead of raw `HttpClient.get/post/...`,
+    keeping their external API unchanged.
+  - **Services built on `AbstractService<DTO, CRITERIA>`** (`AccessToken`,
+    `Key`, `Locale`, `Message`, `Member`, `User`, `Project`, `FeatureFlag`,
+    `Notification` — 9 of the 19 resources) don't fit that treatment.
+    `AbstractService` is a single generic class doing path-parameterized
+    `HttpClient` calls for every one of those 9 services; openapi-generator's
+    `typescript-angular` output is the opposite shape — one concrete service
+    class per resource tag, not something a generic path-based wrapper can
+    delegate to without `AbstractService` itself knowing about 9 different
+    generated client classes. Routing these through generated *clients*
+    is therefore a separate, higher-blast-radius design question (it touches
+    all 9 consumers at once) than migrating one resource's contract, and is
+    **out of scope for now** (see "Out of scope" below). Until that's
+    designed, these 9 resources get **types only**: the hand-written model
+    interface (e.g. `access-token.ts`) is deleted and `AbstractService`'s
+    `DTO` type parameter is satisfied by the generated model instead, but
+    `AbstractService` keeps calling `HttpClient` directly, completely
+    unchanged. This still gets the contract-drift protection this migration
+    is for (the TS type comes from `openapi.yaml`, so a contract change that
+    isn't reflected breaks the frontend build) without touching the shared
+    transport code 9 resources depend on.
+- What stays hand-written regardless of which shape applies: the per-resource
+  `*Service` classes' bespoke methods (e.g. `ProjectService#activity`/
+  `#addMember`), external API (constructor shape, method signatures) so
+  consuming components need no changes, and all of `AbstractService`'s
+  current behavior — `Accept-Language` header injection, temporal conversion,
+  centralized `ErrorHandler`. The `facade/` layer is unaffected — it doesn't
+  touch DTOs shaped differently by this change.
 - `PagedList<T>` stays a hand-written generic TS interface. Unlike Java, TS
   generics are structural, so there's nothing to generate per item type — the
   Java-side per-type wrapper duplication has no frontend equivalent.
@@ -262,3 +283,8 @@ resource tests called out in §2, added ahead of those resources' migration.
   implementation, since it doesn't affect the contract or the migration
   strategy. **Resolved during the pilot:** `typescript-angular` was used
   ([PR #263](https://github.com/resamsel/translatr/pull/263)).
+- Routing `AbstractService<DTO, CRITERIA>`'s 9 consumers through generated
+  per-resource clients instead of its current generic `HttpClient` calls
+  (see §3) — that's a single change affecting 9 resources at once, distinct
+  from and larger than any one resource's contract migration. Needs its own
+  design pass before any of those 9 resources goes beyond "types only."
