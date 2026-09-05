@@ -390,6 +390,61 @@ the regression harness for every migrated resource — no new test framework or
 tooling is introduced. The only net-new test work is the 4 missing backend
 resource tests called out in §2, added ahead of those resources' migration.
 
+- **The `*Criteria`-mapping unit test (§2) cannot catch a parameter-order
+  regression by itself — discovered by the `AccessTokenResource` final
+  review.** `toCriteria(...)` is called directly, with the same positional
+  argument order the test itself asserts against; a resource's
+  `@Override` binds to the generated interface positionally too, so if
+  `openapi.yaml`'s parameter order ever changes and two same-typed
+  parameters (e.g. two `String`s like `order`/`fetch`, or two `Integer`s
+  like `offset`/`limit`) silently swap, both the resource method and the
+  unit test keep compiling and passing — neither the Java compiler nor the
+  unit test can see the mistake, because nothing checks the parameters
+  against their *names* at the JAX-RS boundary. Layer 1 of §2's mitigation
+  ("`*ResourceTest` exercises every field... and must pass unchanged")
+  is what actually catches this class of bug — it wasn't optional
+  decoration alongside the `toCriteria` unit test, it's the layer that
+  covers this specific gap. Concretely: every migrated resource's
+  `*ResourceTest` needs at least one request that sends real, distinct
+  query parameter values and asserts the response reflects them
+  correctly (e.g. `GET /api/accesstokens?offset=0&limit=1` asserting
+  `offset == 0 && limit == 1` in the response) — not just a bare
+  `GET` with no parameters, which exercises none of this.
+- **Generated wire models don't inherit the hand-written DTOs'
+  `@JsonInclude(NON_NULL)` — also discovered by the `AccessTokenResource`
+  final review, and worth fixing once, globally, rather than per
+  resource.** Every hand-written DTO in `com.translatr.dto` declares
+  `@JsonInclude(JsonInclude.Include.NON_NULL)` individually, so a null
+  field is omitted from the response JSON. The generated wire models
+  (jaxrs-spec's output, e.g. `AccessTokenPayload`) carry no such
+  annotation and have no way to declare one from an OpenAPI schema, so a
+  null field now serializes as an explicit `"field": null` instead of
+  being omitted — a real wire-shape change, and one the design commits to
+  avoiding ("no behavior change to any endpoint's actual semantics"). Fix:
+  `quarkus.jackson.serialization-inclusion=non-null` in
+  `application.properties`, set once, globally — a no-op for the
+  hand-written DTOs (which already declare it themselves) and restores
+  parity for every current and future generated model.
+- **Nx's cache does not observe `openapi.yaml` or the generated output
+  directories, so the frontend's "a contract change is an ordinary build
+  failure" guarantee (§4) does not actually hold as wired.** The contract
+  file lives at `../src/main/resources/META-INF/openapi.yaml`, outside the
+  Nx workspace root (`ui/`), and both generated output directories are
+  gitignored — neither is in Nx's file map, and generation runs via npm
+  pre-hooks (`prebuild`, `pretest`, etc.), not a declared Nx target with
+  `inputs`/`outputs`. A contract-only change (no tracked frontend file
+  edited) produces identical task hashes, so `nx test`/`nx build` can
+  serve a 100%-cache-hit result without ever re-running against the new
+  contract. This didn't bite the `AccessTokenResource` migration itself —
+  a tracked file (`access-token.ts`) always changes in the same commit as
+  the contract, so the hash always busts — but it's a real gap for any
+  future change that touches only `openapi.yaml` (e.g. widening a schema
+  in a way that doesn't require a corresponding hand-edited frontend
+  file). Converting generation into a proper Nx target with declared
+  `inputs` covering `openapi.yaml` is a workspace-wide fix, not a single
+  resource's job — tracked as a follow-up, not a blocker for continuing
+  the one-resource-at-a-time rollout.
+
 ## Out of scope
 
 - Turning off smallrye's runtime annotation scanning once migration is
@@ -406,3 +461,8 @@ resource tests called out in §2, added ahead of those resources' migration.
   (see §3) — that's a single change affecting 9 resources at once, distinct
   from and larger than any one resource's contract migration. Needs its own
   design pass before any of those 9 resources goes beyond "types only."
+- Converting frontend codegen from npm pre-hooks into a proper Nx target
+  with declared `inputs`/`outputs` covering `openapi.yaml` (see §5) — a
+  workspace-wide build-tooling change, not any single resource's job.
+  Tracked as a real gap (Nx's cache can't see a contract-only change), not
+  a blocker for continuing the one-resource-at-a-time rollout.
