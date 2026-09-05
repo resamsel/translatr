@@ -210,9 +210,21 @@ migrated "all at once" to keep the docs endpoint accurate.
 - **Then, one resource at a time**: extend `openapi.yaml` with that
   resource's paths/schemas → regenerate → migrate the Java resource class and
   the corresponding Angular service → confirm that resource's existing tests
-  (backend and frontend) pass unchanged → move to the next resource. Migrated
-  and unmigrated resources coexist for the duration (see §1's merge
-  behavior).
+  (backend and frontend) pass unchanged → **delete the hand-written DTO/model
+  it replaces** → move to the next resource. Migrated and unmigrated resources
+  coexist for the duration (see §1's merge behavior).
+  - **Dead-code removal is part of every migration turn, not a follow-up.**
+    The pilot already established the pattern: `OidcProviderStatusDto.java`
+    and its frontend model were deleted in the same PR that migrated the
+    resource (§2's Cleanup bullet, Current state). Each subsequent resource
+    repeats it — e.g. migrating `AccessTokenResource` deletes
+    `src/main/java/com/translatr/dto/AccessTokenDto.java` and
+    `ui/libs/translatr-model/src/lib/model/access-token.ts` once the
+    generated response/request models replace them. Hand-written
+    `*Criteria`/`*-criteria.ts` types are unaffected by this and stay — only
+    the response/request body model is generated; query-param
+    reconstruction (§2) still needs a hand-written `*Criteria` object on the
+    backend and the frontend criteria type is unrelated to backend codegen.
   - **Next up, in order:** `AccessTokenResource` first — it proves the
     pagination-wrapper pattern (§2) in isolation, since it has no `?fetch=`
     expansions and only one extra criteria field (`userId`) beyond
