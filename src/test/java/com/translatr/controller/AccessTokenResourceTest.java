@@ -35,6 +35,22 @@ class AccessTokenResourceTest {
         @Claim(key = "name",  value = "Test User"),
         @Claim(key = "email", value = "testtoken@example.com")
     })
+    void testFindAccessTokens_queryParams_reflectedCorrectlyInResponse() {
+        given()
+            .when().get("/api/accesstokens?offset=0&limit=1&search=zzz&order=name")
+            .then()
+            .statusCode(200)
+            .body("offset", is(0))
+            .body("limit", is(1));
+    }
+
+    @Test
+    @TestSecurity(user = "testuser", roles = "User")
+    @JwtSecurity(claims = {
+        @Claim(key = "sub",   value = "test-token-sub"),
+        @Claim(key = "name",  value = "Test User"),
+        @Claim(key = "email", value = "testtoken@example.com")
+    })
     void testGetAccessToken_notFound() {
         given()
             .when().get("/api/accesstoken/999999")
