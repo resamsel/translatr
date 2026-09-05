@@ -323,6 +323,25 @@ migrated "all at once" to keep the docs endpoint accurate.
     can still generate straight into `translatr-sdk` as `OidcProviderStatus`
     did; one with many gets its own `translatr-model`-targeted generation
     step.
+  - **The `typescript-angular` generator only writes the FIRST schema in a
+    comma-separated `models=X,Y` list to disk — found migrating
+    `ProjectResource`, whose `ProjectPayload` schema references a nested
+    `Member` schema.** Unlike the Java `jaxrs-spec` generator (which happily
+    writes every schema named in such a list to its own file — confirmed
+    already working for the four backend schemas), the TypeScript generator
+    treats every name after the first as "resolve for imports only, never
+    write." Confirmed by direct experimentation: `models=ProjectPayload,
+    Member` wrote only `projectPayload.ts` (with a dangling `import {
+    Member } from './member'` pointing at a file that was never created);
+    `models=Member,ProjectPayload` wrote only `member.ts`. **Fix: one
+    single-schema invocation per schema, into the same output directory**
+    — each call writes its own distinctly-named file, no conflict. This
+    only matters for the frontend generator (Java is unaffected) and only
+    when a schema references another schema that also needs its own
+    generated frontend file — the next resources with this shape are the
+    ones whose responses embed another resource's item type (e.g. any
+    resource returning a nested list of a different domain object, the way
+    `ProjectPayload.members` embeds `Member`).
 - What stays hand-written regardless of which shape applies: the per-resource
   `*Service` classes' bespoke methods (e.g. `ProjectService#activity`/
   `#addMember`), external API (constructor shape, method signatures) so
@@ -385,13 +404,63 @@ migrated "all at once" to keep the docs endpoint accurate.
     query-param reconstruction (§2) still needs a hand-written `*Criteria`
     object on the backend and the frontend criteria type is unrelated to
     backend codegen.
-  - **Next up, in order:** `AccessTokenResource` first — it proves the
+  - **A third frontend shape, found migrating `ProjectResource`: neither
+    deletion nor a plain re-export, when the hand-written type has fields
+    the wire contract genuinely can't express as-is.** `Project`'s
+    hand-written interface had two kinds of divergence a one-line
+    re-export can't absorb: (a) dead fields (`locales`, `keys`, `messages`
+    — confirmed unread by any live code, dropped, not preserved) and (b)
+    fields kept at a MORE SPECIFIC type than the generated contract
+    provides — `members` (kept as the existing hand-written `Member[]`,
+    not the newly-generated `Member`, since that hand-written type is also
+    used by a different resource's embedded references this migration
+    doesn't touch) and `myRole` (kept as the `MemberRole` enum, not the
+    wire's generic `string` — found necessary by an actual `nx build`
+    failure, not by inspection alone: `roles.includes(project.myRole)`
+    where `roles: MemberRole[]` doesn't type-check against a plain
+    `string`). The resolution is composition, not re-export:
+    ```ts
+    export interface Project extends Omit<ProjectPayload, 'members' | 'myRole'> {
+      members?: Member[];
+      myRole?: MemberRole;
+    }
+    ```
+    Verified end-to-end (not just reasoned about): `nx build` on both
+    Angular apps and the full test suite across all 9 Nx projects, cold
+    cache, all pass unmodified against this design — zero of the ~60
+    `Project` / ~19 `Member` consumers needed to change. Decide which of
+    the three shapes (delete / re-export / `Omit`-compose) applies per
+    type by actually tracing whether every field the hand-written type
+    declares is (i) genuinely populated by the wire response and (ii)
+    fine at the wire's exact type — don't assume a re-export is safe just
+    because it worked for a smaller type.
+  - **A known, accepted seam this pattern creates: a temporal field's
+    declared type (`string`, from the wire) and its runtime type (`Date`,
+    after `AbstractService`'s `convertTemporals` mapping) now disagree.**
+    Applies to `AccessToken`/`Project`'s own `whenCreated`/`whenUpdated`
+    (not to `Project.members[i].whenCreated`, which stays correctly typed
+    `Date` via the hand-written `Member`/`Temporal` override above).
+    Harmless today — every current consumer reads these through something
+    that already accepts `Date | string` (a `| date` pipe, `amTimeAgo`) —
+    but a new call site written against the DECLARED type (e.g.
+    `project.whenCreated.substring(0, 10)`) would type-check and fail at
+    runtime. Not fixed as part of either resource's migration since it's a
+    pre-existing, series-wide shape (not something either migration
+    introduced) rather than a per-resource decision; a real fix would be
+    at the `AbstractService`/`convertTemporals` level (e.g. a
+    `Temporalized<T>` mapped type distinguishing the wire shape from the
+    post-mapping shape), tracked here so it isn't silently reintroduced
+    resource by resource without anyone deciding to fix it.
+  - **Rollout status:** `AccessTokenResource` (done) proved the
     pagination-wrapper pattern (§2) in isolation, since it has no `?fetch=`
     expansions and only one extra criteria field (`userId`) beyond
-    `SearchCriteria`. Then a resource with `?fetch=` expansions and
-    multi-field criteria (e.g. `ProjectResource`) — it proves the
-    criteria-reconstruction + fetch pattern together once pagination alone is
-    settled. Each gets its own implementation plan.
+    `SearchCriteria`. `ProjectResource` (done) proved the
+    criteria-reconstruction + fetch pattern, the nested-schema TS-generation
+    quirk above, and the `Omit`-composition frontend shape. Next candidates:
+    a resource whose response embeds ANOTHER resource's own migrated item
+    type (re-exercising the nested-schema generator quirk from a different
+    angle) is worth picking deliberately rather than by convenience, since
+    that's the shape most likely to surface a new wrinkle in this pattern.
 - **No separate drift-check CI step is needed.** Because generation happens
   at build time and nothing generated is committed, a migrated resource's
   Java interface is always freshly derived from `openapi.yaml` — a mismatch
