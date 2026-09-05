@@ -58,5 +58,30 @@ class LocaleResourceLocaleNameCriteriaTest {
             .then()
             .statusCode(200)
             .body("total", is(1));
+
+        given()
+            .contentType("application/json")
+            .body("{\"projectId\": \"" + projectId + "\", \"name\": \"en\"}")
+            .when().post("/api/locale")
+            .then()
+            .statusCode(anyOf(is(200), is(201)));
+
+        // order/fetch are the fourth same-typed String pair in this operation, and the only
+        // one with no coverage anywhere else. A swap would silently fall through to the
+        // default ORDER BY name (order=name is a real column; fetch=progress is not) while
+        // the real progress expansion never fires — no error, just silently wrong data.
+        given()
+            .queryParam("order", "name desc")
+            .when().get("/api/project/" + projectId + "/locales")
+            .then()
+            .statusCode(200)
+            .body("list[0].name", is("en"));
+
+        given()
+            .queryParam("fetch", "progress")
+            .when().get("/api/project/" + projectId + "/locales")
+            .then()
+            .statusCode(200)
+            .body("list[0].progress", notNullValue());
     }
 }
