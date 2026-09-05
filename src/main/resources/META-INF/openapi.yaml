@@ -201,6 +201,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectPayload'
+        '404':
+          description: No project with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteProject
       tags:
@@ -219,6 +225,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectPayload'
+        '404':
+          description: No project with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/{username}/{projectName}:
     get:
       operationId: getProjectByOwnerAndName
@@ -243,6 +255,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectPayload'
+        '404':
+          description: No project with that owner and name.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/project:
     post:
       operationId: createProject
