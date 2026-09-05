@@ -146,6 +146,138 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/projects:
+    get:
+      operationId: findProjects
+      tags:
+        - projects
+      parameters:
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: ownerId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: ownerUsername
+          in: query
+          schema:
+            type: string
+        - name: memberId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: name
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paged projects.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedProjectList'
+  /api/project/{id}:
+    get:
+      operationId: getProject
+      tags:
+        - projects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPayload'
+    delete:
+      operationId: deleteProject
+      tags:
+        - projects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The deleted project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPayload'
+  /api/{username}/{projectName}:
+    get:
+      operationId: getProjectByOwnerAndName
+      tags:
+        - projects
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: projectName
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/FetchParam'
+      responses:
+        '200':
+          description: The project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPayload'
+  /api/project:
+    post:
+      operationId: createProject
+      tags:
+        - projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectPayload'
+      responses:
+        '200':
+          description: The created project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPayload'
+    put:
+      operationId: updateProject
+      tags:
+        - projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectPayload'
+      responses:
+        '200':
+          description: The updated project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPayload'
 components:
   parameters:
     SearchParam:
@@ -246,6 +378,68 @@ components:
         scope:
           type: string
           nullable: true
+    PagedProjectList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProjectPayload'
+          required: [list]
+    Member:
+      type: object
+      description: A project's member (embedded in ProjectPayload.members).
+      properties:
+        id: { type: integer, format: int64, readOnly: true }
+        whenCreated: { type: string, format: date-time, readOnly: true }
+        projectId: { type: string, format: uuid, readOnly: true }
+        projectName: { type: string, readOnly: true }
+        userId: { type: string, format: uuid, readOnly: true }
+        userUsername: { type: string, readOnly: true }
+        userName: { type: string, readOnly: true }
+        userEmailHash: { type: string, readOnly: true }
+        role: { type: string, readOnly: true }
+    ProjectPayload:
+      type: object
+      description: >-
+        A project. Used for both the response body (all fields populated,
+        members/progress/myRole only when requested via ?fetch=) and the
+        create/update request body (only name/description are read). No
+        field is marked `required` — see AccessTokenPayload's note on
+        dual-purpose schemas.
+      properties:
+        id: { type: string, format: uuid, readOnly: true }
+        whenCreated: { type: string, format: date-time, readOnly: true }
+        whenUpdated: { type: string, format: date-time, readOnly: true }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        ownerId: { type: string, format: uuid, readOnly: true }
+        ownerName: { type: string, readOnly: true }
+        ownerUsername: { type: string, readOnly: true }
+        ownerEmailHash: { type: string, readOnly: true }
+        wordCount: { type: integer, readOnly: true, nullable: true }
+        progress:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+          description: Populated only when the request opts in via ?fetch=progress.
+        myRole:
+          type: string
+          readOnly: true
+          nullable: true
+          description: >-
+            Populated only via ?fetch=myrole on GET /api/{username}/{projectName},
+            and only when the caller is authenticated.
+        members:
+          type: array
+          readOnly: true
+          nullable: true
+          description: Populated only when the request opts in via ?fetch=members.
+          items:
+            $ref: '#/components/schemas/Member'
     OidcProviderStatus:
       type: object
       description: Configuration and diagnostics for one auth provider (admin only).
