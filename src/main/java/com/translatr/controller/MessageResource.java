@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import com.translatr.auth.CurrentUserResolver;
 import com.translatr.criteria.MessageCriteria;
 import com.translatr.dto.MessageDto;
 import com.translatr.dto.MessagePayload;
@@ -18,11 +19,26 @@ import java.util.UUID;
 
 public class MessageResource implements MessagesApi {
 
-    private final MessageService messageService;
+    private final MessageService     messageService;
+    private final CurrentUserResolver currentUserResolver;
 
     @Inject
-    public MessageResource(MessageService messageService) {
-        this.messageService = messageService;
+    public MessageResource(MessageService messageService, CurrentUserResolver currentUserResolver) {
+        this.messageService      = messageService;
+        this.currentUserResolver = currentUserResolver;
+    }
+
+    /**
+     * The language a message's {@code localeDisplayName} should be rendered in: the signed-in
+     * user's preferred language, or English for an anonymous caller / a user who never picked
+     * one. Twin of {@code LocaleResource.viewerLocale()}.
+     */
+    private java.util.Locale viewerLocale() {
+        return currentUserResolver.resolveOptional()
+                .map(u -> u.preferredLocale)
+                .filter(tag -> tag != null && !tag.isBlank())
+                .map(java.util.Locale::forLanguageTag)
+                .orElse(java.util.Locale.ENGLISH);
     }
 
     @Override
@@ -32,7 +48,7 @@ public class MessageResource implements MessagesApi {
                                           String keyIds, String keyName) {
         var criteria = toCriteria(search, offset, limit, order, fetch, projectId, localeId, localeIds, keyId,
                 keyIds, keyName);
-        return toPagedDto(messageService.find(criteria));
+        return toPagedDto(messageService.find(criteria, viewerLocale()));
     }
 
     @Override
@@ -42,13 +58,13 @@ public class MessageResource implements MessagesApi {
                                                    UUID keyId, String keyIds, String keyName) {
         var criteria = toCriteria(search, offset, limit, order, fetch, projectId, localeId, localeIds, keyId,
                 keyIds, keyName);
-        return toPagedDto(messageService.find(criteria));
+        return toPagedDto(messageService.find(criteria, viewerLocale()));
     }
 
     @Override
     @PermitAll
     public MessagePayload getMessage(UUID id) {
-        return toApiDto(messageService.get(id));
+        return toApiDto(messageService.get(id, viewerLocale()));
     }
 
     @Override
@@ -100,6 +116,7 @@ public class MessageResource implements MessagesApi {
                 .whenUpdated(toOffsetDateTime(d.whenUpdated))
                 .localeId(d.localeId)
                 .localeName(d.localeName)
+                .localeDisplayName(d.localeDisplayName)
                 .keyId(d.keyId)
                 .keyName(d.keyName)
                 .projectId(d.projectId)
