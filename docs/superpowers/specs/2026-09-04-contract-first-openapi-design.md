@@ -259,18 +259,34 @@ migrated "all at once" to keep the docs endpoint accurate.
   (backend and frontend) pass unchanged → **delete the hand-written DTO/model
   it replaces** → move to the next resource. Migrated and unmigrated resources
   coexist for the duration (see §1's merge behavior).
-  - **Dead-code removal is part of every migration turn, not a follow-up.**
-    The pilot already established the pattern: `OidcProviderStatusDto.java`
-    and its frontend model were deleted in the same PR that migrated the
-    resource (§2's Cleanup bullet, Current state). Each subsequent resource
-    repeats it — e.g. migrating `AccessTokenResource` deletes
-    `src/main/java/com/translatr/dto/AccessTokenDto.java` and
-    `ui/libs/translatr-model/src/lib/model/access-token.ts` once the
-    generated response/request models replace them. Hand-written
-    `*Criteria`/`*-criteria.ts` types are unaffected by this and stay — only
-    the response/request body model is generated; query-param
-    reconstruction (§2) still needs a hand-written `*Criteria` object on the
-    backend and the frontend criteria type is unrelated to backend codegen.
+  - **Dead-code removal is part of every migration turn, not a follow-up —
+    but "delete the hand-written DTO" only holds on the backend when that
+    DTO was a pure wire-boundary type.** The pilot's `OidcProviderStatusDto`
+    was deletable because the service layer never used it —
+    `AuthProviderStatusService.evaluateAll()` returns a distinct internal
+    `com.translatr.service.OidcProviderStatus` type, so the hand-written DTO
+    existed only for REST serialization. Checked against `AccessTokenDto`
+    while scoping `AccessTokenResource` and found the opposite: `find`,
+    `get`, `create`, `update`, and `delete` on
+    `com.translatr.service.AccessTokenService` all take/return
+    `com.translatr.dto.AccessTokenDto` directly — it's the internal
+    service-layer type too, not just a wire DTO. Per §2, "the service
+    layer's signature does not change," so **`AccessTokenDto.java` stays**;
+    the resource class instead adds a small mapper between it and the
+    generated wire type (`AccessToken`) at the controller boundary, the same
+    place the pagination-wrapper mapper (§2) already lives. Verify which
+    case applies per resource before assuming the hand-written DTO is
+    deletable — grep the DTO's usages for anything under
+    `com.translatr.service` first.
+  - On the frontend there's no equivalent split: `ui/libs/translatr-model/
+    src/lib/model/access-token.ts` has no "internal" role distinct from the
+    wire type, so it's deleted once the generated model replaces it,
+    regardless of which case its backend counterpart falls into.
+    Hand-written `*Criteria`/`*-criteria.ts` types are unaffected either way
+    and stay — only the response/request body model is generated;
+    query-param reconstruction (§2) still needs a hand-written `*Criteria`
+    object on the backend and the frontend criteria type is unrelated to
+    backend codegen.
   - **Next up, in order:** `AccessTokenResource` first — it proves the
     pagination-wrapper pattern (§2) in isolation, since it has no `?fetch=`
     expansions and only one extra criteria field (`userId`) beyond
