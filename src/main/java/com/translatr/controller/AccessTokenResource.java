@@ -3,18 +3,21 @@ package com.translatr.controller;
 import com.translatr.auth.CurrentUserResolver;
 import com.translatr.criteria.AccessTokenCriteria;
 import com.translatr.dto.AccessTokenDto;
+import com.translatr.dto.AccessTokenPayload;
+import com.translatr.dto.PagedAccessTokenList;
 import com.translatr.dto.PagedList;
+import com.translatr.generated.api.AccessTokensApi;
 import com.translatr.service.AccessTokenService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 
-@Path("/api")
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.UUID;
+
 @Authenticated
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-public class AccessTokenResource {
+public class AccessTokenResource implements AccessTokensApi {
 
     private final AccessTokenService  tokenService;
     private final CurrentUserResolver currentUserResolver;
@@ -25,24 +28,80 @@ public class AccessTokenResource {
         this.currentUserResolver = currentUserResolver;
     }
 
-    @GET @Path("/accesstokens")
-    public PagedList<AccessTokenDto> find(@BeanParam AccessTokenCriteria criteria) {
-        var owner = currentUserResolver.resolve();
-        return tokenService.find(criteria, owner.id);
+    @Override
+    public PagedAccessTokenList findAccessTokens(String search, Integer offset, Integer limit, String order,
+                                                  String fetch, UUID userId) {
+        var owner    = currentUserResolver.resolve();
+        var criteria = toCriteria(search, offset, limit, order, fetch, userId);
+        return toPagedDto(tokenService.find(criteria, owner.id));
     }
 
-    @GET @Path("/accesstoken/{id}")
-    public AccessTokenDto get(@PathParam("id") Long id) { return tokenService.get(id); }
-
-    @POST @Path("/accesstoken")
-    public AccessTokenDto create(AccessTokenDto dto) {
-        var owner = currentUserResolver.resolve();
-        return tokenService.create(dto, owner);
+    @Override
+    public AccessTokenPayload getAccessToken(Long id) {
+        return toApiDto(tokenService.get(id));
     }
 
-    @PUT @Path("/accesstoken")
-    public AccessTokenDto update(AccessTokenDto dto) { return tokenService.update(dto); }
+    @Override
+    public AccessTokenPayload createAccessToken(AccessTokenPayload accessToken) {
+        var owner = currentUserResolver.resolve();
+        return toApiDto(tokenService.create(toServiceDto(accessToken), owner));
+    }
 
-    @DELETE @Path("/accesstoken/{id}")
-    public AccessTokenDto delete(@PathParam("id") Long id) { return tokenService.delete(id); }
+    @Override
+    public AccessTokenPayload updateAccessToken(AccessTokenPayload accessToken) {
+        return toApiDto(tokenService.update(toServiceDto(accessToken)));
+    }
+
+    @Override
+    public AccessTokenPayload deleteAccessToken(Long id) {
+        return toApiDto(tokenService.delete(id));
+    }
+
+    static AccessTokenCriteria toCriteria(String search, Integer offset, Integer limit, String order, String fetch,
+                                           UUID userId) {
+        AccessTokenCriteria c = new AccessTokenCriteria();
+        c.search = search;
+        c.offset = offset;
+        c.limit  = limit;
+        c.order  = order;
+        c.fetch  = fetch;
+        c.userId = userId;
+        return c;
+    }
+
+    private static PagedAccessTokenList toPagedDto(PagedList<AccessTokenDto> src) {
+        return new PagedAccessTokenList(
+                src.total, src.offset, src.limit, src.hasNext, src.hasPrev,
+                src.list.stream().map(AccessTokenResource::toApiDto).toList());
+    }
+
+    private static AccessTokenPayload toApiDto(AccessTokenDto d) {
+        return new AccessTokenPayload()
+                .id(d.id)
+                .whenCreated(toOffsetDateTime(d.whenCreated))
+                .whenUpdated(toOffsetDateTime(d.whenUpdated))
+                .userId(d.userId)
+                .userUsername(d.userUsername)
+                .name(d.name)
+                .key(d.key)
+                .scope(d.scope);
+    }
+
+    /**
+     * A just-persisted {@link AccessTokenDto} (from {@code AccessTokenService.create}) can still have
+     * a null {@code whenCreated}/{@code whenUpdated} here: {@code @CreationTimestamp}/{@code
+     * @UpdateTimestamp} are populated by Hibernate at flush time, which hasn't happened yet when the
+     * entity is mapped back immediately after {@code persist()}.
+     */
+    private static OffsetDateTime toOffsetDateTime(Instant i) {
+        return i == null ? null : i.atOffset(ZoneOffset.UTC);
+    }
+
+    private static AccessTokenDto toServiceDto(AccessTokenPayload a) {
+        AccessTokenDto d = new AccessTokenDto();
+        d.id    = a.getId();
+        d.name  = a.getName();
+        d.scope = a.getScope();
+        return d;
+    }
 }
