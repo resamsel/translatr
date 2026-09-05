@@ -11,8 +11,6 @@ import { LanguageProvider } from './language-provider';
 
 const projectMapper = (project: Project) => ({
   ...convertTemporals(project),
-  locales: project ? convertTemporalsList(project.locales) : undefined,
-  keys: project ? convertTemporalsList(project.keys) : undefined,
   members: project ? convertTemporalsList(project.members) : undefined
 });
 
