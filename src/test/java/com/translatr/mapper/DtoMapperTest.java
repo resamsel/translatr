@@ -152,11 +152,11 @@ class DtoMapperTest {
 
         LocaleDto dto = mapper.toDto(l);
 
-        assertThat(dto.id).isEqualTo(l.id);
-        assertThat(dto.name).isEqualTo("de");
-        assertThat(dto.wordCount).isEqualTo(10);
-        assertThat(dto.projectId).isEqualTo(project.id);
-        assertThat(dto.projectName).isEqualTo("proj");
+        assertThat(dto.getId()).isEqualTo(l.id);
+        assertThat(dto.getName()).isEqualTo("de");
+        assertThat(dto.getWordCount()).isEqualTo(10);
+        assertThat(dto.getProjectId()).isEqualTo(project.id);
+        assertThat(dto.getProjectName()).isEqualTo("proj");
     }
 
     // -------------------------------------------------------------------------

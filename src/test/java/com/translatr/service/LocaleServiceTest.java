@@ -90,7 +90,7 @@ class LocaleServiceTest {
         Locale de = new Locale();
         de.id = UUID.randomUUID();
         LocaleDto deDto = new LocaleDto();
-        deDto.id = de.id;
+        deDto.setId(de.id);
 
         PanacheQuery<Locale> query = mock(PanacheQuery.class);
         when(localeRepo.find(anyString(), any(Object[].class))).thenReturn(query);
@@ -107,7 +107,7 @@ class LocaleServiceTest {
 
         var result = service.find(c, java.util.Locale.ENGLISH);
 
-        assertThat(result.list.get(0).progress).isEqualTo(0.75);
+        assertThat(result.list.get(0).getProgress()).isEqualTo(0.75);
     }
 
     @Test
@@ -116,7 +116,7 @@ class LocaleServiceTest {
         Locale de = new Locale();
         de.id = UUID.randomUUID();
         LocaleDto deDto = new LocaleDto();
-        deDto.id = de.id;
+        deDto.setId(de.id);
 
         PanacheQuery<Locale> query = mock(PanacheQuery.class);
         when(localeRepo.find(anyString(), any(Object[].class))).thenReturn(query);
@@ -131,7 +131,7 @@ class LocaleServiceTest {
 
         var result = service.find(c, java.util.Locale.ENGLISH);
 
-        assertThat(result.list.get(0).progress).isNull();
+        assertThat(result.list.get(0).getProgress()).isNull();
         verify(progress, never()).localeProgress(any());
     }
 
@@ -141,8 +141,8 @@ class LocaleServiceTest {
         Locale en = new Locale();
         en.id = UUID.randomUUID();
         LocaleDto enDto = new LocaleDto();
-        enDto.id   = en.id;
-        enDto.name = "en";
+        enDto.setId(en.id);
+        enDto.setName("en");
 
         PanacheQuery<Locale> query = mock(PanacheQuery.class);
         when(localeRepo.find(anyString(), any(Object[].class))).thenReturn(query);
@@ -157,7 +157,7 @@ class LocaleServiceTest {
 
         var result = service.find(c, java.util.Locale.GERMAN);
 
-        assertThat(result.list.get(0).displayName).isEqualTo("Englisch");
+        assertThat(result.list.get(0).getDisplayName()).isEqualTo("Englisch");
     }
 
     @Test
@@ -166,14 +166,14 @@ class LocaleServiceTest {
         Locale de = new Locale();
         de.id = id;
         LocaleDto deDto = new LocaleDto();
-        deDto.id   = id;
-        deDto.name = "de";
+        deDto.setId(id);
+        deDto.setName("de");
         when(localeRepo.findByIdOptional(id)).thenReturn(Optional.of(de));
         when(mapper.toDto(de)).thenReturn(deDto);
 
         var result = service.get(id, java.util.Locale.ENGLISH);
 
-        assertThat(result.displayName).isEqualTo("German");
+        assertThat(result.getDisplayName()).isEqualTo("German");
     }
 
     @Test
@@ -183,8 +183,8 @@ class LocaleServiceTest {
         Locale fr = new Locale();
         fr.id = UUID.randomUUID();
         LocaleDto frDto = new LocaleDto();
-        frDto.id   = fr.id;
-        frDto.name = "fr";
+        frDto.setId(fr.id);
+        frDto.setName("fr");
 
         when(projectRepo.findByOwnerUsernameAndName("alice", "proj")).thenReturn(Optional.of(project));
         when(localeRepo.findByProjectAndName(project.id, "fr")).thenReturn(Optional.of(fr));
@@ -192,7 +192,7 @@ class LocaleServiceTest {
 
         var result = service.getByOwnerAndProjectNameAndName("alice", "proj", "fr", java.util.Locale.ENGLISH);
 
-        assertThat(result.displayName).isEqualTo("French");
+        assertThat(result.getDisplayName()).isEqualTo("French");
     }
 
     @Test
@@ -211,21 +211,21 @@ class LocaleServiceTest {
         project.id = projectId;
 
         LocaleDto dto = new LocaleDto();
-        dto.projectId = projectId;
-        dto.name      = "de";
+        dto.setProjectId(projectId);
+        dto.setName("de");
 
         when(projectRepo.findByIdOptional(projectId)).thenReturn(Optional.of(project));
         when(mapper.toDto(any(Locale.class))).thenAnswer(inv -> {
             Locale l = inv.getArgument(0);
             LocaleDto result = new LocaleDto();
-            result.name = l.name;
+            result.setName(l.name);
             return result;
         });
 
         LocaleDto result = service.create(dto);
 
         verify(localeRepo).persist(any(Locale.class));
-        assertThat(result.name).isEqualTo("de");
+        assertThat(result.getName()).isEqualTo("de");
     }
 
     @Test
@@ -235,8 +235,8 @@ class LocaleServiceTest {
         project.id = projectId;
 
         LocaleDto dto = new LocaleDto();
-        dto.projectId = projectId;
-        dto.name      = "de";
+        dto.setProjectId(projectId);
+        dto.setName("de");
 
         LocaleDto after = new LocaleDto();
         when(projectRepo.findByIdOptional(projectId)).thenReturn(Optional.of(project));
@@ -257,8 +257,8 @@ class LocaleServiceTest {
         locale.project = project;
 
         LocaleDto dto = new LocaleDto();
-        dto.id   = id;
-        dto.name = "fr";
+        dto.setId(id);
+        dto.setName("fr");
 
         LocaleDto before = new LocaleDto();
         LocaleDto after  = new LocaleDto();
@@ -293,8 +293,8 @@ class LocaleServiceTest {
     void create_throwsNotFound_whenProjectMissing() {
         UUID projectId = UUID.randomUUID();
         LocaleDto dto = new LocaleDto();
-        dto.projectId = projectId;
-        dto.name      = "de";
+        dto.setProjectId(projectId);
+        dto.setName("de");
 
         when(projectRepo.findByIdOptional(projectId)).thenReturn(Optional.empty());
 
@@ -309,8 +309,8 @@ class LocaleServiceTest {
         locale.id   = id;
 
         LocaleDto dto = new LocaleDto();
-        dto.id   = id;
-        dto.name = "fr";
+        dto.setId(id);
+        dto.setName("fr");
 
         when(localeRepo.findByIdOptional(id)).thenReturn(Optional.of(locale));
         when(mapper.toDto(locale)).thenReturn(dto);
@@ -324,7 +324,7 @@ class LocaleServiceTest {
     void update_throwsNotFound_whenLocaleMissing() {
         UUID id = UUID.randomUUID();
         LocaleDto dto = new LocaleDto();
-        dto.id = id;
+        dto.setId(id);
 
         when(localeRepo.findByIdOptional(id)).thenReturn(Optional.empty());
 
