@@ -68,5 +68,21 @@ class MessageResourceCsvCriteriaTest {
             .then()
             .statusCode(200)
             .body("total", is(0));
+
+        // MessageResource.findMessagesByProject is a SEPARATE generated-interface method
+        // (backing GET /api/project/{projectId}/messages) with its own independent
+        // parameter order in its @Override declaration — the same keyIds/localeIds swap
+        // could exist there without being caught by the assertions above.
+        given()
+            .when().get("/api/project/" + projectId + "/messages?keyIds=" + keyId)
+            .then()
+            .statusCode(200)
+            .body("total", is(1));
+
+        given()
+            .when().get("/api/project/" + projectId + "/messages?localeIds=" + keyId)
+            .then()
+            .statusCode(200)
+            .body("total", is(0));
     }
 }
