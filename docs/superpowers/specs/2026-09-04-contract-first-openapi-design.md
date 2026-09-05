@@ -164,6 +164,27 @@ migrated "all at once" to keep the docs endpoint accurate.
      integration test noticing wrong query results after the fact — which is
      how the original incident actually surfaced — and points straight at the
      missing field if a future refactor drops one.
+  3. Layer 2 alone has a blind spot the unit test can't see: the generated
+     interface's `@Override` binds positionally, so if `openapi.yaml`'s
+     parameter order ever changes and two same-typed parameters swap (e.g.
+     two `Integer`s like `offset`/`limit`, or two `String`s like
+     `order`/`fetch`), both the method and a same-order unit test keep
+     compiling and passing. Layer 1's `*ResourceTest` closes this: at least
+     one HTTP-level test per migrated list endpoint must send real, distinct
+     values for a same-typed pair and assert the response reflects them
+     correctly (found and fixed on `AccessTokenResource`'s final review;
+     applied proactively on `ProjectResource`'s `offset`/`limit`).
+- **Accepted minor risk, recurring on every resource so far: `toCriteria`
+  assigns boxed `Integer` generated-interface parameters into `SearchCriteria`'s
+  primitive `int` fields (`offset`, `limit`).** A `null` argument would NPE.
+  Safe in practice because the generated interface's `@DefaultValue`
+  guarantees JAX-RS never passes null for an absent query param — the
+  untested edge is an explicitly empty value (`?offset=`), not an absent one.
+  Not fixed per-resource since it's the same pre-existing shape `@BeanParam`
+  had before this migration, not something introduced by it; a systemic fix
+  (null-guard in `toCriteria`, or widening the criteria fields to boxed
+  types) belongs in the pattern itself if it's ever worth doing, not
+  repeated ad hoc.
 - **Errors**: `ErrorResponse{status, message}` becomes one shared
   `#/components/schemas/ErrorResponse`, referenced as the default/error
   response across operations, matching what `ExceptionMappers` already
