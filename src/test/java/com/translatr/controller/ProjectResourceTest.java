@@ -108,4 +108,77 @@ class ProjectResourceTest {
             .then()
             .statusCode(anyOf(is(200), is(201)));
     }
+
+    @Test
+    @TestSecurity(user = "fetchmembers", roles = "User")
+    @JwtSecurity(claims = {
+        @Claim(key = "sub",   value = "fetchmembers-sub"),
+        @Claim(key = "name",  value = "Fetch Members"),
+        @Claim(key = "email", value = "fetchmembers@example.com")
+    })
+    void findProjects_withFetchMembers_returnsMembersArray() {
+        String projectName = "fetch-members-project-" + System.currentTimeMillis();
+        given()
+            .contentType("application/json")
+            .body("{\"name\": \"" + projectName + "\"}")
+            .when().post("/api/project")
+            .then()
+            .statusCode(anyOf(is(200), is(201)));
+
+        given()
+            .when().get("/api/projects?fetch=members&name=" + projectName)
+            .then()
+            .statusCode(200)
+            .body("list[0].members", notNullValue())
+            .body("list[0].members.size()", is(1))
+            .body("list[0].members[0].role", is("Owner"))
+            .body("list[0].members[0].userUsername", notNullValue());
+    }
+
+    @Test
+    @TestSecurity(user = "nofetchlist", roles = "User")
+    @JwtSecurity(claims = {
+        @Claim(key = "sub",   value = "nofetchlist-sub"),
+        @Claim(key = "name",  value = "No Fetch List"),
+        @Claim(key = "email", value = "nofetchlist@example.com")
+    })
+    void findProjects_withoutFetch_omitsMembers() {
+        String projectName = "no-fetch-list-project-" + System.currentTimeMillis();
+        given()
+            .contentType("application/json")
+            .body("{\"name\": \"" + projectName + "\"}")
+            .when().post("/api/project")
+            .then()
+            .statusCode(anyOf(is(200), is(201)));
+
+        given()
+            .when().get("/api/projects?name=" + projectName)
+            .then()
+            .statusCode(200)
+            .body("list[0]", not(hasKey("members")));
+    }
+
+    @Test
+    @TestSecurity(user = "ownerfilter", roles = "User")
+    @JwtSecurity(claims = {
+        @Claim(key = "sub",   value = "ownerfilter-sub"),
+        @Claim(key = "name",  value = "Owner Filter"),
+        @Claim(key = "email", value = "ownerfilter@example.com")
+    })
+    void findProjects_withOwnerUsername_filtersToThatOwner() {
+        String projectName = "owner-filter-project-" + System.currentTimeMillis();
+        given()
+            .contentType("application/json")
+            .body("{\"name\": \"" + projectName + "\"}")
+            .when().post("/api/project")
+            .then()
+            .statusCode(anyOf(is(200), is(201)));
+
+        given()
+            .when().get("/api/projects?ownerUsername=ownerfilterexample.com&limit=50")
+            .then()
+            .statusCode(200)
+            .body("list.findAll { it.ownerUsername != 'ownerfilterexample.com' }.size()", is(0))
+            .body("list.find { it.name == '" + projectName + "' }", notNullValue());
+    }
 }
