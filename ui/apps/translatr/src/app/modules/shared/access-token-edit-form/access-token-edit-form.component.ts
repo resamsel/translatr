@@ -78,7 +78,7 @@ export class AccessTokenEditFormComponent extends BaseEditFormComponent<
 
   private updateValue(accessToken: AccessToken): void {
     this.form.patchValue(accessToken);
-    if (accessToken.scope !== undefined) {
+    if (accessToken.scope) {
       accessToken.scope.split(',').forEach(scope => (this.activeScopeMap[scope] = true));
     }
   }
