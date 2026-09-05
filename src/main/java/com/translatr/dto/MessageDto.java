@@ -11,6 +11,9 @@ public class MessageDto {
     public Instant whenUpdated;
     public UUID    localeId;
     public String  localeName;
+    // Human-readable name of localeName rendered in the viewer's language, e.g. "de" -> "German".
+    // Derived from localeName; stamped by MessageService on read paths, not by DtoMapper.
+    public String  localeDisplayName;
     public UUID    keyId;
     public String  keyName;
     public UUID    projectId;

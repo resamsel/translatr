@@ -190,6 +190,8 @@ class DtoMapperTest {
         assertThat(dto.wordCount).isEqualTo(1);
         assertThat(dto.localeId).isEqualTo(locale.id);
         assertThat(dto.localeName).isEqualTo("en");
+        // localeDisplayName is stamped by MessageService (needs the viewer locale), not the mapper.
+        assertThat(dto.localeDisplayName).isNull();
         assertThat(dto.keyId).isEqualTo(key.id);
         assertThat(dto.keyName).isEqualTo("greeting");
         assertThat(dto.projectId).isEqualTo(project.id);

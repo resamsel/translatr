@@ -10,6 +10,7 @@ import com.translatr.model.Message;
 import com.translatr.repository.KeyRepository;
 import com.translatr.repository.LocaleRepository;
 import com.translatr.repository.MessageRepository;
+import com.translatr.util.LocaleDisplayNameUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -43,7 +44,18 @@ public class MessageService {
 
     private static final List<String> ORDERABLE = List.of("key.name", "value", "whenCreated", "whenUpdated");
 
-    public PagedList<MessageDto> find(MessageCriteria c) {
+    /**
+     * Stamps {@link MessageDto#localeDisplayName} - the human name of {@code dto.localeName}
+     * rendered in {@code viewerLocale} (the signed-in user's preferred language, resolved by the
+     * resource; never {@code null}). Mirrors {@code LocaleService.stampDisplayName}; like there,
+     * only the read paths stamp it - create/update/delete responses and activity-log snapshots
+     * leave it null.
+     */
+    private void stampLocaleDisplayName(MessageDto dto, java.util.Locale viewerLocale) {
+        dto.localeDisplayName = LocaleDisplayNameUtils.formatDisplayName(dto.localeName, viewerLocale);
+    }
+
+    public PagedList<MessageDto> find(MessageCriteria c, java.util.Locale viewerLocale) {
         // Port of the old MessageRepositoryImpl.findBy: every criteria field that is set
         // narrows the result, combined with AND. Dropping any of them (as the first
         // Quarkus cut did) makes e.g. the key editor's
@@ -88,11 +100,14 @@ public class MessageService {
         long total = query.count();
         var list   = query.page(c.offset / Math.max(c.limit,1), c.limit).list()
                           .stream().map(mapper::toDto).collect(Collectors.toList());
+        list.forEach(d -> stampLocaleDisplayName(d, viewerLocale));
         return new PagedList<>(list, total, c.offset, c.limit);
     }
 
-    public MessageDto get(UUID id) {
-        return mapper.toDto(messageRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
+    public MessageDto get(UUID id, java.util.Locale viewerLocale) {
+        MessageDto dto = mapper.toDto(messageRepo.findByIdOptional(id).orElseThrow(NotFoundException::new));
+        stampLocaleDisplayName(dto, viewerLocale);
+        return dto;
     }
 
     @Transactional
