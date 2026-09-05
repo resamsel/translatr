@@ -1,7 +1,7 @@
 # Contract-First OpenAPI — Design
 
-Date: 2026-09-04
-Status: Draft (pending spec review)
+Date: 2026-09-04 (pagination/criteria patterns added 2026-09-05)
+Status: In progress — toolchain + `OidcProviderResource` pilot shipped ([PR #263](https://github.com/resamsel/translatr/pull/263)); remaining ~18 resources migrate one at a time per §4
 Issue: [#256](https://github.com/resamsel/translatr/issues/256) — "Adopt contract-first OpenAPI: single openapi.yaml as source of truth, generate DTOs/interfaces"
 Related: [#255](https://github.com/resamsel/translatr/issues/255) — multi-provider OIDC SSO, whose `GET /api/oidc-providers` + `OidcProviderStatusDto` is the pilot resource for this migration
 
@@ -23,12 +23,20 @@ resource's existing tests, rather than a single cutover.
 
 ## Current state
 
+(As of 2026-09-04, before the pilot below shipped. Superseded facts are
+struck through inline rather than rewritten, so the "why" behind later
+decisions stays legible.)
+
 - **Backend**: `quarkus-smallrye-openapi` scans JAX-RS annotations at runtime
   and serves the result at `/api/openapi` (`application.properties:162`). No
-  static `openapi.yaml` exists anywhere in the repo. DTOs
-  (`src/main/java/com/translatr/dto/*.java`) are plain public-field classes
-  with `@JsonInclude(NON_NULL)`; only `OidcProviderStatusDto` (from #255) has
-  `@Schema` annotations — everything else is unannotated.
+  static `openapi.yaml` exists anywhere in the repo — **since superseded**:
+  `src/main/resources/META-INF/openapi.yaml` now exists and holds the
+  `oidc-providers` pilot endpoint; smallrye merges it with the ongoing
+  annotation scan per §1. DTOs (`src/main/java/com/translatr/dto/*.java`) are
+  plain public-field classes with `@JsonInclude(NON_NULL)`; only
+  `OidcProviderStatusDto` (from #255) had `@Schema` annotations — everything
+  else is unannotated. (`OidcProviderStatusDto` itself was deleted as part of
+  the pilot migration, replaced by the generated `OidcProviderStatus`.)
 - **Pagination**: every list endpoint returns the generic
   `com.translatr.dto.PagedList<T>` (`{list, total, offset, limit, hasNext,
   hasPrev}`).
@@ -61,8 +69,12 @@ resource's existing tests, rather than a single cutover.
   non-buildable Nx libs consumed as source via `@dev/translatr-model` /
   `@dev/translatr-sdk` path mappings.
 - **Build**: root `build.gradle.kts` uses the Quarkus Gradle plugin only, no
-  `org.openapi.generator` plugin. `ui/` is an Nx workspace; no
-  `openapi-generator-cli` dependency exists in either `package.json`.
+  `org.openapi.generator` plugin — **since superseded**: the plugin is now
+  wired per §2, running before `compileJava`. `ui/` is an Nx workspace; no
+  `openapi-generator-cli` dependency exists in either `package.json` — **since
+  superseded**: it's now a `translatr-sdk` dev dependency, generating into
+  `libs/translatr-sdk/src/lib/generated` before `test`/`build` per §3 (the
+  `typescript-angular` generator was the one chosen; see §"Out of scope").
 
 ## Design
 
@@ -98,26 +110,60 @@ migrated "all at once" to keep the docs endpoint accurate.
 - **Pagination**: OpenAPI/JSON Schema has no generics, so `PagedList<T>`
   becomes one concrete wrapper schema per list endpoint's item type (e.g.
   `PagedProjectList`, `PagedMessageList` — roughly 10-12 schemas total across
-  all resources), each just `{list: [$ref item], total, offset, limit,
-  hasNext, hasPrev}`. This is mechanical duplication in the generated Java,
-  but it's generated, not hand-maintained.
+  all resources). To avoid repeating the five metadata fields in every one of
+  those schemas, a shared `PageMetadata` component (`{total, offset, limit,
+  hasNext, hasPrev}`, all `readOnly: true`) is defined once and each
+  `Paged<Item>List` schema composes it via `allOf`, adding only its own
+  `list` property:
+  ```yaml
+  PagedAccessTokenList:
+    allOf:
+      - $ref: '#/components/schemas/PageMetadata'
+      - type: object
+        properties:
+          list:
+            type: array
+            items: { $ref: '#/components/schemas/AccessToken' }
+        required: [list]
+  ```
+  openapi-generator flattens `allOf` into one Java class with all six fields —
+  functionally identical to today's hand-written `PagedList<T>`, so this is
+  mechanical duplication in the generated Java, but it's generated, not
+  hand-maintained. The service layer keeps returning
+  `com.translatr.dto.PagedList<T>` unchanged; each migrated resource adds one
+  small static mapper at the controller boundary (e.g. `toDto(PagedList<
+  AccessTokenDto>) → PagedAccessTokenList`), repeated per resource rather than
+  abstracted, since there's no shared generic to hang a helper off safely.
 - **Criteria/filtering**: `@BeanParam` criteria classes become individual
-  `$ref`'d query parameters in the spec (common ones like `offset`/`limit`
-  reused via shared parameter components). The generated interface method
-  therefore takes flat parameters, not a bean-param object; the migrated
-  resource's implementation reconstructs the existing internal `*Criteria`
-  object from those flat parameters before delegating to the (unchanged)
-  service method. The service layer's signature does not change — only the
-  controller boundary does.
+  `$ref`'d query parameters in the spec — common `SearchCriteria` fields
+  (`search`, `offset`, `limit`, `order`, `fetch`) as shared
+  `#/components/parameters/*` refs reused via `$ref` on every list operation
+  (mirroring the Java inheritance today), resource-specific fields (e.g.
+  `userId` on access tokens) declared inline per operation. Confirmed against
+  the actual `jaxrs-spec` output (`OidcProvidersApi.java`): the generator puts
+  `@QueryParam`/`@DefaultValue` directly on flat interface method parameters —
+  there's no bean-param grouping available without custom templates. The
+  migrated resource's implementation therefore reconstructs the existing
+  internal `*Criteria` object field-by-field from those flat parameters before
+  delegating to the (unchanged) service method. The service layer's signature
+  does not change — only the controller boundary does.
 - **This reconstruction step is the primary regression risk** — it's
   structurally the same shape as the past incident where criteria fields got
-  dropped during a migration. Mitigation: a resource is only migrated once its
-  `*ResourceTest` exercises every field on its criteria class (and any
-  `?fetch=` expansion params), and that test suite must pass unchanged after
-  the cutover. The 4 resources without a dedicated resource test
-  (`FeatureFlagResource`, `HealthResource`, `NotificationResource`,
-  `StatisticsResource`) get one added as part of their migration turn, before
-  the cutover, not after.
+  dropped during a migration
+  ([[quarkus-find-criteria-regression]]-class bug). Mitigation, two-layered:
+  1. A resource is only migrated once its `*ResourceTest` exercises every
+     field on its criteria class (and any `?fetch=` expansion params), and
+     that test suite must pass unchanged after the cutover. The 4 resources
+     without a dedicated resource test (`FeatureFlagResource`,
+     `HealthResource`, `NotificationResource`, `StatisticsResource`) get one
+     added as part of their migration turn, before the cutover, not after.
+  2. The field-by-field reconstruction is extracted into a small
+     package-private static method (`toCriteria(...)`) with its own unit
+     test asserting every flat parameter lands on the matching `*Criteria`
+     field, one assertion per field. This is cheaper and more precise than an
+     integration test noticing wrong query results after the fact — which is
+     how the original incident actually surfaced — and points straight at the
+     missing field if a future refactor drops one.
 - **Errors**: `ErrorResponse{status, message}` becomes one shared
   `#/components/schemas/ErrorResponse`, referenced as the default/error
   response across operations, matching what `ExceptionMappers` already
@@ -154,17 +200,26 @@ migrated "all at once" to keep the docs endpoint accurate.
 
 ### 4. Rollout & CI
 
-- **Pilot**: `OidcProviderResource` — the smallest resource, the newest, and
-  already partially annotated (`OidcProviderStatusDto` has `@Schema`
-  annotations from #255). Used to prove the full toolchain (spec → Java
-  interface → TS model/client → both sides compiling and passing existing
-  tests) end-to-end before touching anything with real regression risk.
+- **Pilot (done):** `OidcProviderResource` — the smallest resource, the
+  newest, and already partially annotated (`OidcProviderStatusDto` had
+  `@Schema` annotations from #255) — was migrated in
+  [PR #263](https://github.com/resamsel/translatr/pull/263), proving the full
+  toolchain (spec → Java interface → TS model/client → both sides compiling
+  and passing existing tests) end-to-end before touching anything with real
+  regression risk.
 - **Then, one resource at a time**: extend `openapi.yaml` with that
   resource's paths/schemas → regenerate → migrate the Java resource class and
   the corresponding Angular service → confirm that resource's existing tests
   (backend and frontend) pass unchanged → move to the next resource. Migrated
   and unmigrated resources coexist for the duration (see §1's merge
   behavior).
+  - **Next up, in order:** `AccessTokenResource` first — it proves the
+    pagination-wrapper pattern (§2) in isolation, since it has no `?fetch=`
+    expansions and only one extra criteria field (`userId`) beyond
+    `SearchCriteria`. Then a resource with `?fetch=` expansions and
+    multi-field criteria (e.g. `ProjectResource`) — it proves the
+    criteria-reconstruction + fetch pattern together once pagination alone is
+    settled. Each gets its own implementation plan.
 - **No separate drift-check CI step is needed.** Because generation happens
   at build time and nothing generated is committed, a migrated resource's
   Java interface is always freshly derived from `openapi.yaml` — a mismatch
@@ -193,4 +248,5 @@ resource tests called out in §2, added ahead of those resources' migration.
   does.
 - Deciding `typescript-angular` vs `typescript-fetch` definitively — left to
   implementation, since it doesn't affect the contract or the migration
-  strategy.
+  strategy. **Resolved during the pilot:** `typescript-angular` was used
+  ([PR #263](https://github.com/resamsel/translatr/pull/263)).
