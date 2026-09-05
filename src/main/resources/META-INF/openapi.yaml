@@ -487,6 +487,173 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/project/{projectId}/locales:
+    get:
+      operationId: findLocalesByProject
+      tags:
+        - locales
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: keyId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: missing
+          in: query
+          schema:
+            type: boolean
+        - name: localeName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paged locales for the project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedLocaleList'
+  /api/locale/{id}:
+    get:
+      operationId: getLocale
+      tags:
+        - locales
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The locale.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleDto'
+        '404':
+          description: No locale with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteLocale
+      tags:
+        - locales
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The deleted locale.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleDto'
+        '404':
+          description: No locale with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/{username}/{projectName}/locales/{localeName}:
+    get:
+      operationId: getLocaleByOwnerAndProjectNameAndName
+      tags:
+        - locales
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: projectName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: localeName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The locale.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleDto'
+        '404':
+          description: No project or locale with that name.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/locale:
+    post:
+      operationId: createLocale
+      tags:
+        - locales
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocaleDto'
+      responses:
+        '200':
+          description: The created locale.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleDto'
+        '404':
+          description: No project with the given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: updateLocale
+      tags:
+        - locales
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocaleDto'
+      responses:
+        '200':
+          description: The updated locale.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleDto'
+        '404':
+          description: No locale with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   parameters:
     SearchParam:
@@ -517,6 +684,57 @@ components:
       schema:
         type: string
   schemas:
+    LocaleDto:
+      description: >-
+        A project's locale. Used for both the response body (all fields populated) and the
+        create/update request body (projectId/name are read; the rest are server-computed
+        and ignored if supplied). No field is marked `required` — see AccessTokenPayload's
+        note on dual-purpose schemas.
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        whenCreated:
+          type: string
+          format: date-time
+          readOnly: true
+        whenUpdated:
+          type: string
+          format: date-time
+          readOnly: true
+        projectId:
+          type: string
+          format: uuid
+        projectName:
+          type: string
+          readOnly: true
+        projectOwnerUsername:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        displayName:
+          type: string
+          readOnly: true
+        progress:
+          type: number
+          format: double
+          readOnly: true
+        wordCount:
+          type: integer
+          readOnly: true
+    PagedLocaleList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/LocaleDto'
+          required: [list]
     PagedMessageList:
       allOf:
         - $ref: '#/components/schemas/PageMetadata'
