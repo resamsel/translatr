@@ -267,7 +267,10 @@ migrated "all at once" to keep the docs endpoint accurate.
     all 9 consumers at once) than migrating one resource's contract, and is
     **out of scope for now** (see "Out of scope" below). Until that's
     designed, these 9 resources get **types only**: the hand-written model
-    interface (e.g. `access-token.ts`) is deleted and `AbstractService`'s
+    interface (e.g. `access-token.ts`) is deleted, or reduced to a one-line
+    re-export of the generated type if it has enough consumers that
+    deleting it would force many unrelated import-path updates (see the
+    model-placement note below), and `AbstractService`'s
     `DTO` type parameter is satisfied by the generated model instead, but
     `AbstractService` keeps calling `HttpClient` directly, completely
     unchanged. This still gets the contract-drift protection this migration
@@ -339,15 +342,23 @@ migrated "all at once" to keep the docs endpoint accurate.
     service-layer type too, not just a wire DTO. Per §2, "the service
     layer's signature does not change," so **`AccessTokenDto.java` stays**;
     the resource class instead adds a small mapper between it and the
-    generated wire type (`AccessToken`) at the controller boundary, the same
-    place the pagination-wrapper mapper (§2) already lives. Verify which
-    case applies per resource before assuming the hand-written DTO is
-    deletable — grep the DTO's usages for anything under
-    `com.translatr.service` first.
-  - On the frontend there's no equivalent split: `ui/libs/translatr-model/
-    src/lib/model/access-token.ts` has no "internal" role distinct from the
-    wire type, so it's deleted once the generated model replaces it,
-    regardless of which case its backend counterpart falls into.
+    generated wire type (`AccessTokenPayload` — see the naming-collision
+    note above) at the controller boundary, the same place the
+    pagination-wrapper mapper (§2) already lives. Verify which case applies
+    per resource before assuming the hand-written DTO is deletable — grep
+    the DTO's usages for anything under `com.translatr.service` first.
+  - On the frontend there's no equivalent internal/wire split, but there IS
+    a consumer-count split (see the model-placement note in §3): a
+    low-consumer hand-written model (the pilot's `oidc-provider-status.ts`,
+    2 consumers) is deleted outright, since nothing points at it once the
+    generated type takes over. A high-consumer one (`access-token.ts`, ~30
+    consumers) is instead reduced to a one-line re-export — e.g. `export
+    type { AccessTokenPayload as AccessToken } from
+    '../generated/model/accessTokenPayload';` — keeping its filename,
+    export name, and every consumer's import path unchanged. Both end up
+    with zero hand-maintained shape; only whether the file itself survives
+    (as a redirect) differs, based on how many call sites deleting it would
+    otherwise force to update.
     Hand-written `*Criteria`/`*-criteria.ts` types are unaffected either way
     and stay — only the response/request body model is generated;
     query-param reconstruction (§2) still needs a hand-written `*Criteria`
