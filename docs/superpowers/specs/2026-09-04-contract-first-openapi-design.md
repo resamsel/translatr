@@ -440,6 +440,39 @@ migrated "all at once" to keep the docs endpoint accurate.
     declares is (i) genuinely populated by the wire response and (ii)
     fine at the wire's exact type — don't assume a re-export is safe just
     because it worked for a smaller type.
+  - **A fourth frontend shape, found migrating `MessageResource`: a plain
+    `extends` with only additions, no overrides — the simplest case.**
+    Applicable when every wire-provided field is fine at its generated
+    type (no `Omit` needed) and the hand-written type had only
+    genuinely-live extra client-only fields to preserve on top:
+    ```ts
+    export interface Message extends MessagePayload {
+      projectOwnerUsername?: string;
+      dirty?: boolean;
+      originalValue?: string;
+    }
+    ```
+    A verification caveat surfaced along the way: the plan's "confirmed
+    dead by a repo-wide search" claim about a fourth candidate field,
+    `localeDisplayName`, turned out to be wrong on a second look — it's
+    actually read by three Angular `.html` templates
+    (`activity-message-link.component.html`, `editor.component.html`,
+    `project-info.component.html`) and several Cypress fixture JSONs, none
+    of which a `.ts`-only search would surface, and Angular's
+    `strictTemplates: false` (repo-wide) means the type-checker never
+    catches a template referencing a property absent from the interface.
+    It was still correctly left out of `Message` — the backend
+    `MessageDto` never had this field either, so those three template
+    bindings already rendered nothing before this migration and still
+    do — but the lesson is: **"confirmed dead" verification must include a
+    search of `.html` templates and e2e fixtures, not just `.ts` files**,
+    since `strictTemplates: false` makes a `.ts`-only search produce false
+    negatives silently. Fixing those three pre-existing dead template
+    bindings was out of scope for the migration itself; a follow-up then
+    added `localeDisplayName` to the `MessagePayload` contract (read-only,
+    server-computed from `localeName` in the caller's language, mirroring
+    `LocaleService`'s `displayName` stamping) so `Message extends
+    MessagePayload` picks it up and the three bindings render real data.
   - **A known, accepted seam this pattern creates: a temporal field's
     declared type (`string`, from the wire) and its runtime type (`Date`,
     after `AbstractService`'s `convertTemporals` mapping) now disagree.**
@@ -462,11 +495,21 @@ migrated "all at once" to keep the docs endpoint accurate.
     expansions and only one extra criteria field (`userId`) beyond
     `SearchCriteria`. `ProjectResource` (done) proved the
     criteria-reconstruction + fetch pattern, the nested-schema TS-generation
-    quirk above, and the `Omit`-composition frontend shape. Next candidates:
-    a resource whose response embeds ANOTHER resource's own migrated item
-    type (re-exercising the nested-schema generator quirk from a different
-    angle) is worth picking deliberately rather than by convenience, since
-    that's the shape most likely to surface a new wrinkle in this pattern.
+    quirk above, and the `Omit`-composition frontend shape. `MessageResource`
+    (done) proved the comma-separated-list (CSV) criteria field pattern
+    (`localeIds`/`keyIds`, both `String`, both same-typed — exactly the
+    regression class the `quarkus-find-criteria-regression` incident was
+    about), and that a single resource can have TWO separately-bound
+    generated list operations (`findMessages` and `findMessagesByProject`)
+    sharing one `toCriteria` helper, each needing its OWN HTTP-level
+    same-typed-pair regression test (a gap initially missed for the
+    by-project endpoint — see the new §5 bullet below — and fixed as a
+    same-day follow-up, not carried forward as a known gap). Next
+    candidates: a resource whose response embeds ANOTHER resource's own
+    migrated item type (re-exercising the nested-schema generator quirk
+    from a different angle) is worth picking deliberately rather than by
+    convenience, since that's the shape most likely to surface a new
+    wrinkle in this pattern.
 - **No separate drift-check CI step is needed.** Because generation happens
   at build time and nothing generated is committed, a migrated resource's
   Java interface is always freshly derived from `openapi.yaml` — a mismatch
@@ -506,6 +549,23 @@ resource tests called out in §2, added ahead of those resources' migration.
   correctly (e.g. `GET /api/accesstokens?offset=0&limit=1` asserting
   `offset == 0 && limit == 1` in the response) — not just a bare
   `GET` with no parameters, which exercises none of this.
+- **The same criteria-bearing list operation exposed through more than one
+  REST path needs its own regression test per path — discovered by
+  `MessageResource`'s final review.** When a resource exposes the same
+  internal `toCriteria` helper through more than one REST path (e.g. a
+  bare collection endpoint and a path-scoped variant), each path is a
+  SEPARATE generated interface method with its OWN independent parameter
+  binding — the positional-argument risk from the bullet above applies
+  independently to each one. `MessageResource` has exactly this shape:
+  `findMessages` (bare `GET /api/messages`) and `findMessagesByProject`
+  (`GET /api/project/{projectId}/messages`) both eventually call the same
+  `toCriteria`, but are two separately-bound `@Override` methods where a
+  positional argument transposition in either one would compile and pass
+  every other test. The final review found `findMessages` had the CSV
+  same-typed-pair regression test (`MessageResourceCsvCriteriaTest`) but
+  `findMessagesByProject` initially didn't — the rule this generalizes to:
+  an HTTP-level same-typed-pair regression test (per the bullet above) is
+  required for EACH such method, not just one of them.
 - **Generated wire models don't inherit the hand-written DTOs'
   `@JsonInclude(NON_NULL)` — also discovered by the `AccessTokenResource`
   final review, and worth fixing once, globally, rather than per

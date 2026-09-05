@@ -296,6 +296,197 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectPayload'
+  /api/messages:
+    get:
+      operationId: findMessages
+      tags:
+        - messages
+      parameters:
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: projectId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: localeId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: localeIds
+          in: query
+          description: Comma-separated locale ids.
+          schema:
+            type: string
+        - name: keyId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: keyIds
+          in: query
+          description: Comma-separated key ids.
+          schema:
+            type: string
+        - name: keyName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paged messages.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedMessageList'
+  /api/project/{projectId}/messages:
+    get:
+      operationId: findMessagesByProject
+      tags:
+        - messages
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: localeId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: localeIds
+          in: query
+          description: Comma-separated locale ids.
+          schema:
+            type: string
+        - name: keyId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: keyIds
+          in: query
+          description: Comma-separated key ids.
+          schema:
+            type: string
+        - name: keyName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paged messages for the given project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedMessageList'
+  /api/message/{id}:
+    get:
+      operationId: getMessage
+      tags:
+        - messages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagePayload'
+        '404':
+          description: No message with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteMessage
+      tags:
+        - messages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The deleted message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagePayload'
+        '404':
+          description: No message with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/message:
+    post:
+      operationId: createMessage
+      tags:
+        - messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessagePayload'
+      responses:
+        '200':
+          description: The created message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagePayload'
+        '404':
+          description: No locale or key with the given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: updateMessage
+      tags:
+        - messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessagePayload'
+      responses:
+        '200':
+          description: The updated message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagePayload'
+        '404':
+          description: No message with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   parameters:
     SearchParam:
@@ -326,6 +517,44 @@ components:
       schema:
         type: string
   schemas:
+    PagedMessageList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/MessagePayload'
+          required: [list]
+    MessagePayload:
+      type: object
+      description: >-
+        A translated message. Used for both the response body (all fields
+        populated) and the create/update request body (id/localeId/keyId/
+        value are read; the rest are server-computed and ignored if
+        supplied). No field is marked `required` — see AccessTokenPayload's
+        note on dual-purpose schemas.
+      properties:
+        id: { type: string, format: uuid, readOnly: true }
+        whenCreated: { type: string, format: date-time, readOnly: true }
+        whenUpdated: { type: string, format: date-time, readOnly: true }
+        localeId: { type: string, format: uuid }
+        localeName: { type: string, readOnly: true }
+        localeDisplayName:
+          type: string
+          readOnly: true
+          description: >-
+            Human-readable name of `localeName` rendered in the caller's
+            preferred language, e.g. `"de"` -> `"German"`. Server-computed
+            from `localeName`; only populated on the read endpoints, not on
+            create/update/delete responses.
+        keyId: { type: string, format: uuid }
+        keyName: { type: string, readOnly: true }
+        projectId: { type: string, format: uuid, readOnly: true }
+        projectName: { type: string, readOnly: true }
+        value: { type: string, nullable: true }
+        wordCount: { type: integer, readOnly: true, nullable: true }
     PageMetadata:
       type: object
       properties:
