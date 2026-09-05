@@ -168,6 +168,72 @@ migrated "all at once" to keep the docs endpoint accurate.
   `#/components/schemas/ErrorResponse`, referenced as the default/error
   response across operations, matching what `ExceptionMappers` already
   produces.
+- **Schema naming must avoid `com.translatr.model.*` entity simple names —
+  discovered scoping `AccessTokenResource`, and it will recur.** Naming a
+  schema after its resource (`AccessToken`, matching the JPA entity
+  `com.translatr.model.AccessToken`) compiles fine in isolation, but
+  `modelPackage` is `com.translatr.dto` — the same package the generated
+  class lands in as the *entity's* package is different, so nothing stops
+  the name reuse at the generator level. The break shows up downstream: any
+  file with both `import com.translatr.dto.*;` and `import
+  com.translatr.model.*;` (e.g. `DtoMapper.java`, `DtoMapperTest.java` —
+  both wildcard-import both packages) gets an ambiguous-reference compile
+  error the moment the new generated class exists, because the bare name
+  now resolves to two candidates. This isn't one-off: at least 7 of the ~19
+  resources have an entity of the exact same simple name as their natural
+  schema name (`Project`, `User`, `Message`, `Key`, `Locale`, `FeatureFlag`,
+  `AccessToken`), and `AccessTokenDto`-style naming doesn't help either —
+  that name is already taken by the existing hand-written internal DTO for
+  each of those resources. **Convention going forward: suffix the schema
+  `<Entity>Payload`** (e.g. `AccessTokenPayload`) whenever `com.translatr.
+  model.<Entity>` already exists — checked once, cheaply, with `ls
+  src/main/java/com/translatr/model/<Entity>.java` before naming a new
+  schema. A schema with no colliding entity (like the pilot's
+  `OidcProviderStatus`) doesn't need the suffix.
+  - This is a Java-only naming problem — TypeScript's explicit named exports
+    don't have Java's wildcard-import ambiguity, so nothing forces the
+    `Payload` suffix onto the frontend. Keep the public, barrel-exported name
+    matching what existing consumers already use (`AccessToken`) via a
+    rename-on-re-export: `export type { AccessTokenPayload as AccessToken }
+    from '../generated/model/accessTokenPayload';` — zero consumer changes,
+    same as the rest of the "types only" story in §3.
+- **A schema used as both request and response body must not mark any
+  field `required` — also discovered scoping `AccessTokenResource`.**
+  openapi-generator's `jaxrs-spec` generates one `@JsonCreator` constructor
+  per schema requiring every `required` field, and applies it uniformly to
+  *both* directions: deserializing an incoming request body and (nominally)
+  documenting a response. It does not implement the OpenAPI 3.0 spec's
+  stated nuance that a `readOnly`-and-`required` field is "required for
+  responses only" — confirmed by actually sending
+  `AccessTokenResourceTest`'s existing create request (`{"name": ...,
+  "scope": ...}`) against a schema with `required: [id, whenCreated,
+  whenUpdated, userId, userUsername, name, key]`: every one of those
+  server-generated fields being absent from the request produced `400 Bad
+  Request`, not the `200` the test expects. The hand-written DTOs this
+  migration replaces have no such enforcement (plain Jackson, no
+  `@JsonCreator`), so `required` on a dual-purpose schema is new,
+  unintended strictness this migration must not introduce. Fix: for any
+  schema serving both a request and a response body, omit `required`
+  entirely (or, if some field is provably mandatory in *every* direction the
+  schema is used for — none were found for `AccessTokenPayload`, since even
+  `update` treats `name` as an optional partial-update field — restrict
+  `required` to just that field). A GET-only response schema like
+  `OidcProviderStatus` isn't affected: nothing ever deserializes JSON into
+  it server-side, so its `required` list only documents the response shape.
+- **Operational gotcha, unrelated to the contract itself: `openapi-generator`
+  never cleans stale output.** Renaming or removing a schema during
+  iteration leaves the old generated `.java`/`.ts` file sitting in
+  `build/generated/openapi` (or the npm equivalent) alongside the new one,
+  since the generator only overwrites files it currently would produce. A
+  stale leftover class can produce exactly the same kind of confusing
+  compile error as a real bug (this surfaced a false "pre-existing"
+  ambiguity while iterating on the naming fix above, caused entirely by an
+  orphaned file from an earlier attempt, not by any actual code). Delete
+  the generated output directory before regenerating whenever a schema name
+  changes, and prefer `--rerun`/a forced clean recompile over trusting
+  incremental compilation when diagnosing a codegen-adjacent compile error
+  — incremental compilation did not reliably invalidate `DtoMapper.java`
+  after a colliding class was newly introduced on the classpath.
 - **Cleanup**: delete `src/main/java/dto/` (including `dto/errors/`) as part
   of this change — it's dead, excluded from the source set already, and
   leaving it in place only adds confusion while this area of the tree is
