@@ -45,6 +45,7 @@ Thumbs.db
 
 # openapi-generator output (regenerated at build/test time, see package.json)
 /libs/translatr-sdk/src/lib/generated
+/libs/translatr-model/src/lib/generated
 
 /oclif.manifest.json
 .cursor/rules/nx-rules.mdc
