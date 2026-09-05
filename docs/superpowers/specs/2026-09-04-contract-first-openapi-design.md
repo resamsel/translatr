@@ -525,12 +525,7 @@ migrated "all at once" to keep the docs endpoint accurate.
     sharing one `toCriteria` helper, each needing its OWN HTTP-level
     same-typed-pair regression test (a gap initially missed for the
     by-project endpoint — see the new §5 bullet below — and fixed as a
-    same-day follow-up, not carried forward as a known gap). Next
-    candidates: a resource whose response embeds ANOTHER resource's own
-    migrated item type (re-exercising the nested-schema generator quirk
-    from a different angle) is worth picking deliberately rather than by
-    convenience, since that's the shape most likely to surface a new
-    wrinkle in this pattern.
+    same-day follow-up, not carried forward as a known gap).
     `LocaleResource` (done) proved two shapes none of the first three
     resources hit. First: the generated wire schema can **replace** a
     resource's hand-written internal DTO outright, not just sit alongside
@@ -561,7 +556,12 @@ migrated "all at once" to keep the docs endpoint accurate.
     `LocaleTransferResource`, kept out of `mp.openapi.scan.exclude.classes`;
     `LocaleResource` keeps only the 5 migrated operations and stays
     excluded. This is the first resource in the series where not
-    everything on the original class could be migrated in place.
+    everything on the original class could be migrated in place. Next
+    candidates: a resource whose response embeds ANOTHER resource's own
+    migrated item type (re-exercising the nested-schema generator quirk
+    from a different angle) is worth picking deliberately rather than by
+    convenience, since that's the shape most likely to surface a new
+    wrinkle in this pattern.
 - **No separate drift-check CI step is needed.** Because generation happens
   at build time and nothing generated is committed, a migrated resource's
   Java interface is always freshly derived from `openapi.yaml` — a mismatch
