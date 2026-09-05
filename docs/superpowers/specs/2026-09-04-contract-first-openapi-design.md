@@ -468,7 +468,11 @@ migrated "all at once" to keep the docs endpoint accurate.
     search of `.html` templates and e2e fixtures, not just `.ts` files**,
     since `strictTemplates: false` makes a `.ts`-only search produce false
     negatives silently. Fixing those three pre-existing dead template
-    bindings is out of scope here.
+    bindings was out of scope for the migration itself; a follow-up then
+    added `localeDisplayName` to the `MessagePayload` contract (read-only,
+    server-computed from `localeName` in the caller's language, mirroring
+    `LocaleService`'s `displayName` stamping) so `Message extends
+    MessagePayload` picks it up and the three bindings render real data.
   - **A known, accepted seam this pattern creates: a temporal field's
     declared type (`string`, from the wire) and its runtime type (`Date`,
     after `AbstractService`'s `convertTemporals` mapping) now disagree.**

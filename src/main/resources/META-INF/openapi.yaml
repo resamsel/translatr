@@ -541,6 +541,14 @@ components:
         whenUpdated: { type: string, format: date-time, readOnly: true }
         localeId: { type: string, format: uuid }
         localeName: { type: string, readOnly: true }
+        localeDisplayName:
+          type: string
+          readOnly: true
+          description: >-
+            Human-readable name of `localeName` rendered in the caller's
+            preferred language, e.g. `"de"` -> `"German"`. Server-computed
+            from `localeName`; only populated on the read endpoints, not on
+            create/update/delete responses.
         keyId: { type: string, format: uuid }
         keyName: { type: string, readOnly: true }
         projectId: { type: string, format: uuid, readOnly: true }
