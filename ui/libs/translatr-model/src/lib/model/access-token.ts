@@ -1,13 +1,1 @@
-import { Temporal } from '.';
-
-export interface AccessToken extends Temporal {
-  id?: number;
-
-  userId: string;
-  userUsername?: string;
-  userName?: string;
-
-  name: string;
-  key?: string;
-  scope: string;
-}
+export type { AccessTokenPayload as AccessToken } from '../generated/model/accessTokenPayload';
