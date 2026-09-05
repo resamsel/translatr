@@ -358,6 +358,21 @@ someone adds that root-level provider, construct the service manually with
 `ui/libs/translatr-sdk/src/lib/services/auth-client.service.ts` does; every new
 generated-service consumer must replicate this workaround for now.
 
+**Unused-import gotcha:** openapi-generator's `typescript-angular` templates
+unconditionally import symbols (`HttpHeaders`, `HttpParams`, query/error helper
+types, ...) that a given operation may not use — e.g. a GET with no query params
+or custom headers never references `HttpParams`. This repo's `noUnusedLocals: true`
+makes Angular's production build fail on those with `TS6133`/`TS6192` (Jest's
+`isolatedModules: true` test path doesn't catch this, so tests can be green while
+the production build is red). `ui/tools/suppress-unused-generated-imports.js` runs
+automatically after every `generate:api` (via npm's `postgenerate:api` hook) and
+inserts `// @ts-ignore` above any generated import line with an unused specifier —
+mirroring a pattern openapi-generator's own templates already use inconsistently
+for some model imports. This only suppresses diagnostics in generated files; it
+doesn't touch `noUnusedLocals` for hand-written code. If a future resource's
+generated output needs something this heuristic doesn't handle, extend that script
+rather than reaching for a project-wide tsconfig change.
+
 See `docs/superpowers/specs/2026-09-04-contract-first-openapi-design.md` for the
 full design rationale.
 

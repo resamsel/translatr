@@ -14,6 +14,7 @@
     "prestart": "npm run buildinfo",
     "prestart:admin": "npm run buildinfo && npm run generate:api",
     "generate:api": "openapi-generator-cli generate -i ../src/main/resources/META-INF/openapi.yaml -g typescript-angular -o libs/translatr-sdk/src/lib/generated --additional-properties=ngVersion=22.0.8,providedInRoot=true,withInterfaces=true,supportsES6=true,modelPropertyNaming=original",
+    "postgenerate:api": "node tools/suppress-unused-generated-imports.js",
     "start": "nx serve translatr --host 0.0.0.0 --port 4210",
     "start:admin": "nx serve translatr-admin --host 0.0.0.0 --port 4211",
     "start:docs": "ng serve docs --host 0.0.0.0 --port 4212",
