@@ -99,7 +99,7 @@ openApiGenerate {
     // (missing class/module), not as an obvious openapi-generator failure.
     globalProperties.set(
         mapOf(
-            "models" to "OidcProviderStatus,AccessTokenPayload,PageMetadata,PagedAccessTokenList",
+            "models" to "OidcProviderStatus,AccessTokenPayload,PageMetadata,PagedAccessTokenList,ProjectPayload,PagedProjectList,Member",
             "apis" to "",
             "supportingFiles" to ""
         )
