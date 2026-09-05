@@ -542,7 +542,7 @@ migrated "all at once" to keep the docs endpoint accurate.
     of the old public-field access), a deliberate departure from the
     "service layer signature does not change" constraint that kept
     `AccessTokenDto`/`ProjectDto` alive (see the dead-code-removal note
-    below), not an application of it. Second: `LocaleResource`'s original 6
+    below), not an application of it. Second: `LocaleResource`'s original 8
     endpoints didn't all fit the generated-interface pattern — 2 of them
     (hand-written binary import/export, with a raw octet-stream
     body/response and a dynamic per-file-type `Content-Disposition`
@@ -554,7 +554,7 @@ migrated "all at once" to keep the docs endpoint accurate.
     `mp.openapi.scan.exclude.classes`'s whole-class granularity for why.
     The two endpoints were extracted into a new class,
     `LocaleTransferResource`, kept out of `mp.openapi.scan.exclude.classes`;
-    `LocaleResource` keeps only the 5 migrated operations and stays
+    `LocaleResource` keeps only the 6 migrated operations and stays
     excluded. This is the first resource in the series where not
     everything on the original class could be migrated in place. Next
     candidates: a resource whose response embeds ANOTHER resource's own
@@ -656,8 +656,8 @@ resource tests called out in §2, added ahead of those resources' migration.
   with no per-method equivalent that actually works — discovered scoping
   `LocaleResource`'s two un-migratable binary import/export endpoints.**
   Excluding `LocaleResource` while it still held those two hand-written
-  methods alongside its 5 migrated ones made all 7 endpoints disappear
-  from `/api/openapi` and Swagger UI, not just the 5 the exclusion was
+  methods alongside its 6 migrated ones made all 8 endpoints disappear
+  from `/api/openapi` and Swagger UI, not just the 6 the exclusion was
   meant to hide — confirmed live by inspecting the served `/api/openapi`
   document with the exclude entry in place. `@Operation(hidden = true)` on
   the individual `@Override` methods was tried next, as a lighter
@@ -668,7 +668,7 @@ resource tests called out in §2, added ahead of those resources' migration.
   contract. Fix: split the class instead of trying to exclude or hide
   part of it. The two un-migratable endpoints were extracted into a new
   `LocaleTransferResource`, left out of `mp.openapi.scan.exclude.classes`;
-  `LocaleResource` keeps only the 5 generated-interface methods and stays
+  `LocaleResource` keeps only the 6 generated-interface methods and stays
   excluded. Any future resource whose hand-written class mixes migrated
   (generated-interface) methods with endpoints that can't be represented
   in the generated contract (binary bodies, streaming, dynamic headers)
