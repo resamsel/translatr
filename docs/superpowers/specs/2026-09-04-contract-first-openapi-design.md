@@ -393,6 +393,27 @@ migrated "all at once" to keep the docs endpoint accurate.
     member list is `com.translatr.dto.MemberDto` — both stay for the same
     reason `AccessTokenDto` did, and both are absent from this migration's
     diff.
+  - **A fifth case, found migrating `LocaleResource`: the hand-written DTO
+    doesn't have to stay just because it's also the service-layer type —
+    it can be deleted by updating the service layer to consume the
+    generated type instead.** Unlike `AccessTokenDto`/`ProjectDto`/
+    `MemberDto` above, `LocaleDto` (`com.translatr.dto.LocaleDto`) also
+    flowed through `LocaleService`'s `find`/`get`/`create`/`update`/
+    `delete` directly — exactly the shape that, per the "service layer
+    signature does not change" rule in §2, kept the earlier three
+    hand-written DTOs alive. This migration made a different, deliberate
+    choice instead of applying that rule: `LocaleService` and `DtoMapper`
+    were updated to consume/produce the generated `LocaleDto`
+    (getters/setters, not the old public-field access) directly, and the
+    hand-written `com.translatr.dto.LocaleDto` was deleted outright — no
+    controller-boundary mapper, no `LocalePayload`. Follow-up (not part of
+    this plan): `AccessTokenResource`, `ProjectResource`, and
+    `MessageResource` each still carry a redundant hand-written `*Dto`
+    plus a `*Payload`-to-`*Dto` mapping step at their controller boundary
+    that could, by this same logic, eventually be dropped by updating
+    `AccessTokenService`/`ProjectService`/`MessageService` to consume the
+    generated type directly — worth a dedicated follow-up plan of its own,
+    not a retrofit bundled into unrelated work.
   - On the frontend there's no equivalent internal/wire split, but there IS
     a consumer-count split (see the model-placement note in §3): a
     low-consumer hand-written model (the pilot's `oidc-provider-status.ts`,
@@ -510,6 +531,37 @@ migrated "all at once" to keep the docs endpoint accurate.
     from a different angle) is worth picking deliberately rather than by
     convenience, since that's the shape most likely to surface a new
     wrinkle in this pattern.
+    `LocaleResource` (done) proved two shapes none of the first three
+    resources hit. First: the generated wire schema can **replace** a
+    resource's hand-written internal DTO outright, not just sit alongside
+    it behind a controller-boundary mapper — the schema was named
+    `LocaleDto`, identically to the hand-written
+    `com.translatr.dto.LocaleDto` it replaces, not suffixed `LocalePayload`
+    the way `AccessTokenPayload`/`ProjectPayload`/`MessagePayload` were.
+    This is safe under the §2 naming-collision rule because that rule is
+    about a schema colliding with the JPA entity's name
+    (`com.translatr.model.Locale`), not about a schema reusing the old
+    DTO's own name — `LocaleDto` and `Locale` don't collide, so no suffix
+    was needed. `LocaleService` and `DtoMapper` were updated to
+    consume/produce the generated type directly (getters/setters instead
+    of the old public-field access), a deliberate departure from the
+    "service layer signature does not change" constraint that kept
+    `AccessTokenDto`/`ProjectDto` alive (see the dead-code-removal note
+    below), not an application of it. Second: `LocaleResource`'s original 6
+    endpoints didn't all fit the generated-interface pattern — 2 of them
+    (hand-written binary import/export, with a raw octet-stream
+    body/response and a dynamic per-file-type `Content-Disposition`
+    header) can't be expressed as a generated interface method without a
+    generator-wide `returnResponse` flag that would change every other
+    already-migrated resource's return type too. A resource whose class
+    mixes generated-interface methods with endpoints like these must split
+    them into separate classes — see the new §5 bullet on
+    `mp.openapi.scan.exclude.classes`'s whole-class granularity for why.
+    The two endpoints were extracted into a new class,
+    `LocaleTransferResource`, kept out of `mp.openapi.scan.exclude.classes`;
+    `LocaleResource` keeps only the 5 migrated operations and stays
+    excluded. This is the first resource in the series where not
+    everything on the original class could be migrated in place.
 - **No separate drift-check CI step is needed.** Because generation happens
   at build time and nothing generated is committed, a migrated resource's
   Java interface is always freshly derived from `openapi.yaml` — a mismatch
@@ -600,6 +652,27 @@ resource tests called out in §2, added ahead of those resources' migration.
   `inputs` covering `openapi.yaml` is a workspace-wide fix, not a single
   resource's job — tracked as a follow-up, not a blocker for continuing
   the one-resource-at-a-time rollout.
+- **`mp.openapi.scan.exclude.classes` excludes at whole-class granularity,
+  with no per-method equivalent that actually works — discovered scoping
+  `LocaleResource`'s two un-migratable binary import/export endpoints.**
+  Excluding `LocaleResource` while it still held those two hand-written
+  methods alongside its 5 migrated ones made all 7 endpoints disappear
+  from `/api/openapi` and Swagger UI, not just the 5 the exclusion was
+  meant to hide — confirmed live by inspecting the served `/api/openapi`
+  document with the exclude entry in place. `@Operation(hidden = true)` on
+  the individual `@Override` methods was tried next, as a lighter
+  alternative to splitting the class, and did not work either: it did not
+  stop smallrye's scanner from touching the migrated, non-hidden methods
+  on the same class, and a real `"200"` response description on one of
+  them was silently replaced with the generic `"OK"` in the served
+  contract. Fix: split the class instead of trying to exclude or hide
+  part of it. The two un-migratable endpoints were extracted into a new
+  `LocaleTransferResource`, left out of `mp.openapi.scan.exclude.classes`;
+  `LocaleResource` keeps only the 5 generated-interface methods and stays
+  excluded. Any future resource whose hand-written class mixes migrated
+  (generated-interface) methods with endpoints that can't be represented
+  in the generated contract (binary bodies, streaming, dynamic headers)
+  needs this same class split, not a per-method annotation.
 
 ## Out of scope
 
