@@ -387,6 +387,12 @@ migrated "all at once" to keep the docs endpoint accurate.
     pagination-wrapper mapper (§2) already lives. Verify which case applies
     per resource before assuming the hand-written DTO is deletable — grep
     the DTO's usages for anything under `com.translatr.service` first.
+    Re-confirmed migrating `ProjectResource`: `ProjectService`'s `find`,
+    `get`, `getByOwnerAndName`, `create`, `update`, and `delete` all
+    take/return `com.translatr.dto.ProjectDto` directly, and its embedded
+    member list is `com.translatr.dto.MemberDto` — both stay for the same
+    reason `AccessTokenDto` did, and both are absent from this migration's
+    diff.
   - On the frontend there's no equivalent internal/wire split, but there IS
     a consumer-count split (see the model-placement note in §3): a
     low-consumer hand-written model (the pilot's `oidc-provider-status.ts`,
