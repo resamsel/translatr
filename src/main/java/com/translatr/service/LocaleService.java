@@ -46,7 +46,7 @@ public class LocaleService {
      * never {@code null}).
      */
     private void stampDisplayName(LocaleDto dto, java.util.Locale viewerLocale) {
-        dto.displayName = LocaleDisplayNameUtils.formatDisplayName(dto.name, viewerLocale);
+        dto.setDisplayName(LocaleDisplayNameUtils.formatDisplayName(dto.getName(), viewerLocale));
     }
 
     public PagedList<LocaleDto> find(LocaleCriteria c, java.util.Locale viewerLocale) {
@@ -84,7 +84,7 @@ public class LocaleService {
         list.forEach(d -> stampDisplayName(d, viewerLocale));
         if (QuerySupport.wants(c.fetch, "progress") && c.projectId != null && !list.isEmpty()) {
             var byLocale = progress.localeProgress(c.projectId);
-            list.forEach(d -> d.progress = byLocale.getOrDefault(d.id, 0.0));
+            list.forEach(d -> d.setProgress(byLocale.getOrDefault(d.getId(), 0.0)));
         }
         return new PagedList<>(list, total, c.offset, c.limit);
     }
@@ -109,9 +109,9 @@ public class LocaleService {
 
     @Transactional
     public LocaleDto create(LocaleDto dto) {
-        var project = projectRepo.findByIdOptional(dto.projectId)
+        var project = projectRepo.findByIdOptional(dto.getProjectId())
                 .orElseThrow(NotFoundException::new);
-        Locale l = new Locale(project, dto.name);
+        Locale l = new Locale(project, dto.getName());
         localeRepo.persist(l);
         LocaleDto after = mapper.toDto(l);
         activity.publish(ActionType.Create, project, LocaleDto.class, null, after);
@@ -120,9 +120,9 @@ public class LocaleService {
 
     @Transactional
     public LocaleDto update(LocaleDto dto) {
-        Locale l = localeRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        Locale l = localeRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
         LocaleDto before = mapper.toDto(l);
-        if (dto.name != null) l.name = dto.name;
+        if (dto.getName() != null) l.name = dto.getName();
         LocaleDto after = mapper.toDto(l);
         activity.publish(ActionType.Update, l.project, LocaleDto.class, before, after);
         return after;

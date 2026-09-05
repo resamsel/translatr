@@ -62,20 +62,24 @@ public class DtoMapper {
 
     public LocaleDto toDto(Locale l) {
         if (l == null) return null;
-        LocaleDto d = new LocaleDto();
-        d.id          = l.id;
-        d.whenCreated = l.whenCreated;
-        d.whenUpdated = l.whenUpdated;
-        d.name        = l.name;
-        d.wordCount   = l.wordCount;
+        LocaleDto d = new LocaleDto()
+                .id(l.id)
+                .whenCreated(toOffsetDateTime(l.whenCreated))
+                .whenUpdated(toOffsetDateTime(l.whenUpdated))
+                .name(l.name)
+                .wordCount(l.wordCount);
         if (l.project != null) {
-            d.projectId   = l.project.id;
-            d.projectName = l.project.name;
+            d.setProjectId(l.project.id);
+            d.setProjectName(l.project.name);
             if (l.project.owner != null) {
-                d.projectOwnerUsername = l.project.owner.username;
+                d.setProjectOwnerUsername(l.project.owner.username);
             }
         }
         return d;
+    }
+
+    private static java.time.OffsetDateTime toOffsetDateTime(java.time.Instant i) {
+        return i == null ? null : i.atOffset(java.time.ZoneOffset.UTC);
     }
 
     public MessageDto toDto(Message m) {
