@@ -1,22 +1,8 @@
-import { Key, Locale, Member, MemberRole, Message, Temporal } from '.';
+import { ProjectPayload } from '../generated/model/projectPayload';
+import { Member } from './member';
+import { MemberRole } from './member-role';
 
-export interface Project extends Temporal {
-  id?: string;
-
-  name: string;
-  description?: string;
-  progress?: number;
-
-  ownerId?: string;
-  ownerName?: string;
-  ownerUsername?: string;
-  ownerEmailHash?: string;
-
-  locales?: Locale[];
-  keys?: Key[];
+export interface Project extends Omit<ProjectPayload, 'members' | 'myRole'> {
   members?: Member[];
-  messages?: Message[];
-
-  wordCount?: number;
   myRole?: MemberRole;
 }
