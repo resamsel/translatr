@@ -71,7 +71,7 @@ class MessageServiceTest {
         c.keyName   = "switch";
         c.limit     = 20;
 
-        service.find(c);
+        service.find(c, java.util.Locale.ENGLISH);
 
         assertThat(capturedQuery()).contains("key.name = ");
     }
@@ -85,7 +85,7 @@ class MessageServiceTest {
         c.localeIds = UUID.randomUUID() + "," + UUID.randomUUID();
         c.limit     = 20;
 
-        service.find(c);
+        service.find(c, java.util.Locale.ENGLISH);
 
         assertThat(capturedQuery()).contains("locale.id IN ");
     }
@@ -95,8 +95,46 @@ class MessageServiceTest {
         UUID id = UUID.randomUUID();
         when(messageRepo.findByIdOptional(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.get(id))
+        assertThatThrownBy(() -> service.get(id, java.util.Locale.ENGLISH))
                 .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void find_stampsLocaleDisplayNameInTheViewersLanguage() {
+        Message msg = new Message();
+        MessageDto dto = new MessageDto();
+        dto.localeName = "en";
+
+        PanacheQuery<Message> query = mock(PanacheQuery.class);
+        when(messageRepo.find(anyString(), any(Object[].class))).thenReturn(query);
+        when(query.count()).thenReturn(1L);
+        when(query.page(anyInt(), anyInt())).thenReturn(query);
+        when(query.list()).thenReturn(List.of(msg));
+        when(mapper.toDto(msg)).thenReturn(dto);
+
+        MessageCriteria c = new MessageCriteria();
+        c.projectId = UUID.randomUUID();
+        c.limit     = 20;
+
+        var result = service.find(c, java.util.Locale.GERMAN);
+
+        assertThat(result.list.get(0).localeDisplayName).isEqualTo("Englisch");
+    }
+
+    @Test
+    void get_stampsLocaleDisplayNameInTheViewersLanguage() {
+        UUID id = UUID.randomUUID();
+        Message msg = new Message();
+        msg.id = id;
+        MessageDto dto = new MessageDto();
+        dto.localeName = "de";
+        when(messageRepo.findByIdOptional(id)).thenReturn(Optional.of(msg));
+        when(mapper.toDto(msg)).thenReturn(dto);
+
+        var result = service.get(id, java.util.Locale.ENGLISH);
+
+        assertThat(result.localeDisplayName).isEqualTo("German");
     }
 
     @Test
