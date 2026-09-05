@@ -208,6 +208,31 @@ migrated "all at once" to keep the docs endpoint accurate.
     is for (the TS type comes from `openapi.yaml`, so a contract change that
     isn't reflected breaks the frontend build) without touching the shared
     transport code 9 resources depend on.
+  - **A further wrinkle found scoping `AccessTokenResource`: where the
+    generated model file lives matters, because model types aren't all
+    equally widely consumed.** `OidcProviderStatus` had 2 consumers, so
+    generating it into `translatr-sdk`'s tree was invisible either way. A
+    domain type like `AccessToken` is imported by ~30 files across all three
+    Angular apps (`translatr`, `translatr-admin`, e2e suites) — routing
+    `@dev/translatr-model`'s consumers to a new import path for every one of
+    those would make a single-resource migration touch dozens of unrelated
+    files. Fix: run a **second, narrower generation** for any type with
+    consumers outside `translatr-sdk`, targeting `translatr-model`'s own
+    tree instead — `openapi-generator-cli generate ... --global-property
+    models=<SchemaName>` (with `apis`/`supportingFiles` omitted entirely, not
+    set to `""` — omitting them keeps selective-generation mode's "unlisted
+    categories default to OFF" behavior, whereas `""` explicitly means
+    "generate all of this category," the opposite of what's wanted here;
+    confirmed by actually running both forms) produces exactly one file,
+    e.g. `model/accessToken.ts`, nothing else. `translatr-model`'s barrel
+    (`model/index.ts`) then points at that generated file instead of the
+    hand-written one — every existing `@dev/translatr-model` consumer needs
+    no changes. The existing `generate:api` script into `translatr-sdk` is
+    unaffected and keeps producing the (for now unused, per the "types only"
+    bullet above) API client. Applies per-type: a schema with few consumers
+    can still generate straight into `translatr-sdk` as `OidcProviderStatus`
+    did; one with many gets its own `translatr-model`-targeted generation
+    step.
 - What stays hand-written regardless of which shape applies: the per-resource
   `*Service` classes' bespoke methods (e.g. `ProjectService#activity`/
   `#addMember`), external API (constructor shape, method signatures) so
