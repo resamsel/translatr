@@ -1,9 +1,14 @@
 package com.translatr.controller;
 
+import com.translatr.repository.FeatureFlagRepository;
+import com.translatr.repository.UserFeatureFlagRepository;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.quarkus.test.security.jwt.Claim;
 import io.quarkus.test.security.jwt.JwtSecurity;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -16,6 +21,22 @@ class GlobalFeatureFlagResourceTest {
 
     private static final String ADMIN_SUB = "gff-admin-sub";
     private static final String USER_SUB  = "gff-user-sub";
+
+    @Inject FeatureFlagRepository     globalFlagRepo;
+    @Inject UserFeatureFlagRepository userFlagRepo;
+
+    // Tests run against the shared docker-compose Postgres, which is never cleaned
+    // (flyway.clean-at-start=false) and also accumulates rows from local `quarkus dev`
+    // sessions. resolved_returnsOneEntryPerFeature asserts the pristine baseline (no
+    // global row, no user override), so start every test in this class from an empty
+    // table rather than trusting whatever the database happens to hold.
+    @BeforeEach
+    void clearFeatureFlags() {
+        QuarkusTransaction.requiringNew().run(() -> {
+            userFlagRepo.deleteAll();
+            globalFlagRepo.deleteAll();
+        });
+    }
 
     @Test
     @TestSecurity(user = "gffadmin", roles = "translatr-admin")
