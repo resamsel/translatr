@@ -1,13 +1,9 @@
+import { LocaleDto } from '../generated/model/localeDto';
 import { Message } from './message';
-import { ProjectEmbedded } from './project-embedded';
-import { Temporal } from './temporal';
 
-export interface Locale extends ProjectEmbedded, Temporal {
-  id?: string;
-
-  name: string;
-  displayName?: string;
-  progress?: number;
+export interface Locale extends Omit<LocaleDto, 'whenCreated' | 'whenUpdated'> {
+  whenCreated?: Date;
+  whenUpdated?: Date;
 
   messages?: { [key: string]: Message };
 }
