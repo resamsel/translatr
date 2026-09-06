@@ -3,18 +3,16 @@ package com.translatr.controller;
 import com.translatr.auth.CurrentUserResolver;
 import com.translatr.dto.ActivityDto;
 import com.translatr.dto.AggregateDto;
+import com.translatr.dto.PagedActivityList;
+import com.translatr.dto.PagedAggregateList;
 import com.translatr.dto.PagedList;
 import com.translatr.service.ActivityService;
-import io.quarkus.security.Authenticated;
+import com.translatr.generated.api.ActivitiesApi;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 import java.util.UUID;
 
-@Path("/api")
-@Produces(MediaType.APPLICATION_JSON)
-public class ActivityResource {
+public class ActivityResource implements ActivitiesApi {
 
     private final ActivityService     activityService;
     private final CurrentUserResolver currentUserResolver;
@@ -25,34 +23,33 @@ public class ActivityResource {
         this.currentUserResolver = currentUserResolver;
     }
 
-    @GET @Path("/activities") @PermitAll
-    public PagedList<ActivityDto> find(@QueryParam("userId") UUID userId,
-                                       @QueryParam("offset") @DefaultValue("0") int offset,
-                                       @QueryParam("limit")  @DefaultValue("20") int limit) {
+    @Override
+    @PermitAll
+    public PagedActivityList findActivities(UUID userId, Integer offset, Integer limit) {
         // An explicit userId (e.g. viewing another user's activity feed) never needs the
         // current-user lookup — and this endpoint is @PermitAll, so resolving "me" would
         // blow up for anonymous callers that don't pass one.
         UUID targetUserId = userId != null ? userId : currentUserResolver.resolve().id;
-        return activityService.findByUser(targetUserId, offset, limit);
+        return toPagedActivityDto(activityService.findByUser(targetUserId, offset, limit));
     }
 
-    @GET @Path("/user/{userId}/activity") @PermitAll
-    public PagedList<ActivityDto> byUser(@PathParam("userId") UUID userId,
-                                         @QueryParam("offset") @DefaultValue("0") int offset,
-                                         @QueryParam("limit")  @DefaultValue("20") int limit) {
-        return activityService.findByUser(userId, offset, limit);
+    @Override
+    @PermitAll
+    public PagedActivityList findActivitiesByUser(UUID userId, Integer offset, Integer limit) {
+        return toPagedActivityDto(activityService.findByUser(userId, offset, limit));
     }
 
-    /**
-     * Public aggregated activity (daily counts), used by the dashboard chart.
-     * Optional filters: projectId, userId.
-     */
-    @GET @Path("/activities/aggregated") @PermitAll
-    public PagedList<AggregateDto> aggregated(
-            @QueryParam("projectId") UUID projectId,
-            @QueryParam("userId")    UUID userId,
-            @QueryParam("offset")    @DefaultValue("0")    int offset,
-            @QueryParam("limit")     @DefaultValue("1000") int limit) {
-        return activityService.getAggregates(projectId, userId, offset, limit);
+    @Override
+    @PermitAll
+    public PagedAggregateList findAggregatedActivity(UUID projectId, UUID userId, Integer offset, Integer limit) {
+        return toPagedAggregateDto(activityService.getAggregates(projectId, userId, offset, limit));
+    }
+
+    private static PagedActivityList toPagedActivityDto(PagedList<ActivityDto> src) {
+        return new PagedActivityList(src.total, src.offset, src.limit, src.hasNext, src.hasPrev, src.list);
+    }
+
+    private static PagedAggregateList toPagedAggregateDto(PagedList<AggregateDto> src) {
+        return new PagedAggregateList(src.total, src.offset, src.limit, src.hasNext, src.hasPrev, src.list);
     }
 }
