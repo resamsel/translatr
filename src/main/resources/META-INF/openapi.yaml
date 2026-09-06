@@ -1085,6 +1085,80 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PagedNotificationList'
+  /api/activities:
+    get:
+      operationId: findActivities
+      tags:
+        - activities
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: The caller's own activity feed, or another user's if userId is given.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedActivityList'
+  /api/user/{userId}/activity:
+    get:
+      operationId: findActivitiesByUser
+      tags:
+        - activities
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: A specific user's activity feed (always public).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedActivityList'
+  /api/activities/aggregated:
+    get:
+      operationId: findAggregatedActivity
+      tags:
+        - activities
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: userId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 1000
+      responses:
+        '200':
+          description: Daily activity counts, optionally filtered by project and/or user. Public — no auth required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedAggregateList'
 components:
   parameters:
     SearchParam:
@@ -1466,6 +1540,75 @@ components:
       required:
         - status
         - message
+    ActivityDto:
+      type: object
+      description: One activity-log entry (an audit-trail record of a create/update/delete/login/logout action).
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+        contentType:
+          type: string
+          readOnly: true
+        whenCreated:
+          type: string
+          format: date-time
+          readOnly: true
+        userId:
+          type: string
+          format: uuid
+          readOnly: true
+        userName:
+          type: string
+          readOnly: true
+        userUsername:
+          type: string
+          readOnly: true
+        projectId:
+          type: string
+          format: uuid
+          readOnly: true
+        projectName:
+          type: string
+          readOnly: true
+        before:
+          type: string
+          readOnly: true
+        after:
+          type: string
+          readOnly: true
+    AggregateDto:
+      type: object
+      description: One "bar" in the activity graph — the count of log_entry rows for a given date.
+      properties:
+        date:
+          type: string
+          format: date
+          readOnly: true
+        millis:
+          type: integer
+          format: int64
+          readOnly: true
+        key:
+          type: string
+          readOnly: true
+        value:
+          type: integer
+          readOnly: true
+    PagedActivityList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/ActivityDto'
+          required: [list]
     PagedNotificationList:
       allOf:
         - $ref: '#/components/schemas/PageMetadata'
@@ -1570,3 +1713,13 @@ components:
       required:
         - key
         - url
+    PagedAggregateList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/AggregateDto'
+          required: [list]
