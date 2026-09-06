@@ -48,9 +48,8 @@ decisions stays legible.)
   (`ProjectResource#getByOwnerAndName`).
 - **Errors**: `ExceptionMappers` maps domain exceptions to a single
   `ErrorResponse{status, message}` shape.
-- **Test coverage**: 15 of 19 resources have a dedicated `*ResourceTest`.
-  Missing: `FeatureFlagResource`, `HealthResource`, `NotificationResource`,
-  `StatisticsResource`.
+- **Test coverage**: 16 of 19 resources have a dedicated `*ResourceTest`.
+  Missing: `FeatureFlagResource`.
 - **Dead code**: `src/main/java/dto/` (37 files, including a `dto/errors/`
   subpackage) is a legacy package explicitly excluded from the Gradle source
   set (`build.gradle.kts:57-62`, "legacy Play sources... migrated phase-by-phase
@@ -153,10 +152,12 @@ migrated "all at once" to keep the docs endpoint accurate.
   ([[quarkus-find-criteria-regression]]-class bug). Mitigation, two-layered:
   1. A resource is only migrated once its `*ResourceTest` exercises every
      field on its criteria class (and any `?fetch=` expansion params), and
-     that test suite must pass unchanged after the cutover. The 4 resources
-     without a dedicated resource test (`FeatureFlagResource`,
-     `HealthResource`, `NotificationResource`, `StatisticsResource`) get one
-     added as part of their migration turn, before the cutover, not after.
+     that test suite must pass unchanged after the cutover. Resources
+     without a dedicated resource test (originally `FeatureFlagResource`,
+     `HealthResource`, `NotificationResource`, `StatisticsResource` — the
+     latter three have since gained one as part of their own migration
+     turn) get one added as part of their migration turn, before the
+     cutover, not after.
   2. The field-by-field reconstruction is extracted into a small
      package-private static method (`toCriteria(...)`) with its own unit
      test asserting every flat parameter lands on the matching `*Criteria`
@@ -276,18 +277,18 @@ migrated "all at once" to keep the docs endpoint accurate.
     call the generated client instead of raw `HttpClient.get/post/...`,
     keeping their external API unchanged.
   - **Services built on `AbstractService<DTO, CRITERIA>`** (`AccessToken`,
-    `Key`, `Locale`, `Message`, `Member`, `User`, `Project`, `FeatureFlag`,
-    `Notification` — 9 of the 19 resources) don't fit that treatment.
+    `Key`, `Locale`, `Message`, `Member`, `User`, `Project`, `FeatureFlag`
+    — 8 of the 19 resources) don't fit that treatment.
     `AbstractService` is a single generic class doing path-parameterized
-    `HttpClient` calls for every one of those 9 services; openapi-generator's
+    `HttpClient` calls for every one of those 8 services; openapi-generator's
     `typescript-angular` output is the opposite shape — one concrete service
     class per resource tag, not something a generic path-based wrapper can
-    delegate to without `AbstractService` itself knowing about 9 different
+    delegate to without `AbstractService` itself knowing about 8 different
     generated client classes. Routing these through generated *clients*
     is therefore a separate, higher-blast-radius design question (it touches
-    all 9 consumers at once) than migrating one resource's contract, and is
+    all 8 consumers at once) than migrating one resource's contract, and is
     **out of scope for now** (see "Out of scope" below). Until that's
-    designed, these 9 resources get **types only**: the hand-written model
+    designed, these 8 resources get **types only**: the hand-written model
     interface (e.g. `access-token.ts`) is deleted, or reduced to a one-line
     re-export of the generated type if it has enough consumers that
     deleting it would force many unrelated import-path updates (see the
@@ -297,7 +298,7 @@ migrated "all at once" to keep the docs endpoint accurate.
     unchanged. This still gets the contract-drift protection this migration
     is for (the TS type comes from `openapi.yaml`, so a contract change that
     isn't reflected breaks the frontend build) without touching the shared
-    transport code 9 resources depend on.
+    transport code 8 resources depend on.
   - **A further wrinkle found scoping `AccessTokenResource`: where the
     generated model file lives matters, because model types aren't all
     equally widely consumed.** `OidcProviderStatus` had 2 consumers, so
@@ -610,6 +611,30 @@ migrated "all at once" to keep the docs endpoint accurate.
     schema-reuse-reversal note above) and rippled a small follow-up fix
     into `ProjectResource.java` itself, the first cross-resource ripple in
     the series.
+    `NotificationResource` (done) is the first resource in the series that
+    is a permanent stub, not a to-be-fleshed-out placeholder: the original
+    Play app's notifications endpoint was backed by getstream.io, which was
+    never ported to Quarkus, so `findNotifications` always returns an empty
+    page and has no `*Criteria` fields to reconstruct. It also has no
+    frontend consumer at all — `ui/libs/translatr-sdk`'s
+    `notification.service.ts` is an unrelated local toast/snackbar helper
+    with no `HttpClient` and no `AbstractService` inheritance, and nothing
+    in `ui/apps`/`ui/libs` calls `GET /api/notifications` — so it was never
+    actually one of the `AbstractService`-based consumers counted above,
+    correcting that count from an earlier 9 (which had wrongly included it)
+    down to 8.
+    **A key transferable finding: `org.openapi.generator` 7.14.0's
+    `jaxrs-spec` generator never emits a named class for a zero-property
+    `type: object` schema** — it treats that shape as "free-form" and
+    inlines every reference to it as bare `Object`, confirmed unfixable via
+    `additionalProperties: false`, `properties: {}`, or
+    `generateAliasAsModel`. `PagedNotificationList.list`'s item schema needs
+    exactly this genuinely-empty placeholder shape (there's no real
+    notification DTO to point at), so it uses a bare `items: {}` instead —
+    OpenAPI's own "any JSON value" idiom — and accepts the resulting
+    `List<Object>` Java type. A future resource that needs a
+    genuinely-empty/placeholder item schema should use the same `items: {}`
+    approach rather than trying to name an empty object schema.
 - **No separate drift-check CI step is needed.** Because generation happens
   at build time and nothing generated is committed, a migrated resource's
   Java interface is always freshly derived from `openapi.yaml` — a mismatch
@@ -626,7 +651,7 @@ migrated "all at once" to keep the docs endpoint accurate.
 
 Existing `*ResourceTest`s (backend) and `*.service.spec.ts`s (frontend) are
 the regression harness for every migrated resource — no new test framework or
-tooling is introduced. The only net-new test work is the 4 missing backend
+tooling is introduced. The only net-new test work is the originally-missing backend
 resource tests called out in §2, added ahead of those resources' migration.
 
 - **The `*Criteria`-mapping unit test (§2) cannot catch a parameter-order
@@ -756,11 +781,11 @@ resource tests called out in §2, added ahead of those resources' migration.
   implementation, since it doesn't affect the contract or the migration
   strategy. **Resolved during the pilot:** `typescript-angular` was used
   ([PR #263](https://github.com/resamsel/translatr/pull/263)).
-- Routing `AbstractService<DTO, CRITERIA>`'s 9 consumers through generated
+- Routing `AbstractService<DTO, CRITERIA>`'s 8 consumers through generated
   per-resource clients instead of its current generic `HttpClient` calls
-  (see §3) — that's a single change affecting 9 resources at once, distinct
+  (see §3) — that's a single change affecting 8 resources at once, distinct
   from and larger than any one resource's contract migration. Needs its own
-  design pass before any of those 9 resources goes beyond "types only."
+  design pass before any of those 8 resources goes beyond "types only."
 - Converting frontend codegen from npm pre-hooks into a proper Nx target
   with declared `inputs`/`outputs` covering `openapi.yaml` (see §5) — a
   workspace-wide build-tooling change, not any single resource's job.
