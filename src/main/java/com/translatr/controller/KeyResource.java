@@ -2,19 +2,16 @@ package com.translatr.controller;
 
 import com.translatr.criteria.KeyCriteria;
 import com.translatr.dto.KeyDto;
+import com.translatr.dto.PagedKeyList;
 import com.translatr.dto.PagedList;
+import com.translatr.generated.api.KeysApi;
 import com.translatr.service.KeyService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 import java.util.UUID;
 
-@Path("/api")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-public class KeyResource {
+public class KeyResource implements KeysApi {
 
     private final KeyService keyService;
 
@@ -23,30 +20,59 @@ public class KeyResource {
         this.keyService = keyService;
     }
 
-    @GET  @Path("/project/{projectId}/keys") @PermitAll
-    public PagedList<KeyDto> findByProject(@PathParam("projectId") UUID projectId,
-                                           @BeanParam KeyCriteria criteria) {
-        criteria.projectId = projectId;
-        return keyService.find(criteria);
+    @Override
+    @PermitAll
+    public PagedKeyList findKeysByProject(UUID projectId, String search, Integer offset, Integer limit,
+                                           String order, String fetch, UUID localeId, Boolean missing) {
+        var criteria = toCriteria(search, offset, limit, order, fetch, projectId, localeId, missing);
+        return toPagedDto(keyService.find(criteria));
     }
 
-    @GET  @Path("/key/{id}")     @PermitAll
-    public KeyDto get(@PathParam("id") UUID id) { return keyService.get(id); }
+    @Override
+    @PermitAll
+    public KeyDto getKey(UUID id) {
+        return keyService.get(id);
+    }
 
-    @GET  @Path("/{username}/{projectName}/keys/{keyName}")  @PermitAll
-    public KeyDto getByOwnerAndProjectNameAndName(
-            @PathParam("username")    String username,
-            @PathParam("projectName") String projectName,
-            @PathParam("keyName")     String keyName) {
+    @Override
+    @PermitAll
+    public KeyDto getKeyByOwnerAndProjectNameAndName(String username, String projectName, String keyName) {
         return keyService.getByOwnerAndProjectNameAndName(username, projectName, keyName);
     }
 
-    @POST @Path("/key")          @Authenticated
-    public KeyDto create(KeyDto dto) { return keyService.create(dto); }
+    @Override
+    @Authenticated
+    public KeyDto createKey(KeyDto keyDto) {
+        return keyService.create(keyDto);
+    }
 
-    @PUT  @Path("/key")          @Authenticated
-    public KeyDto update(KeyDto dto) { return keyService.update(dto); }
+    @Override
+    @Authenticated
+    public KeyDto updateKey(KeyDto keyDto) {
+        return keyService.update(keyDto);
+    }
 
-    @DELETE @Path("/key/{id}")   @Authenticated
-    public KeyDto delete(@PathParam("id") UUID id) { return keyService.delete(id); }
+    @Override
+    @Authenticated
+    public KeyDto deleteKey(UUID id) {
+        return keyService.delete(id);
+    }
+
+    static KeyCriteria toCriteria(String search, Integer offset, Integer limit, String order, String fetch,
+                                   UUID projectId, UUID localeId, Boolean missing) {
+        KeyCriteria c = new KeyCriteria();
+        c.search    = search;
+        c.offset    = offset;
+        c.limit     = limit;
+        c.order     = order;
+        c.fetch     = fetch;
+        c.projectId = projectId;
+        c.localeId  = localeId;
+        c.missing   = missing;
+        return c;
+    }
+
+    private static PagedKeyList toPagedDto(PagedList<KeyDto> src) {
+        return new PagedKeyList(src.total, src.offset, src.limit, src.hasNext, src.hasPrev, src.list);
+    }
 }
