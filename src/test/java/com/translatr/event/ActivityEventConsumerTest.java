@@ -75,8 +75,8 @@ class ActivityEventConsumerTest {
         var aggregates = activityService.getAggregates(null, userId, 0, 100);
 
         assertThat(aggregates.list).isNotEmpty();
-        assertThat(aggregates.list.get(0).date).isNotNull();
-        assertThat(aggregates.list.get(0).value).isGreaterThanOrEqualTo(1);
+        assertThat(aggregates.list.get(0).getDate()).isNotNull();
+        assertThat(aggregates.list.get(0).getValue()).isGreaterThanOrEqualTo(1);
     }
 
     private UUID createUser() {
