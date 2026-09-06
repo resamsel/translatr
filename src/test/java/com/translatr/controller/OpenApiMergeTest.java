@@ -35,6 +35,11 @@ class OpenApiMergeTest {
             .body("paths", org.hamcrest.Matchers.hasKey("/api/locale"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/locale/{localeId}/import/{fileType}"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/locale/{localeId}/export/{fileType}"))
-            .body("paths['/api/locale/{id}'].get.responses.200.description", is("The locale."));
+            .body("paths['/api/locale/{id}'].get.responses.200.description", is("The locale."))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/project/{projectId}/keys"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/key/{id}"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/{username}/{projectName}/keys/{keyName}"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/key"))
+            .body("paths['/api/key/{id}'].get.responses.200.description", is("The key."));
     }
 }
