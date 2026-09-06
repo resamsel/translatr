@@ -18,7 +18,10 @@ class NotificationResourceTest {
             .body("list", notNullValue())
             .body("list.size()", is(0))
             .body("total", is(0))
-            .body("hasNext", is(false));
+            .body("hasNext", is(false))
+            .body("offset", is(0))
+            .body("limit", is(20))
+            .body("hasPrev", is(false));
     }
 
     @Test
