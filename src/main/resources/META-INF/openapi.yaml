@@ -1056,6 +1056,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatisticsDto'
+  /api/authclients:
+    get:
+      operationId: listAuthClients
+      tags:
+        - authclients
+      responses:
+        '200':
+          description: Auth providers a visitor can actually use.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthClientDto'
 components:
   parameters:
     SearchParam:
@@ -1519,3 +1533,16 @@ components:
         - userCount
         - projectCount
         - activityCount
+    AuthClientDto:
+      type: object
+      description: One usable auth provider — named in configuration AND backed by a configured client id/secret.
+      properties:
+        key:
+          type: string
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+      required:
+        - key
+        - url
