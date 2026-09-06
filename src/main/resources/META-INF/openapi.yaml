@@ -1465,6 +1465,7 @@ components:
           type: string
       required:
         - status
+        - message
     NotificationDto:
       type: object
       description: >-
