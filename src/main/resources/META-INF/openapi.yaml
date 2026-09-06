@@ -1070,6 +1070,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AuthClientDto'
+  /api/notifications:
+    get:
+      operationId: findNotifications
+      tags:
+        - notifications
+      parameters:
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Paged notifications (stub — always empty; the underlying provider was never ported to Quarkus).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedNotificationList'
 components:
   parameters:
     SearchParam:
@@ -1450,6 +1465,22 @@ components:
           type: string
       required:
         - status
+    NotificationDto:
+      type: object
+      description: >-
+        A notification. Currently unused — this resource is a permanent stub (the original
+        getstream.io-backed provider was never ported to Quarkus) and always returns an empty
+        list. This schema exists to give future notification work a real contract to extend.
+    PagedNotificationList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/NotificationDto'
+          required: [list]
         - message
     GlobalFeatureFlagDto:
       type: object
