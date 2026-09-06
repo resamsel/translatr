@@ -1044,6 +1044,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HealthStatus'
+  /api/statistics:
+    get:
+      operationId: getStatistics
+      tags:
+        - statistics
+      responses:
+        '200':
+          description: Aggregate counts across the whole instance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsDto'
 components:
   parameters:
     SearchParam:
@@ -1487,3 +1499,23 @@ components:
           readOnly: true
       required:
         - status
+    StatisticsDto:
+      type: object
+      description: Aggregate counts across the whole instance (users, non-deleted projects, activity log entries).
+      properties:
+        userCount:
+          type: integer
+          format: int64
+          readOnly: true
+        projectCount:
+          type: integer
+          format: int64
+          readOnly: true
+        activityCount:
+          type: integer
+          format: int64
+          readOnly: true
+      required:
+        - userCount
+        - projectCount
+        - activityCount
