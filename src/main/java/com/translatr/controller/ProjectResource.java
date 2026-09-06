@@ -2,8 +2,6 @@ package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
 import com.translatr.criteria.ProjectCriteria;
-import com.translatr.dto.Member;
-import com.translatr.dto.MemberDto;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.PagedProjectList;
 import com.translatr.dto.ProjectDto;
@@ -108,22 +106,9 @@ public class ProjectResource implements ProjectsApi {
                 .progress(d.progress)
                 .myRole(d.myRole);
         if (d.members != null) {
-            p.members(d.members.stream().map(ProjectResource::toApiMember).toList());
+            p.members(d.members);
         }
         return p;
-    }
-
-    private static Member toApiMember(MemberDto m) {
-        return new Member()
-                .id(m.id)
-                .whenCreated(toOffsetDateTime(m.whenCreated))
-                .projectId(m.projectId)
-                .projectName(m.projectName)
-                .userId(m.userId)
-                .userUsername(m.userUsername)
-                .userName(m.userName)
-                .userEmailHash(m.userEmailHash)
-                .role(m.role);
     }
 
     private static OffsetDateTime toOffsetDateTime(Instant i) {
