@@ -1,9 +1,8 @@
 package com.translatr.controller;
 
-import com.translatr.dto.PagedList;
+import com.translatr.dto.PagedNotificationList;
+import com.translatr.generated.api.NotificationsApi;
 import jakarta.annotation.security.PermitAll;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 
 import java.util.Collections;
 
@@ -12,18 +11,11 @@ import java.util.Collections;
  * The original Play application used getstream.io which is not part of the
  * Quarkus migration. Returns an empty list until a replacement is wired in.
  */
-@Path("/api")
-@Produces(MediaType.APPLICATION_JSON)
-public class NotificationResource {
+public class NotificationResource implements NotificationsApi {
 
-    @GET
-    @Path("/notifications")
+    @Override
     @PermitAll
-    public PagedList<Object> find(
-            @QueryParam("offset") @DefaultValue("0")  int offset,
-            @QueryParam("limit")  @DefaultValue("20") int limit) {
-        return new PagedList<>(Collections.emptyList(), 0, offset, limit);
+    public PagedNotificationList findNotifications(Integer offset, Integer limit) {
+        return new PagedNotificationList(0, offset, limit, false, offset != null && offset > 0, Collections.emptyList());
     }
 }
-
-
