@@ -1032,6 +1032,18 @@ paths:
       responses:
         '204':
           description: The global feature flag was deleted.
+  /api/health:
+    get:
+      operationId: getHealth
+      tags:
+        - health
+      responses:
+        '200':
+          description: The service is healthy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
 components:
   parameters:
     SearchParam:
@@ -1466,3 +1478,12 @@ components:
         - feature
         - defaultEnabled
         - effective
+    HealthStatus:
+      type: object
+      description: Liveness/readiness signal for monitoring and load balancers.
+      properties:
+        status:
+          type: string
+          readOnly: true
+      required:
+        - status
