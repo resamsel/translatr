@@ -23,6 +23,19 @@ class MemberResourceTest {
     }
 
     @Test
+    void findMembersByProject_reflectsRealOffsetAndLimit() {
+        given()
+            .queryParam("offset", 0)
+            .queryParam("limit", 1)
+            .when().get("/api/project/00000000-0000-0000-0000-000000000000/members")
+            .then()
+            .statusCode(200)
+            .body("list",   notNullValue())
+            .body("offset", is(0))
+            .body("limit",  is(1));
+    }
+
+    @Test
     void testGetMember_notFound() {
         given()
             .when().get("/api/member/999999")
