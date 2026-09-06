@@ -22,10 +22,9 @@ public class StatisticsService {
     }
 
     public StatisticsDto find() {
-        StatisticsDto dto = new StatisticsDto();
-        dto.userCount     = userRepo.count();
-        dto.projectCount  = projectRepo.count("deleted = false");
-        dto.activityCount = logRepo.count();
-        return dto;
+        return new StatisticsDto()
+                .userCount(userRepo.count())
+                .projectCount(projectRepo.count("deleted = false"))
+                .activityCount(logRepo.count());
     }
 }
