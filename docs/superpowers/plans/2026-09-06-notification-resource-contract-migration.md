@@ -4,7 +4,7 @@
 
 **Goal:** Migrate `NotificationResource`'s single `GET /api/notifications` endpoint to the contract-first OpenAPI approach (issue #256), the eleventh resource in the rollout. This resource is a permanent, intentional STUB: the original Play application's notifications used getstream.io, which was never ported to Quarkus, so this endpoint always returns an empty paged list of an unspecified item type (`PagedList<Object>` in the hand-written code). This migration must preserve that exact stub behavior — always empty — while giving it a real (if minimal) wire contract.
 
-**Architecture:** `src/main/resources/META-INF/openapi.yaml` gains a `notifications` tag with 1 operation on 1 path (`/api/notifications`, with `offset`/`limit` query params only — no `search`/`order`/`fetch`, matching the original hand-written signature exactly), returning a new `PagedNotificationList` schema (the standard `allOf` + `PageMetadata` pagination wrapper used by every other paginated resource in this series) wrapping a new, deliberately minimal `NotificationDto` schema — an empty object (`type: object`, no properties) representing "a notification, shape not yet defined." This is NOT a placeholder to be embarrassed about: it's an honest reflection of the current backend's real behavior (there is no notification data model yet), and it gives future notification work a real schema to extend instead of `Object`. No hand-written DTO exists to delete (the original code never introduced one, using `Object` directly), no service class exists, no criteria class exists. No frontend consumer exists at all: the frontend's own `NotificationService` (`ui/libs/translatr-sdk/src/lib/services/notification.service.ts`) is an entirely unrelated local toast/snackbar helper (`notify(message, action, config)`) that has nothing to do with `GET /api/notifications` — confirmed by reading its full contents. This resource has NO backend test today (one of the four gaps the design spec calls out) — this plan adds one.
+**Architecture:** `src/main/resources/META-INF/openapi.yaml` gains a `notifications` tag with 1 operation on 1 path (`/api/notifications`, with `offset`/`limit` query params only — no `search`/`order`/`fetch`, matching the original hand-written signature exactly), returning a new `PagedNotificationList` schema (the standard `allOf` + `PageMetadata` pagination wrapper used by every other paginated resource in this series) whose `list` items are a bare, unconstrained schema (`items: {}`) rather than a named `$ref`. **This plan was revised mid-execution, and this document reflects the FINAL, actually-implemented design** — an earlier version specified a separate `NotificationDto` schema (`type: object`, no properties) for the item type. That does not work with this toolchain: `org.openapi.generator` 7.14.0's jaxrs-spec generator treats any zero-property `type: object` schema as "free-form" and unconditionally inlines every reference to it as `Object`, never emitting a named class (confirmed via `--info` logs: `Model NotificationDto not generated since it's a free-form object`; confirmed unfixable via `additionalProperties: false`, explicit `properties: {}`, or the Gradle plugin's `generateAliasAsModel` flag — none affect the zero-property free-form code path). Rather than fabricate a fake property just to dodge a generator quirk, this plan accepts and documents the resulting shape: `PagedNotificationList.list` is generated as `List<Object>`, which is EXACTLY the type the original hand-written code already used (`PagedList<Object>`) — no regression, and an honestly-modeled "shape not yet defined" contract via `items: {}` (OpenAPI's actual idiom for "any JSON value") instead of a named schema that would never really exist as a class anyway. No hand-written DTO exists to delete (the original code never introduced one, using `Object` directly), no service class exists, no criteria class exists. No frontend consumer exists at all: the frontend's own `NotificationService` (`ui/libs/translatr-sdk/src/lib/services/notification.service.ts`) is an entirely unrelated local toast/snackbar helper (`notify(message, action, config)`) that has nothing to do with `GET /api/notifications` — confirmed by reading its full contents. This resource has NO backend test today (one of the four gaps the design spec calls out) — this plan adds one.
 
 **Tech Stack:** Quarkus 3 (Jakarta EE), `quarkus-smallrye-openapi`, `org.openapi.generator` Gradle plugin (`jaxrs-spec` generator), JUnit 5 + REST Assured.
 
@@ -12,10 +12,11 @@
 
 ## Global Constraints
 
-- This endpoint's behavior must NOT change: it always returns an empty list. Do not add real notification logic, a service class, or a data model beyond the minimal empty `NotificationDto` placeholder schema — that would be scope creep far beyond a contract migration.
+- This endpoint's behavior must NOT change: it always returns an empty list. Do not add real notification logic, a service class, or a data model — that would be scope creep far beyond a contract migration.
 - No hand-written DTO exists to delete — the original resource uses `Object` as its item type directly. There is nothing to `git rm` for this resource, unlike every DTO-replacement case elsewhere in this series.
+- **There is no `NotificationDto` schema.** A zero-property `type: object` schema is treated as "free-form" by this generator/version and is never emitted as a named class regardless of how it's declared — confirmed experimentally (see Architecture). `PagedNotificationList.list.items` is declared as a bare `{}` (empty schema), and the generated Java type for that field is `List<Object>`, matching the original hand-written code's type exactly.
 - No frontend Angular service or model calls `GET /api/notifications` — confirmed by reading the actual (unrelated) `notification.service.ts` in full. This plan makes NO frontend changes.
-- `PagedNotificationList`'s generated constructor is the standard 6-arg `(Integer total, Integer offset, Integer limit, Boolean hasNext, Boolean hasPrev, List<NotificationDto> list)` — matching every other paged wrapper in this series.
+- `PagedNotificationList`'s generated constructor is the standard 6-arg `(Integer total, Integer offset, Integer limit, Boolean hasNext, Boolean hasPrev, List<Object> list)` — matching every other paged wrapper in this series in shape, but `List<Object>` rather than a named DTO type for the reason above.
 - `rm -rf build/generated/openapi` before regenerating whenever a schema name changes.
 - `./gradlew compileJava --rerun` (not plain `compileJava`) for every compile-verification step.
 
@@ -27,7 +28,7 @@
 - Modify: `src/main/resources/META-INF/openapi.yaml`
 
 **Interfaces:**
-- Produces: path `/api/notifications` (GET, `offset`/`limit` query params only); schemas `NotificationDto` (empty object) and `PagedNotificationList`.
+- Produces: path `/api/notifications` (GET, `offset`/`limit` query params only); schema `PagedNotificationList` (its `list` items are a bare `{}` schema, generating as `List<Object>` — see Global Constraints).
 
 - [ ] **Step 1: Add the `/api/notifications` path**
 
@@ -53,17 +54,11 @@ Find the end of the `paths:` section (immediately before the `components:` line)
 
 (No `search`/`order`/`fetch` parameters — the original hand-written resource only ever read `offset`/`limit`, so the contract must match exactly, not invent parameters the stub never supported.)
 
-- [ ] **Step 2: Add the `NotificationDto` and `PagedNotificationList` schemas**
+- [ ] **Step 2: Add the `PagedNotificationList` schema**
 
-Under `components: schemas:`, add these as the LAST two schemas in the file:
+Under `components: schemas:`, add this as the LAST schema in the file, after the complete `ErrorResponse` block:
 
 ```yaml
-    NotificationDto:
-      type: object
-      description: >-
-        A notification. Currently unused — this resource is a permanent stub (the original
-        getstream.io-backed provider was never ported to Quarkus) and always returns an empty
-        list. This schema exists to give future notification work a real contract to extend.
     PagedNotificationList:
       allOf:
         - $ref: '#/components/schemas/PageMetadata'
@@ -71,12 +66,13 @@ Under `components: schemas:`, add these as the LAST two schemas in the file:
           properties:
             list:
               type: array
-              items:
-                $ref: '#/components/schemas/NotificationDto'
+              items: {}
           required: [list]
 ```
 
-- [ ] **Step 3: Validate the YAML parses and the path/schemas are present**
+(`items: {}` is OpenAPI's idiom for "any JSON value, shape not specified" — deliberately NOT a `$ref` to a named schema. There is no `NotificationDto` schema in this plan; see Global Constraints for why.)
+
+- [ ] **Step 3: Validate the YAML parses and the path/schema are present, and that no unrelated schema was disturbed**
 
 Run:
 ```bash
@@ -84,12 +80,14 @@ python3 -c "
 import yaml
 d = yaml.safe_load(open('src/main/resources/META-INF/openapi.yaml'))
 assert '/api/notifications' in d['paths'], '/api/notifications missing'
-assert 'NotificationDto' in d['components']['schemas'], 'NotificationDto missing'
 assert 'PagedNotificationList' in d['components']['schemas'], 'PagedNotificationList missing'
+assert 'NotificationDto' not in d['components']['schemas'], 'stray NotificationDto schema should not exist'
+assert d['components']['schemas']['ErrorResponse']['required'] == ['status', 'message'], 'ErrorResponse.required must be untouched'
+assert len(d['components']['schemas']['PagedNotificationList']['allOf']) == 2, 'PagedNotificationList.allOf must have exactly 2 entries'
 print('OK')
 "
 ```
-Expected: prints `OK` with no assertion error.
+Expected: prints `OK` with no assertion error. (This validation is deliberately stricter than earlier resources' — it explicitly checks that inserting this resource's schema didn't corrupt whatever schema happens to be immediately before it in the file, since exactly this kind of insertion-point mistake happened once already during this resource's own migration.)
 
 - [ ] **Step 4: Commit**
 
@@ -100,35 +98,35 @@ git commit -m "docs(openapi): extend the contract with the notifications resourc
 
 ---
 
-### Task 2: Wire codegen for NotificationDto and PagedNotificationList
+### Task 2: Wire codegen for PagedNotificationList
 
 **Files:**
 - Modify: `build.gradle.kts`
 
 **Interfaces:**
-- Consumes: schemas from Task 1.
-- Produces: `com.translatr.dto.NotificationDto` (generated: no-arg constructor, no fields — an empty class), `com.translatr.dto.PagedNotificationList` (6-arg constructor). Consumed by Task 3.
+- Consumes: `PagedNotificationList` schema from Task 1.
+- Produces: `com.translatr.dto.PagedNotificationList` (6-arg constructor: `(Integer total, Integer offset, Integer limit, Boolean hasNext, Boolean hasPrev, List<Object> list)` — `List<Object>`, not a named DTO type; see Global Constraints). Consumed by Task 3.
 
-- [ ] **Step 1: Add both new schemas to the codegen models allowlist**
+- [ ] **Step 1: Add `PagedNotificationList` to the codegen models allowlist**
 
-In `build.gradle.kts`, find the `globalProperties.set(mapOf("models" to ...))` line and append `,NotificationDto,PagedNotificationList` to the end of the comma-separated string (do not remove or reorder any existing entry).
+In `build.gradle.kts`, find the `globalProperties.set(mapOf("models" to ...))` line and append `,PagedNotificationList` to the end of the comma-separated string (do not remove or reorder any existing entry). Do NOT add `NotificationDto` — that schema does not exist in this plan.
 
 - [ ] **Step 2: Regenerate and confirm the generated files appear**
 
 Run: `rm -rf build/generated/openapi && ./gradlew openApiGenerate`
 Expected: BUILD SUCCESSFUL. Then confirm:
 ```bash
-ls build/generated/openapi/src/gen/java/com/translatr/dto/NotificationDto.java \
-   build/generated/openapi/src/gen/java/com/translatr/dto/PagedNotificationList.java \
+ls build/generated/openapi/src/gen/java/com/translatr/dto/PagedNotificationList.java \
    build/generated/openapi/src/gen/java/com/translatr/generated/api/NotificationsApi.java
+grep -A2 "getList" build/generated/openapi/src/gen/java/com/translatr/dto/PagedNotificationList.java
 ```
-Expected: all three files exist.
+Expected: both files exist, and `getList()`'s return type is `List<Object>` (this is the correct, expected result — not a defect).
 
 - [ ] **Step 3: Commit**
 
 ```bash
 git add build.gradle.kts
-git commit -m "build(openapi): generate NotificationDto, PagedNotificationList and NotificationsApi"
+git commit -m "build(openapi): generate PagedNotificationList and NotificationsApi"
 ```
 
 ---
@@ -141,7 +139,7 @@ git commit -m "build(openapi): generate NotificationDto, PagedNotificationList a
 - Create: `src/test/java/com/translatr/controller/NotificationResourceTest.java`
 
 **Interfaces:**
-- Consumes: `com.translatr.generated.api.NotificationsApi`, `com.translatr.dto.NotificationDto`, `com.translatr.dto.PagedNotificationList` (Task 2); existing `com.translatr.dto.PagedList` (unchanged, still used internally for the empty-list construction before wrapping).
+- Consumes: `com.translatr.generated.api.NotificationsApi`, `com.translatr.dto.PagedNotificationList` (Task 2, whose `list` field is `List<Object>`).
 - Produces: `NotificationResource implements NotificationsApi`.
 
 This resource has never had a backend test — the design spec explicitly calls this out as one of four pre-existing gaps.
@@ -151,7 +149,6 @@ This resource has never had a backend test — the design spec explicitly calls 
 ```java
 package com.translatr.controller;
 
-import com.translatr.dto.NotificationDto;
 import com.translatr.dto.PagedNotificationList;
 import com.translatr.generated.api.NotificationsApi;
 import jakarta.annotation.security.PermitAll;
@@ -168,7 +165,7 @@ public class NotificationResource implements NotificationsApi {
     @Override
     @PermitAll
     public PagedNotificationList findNotifications(Integer offset, Integer limit) {
-        return new PagedNotificationList(0, offset, limit, false, offset != null && offset > 0, Collections.<NotificationDto>emptyList());
+        return new PagedNotificationList(0, offset, limit, false, offset != null && offset > 0, Collections.emptyList());
     }
 }
 ```
