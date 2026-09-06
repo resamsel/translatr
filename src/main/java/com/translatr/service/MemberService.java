@@ -74,9 +74,9 @@ public class MemberService {
 
     @Transactional
     public MemberDto create(MemberDto dto) {
-        var project = projectRepo.findByIdOptional(dto.projectId).orElseThrow(NotFoundException::new);
-        var user    = userRepo.findByIdOptional(dto.userId).orElseThrow(NotFoundException::new);
-        var member  = new ProjectUser(dto.role != null ? ProjectRole.valueOf(dto.role) : ProjectRole.Translator);
+        var project = projectRepo.findByIdOptional(dto.getProjectId()).orElseThrow(NotFoundException::new);
+        var user    = userRepo.findByIdOptional(dto.getUserId()).orElseThrow(NotFoundException::new);
+        var member  = new ProjectUser(dto.getRole() != null ? ProjectRole.valueOf(dto.getRole()) : ProjectRole.Translator);
         member.project = project;
         member.user    = user;
         memberRepo.persist(member);
@@ -87,9 +87,9 @@ public class MemberService {
 
     @Transactional
     public MemberDto update(MemberDto dto) {
-        var member = memberRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        var member = memberRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
         MemberDto before = mapper.toDto(member);
-        if (dto.role != null) member.role = ProjectRole.valueOf(dto.role);
+        if (dto.getRole() != null) member.role = ProjectRole.valueOf(dto.getRole());
         MemberDto after = mapper.toDto(member);
         activity.publish(ActionType.Update, member.project, MemberDto.class, before, after);
         return after;

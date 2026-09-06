@@ -53,7 +53,7 @@ class ActivityEventConsumerTest {
         User user = QuarkusTransaction.requiringNew().call(() -> userRepo.findById(userId));
 
         MemberDto after = new MemberDto();
-        after.role = "Translator";
+        after.setRole("Translator");
 
         producer.publish(ActionType.Create, user, null, MemberDto.class, null, after);
 

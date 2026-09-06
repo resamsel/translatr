@@ -91,9 +91,9 @@ class MemberServiceTest {
         user.id = userId;
 
         MemberDto dto = new MemberDto();
-        dto.projectId = projectId;
-        dto.userId    = userId;
-        dto.role      = "Translator";
+        dto.setProjectId(projectId);
+        dto.setUserId(userId);
+        dto.setRole("Translator");
 
         MemberDto after = new MemberDto();
         when(projectRepo.findByIdOptional(projectId)).thenReturn(Optional.of(project));
@@ -111,8 +111,8 @@ class MemberServiceTest {
     void create_throwsNotFound_whenProjectMissing() {
         UUID projectId = UUID.randomUUID();
         MemberDto dto = new MemberDto();
-        dto.projectId = projectId;
-        dto.userId    = UUID.randomUUID();
+        dto.setProjectId(projectId);
+        dto.setUserId(UUID.randomUUID());
 
         when(projectRepo.findByIdOptional(projectId)).thenReturn(Optional.empty());
 
@@ -129,8 +129,8 @@ class MemberServiceTest {
         member.project = project;
 
         MemberDto dto = new MemberDto();
-        dto.id   = 3L;
-        dto.role = "Owner";
+        dto.setId(3L);
+        dto.setRole("Owner");
 
         MemberDto before = new MemberDto();
         MemberDto after  = new MemberDto();

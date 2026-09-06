@@ -123,19 +123,19 @@ public class DtoMapper {
 
     public MemberDto toDto(ProjectUser pu) {
         if (pu == null) return null;
-        MemberDto d = new MemberDto();
-        d.id          = pu.id;
-        d.whenCreated = pu.whenCreated;
-        d.role        = pu.role != null ? pu.role.name() : null;
+        MemberDto d = new MemberDto()
+                .id(pu.id)
+                .whenCreated(toOffsetDateTime(pu.whenCreated))
+                .role(pu.role != null ? pu.role.name() : null);
         if (pu.project != null) {
-            d.projectId   = pu.project.id;
-            d.projectName = pu.project.name;
+            d.setProjectId(pu.project.id);
+            d.setProjectName(pu.project.name);
         }
         if (pu.user != null) {
-            d.userId       = pu.user.id;
-            d.userUsername = pu.user.username;
-            d.userName     = pu.user.name;
-            d.userEmailHash = EmailUtils.hashEmail(pu.user.email);
+            d.setUserId(pu.user.id);
+            d.setUserUsername(pu.user.username);
+            d.setUserName(pu.user.name);
+            d.setUserEmailHash(EmailUtils.hashEmail(pu.user.email));
         }
         return d;
     }

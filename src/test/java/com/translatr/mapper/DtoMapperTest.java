@@ -256,13 +256,13 @@ class DtoMapperTest {
 
         MemberDto dto = mapper.toDto(pu);
 
-        assertThat(dto.id).isEqualTo(7L);
-        assertThat(dto.role).isEqualTo("Manager");
-        assertThat(dto.projectId).isEqualTo(project.id);
-        assertThat(dto.projectName).isEqualTo("proj");
-        assertThat(dto.userId).isEqualTo(user.id);
-        assertThat(dto.userUsername).isEqualTo("john");
-        assertThat(dto.userName).isEqualTo("John");
+        assertThat(dto.getId()).isEqualTo(7L);
+        assertThat(dto.getRole()).isEqualTo("Manager");
+        assertThat(dto.getProjectId()).isEqualTo(project.id);
+        assertThat(dto.getProjectName()).isEqualTo("proj");
+        assertThat(dto.getUserId()).isEqualTo(user.id);
+        assertThat(dto.getUserUsername()).isEqualTo("john");
+        assertThat(dto.getUserName()).isEqualTo("John");
     }
 }
 
