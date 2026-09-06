@@ -1,12 +1,9 @@
+import { KeyDto } from '../generated/model/keyDto';
 import { Message } from './message';
-import { ProjectEmbedded } from './project-embedded';
-import { Temporal } from './temporal';
 
-export interface Key extends ProjectEmbedded, Temporal {
-  id?: string;
-
-  name: string;
-  progress?: number;
+export interface Key extends Omit<KeyDto, 'whenCreated' | 'whenUpdated'> {
+  whenCreated?: Date;
+  whenUpdated?: Date;
 
   messages?: { [key: string]: Message };
 }
