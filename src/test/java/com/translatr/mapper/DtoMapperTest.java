@@ -125,11 +125,11 @@ class DtoMapperTest {
 
         KeyDto dto = mapper.toDto(k);
 
-        assertThat(dto.id).isEqualTo(k.id);
-        assertThat(dto.name).isEqualTo("greeting");
-        assertThat(dto.wordCount).isEqualTo(3);
-        assertThat(dto.projectId).isEqualTo(project.id);
-        assertThat(dto.projectName).isEqualTo("proj");
+        assertThat(dto.getId()).isEqualTo(k.id);
+        assertThat(dto.getName()).isEqualTo("greeting");
+        assertThat(dto.getWordCount()).isEqualTo(3);
+        assertThat(dto.getProjectId()).isEqualTo(project.id);
+        assertThat(dto.getProjectName()).isEqualTo("proj");
     }
 
     // -------------------------------------------------------------------------
