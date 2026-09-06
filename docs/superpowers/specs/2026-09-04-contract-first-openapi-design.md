@@ -393,6 +393,24 @@ migrated "all at once" to keep the docs endpoint accurate.
     member list is `com.translatr.dto.MemberDto` — both stay for the same
     reason `AccessTokenDto` did, and both are absent from this migration's
     diff.
+  - **Reversed migrating `MemberResource`: `com.translatr.dto.MemberDto` no
+    longer stays.** The paragraph above was accurate when only
+    `ProjectResource` had touched this type — `MemberDto` was purely an
+    embedded, response-only pass-through with no service-layer usage of its
+    own. Once `MemberResource` itself was migrated, the same DTO-replacement
+    pattern used for `LocaleDto`/`KeyDto` applied: `MemberService`'s
+    `find`/`get`/`create`/`update`/`delete` were updated to consume the
+    generated `MemberDto` (getters/setters) directly, and the hand-written
+    `com.translatr.dto.MemberDto` was deleted outright. `ProjectResource.java`
+    itself needed a small follow-up fix as a result — it had built the
+    generated wire type from the hand-written `MemberDto` via a private
+    `toApiMember` mapping method; once the schema `Member` was renamed to
+    `MemberDto` and the hand-written `MemberDto` deleted, that mapping method
+    became simplifiable to a direct list assignment (`ProjectService`'s
+    `dto.members` was already the correct generated type). This is the first
+    case in the series where a schema rename rippled into an
+    ALREADY-MERGED resource's controller — verified safe via that resource's
+    own existing test suite (`ProjectResourceTest`) passing unchanged.
   - **A fifth case, found migrating `LocaleResource`: the hand-written DTO
     doesn't have to stay just because it's also the service-layer type —
     it can be deleted by updating the service layer to consume the
@@ -497,9 +515,16 @@ migrated "all at once" to keep the docs endpoint accurate.
   - **A known, accepted seam this pattern creates: a temporal field's
     declared type (`string`, from the wire) and its runtime type (`Date`,
     after `AbstractService`'s `convertTemporals` mapping) now disagree.**
-    Applies to `AccessToken`/`Project`'s own `whenCreated`/`whenUpdated`
-    (not to `Project.members[i].whenCreated`, which stays correctly typed
-    `Date` via the hand-written `Member`/`Temporal` override above).
+    Applies to `AccessToken`/`Project`'s own `whenCreated`/`whenUpdated`,
+    and now also to `Member.whenCreated` when fetched directly via
+    `MemberService` (which also runs `convertTemporals`) — the opposite of
+    what this parenthetical said before `MemberResource`'s own migration,
+    when `Member.whenCreated` was still declared `Date` via a hand-written
+    override. `Project.members[i].whenCreated` (the embedded copy returned
+    by `ProjectService`, which never runs `convertTemporals` on nested
+    objects) is now correctly declared `string` — it was actually
+    MISdeclared `Date` before this migration, since nothing had ever
+    converted it at that call site.
     Harmless today — every current consumer reads these through something
     that already accepts `Date | string` (a `| date` pipe, `amTimeAgo`) —
     but a new call site written against the DECLARED type (e.g.
@@ -578,6 +603,13 @@ migrated "all at once" to keep the docs endpoint accurate.
     from a different angle) is worth picking deliberately rather than by
     convenience, since that's the shape most likely to surface a new
     wrinkle in this pattern.
+    `MemberResource` (done) is exactly that next candidate: its `MemberDto`
+    is the type `ProjectResource` embeds as `Project.members[]`, so
+    migrating it reversed the dead-code-removal call made while
+    `ProjectResource` was migrated (`MemberDto` no longer stays — see the
+    schema-reuse-reversal note above) and rippled a small follow-up fix
+    into `ProjectResource.java` itself, the first cross-resource ripple in
+    the series.
 - **No separate drift-check CI step is needed.** Because generation happens
   at build time and nothing generated is committed, a migrated resource's
   Java interface is always freshly derived from `openapi.yaml` — a mismatch
