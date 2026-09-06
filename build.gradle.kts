@@ -100,7 +100,6 @@ openApiGenerate {
     globalProperties.set(
         mapOf(
             "models" to "OidcProviderStatus,AccessTokenPayload,PageMetadata,PagedAccessTokenList,ProjectPayload,PagedProjectList,MemberDto,PagedMemberList,MessagePayload,PagedMessageList,LocaleDto,PagedLocaleList,KeyDto,PagedKeyList,GlobalFeatureFlagDto,ResolvedFeatureDto,HealthStatus,StatisticsDto,AuthClientDto,NotificationDto,PagedNotificationList",
-            "models" to "OidcProviderStatus,AccessTokenPayload,PageMetadata,PagedAccessTokenList,ProjectPayload,PagedProjectList,MemberDto,PagedMemberList,MessagePayload,PagedMessageList,LocaleDto,PagedLocaleList,KeyDto,PagedKeyList",
             "apis" to "",
             "supportingFiles" to ""
         )

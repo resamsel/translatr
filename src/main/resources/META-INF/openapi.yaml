@@ -1466,12 +1466,6 @@ components:
       required:
         - status
         - message
-    NotificationDto:
-      type: object
-      description: >-
-        A notification. Currently unused — this resource is a permanent stub (the original
-        getstream.io-backed provider was never ported to Quarkus) and always returns an empty
-        list. This schema exists to give future notification work a real contract to extend.
     PagedNotificationList:
       allOf:
         - $ref: '#/components/schemas/PageMetadata'
@@ -1479,8 +1473,7 @@ components:
           properties:
             list:
               type: array
-              items:
-                $ref: '#/components/schemas/NotificationDto'
+              items: {}
           required: [list]
         - message
     GlobalFeatureFlagDto:
