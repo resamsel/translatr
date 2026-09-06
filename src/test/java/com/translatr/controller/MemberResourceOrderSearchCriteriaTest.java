@@ -55,19 +55,24 @@ class MemberResourceOrderSearchCriteriaTest {
             .statusCode(anyOf(is(200), is(201)));
 
         // The project auto-adds its creator as an "Owner" member, so at this point there are
-        // exactly 2 members: the auto-created Owner and the explicitly-created Translator.
+        // exactly 2 members: the auto-created Owner (created first) and the explicitly-created
+        // Translator (created second).
         //
         // "order" and "search" are both String-typed params on findMembersByProject, sharing a
         // type with "fetch" too (Member's fetch is a genuine no-op, so it has no observable
         // effect on its own — but a swap involving it would still misroute "order" or "search").
         // If "order" landed in the wrong slot, sorting by role would silently fall back to the
-        // default (ORDER BY whenCreated DESC) instead of the requested role ordering.
+        // default (ORDER BY whenCreated DESC) instead of the requested role ordering. We assert
+        // "role asc" (Owner first, alphabetically before Translator) rather than "role desc"
+        // specifically because the default fallback would ALSO put the more-recently-created
+        // Translator first — a "role desc" assertion can't tell correct binding from silent
+        // fallback, but "role asc" genuinely can.
         given()
-            .queryParam("order", "role desc")
+            .queryParam("order", "role asc")
             .when().get("/api/project/" + projectId + "/members")
             .then()
             .statusCode(200)
-            .body("list[0].role", is("Translator"))
+            .body("list[0].role", is("Owner"))
             .body("total", is(2));
 
         // If "search" landed in the wrong slot (e.g. into "order"), it would never reach the
@@ -124,11 +129,11 @@ class MemberResourceOrderSearchCriteriaTest {
             .statusCode(anyOf(is(200), is(201)));
 
         given()
-            .queryParam("order", "role desc")
+            .queryParam("order", "role asc")
             .when().get("/api/members/" + projectId)
             .then()
             .statusCode(200)
-            .body("list[0].role", is("Translator"))
+            .body("list[0].role", is("Owner"))
             .body("total", is(2));
 
         given()
