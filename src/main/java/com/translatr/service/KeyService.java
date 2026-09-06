@@ -68,7 +68,7 @@ public class KeyService {
                           .stream().map(mapper::toDto).collect(Collectors.toList());
         if (QuerySupport.wants(c.fetch, "progress") && c.projectId != null && !list.isEmpty()) {
             var byKey = progress.keyProgress(c.projectId);
-            list.forEach(d -> d.progress = byKey.getOrDefault(d.id, 0.0));
+            list.forEach(d -> d.setProgress(byKey.getOrDefault(d.getId(), 0.0)));
         }
         return new PagedList<>(list, total, c.offset, c.limit);
     }
@@ -88,9 +88,9 @@ public class KeyService {
 
     @Transactional
     public KeyDto create(KeyDto dto) {
-        var project = projectRepo.findByIdOptional(dto.projectId)
+        var project = projectRepo.findByIdOptional(dto.getProjectId())
                 .orElseThrow(NotFoundException::new);
-        Key k = new Key(project, dto.name);
+        Key k = new Key(project, dto.getName());
         keyRepo.persist(k);
         KeyDto after = mapper.toDto(k);
         activity.publish(ActionType.Create, project, KeyDto.class, null, after);
@@ -99,9 +99,9 @@ public class KeyService {
 
     @Transactional
     public KeyDto update(KeyDto dto) {
-        Key k = keyRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        Key k = keyRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
         KeyDto before = mapper.toDto(k);
-        if (dto.name != null) k.name = dto.name;
+        if (dto.getName() != null) k.name = dto.getName();
         KeyDto after = mapper.toDto(k);
         activity.publish(ActionType.Update, k.project, KeyDto.class, before, after);
         return after;

@@ -44,17 +44,17 @@ public class DtoMapper {
 
     public KeyDto toDto(Key k) {
         if (k == null) return null;
-        KeyDto d = new KeyDto();
-        d.id          = k.id;
-        d.whenCreated = k.whenCreated;
-        d.whenUpdated = k.whenUpdated;
-        d.name        = k.name;
-        d.wordCount   = k.wordCount;
+        KeyDto d = new KeyDto()
+                .id(k.id)
+                .whenCreated(toOffsetDateTime(k.whenCreated))
+                .whenUpdated(toOffsetDateTime(k.whenUpdated))
+                .name(k.name)
+                .wordCount(k.wordCount);
         if (k.project != null) {
-            d.projectId   = k.project.id;
-            d.projectName = k.project.name;
+            d.setProjectId(k.project.id);
+            d.setProjectName(k.project.name);
             if (k.project.owner != null) {
-                d.projectOwnerUsername = k.project.owner.username;
+                d.setProjectOwnerUsername(k.project.owner.username);
             }
         }
         return d;

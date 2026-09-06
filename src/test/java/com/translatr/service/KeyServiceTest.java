@@ -97,7 +97,7 @@ class KeyServiceTest {
         Key k = new Key();
         k.id = UUID.randomUUID();
         KeyDto kDto = new KeyDto();
-        kDto.id = k.id;
+        kDto.setId(k.id);
 
         PanacheQuery<Key> query = mock(PanacheQuery.class);
         when(keyRepo.find(anyString(), any(Object[].class))).thenReturn(query);
@@ -114,7 +114,7 @@ class KeyServiceTest {
 
         var result = service.find(c);
 
-        assertThat(result.list.get(0).progress).isEqualTo(0.5);
+        assertThat(result.list.get(0).getProgress()).isEqualTo(0.5);
     }
 
     @Test
@@ -123,7 +123,7 @@ class KeyServiceTest {
         Key k = new Key();
         k.id = UUID.randomUUID();
         KeyDto kDto = new KeyDto();
-        kDto.id = k.id;
+        kDto.setId(k.id);
 
         PanacheQuery<Key> query = mock(PanacheQuery.class);
         when(keyRepo.find(anyString(), any(Object[].class))).thenReturn(query);
@@ -138,7 +138,7 @@ class KeyServiceTest {
 
         var result = service.find(c);
 
-        assertThat(result.list.get(0).progress).isNull();
+        assertThat(result.list.get(0).getProgress()).isNull();
         verify(progress, never()).keyProgress(any());
     }
 
@@ -158,21 +158,21 @@ class KeyServiceTest {
         project.id = projectId;
 
         KeyDto dto = new KeyDto();
-        dto.projectId = projectId;
-        dto.name      = "greeting";
+        dto.setProjectId(projectId);
+        dto.setName("greeting");
 
         when(projectRepo.findByIdOptional(projectId)).thenReturn(Optional.of(project));
         when(mapper.toDto(any(Key.class))).thenAnswer(inv -> {
             Key k = inv.getArgument(0);
             KeyDto result = new KeyDto();
-            result.name = k.name;
+            result.setName(k.name);
             return result;
         });
 
         KeyDto result = service.create(dto);
 
         verify(keyRepo).persist(any(Key.class));
-        assertThat(result.name).isEqualTo("greeting");
+        assertThat(result.getName()).isEqualTo("greeting");
     }
 
     @Test
@@ -182,8 +182,8 @@ class KeyServiceTest {
         project.id = projectId;
 
         KeyDto dto = new KeyDto();
-        dto.projectId = projectId;
-        dto.name      = "greeting";
+        dto.setProjectId(projectId);
+        dto.setName("greeting");
 
         KeyDto after = new KeyDto();
         when(projectRepo.findByIdOptional(projectId)).thenReturn(Optional.of(project));
@@ -198,8 +198,8 @@ class KeyServiceTest {
     void create_throwsNotFound_whenProjectMissing() {
         UUID projectId = UUID.randomUUID();
         KeyDto dto = new KeyDto();
-        dto.projectId = projectId;
-        dto.name      = "greeting";
+        dto.setProjectId(projectId);
+        dto.setName("greeting");
 
         when(projectRepo.findByIdOptional(projectId)).thenReturn(Optional.empty());
 
@@ -215,8 +215,8 @@ class KeyServiceTest {
         key.id  = id;
 
         KeyDto dto = new KeyDto();
-        dto.id   = id;
-        dto.name = "updated-key";
+        dto.setId(id);
+        dto.setName("updated-key");
 
         when(keyRepo.findByIdOptional(id)).thenReturn(Optional.of(key));
         when(mapper.toDto(key)).thenReturn(dto);
@@ -235,8 +235,8 @@ class KeyServiceTest {
         key.project = project;
 
         KeyDto dto = new KeyDto();
-        dto.id   = id;
-        dto.name = "updated-key";
+        dto.setId(id);
+        dto.setName("updated-key");
 
         KeyDto before = new KeyDto();
         KeyDto after  = new KeyDto();
@@ -252,7 +252,7 @@ class KeyServiceTest {
     void update_throwsNotFound_whenKeyMissing() {
         UUID id = UUID.randomUUID();
         KeyDto dto = new KeyDto();
-        dto.id = id;
+        dto.setId(id);
 
         when(keyRepo.findByIdOptional(id)).thenReturn(Optional.empty());
 
