@@ -654,6 +654,169 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/project/{projectId}/keys:
+    get:
+      operationId: findKeysByProject
+      tags:
+        - keys
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: localeId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: missing
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Paged keys for the project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedKeyList'
+  /api/key/{id}:
+    get:
+      operationId: getKey
+      tags:
+        - keys
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyDto'
+        '404':
+          description: No key with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteKey
+      tags:
+        - keys
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The deleted key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyDto'
+        '404':
+          description: No key with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/{username}/{projectName}/keys/{keyName}:
+    get:
+      operationId: getKeyByOwnerAndProjectNameAndName
+      tags:
+        - keys
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: projectName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: keyName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyDto'
+        '404':
+          description: No project or key with that name.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/key:
+    post:
+      operationId: createKey
+      tags:
+        - keys
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyDto'
+      responses:
+        '200':
+          description: The created key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyDto'
+        '404':
+          description: No project with the given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: updateKey
+      tags:
+        - keys
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyDto'
+      responses:
+        '200':
+          description: The updated key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyDto'
+        '404':
+          description: No key with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   parameters:
     SearchParam:
@@ -734,6 +897,54 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/LocaleDto'
+          required: [list]
+    KeyDto:
+      description: >-
+        A project's translation key. Used for both the response body (all fields populated)
+        and the create/update request body (projectId/name are read; the rest are
+        server-computed and ignored if supplied). No field is marked `required` — see
+        AccessTokenPayload's note on dual-purpose schemas.
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        whenCreated:
+          type: string
+          format: date-time
+          readOnly: true
+        whenUpdated:
+          type: string
+          format: date-time
+          readOnly: true
+        projectId:
+          type: string
+          format: uuid
+        projectName:
+          type: string
+          readOnly: true
+        projectOwnerUsername:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        progress:
+          type: number
+          format: double
+          readOnly: true
+        wordCount:
+          type: integer
+          readOnly: true
+    PagedKeyList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeyDto'
           required: [list]
     PagedMessageList:
       allOf:
