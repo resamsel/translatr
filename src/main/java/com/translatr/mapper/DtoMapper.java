@@ -142,21 +142,21 @@ public class DtoMapper {
 
     public ActivityDto toDto(LogEntry e) {
         if (e == null) return null;
-        ActivityDto d = new ActivityDto();
-        d.id          = e.id;
-        d.type        = e.type != null ? e.type.name() : null;
-        d.contentType = e.contentType;
-        d.whenCreated = e.whenCreated;
-        d.before      = e.before;
-        d.after       = e.after;
+        ActivityDto d = new ActivityDto()
+                .id(e.id)
+                .type(e.type != null ? e.type.name() : null)
+                .contentType(e.contentType)
+                .whenCreated(toOffsetDateTime(e.whenCreated))
+                .before(e.before)
+                .after(e.after);
         if (e.user != null) {
-            d.userId      = e.user.id;
-            d.userName    = e.user.name;
-            d.userUsername = e.user.username;
+            d.setUserId(e.user.id);
+            d.setUserName(e.user.name);
+            d.setUserUsername(e.user.username);
         }
         if (e.project != null) {
-            d.projectId   = e.project.id;
-            d.projectName = e.project.name;
+            d.setProjectId(e.project.id);
+            d.setProjectName(e.project.name);
         }
         return d;
     }
