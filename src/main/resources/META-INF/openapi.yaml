@@ -817,6 +817,160 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/project/{projectId}/members:
+    get:
+      operationId: findMembersByProject
+      tags:
+        - members
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: userId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Paged members for the project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedMemberList'
+  /api/members/{projectId}:
+    get:
+      operationId: findMembersByProjectLegacy
+      tags:
+        - members
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: userId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Paged members for the project (legacy path, same behavior as /api/project/{projectId}/members).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedMemberList'
+  /api/member/{id}:
+    get:
+      operationId: getMember
+      tags:
+        - members
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: The member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDto'
+        '404':
+          description: No member with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteMember
+      tags:
+        - members
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: The deleted member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDto'
+        '404':
+          description: No member with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/member:
+    post:
+      operationId: createMember
+      tags:
+        - members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberDto'
+      responses:
+        '200':
+          description: The created member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDto'
+        '404':
+          description: No project or user with the given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: updateMember
+      tags:
+        - members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberDto'
+      responses:
+        '200':
+          description: The updated member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDto'
+        '404':
+          description: No member with that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   parameters:
     SearchParam:
@@ -946,6 +1100,16 @@ components:
               items:
                 $ref: '#/components/schemas/KeyDto'
           required: [list]
+    PagedMemberList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/MemberDto'
+          required: [list]
     PagedMessageList:
       allOf:
         - $ref: '#/components/schemas/PageMetadata'
@@ -1064,19 +1228,24 @@ components:
               items:
                 $ref: '#/components/schemas/ProjectPayload'
           required: [list]
-    Member:
+    MemberDto:
       type: object
-      description: A project's member (embedded in ProjectPayload.members).
+      description: >-
+        A project's member. Embedded read-only in ProjectPayload.members, and also
+        MemberResource's own dual-purpose request/response body (projectId/userId/role are
+        read on create; role is read on update; the rest are server-computed and ignored if
+        supplied). No field is marked `required` — see AccessTokenPayload's note on
+        dual-purpose schemas.
       properties:
         id: { type: integer, format: int64, readOnly: true }
         whenCreated: { type: string, format: date-time, readOnly: true }
-        projectId: { type: string, format: uuid, readOnly: true }
+        projectId: { type: string, format: uuid }
         projectName: { type: string, readOnly: true }
-        userId: { type: string, format: uuid, readOnly: true }
+        userId: { type: string, format: uuid }
         userUsername: { type: string, readOnly: true }
         userName: { type: string, readOnly: true }
         userEmailHash: { type: string, readOnly: true }
-        role: { type: string, readOnly: true }
+        role: { type: string }
     ProjectPayload:
       type: object
       description: >-
@@ -1115,7 +1284,7 @@ components:
           nullable: true
           description: Populated only when the request opts in via ?fetch=members.
           items:
-            $ref: '#/components/schemas/Member'
+            $ref: '#/components/schemas/MemberDto'
     OidcProviderStatus:
       type: object
       description: Configuration and diagnostics for one auth provider (admin only).
