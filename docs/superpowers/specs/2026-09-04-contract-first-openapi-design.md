@@ -556,7 +556,23 @@ migrated "all at once" to keep the docs endpoint accurate.
     `LocaleTransferResource`, kept out of `mp.openapi.scan.exclude.classes`;
     `LocaleResource` keeps only the 6 migrated operations and stays
     excluded. This is the first resource in the series where not
-    everything on the original class could be migrated in place. Next
+    everything on the original class could be migrated in place.
+    `KeyResource` (done) is the first resource in the series to fully
+    re-apply an established pattern rather than discover a new one: it has
+    no binary/streaming endpoints (unlike `LocaleResource`), so all 6
+    operations migrated cleanly with no class split, going back to the
+    simpler single-class shape every resource before `LocaleResource`
+    used. It applied the DTO-replacement pattern `LocaleResource`
+    established — the generated schema is named `KeyDto`, identical to
+    the deleted hand-written internal DTO it replaces, with no `*Payload`
+    suffix needed since `KeyDto` doesn't collide with
+    `com.translatr.model.Key` — confirming that pattern generalizes
+    rather than being a one-off specific to `LocaleDto`/`Locale`. It also
+    proactively included the `order`/`fetch` same-typed-pair HTTP-level
+    regression test (the pattern from the §5 bullet above) and an
+    extension to `OpenApiMergeTest`'s scan-exclusion guard from the
+    start, rather than discovering those gaps in its own final review the
+    way `LocaleResource` had to. Next
     candidates: a resource whose response embeds ANOTHER resource's own
     migrated item type (re-exercising the nested-schema generator quirk
     from a different angle) is worth picking deliberately rather than by
@@ -618,6 +634,29 @@ resource tests called out in §2, added ahead of those resources' migration.
   `findMessagesByProject` initially didn't — the rule this generalizes to:
   an HTTP-level same-typed-pair regression test (per the bullet above) is
   required for EACH such method, not just one of them.
+- **A resource's own hand-written pagination-wrapper constructor is just as
+  vulnerable to a positional transposition as any criteria parameter —
+  discovered by `KeyResource`'s final review.** Every migrated resource's
+  `toPagedDto` helper calls `new Paged<X>List(total, offset, limit,
+  hasNext, hasPrev, list)` with five same-typed-ish positional scalar
+  arguments (three `Integer`s, two `Boolean`s) read off the `PagedList<T>`
+  the service returns. Unlike the `*Criteria`-mapping bug class above,
+  this one lives entirely in the resource's own hand-written code, not in
+  anything generated — but it's exactly as silent: `total` and `offset`
+  swapping places, or `hasNext` and `hasPrev` swapping places, still
+  compiles and still passes any test whose result set is empty, because
+  an empty page has
+  `total == offset == 0` and `hasNext == hasPrev == false` regardless of
+  which field lands in which slot. `KeyResource`'s final review found
+  every one of its own tests exercised exactly that empty-result shape.
+  The fix needs its own HTTP-level test against a NON-EMPTY, multi-item
+  result set where `total != offset` and `hasNext`/`hasPrev` take
+  non-default values (e.g. two keys with no `limit` param pins
+  `total:2`/`offset:0`/`hasPrev:false`, and a second request with
+  `limit=1` against the same two keys pins `hasNext:true`) — this
+  generalizes to every migrated resource's paged-list endpoint, not just
+  `KeyResource`'s, and each one should carry this test, not just the ones
+  that happened to already have a non-empty fixture lying around.
 - **Generated wire models don't inherit the hand-written DTOs'
   `@JsonInclude(NON_NULL)` — also discovered by the `AccessTokenResource`
   final review, and worth fixing once, globally, rather than per
