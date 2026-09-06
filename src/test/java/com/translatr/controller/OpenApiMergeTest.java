@@ -59,6 +59,8 @@ class OpenApiMergeTest {
             .body("paths['/api/statistics'].get.responses.200.description", is("Aggregate counts across the whole instance."))
             .body("paths['/api/member/{id}'].get.responses.200.description", is("The member."))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/authclients"))
-            .body("paths['/api/authclients'].get.responses.200.description", is("Auth providers a visitor can actually use."));
+            .body("paths['/api/authclients'].get.responses.200.description", is("Auth providers a visitor can actually use."))
+            .body("paths['/api/member/{id}'].get.responses.200.description", is("The member."))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/notifications"));
     }
 }
