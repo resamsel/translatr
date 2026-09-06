@@ -53,6 +53,9 @@ class OpenApiMergeTest {
             .body("paths['/api/featureflags/global'].get.responses.200.description", is("All global feature flag overrides."))
             .body("paths['/api/member/{id}'].get.responses.200.description", is("The member."))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/health"))
-            .body("paths['/api/health'].get.responses.200.description", is("The service is healthy."));
+            .body("paths['/api/health'].get.responses.200.description", is("The service is healthy."))
+            .body("paths['/api/member/{id}'].get.responses.200.description", is("The member."))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/statistics"))
+            .body("paths['/api/statistics'].get.responses.200.description", is("Aggregate counts across the whole instance."));
     }
 }
