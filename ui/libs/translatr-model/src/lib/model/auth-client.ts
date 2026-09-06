@@ -1,4 +1,1 @@
-export class AuthClient {
-  key: string;
-  url: string;
-}
+export type { AuthClientDto as AuthClient } from '../generated/model/authClientDto';
