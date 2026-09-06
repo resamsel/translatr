@@ -54,7 +54,29 @@ class KeyResourceOrderFetchCriteriaTest {
             .when().get("/api/project/" + projectId + "/keys")
             .then()
             .statusCode(200)
-            .body("list[0].name", is("zzz"));
+            .body("list[0].name", is("zzz"))
+            // PagedKeyList's constructor takes 3 Integers and 2 Booleans positionally
+            // (total, offset, limit, hasNext, hasPrev) — a transposition among them
+            // (e.g. total<->offset, or hasNext<->hasPrev) would be silently masked by
+            // any test whose result set is empty (total==offset==0, hasNext==hasPrev==
+            // false trivially). With 2 keys and no limit param (default limit=20 per
+            // LimitParam's OpenAPI default), offset=0 and offset+limit(20) >= total(2),
+            // so hasNext is false and hasPrev (offset>0) is false too — but total:2
+            // still distinguishes this from every other test's total:0.
+            .body("total", is(2))
+            .body("offset", is(0))
+            .body("hasPrev", is(false));
+
+        // A limit=1 request against the same 2-key result set forces hasNext:true
+        // (offset=0, limit=1, total=2 => offset+limit(1) < total(2)), pinning the
+        // one PagedKeyList field the assertions above leave at its default (false).
+        given()
+            .queryParam("limit", 1)
+            .when().get("/api/project/" + projectId + "/keys")
+            .then()
+            .statusCode(200)
+            .body("total", is(2))
+            .body("hasNext", is(true));
 
         given()
             .queryParam("fetch", "progress")
