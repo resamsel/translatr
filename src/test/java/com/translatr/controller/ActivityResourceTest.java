@@ -7,6 +7,7 @@ import io.quarkus.test.security.jwt.JwtSecurity;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusTest
@@ -36,6 +37,19 @@ class ActivityResourceTest {
             .then()
             .statusCode(200)
             .body("list", notNullValue());
+    }
+
+    @Test
+    void find_reflectsRealOffsetAndLimit() {
+        given()
+            .queryParam("userId", "00000000-0000-0000-0000-000000000000")
+            .queryParam("offset", 0)
+            .queryParam("limit", 1)
+            .when().get("/api/activities")
+            .then()
+            .statusCode(200)
+            .body("offset", is(0))
+            .body("limit", is(1));
     }
 
     @Test
