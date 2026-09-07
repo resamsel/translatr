@@ -93,7 +93,7 @@ class UserServiceTest {
         UUID id   = UUID.randomUUID();
         User user = userWithId(id);
         UserDto dto = new UserDto();
-        dto.id = id;
+        dto.setId(id);
 
         when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
         when(mapper.toDto(user)).thenReturn(dto);
@@ -101,7 +101,7 @@ class UserServiceTest {
 
         UserDto result = service.get(id);
 
-        assertThat(result.id).isEqualTo(id);
+        assertThat(result.getId()).isEqualTo(id);
     }
 
     @Test
@@ -109,7 +109,7 @@ class UserServiceTest {
         UUID id   = UUID.randomUUID();
         User user = userWithId(id);
         UserDto dto = new UserDto();
-        dto.id = id;
+        dto.setId(id);
 
         when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
         when(mapper.toDto(user)).thenReturn(dto);
@@ -118,8 +118,8 @@ class UserServiceTest {
 
         UserDto result = service.get(id);
 
-        assertThat(result.features).containsEntry("header-graphic", true);
-        assertThat(result.features).containsEntry("language-switcher", false);
+        assertThat(result.getFeatures()).containsEntry("header-graphic", true);
+        assertThat(result.getFeatures()).containsEntry("language-switcher", false);
     }
 
     // -------------------------------------------------------------------------
@@ -144,12 +144,12 @@ class UserServiceTest {
         User user = userWithId(id);
 
         UserDto dto = new UserDto();
-        dto.id             = id;
-        dto.username       = "newuser";
-        dto.name           = "New Name";
-        dto.email          = "new@example.com";
-        dto.preferredLocale = "de";
-        dto.settings       = Map.of("theme", "dark");
+        dto.setId(id);
+        dto.setUsername("newuser");
+        dto.setName("New Name");
+        dto.setEmail("new@example.com");
+        dto.setPreferredLocale("de");
+        dto.setSettings(Map.of("theme", "dark"));
 
         when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
         when(mapper.toDto(user)).thenReturn(dto);
@@ -171,9 +171,9 @@ class UserServiceTest {
         user.name     = "Original Name";
 
         UserDto dto = new UserDto();
-        dto.id    = id;
-        dto.name  = null;  // not updating name
-        dto.email = "new@example.com";
+        dto.setId(id);
+        dto.setName(null);  // not updating name
+        dto.setEmail("new@example.com");
 
         when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
         when(mapper.toDto(user)).thenReturn(new UserDto());
@@ -192,8 +192,8 @@ class UserServiceTest {
         user.settings = new HashMap<>(Map.of("existing", "value"));
 
         UserDto dto = new UserDto();
-        dto.id       = id;
-        dto.settings = Map.of("new", "entry");
+        dto.setId(id);
+        dto.setSettings(Map.of("new", "entry"));
 
         when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
         when(mapper.toDto(user)).thenReturn(new UserDto());
@@ -211,8 +211,8 @@ class UserServiceTest {
         User user = userWithId(id);
 
         UserDto dto = new UserDto();
-        dto.id   = id;
-        dto.name = "New Name";
+        dto.setId(id);
+        dto.setName("New Name");
 
         UserDto before = new UserDto();
         UserDto after  = new UserDto();
@@ -242,7 +242,7 @@ class UserServiceTest {
     void update_throwsNotFound_whenUserMissing() {
         UUID id = UUID.randomUUID();
         UserDto dto = new UserDto();
-        dto.id = id;
+        dto.setId(id);
 
         when(userRepo.findByIdOptional(id)).thenReturn(Optional.empty());
 

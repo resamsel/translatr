@@ -87,20 +87,20 @@ public class UserService {
     // UserDto.features is the current user's effective feature map (override → global → default),
     // resolved by FeatureResolver so it always covers every known Feature.
     private void attachFeatures(UserDto dto) {
-        dto.features = featureResolver.resolveAll(dto.id);
+        dto.setFeatures(featureResolver.resolveAll(dto.getId()));
     }
 
     @Transactional
     public UserDto update(UserDto dto) {
-        User u = userRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        User u = userRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
         UserDto before = mapper.toDto(u);
-        if (dto.username        != null) u.username        = dto.username;
-        if (dto.name            != null) u.name            = dto.name;
-        if (dto.email           != null) u.email           = dto.email;
-        if (dto.preferredLocale != null) u.preferredLocale = dto.preferredLocale;
-        if (dto.settings != null) {
+        if (dto.getUsername()        != null) u.username        = dto.getUsername();
+        if (dto.getName()            != null) u.name            = dto.getName();
+        if (dto.getEmail()           != null) u.email           = dto.getEmail();
+        if (dto.getPreferredLocale() != null) u.preferredLocale = dto.getPreferredLocale();
+        if (dto.getSettings() != null && !dto.getSettings().isEmpty()) {
             if (u.settings == null) u.settings = new java.util.HashMap<>();
-            u.settings.putAll(dto.settings);
+            u.settings.putAll(dto.getSettings());
         }
         UserDto after = mapper.toDto(u);
         activity.publish(ActionType.Update, null, UserDto.class, before, after);

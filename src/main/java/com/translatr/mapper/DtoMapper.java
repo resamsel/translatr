@@ -10,18 +10,20 @@ public class DtoMapper {
 
     public UserDto toDto(User u) {
         if (u == null) return null;
-        UserDto d = new UserDto();
-        d.id              = u.id;
-        d.whenCreated     = u.whenCreated;
-        d.whenUpdated     = u.whenUpdated;
-        d.name            = u.name;
-        d.username        = u.username;
-        d.email           = u.email;
-        d.emailHash       = EmailUtils.hashEmail(u.email);
-        d.role            = u.role != null ? u.role.name() : null;
-        d.preferredLocale = u.preferredLocale;
-        d.settings        = u.settings;
-        return d;
+        return new UserDto()
+                .id(u.id)
+                .whenCreated(toOffsetDateTime(u.whenCreated))
+                .whenUpdated(toOffsetDateTime(u.whenUpdated))
+                .name(u.name)
+                .username(u.username)
+                .email(u.email)
+                .emailHash(EmailUtils.hashEmail(u.email))
+                .role(u.role != null ? u.role.name() : null)
+                .preferredLocale(u.preferredLocale)
+                .settings(u.settings)
+                // features is attached later by UserService for single-user reads; keep it
+                // absent (not an empty map) on list responses, matching the old hand DTO.
+                .features(null);
     }
 
     public ProjectDto toDto(Project p) {

@@ -44,13 +44,13 @@ class DtoMapperTest {
 
         UserDto dto = mapper.toDto(u);
 
-        assertThat(dto.id).isEqualTo(u.id);
-        assertThat(dto.name).isEqualTo("John");
-        assertThat(dto.username).isEqualTo("john");
-        assertThat(dto.email).isEqualTo("john@example.com");
-        assertThat(dto.role).isEqualTo("User");
-        assertThat(dto.preferredLocale).isEqualTo("en");
-        assertThat(dto.settings).containsEntry("theme", "dark");
+        assertThat(dto.getId()).isEqualTo(u.id);
+        assertThat(dto.getName()).isEqualTo("John");
+        assertThat(dto.getUsername()).isEqualTo("john");
+        assertThat(dto.getEmail()).isEqualTo("john@example.com");
+        assertThat(dto.getRole()).isEqualTo("User");
+        assertThat(dto.getPreferredLocale()).isEqualTo("en");
+        assertThat(dto.getSettings()).containsEntry("theme", "dark");
     }
 
     @Test
@@ -58,7 +58,7 @@ class DtoMapperTest {
         User u = new User();
         u.role = null;
 
-        assertThat(mapper.toDto(u).role).isNull();
+        assertThat(mapper.toDto(u).getRole()).isNull();
     }
 
     // -------------------------------------------------------------------------
