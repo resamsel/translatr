@@ -63,21 +63,24 @@ public class FeatureResolver {
 
         List<ResolvedFeatureDto> out = new ArrayList<>();
         for (Feature f : Feature.values()) {
-            ResolvedFeatureDto d = new ResolvedFeatureDto();
-            d.feature        = f.key;
-            d.defaultEnabled = f.defaultEnabled;
-
             FeatureFlag g = globals.get(f.key);
-            d.global = g != null ? g.enabled : null;
+            Boolean globalValue = g != null ? g.enabled : null;
 
             UserFeatureFlag o = overrides.get(f.key);
-            d.userOverride   = o != null ? o.enabled : null;
-            d.userOverrideId = o != null ? o.id : null;
+            Boolean userOverride   = o != null ? o.enabled : null;
+            UUID    userOverrideId = o != null ? o.id : null;
 
-            d.effective = d.userOverride != null ? d.userOverride
-                        : d.global       != null ? d.global
-                        : d.defaultEnabled;
-            out.add(d);
+            boolean effective = userOverride != null ? userOverride
+                              : globalValue   != null ? globalValue
+                              : f.defaultEnabled;
+
+            out.add(new ResolvedFeatureDto()
+                    .feature(f.key)
+                    .defaultEnabled(f.defaultEnabled)
+                    .global(globalValue)
+                    .userOverride(userOverride)
+                    .userOverrideId(userOverrideId)
+                    .effective(effective));
         }
         return out;
     }
