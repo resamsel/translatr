@@ -39,6 +39,44 @@ class UserResourceTest {
     }
 
     @Test
+    void testGetUserByUsername_notFound() {
+        given()
+            .when().get("/api/no-such-username")
+            .then()
+            .statusCode(404);
+    }
+
+    @Test
+    void testProfile_isPublic_andEmpty() {
+        String body = given()
+            .when().get("/api/profile")
+            .then()
+            .statusCode(anyOf(is(200), is(204)))
+            .extract().body().asString();
+        org.assertj.core.api.Assertions.assertThat(body).isIn("", "{}", "null");
+    }
+
+    @Test
+    void testFindUsers_queryParams_reflectedInResponse() {
+        given()
+            .when().get("/api/users?offset=0&limit=1&search=zzz&order=username")
+            .then()
+            .statusCode(200)
+            .body("offset", is(0))
+            .body("limit",  is(1));
+    }
+
+    @Test
+    void testSaveUserSettings_anonymous_isUnauthorized() {
+        given()
+            .contentType("application/json")
+            .body("{\"settings\": {\"theme\": \"dark\"}}")
+            .when().put("/api/user/00000000-0000-0000-0000-000000000000/settings")
+            .then()
+            .statusCode(401);
+    }
+
+    @Test
     @TestSecurity(user = "testuser", roles = "User")
     @JwtSecurity(claims = {
         @Claim(key = "sub",   value = "test-user-sub"),
