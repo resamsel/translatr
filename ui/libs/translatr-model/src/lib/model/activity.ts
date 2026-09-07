@@ -1,3 +1,5 @@
+import { ActivityDto } from '../generated/model/activityDto';
+
 export enum ActionType {
   Create = 'Create',
   Update = 'Update',
@@ -6,17 +8,6 @@ export enum ActionType {
   Logout = 'Logout'
 }
 
-export interface Activity {
-  id: string;
+export interface Activity extends Omit<ActivityDto, 'type'> {
   type: ActionType;
-  contentType: string;
-  whenCreated?: Date;
-  userId: string;
-  userName?: string;
-  userUsername?: string;
-  userEmailHash?: string;
-  projectId?: string;
-  projectName?: string;
-  before?: string;
-  after?: string;
 }
