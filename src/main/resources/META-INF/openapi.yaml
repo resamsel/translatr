@@ -1475,7 +1475,6 @@ components:
               type: array
               items: {}
           required: [list]
-        - message
     GlobalFeatureFlagDto:
       type: object
       description: >-
