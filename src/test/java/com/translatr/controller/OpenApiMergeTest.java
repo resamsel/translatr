@@ -49,6 +49,7 @@ class OpenApiMergeTest {
             .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflags/resolved"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflags/global"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag/global"))
-            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag/global/{id}"));
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag/global/{id}"))
+            .body("paths['/api/featureflags/global'].get.responses.200.description", is("All global feature flag overrides."));
     }
 }

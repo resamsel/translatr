@@ -44,7 +44,7 @@ public class GlobalFeatureFlagResource implements FeatureflagsApi {
     @Authenticated
     public GlobalFeatureFlagDto setGlobalFeatureFlag(GlobalFeatureFlagDto globalFeatureFlagDto) {
         requireAdmin();
-        return globalService.set(globalFeatureFlagDto.getFeature(), globalFeatureFlagDto.getEnabled());
+        return globalService.set(globalFeatureFlagDto.getFeature(), Boolean.TRUE.equals(globalFeatureFlagDto.getEnabled()));
     }
 
     @Override
