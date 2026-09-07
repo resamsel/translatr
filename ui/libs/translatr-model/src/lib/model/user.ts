@@ -1,12 +1,16 @@
-import { Feature, Member, Setting, Temporal, UserRole } from '.';
+import { UserDto } from '../generated/model/userDto';
+import { Feature, Member, Setting, UserRole } from '.';
 
-export interface User extends Temporal {
-  id?: string;
+export interface User
+  extends Omit<
+    UserDto,
+    'whenCreated' | 'whenUpdated' | 'name' | 'username' | 'role' | 'features' | 'settings'
+  > {
+  whenCreated?: Date;
+  whenUpdated?: Date;
 
   name: string;
   username: string;
-  email?: string;
-  emailHash?: string;
   role?: UserRole;
   preferredLanguage?: string;
 
