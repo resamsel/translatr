@@ -1,8 +1,6 @@
+import { FeatureFlagDto } from '../generated/model/featureFlagDto';
 import { Feature } from './feature';
-import { UserEmbedded } from './user-embedded';
 
-export interface UserFeatureFlag extends UserEmbedded {
-  id: string;
+export interface UserFeatureFlag extends Omit<FeatureFlagDto, 'feature'> {
   feature: Feature;
-  enabled: boolean;
 }
