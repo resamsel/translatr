@@ -3,22 +3,17 @@ package com.translatr.controller;
 import com.translatr.auth.CurrentUserResolver;
 import com.translatr.dto.GlobalFeatureFlagDto;
 import com.translatr.dto.ResolvedFeatureDto;
+import com.translatr.generated.api.FeatureflagsApi;
 import com.translatr.service.FeatureResolver;
 import com.translatr.service.GlobalFeatureFlagService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ForbiddenException;
 
 import java.util.List;
 import java.util.UUID;
 
-@Path("/api")
-@Authenticated
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-public class GlobalFeatureFlagResource {
+public class GlobalFeatureFlagResource implements FeatureflagsApi {
 
     private final GlobalFeatureFlagService globalService;
     private final FeatureResolver          featureResolver;
@@ -33,32 +28,30 @@ public class GlobalFeatureFlagResource {
         this.currentUserResolver = currentUserResolver;
     }
 
-    /** override → global → default detail for the caller, one entry per feature. */
-    @GET
-    @Path("/featureflags/resolved")
-    public List<ResolvedFeatureDto> resolved() {
+    @Override
+    @Authenticated
+    public List<ResolvedFeatureDto> listResolvedFeatures() {
         return featureResolver.resolveDetail(currentUserResolver.resolve().id);
     }
 
-    @GET
-    @Path("/featureflags/global")
-    public List<GlobalFeatureFlagDto> listGlobal() {
+    @Override
+    @Authenticated
+    public List<GlobalFeatureFlagDto> listGlobalFeatureFlags() {
         return globalService.list();
     }
 
-    @POST
-    @Path("/featureflag/global")
-    public GlobalFeatureFlagDto setGlobal(GlobalFeatureFlagDto dto) {
+    @Override
+    @Authenticated
+    public GlobalFeatureFlagDto setGlobalFeatureFlag(GlobalFeatureFlagDto globalFeatureFlagDto) {
         requireAdmin();
-        return globalService.set(dto.getFeature(), dto.getEnabled());
+        return globalService.set(globalFeatureFlagDto.getFeature(), globalFeatureFlagDto.getEnabled());
     }
 
-    @DELETE
-    @Path("/featureflag/global/{id}")
-    public Response deleteGlobal(@PathParam("id") UUID id) {
+    @Override
+    @Authenticated
+    public void deleteGlobalFeatureFlag(UUID id) {
         requireAdmin();
         globalService.delete(id);
-        return Response.noContent().build();
     }
 
     private void requireAdmin() {
