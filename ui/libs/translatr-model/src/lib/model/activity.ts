@@ -8,6 +8,7 @@ export enum ActionType {
   Logout = 'Logout'
 }
 
-export interface Activity extends Omit<ActivityDto, 'type'> {
+export interface Activity extends Omit<ActivityDto, 'type' | 'whenCreated'> {
   type: ActionType;
+  whenCreated?: Date;
 }
