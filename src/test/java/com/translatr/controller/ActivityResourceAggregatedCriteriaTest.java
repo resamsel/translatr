@@ -19,7 +19,7 @@ class ActivityResourceAggregatedCriteriaTest {
         @Claim(key = "name",  value = "Aggregated Swap Test"),
         @Claim(key = "email", value = "aggswaptest@example.com")
     })
-    void findAggregatedActivity_projectIdAndUserId_areNotSwapped() {
+    void findAggregatedActivity_projectIdAndUserId_areNotSwapped() throws InterruptedException {
         // Creating a project publishes a real LogEntry row (ActionType.Create, content type
         // "dto.Project") tied to BOTH this project's id AND this caller's own user id — a
         // single real data point that both projectId and userId can independently, correctly
@@ -32,6 +32,12 @@ class ActivityResourceAggregatedCriteriaTest {
             .then()
             .statusCode(anyOf(is(200), is(201)))
             .extract().path("id");
+
+        // Activity logging is asynchronous (ActivityEventProducer publishes onto the Vert.x
+        // event bus and ActivityEventConsumer persists the LogEntry on a @Blocking worker
+        // thread), so poll until the aggregated total reflects the project-creation activity
+        // before asserting on it.
+        awaitAggregatedTotal(projectId, 1);
 
         // If projectId/userId were swapped in the generated-interface binding, filtering by
         // this real projectId would either silently misroute into the userId slot (matching
@@ -51,5 +57,20 @@ class ActivityResourceAggregatedCriteriaTest {
             .then()
             .statusCode(200)
             .body("total", is(0));
+    }
+
+    private void awaitAggregatedTotal(String projectId, int expectedMinTotal) throws InterruptedException {
+        for (int i = 0; i < 50; i++) {
+            int total = given()
+                .queryParam("projectId", projectId)
+                .when().get("/api/activities/aggregated")
+                .then()
+                .statusCode(200)
+                .extract().path("total");
+            if (total >= expectedMinTotal) {
+                return;
+            }
+            Thread.sleep(100);
+        }
     }
 }
