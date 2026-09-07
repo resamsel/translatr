@@ -45,6 +45,10 @@ class OpenApiMergeTest {
             .body("paths", org.hamcrest.Matchers.hasKey("/api/members/{projectId}"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/member/{id}"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/member"))
-            .body("paths['/api/member/{id}'].get.responses.200.description", is("The member."));
+            .body("paths['/api/member/{id}'].get.responses.200.description", is("The member."))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflags/resolved"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflags/global"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag/global"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag/global/{id}"));
     }
 }
