@@ -1,10 +1,6 @@
+import { ResolvedFeatureDto } from '../generated/model/resolvedFeatureDto';
 import { Feature } from './feature';
 
-export interface ResolvedFeature {
+export interface ResolvedFeature extends Omit<ResolvedFeatureDto, 'feature'> {
   feature: Feature;
-  defaultEnabled: boolean;
-  global: boolean | null;
-  userOverride: boolean | null;
-  userOverrideId: string | null;
-  effective: boolean;
 }
