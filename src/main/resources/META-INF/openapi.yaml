@@ -1261,6 +1261,156 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureFlagDto'
+  /api/users:
+    get:
+      operationId: findUsers
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: username
+          in: query
+          schema:
+            type: string
+        - name: email
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paged users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedUserList'
+  /api/user/{id}:
+    get:
+      operationId: getUser
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+    delete:
+      operationId: deleteUser
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The deleted user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /api/user:
+    put:
+      operationId: updateUser
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '200':
+          description: The updated user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /api/user/{id}/settings:
+    put:
+      operationId: saveUserSettings
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '200':
+          description: The user with the merged settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /api/me:
+    get:
+      operationId: getCurrentUser
+      tags:
+        - users
+      responses:
+        '200':
+          description: The authenticated caller, with the effective feature map attached.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /api/profile:
+    get:
+      operationId: getProfile
+      tags:
+        - users
+      responses:
+        '200':
+          description: >-
+            Legacy profile endpoint — always responds with an empty body. Kept for
+            backward compatibility with existing clients.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+  /api/{username}:
+    get:
+      operationId: getUserByUsername
+      tags:
+        - users
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The user with that username, with the effective feature map attached.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
 components:
   parameters:
     SearchParam:
@@ -1856,4 +2006,56 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/FeatureFlagDto'
+          required: [list]
+    UserDto:
+      type: object
+      description: >-
+        A user account. Used for both the response body (all fields populated) and the
+        update request body (username/name/email/preferredLocale/settings are read; the
+        rest are server-computed and ignored if supplied). No field is marked `required`
+        — see AccessTokenPayload's note on dual-purpose schemas.
+      properties:
+        id:
+          type: string
+          format: uuid
+        whenCreated:
+          type: string
+          format: date-time
+          readOnly: true
+        whenUpdated:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        emailHash:
+          type: string
+          readOnly: true
+        role:
+          type: string
+          readOnly: true
+        preferredLocale:
+          type: string
+        settings:
+          type: object
+          additionalProperties:
+            type: string
+        features:
+          type: object
+          readOnly: true
+          additionalProperties:
+            type: boolean
+    PagedUserList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/UserDto'
           required: [list]
