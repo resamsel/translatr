@@ -971,6 +971,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/featureflags/resolved:
+    get:
+      operationId: listResolvedFeatures
+      tags:
+        - featureflags
+      responses:
+        '200':
+          description: Override -> global -> default resolution detail for the caller, one entry per feature.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResolvedFeatureDto'
+  /api/featureflags/global:
+    get:
+      operationId: listGlobalFeatureFlags
+      tags:
+        - featureflags
+      responses:
+        '200':
+          description: All global feature flag overrides.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GlobalFeatureFlagDto'
+  /api/featureflag/global:
+    post:
+      operationId: setGlobalFeatureFlag
+      tags:
+        - featureflags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GlobalFeatureFlagDto'
+      responses:
+        '200':
+          description: The created or updated global feature flag.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalFeatureFlagDto'
+  /api/featureflag/global/{id}:
+    delete:
+      operationId: deleteGlobalFeatureFlag
+      tags:
+        - featureflags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The global feature flag was deleted.
 components:
   parameters:
     SearchParam:
@@ -1352,3 +1413,56 @@ components:
       required:
         - status
         - message
+    GlobalFeatureFlagDto:
+      type: object
+      description: >-
+        A global override for one feature flag. Used for both the response body (all fields
+        populated) and the create/update request body (feature/enabled are read; the rest are
+        server-computed and ignored if supplied). No field is marked `required` — see
+        AccessTokenPayload's note on dual-purpose schemas.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        whenCreated:
+          type: string
+          format: date-time
+          readOnly: true
+        feature:
+          type: string
+        enabled:
+          type: boolean
+    ResolvedFeatureDto:
+      type: object
+      description: >-
+        Per-feature resolution detail for the admin UI: the hardcoded default, the stored global
+        setting (or absent), the caller's own override (value + row id, or absent), and the
+        resulting effective value.
+      properties:
+        feature:
+          type: string
+          readOnly: true
+        defaultEnabled:
+          type: boolean
+          readOnly: true
+        global:
+          type: boolean
+          nullable: true
+          readOnly: true
+        userOverride:
+          type: boolean
+          nullable: true
+          readOnly: true
+        userOverrideId:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        effective:
+          type: boolean
+          readOnly: true
+      required:
+        - feature
+        - defaultEnabled
+        - effective
