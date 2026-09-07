@@ -50,7 +50,7 @@ public class GlobalFeatureFlagResource {
     @Path("/featureflag/global")
     public GlobalFeatureFlagDto setGlobal(GlobalFeatureFlagDto dto) {
         requireAdmin();
-        return globalService.set(dto.feature, dto.enabled);
+        return globalService.set(dto.getFeature(), dto.getEnabled());
     }
 
     @DELETE

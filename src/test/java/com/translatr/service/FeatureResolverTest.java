@@ -84,22 +84,22 @@ class FeatureResolverTest {
 
         assertThat(detail).hasSize(Feature.values().length);
 
-        var ls = detail.stream().filter(d -> d.feature.equals("language-switcher")).findFirst().orElseThrow();
-        assertThat(ls.defaultEnabled).isFalse();
-        assertThat(ls.global).isNull();
-        assertThat(ls.userOverride).isTrue();
-        assertThat(ls.userOverrideId).isEqualTo(overrideId);
-        assertThat(ls.effective).isTrue();
+        var ls = detail.stream().filter(d -> d.getFeature().equals("language-switcher")).findFirst().orElseThrow();
+        assertThat(ls.getDefaultEnabled()).isFalse();
+        assertThat(ls.getGlobal()).isNull();
+        assertThat(ls.getUserOverride()).isTrue();
+        assertThat(ls.getUserOverrideId()).isEqualTo(overrideId);
+        assertThat(ls.getEffective()).isTrue();
 
-        var hg = detail.stream().filter(d -> d.feature.equals("header-graphic")).findFirst().orElseThrow();
-        assertThat(hg.global).isTrue();
-        assertThat(hg.userOverride).isNull();
-        assertThat(hg.userOverrideId).isNull();
-        assertThat(hg.effective).isTrue();
+        var hg = detail.stream().filter(d -> d.getFeature().equals("header-graphic")).findFirst().orElseThrow();
+        assertThat(hg.getGlobal()).isTrue();
+        assertThat(hg.getUserOverride()).isNull();
+        assertThat(hg.getUserOverrideId()).isNull();
+        assertThat(hg.getEffective()).isTrue();
 
-        var cli = detail.stream().filter(d -> d.feature.equals("project-cli-card")).findFirst().orElseThrow();
-        assertThat(cli.global).isNull();
-        assertThat(cli.userOverride).isNull();
-        assertThat(cli.effective).isFalse();
+        var cli = detail.stream().filter(d -> d.getFeature().equals("project-cli-card")).findFirst().orElseThrow();
+        assertThat(cli.getGlobal()).isNull();
+        assertThat(cli.getUserOverride()).isNull();
+        assertThat(cli.getEffective()).isFalse();
     }
 }
