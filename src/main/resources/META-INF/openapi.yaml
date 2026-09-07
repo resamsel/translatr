@@ -1159,6 +1159,108 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PagedAggregateList'
+  /api/featureflags:
+    get:
+      operationId: findUserFeatureFlags
+      tags:
+        - user-feature-flags
+      parameters:
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/FetchParam'
+        - name: userId
+          in: query
+          description: >-
+            Ignored by the service — the list is always scoped to the authenticated
+            caller. Accepted for backward compatibility with existing clients.
+          schema:
+            type: string
+            format: uuid
+        - name: feature
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paged feature-flag overrides for the authenticated caller.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedFeatureFlagList'
+  /api/featureflag/{id}:
+    get:
+      operationId: getUserFeatureFlag
+      tags:
+        - user-feature-flags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The feature-flag override.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagDto'
+    delete:
+      operationId: deleteUserFeatureFlag
+      tags:
+        - user-feature-flags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The deleted feature-flag override.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagDto'
+  /api/featureflag:
+    post:
+      operationId: createUserFeatureFlag
+      tags:
+        - user-feature-flags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeatureFlagDto'
+      responses:
+        '200':
+          description: The created feature-flag override.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagDto'
+    put:
+      operationId: updateUserFeatureFlag
+      tags:
+        - user-feature-flags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeatureFlagDto'
+      responses:
+        '200':
+          description: The updated feature-flag override.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagDto'
 components:
   parameters:
     SearchParam:
@@ -1722,4 +1824,36 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/AggregateDto'
+          required: [list]
+    FeatureFlagDto:
+      type: object
+      description: >-
+        One user-scoped feature-flag override. Used for both the response body (all fields
+        populated) and the create/update request body (feature/enabled/userId/id are read;
+        whenCreated is server-computed and ignored if supplied). No field is marked
+        `required` — see AccessTokenPayload's note on dual-purpose schemas.
+      properties:
+        id:
+          type: string
+          format: uuid
+        whenCreated:
+          type: string
+          format: date-time
+          readOnly: true
+        userId:
+          type: string
+          format: uuid
+        feature:
+          type: string
+        enabled:
+          type: boolean
+    PagedFeatureFlagList:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/FeatureFlagDto'
           required: [list]
