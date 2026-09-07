@@ -1,8 +1,6 @@
+import { GlobalFeatureFlagDto } from '../generated/model/globalFeatureFlagDto';
 import { Feature } from './feature';
-import { Temporal } from './temporal';
 
-export interface GlobalFeatureFlag extends Temporal {
-  id?: string;
+export interface GlobalFeatureFlag extends Omit<GlobalFeatureFlagDto, 'feature'> {
   feature: Feature;
-  enabled: boolean;
 }
