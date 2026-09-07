@@ -69,6 +69,14 @@ class OpenApiMergeTest {
             .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag/{id}"))
             .body("paths['/api/featureflags'].get.responses.200.description",
-                is("Paged feature-flag overrides for the authenticated caller."));
+                is("Paged feature-flag overrides for the authenticated caller."))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/users"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/user/{id}"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/user"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/user/{id}/settings"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/me"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/profile"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/{username}"))
+            .body("paths['/api/user/{id}'].get.responses.200.description", is("The user."));
     }
 }
