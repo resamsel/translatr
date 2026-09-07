@@ -64,6 +64,11 @@ class OpenApiMergeTest {
             .body("paths", org.hamcrest.Matchers.hasKey("/api/notifications"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/activities"))
             .body("paths", org.hamcrest.Matchers.hasKey("/api/user/{userId}/activity"))
-            .body("paths", org.hamcrest.Matchers.hasKey("/api/activities/aggregated"));
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/activities/aggregated"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflags"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag"))
+            .body("paths", org.hamcrest.Matchers.hasKey("/api/featureflag/{id}"))
+            .body("paths['/api/featureflags'].get.responses.200.description",
+                is("Paged feature-flag overrides for the authenticated caller."));
     }
 }
