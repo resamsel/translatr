@@ -63,17 +63,17 @@ public class FeatureFlagService {
 
     @Transactional
     public FeatureFlagDto create(FeatureFlagDto dto) {
-        var user = userRepo.findByIdOptional(dto.userId).orElseThrow(NotFoundException::new);
-        var flag = UserFeatureFlag.of(user, dto.feature, dto.enabled);
+        var user = userRepo.findByIdOptional(dto.getUserId()).orElseThrow(NotFoundException::new);
+        var flag = UserFeatureFlag.of(user, dto.getFeature(), Boolean.TRUE.equals(dto.getEnabled()));
         featureFlagRepo.persist(flag);
         return mapper.toDto(flag);
     }
 
     @Transactional
     public FeatureFlagDto update(FeatureFlagDto dto) {
-        var flag = featureFlagRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
-        flag.enabled = dto.enabled;
-        if (dto.feature != null) flag.feature = dto.feature;
+        var flag = featureFlagRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
+        flag.enabled = Boolean.TRUE.equals(dto.getEnabled());
+        if (dto.getFeature() != null) flag.feature = dto.getFeature();
         return mapper.toDto(flag);
     }
 

@@ -163,13 +163,12 @@ public class DtoMapper {
 
     public FeatureFlagDto toDto(UserFeatureFlag f) {
         if (f == null) return null;
-        FeatureFlagDto d = new FeatureFlagDto();
-        d.id          = f.id;
-        d.whenCreated = f.whenCreated;
-        d.feature     = f.feature;
-        d.enabled     = f.enabled;
-        if (f.user != null) d.userId = f.user.id;
-        return d;
+        return new FeatureFlagDto()
+                .id(f.id)
+                .whenCreated(toOffsetDateTime(f.whenCreated))
+                .userId(f.user != null ? f.user.id : null)
+                .feature(f.feature)
+                .enabled(f.enabled);
     }
 
     public GlobalFeatureFlagDto toDto(FeatureFlag f) {
