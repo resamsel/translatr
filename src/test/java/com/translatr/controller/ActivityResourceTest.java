@@ -36,7 +36,8 @@ class ActivityResourceTest {
             .when().get("/api/activities/aggregated")
             .then()
             .statusCode(200)
-            .body("list", notNullValue());
+            .body("list", notNullValue())
+            .body("limit", is(1000));
     }
 
     @Test
@@ -65,5 +66,17 @@ class ActivityResourceTest {
             .then()
             .statusCode(200)
             .body("list", notNullValue());
+    }
+
+    @Test
+    void byUser_reflectsRealOffsetAndLimit() {
+        given()
+            .queryParam("offset", 0)
+            .queryParam("limit", 1)
+            .when().get("/api/user/00000000-0000-0000-0000-000000000000/activity")
+            .then()
+            .statusCode(200)
+            .body("offset", is(0))
+            .body("limit", is(1));
     }
 }
