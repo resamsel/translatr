@@ -1,7 +1,7 @@
 # Contract-First OpenAPI — Design
 
 Date: 2026-09-04 (pagination/criteria patterns added 2026-09-05)
-Status: In progress — toolchain + `OidcProviderResource` pilot shipped ([PR #263](https://github.com/resamsel/translatr/pull/263)); remaining ~18 resources migrate one at a time per §4
+Status: Per-resource rollout complete — all 15 JSON API resources implement a generated interface and are in `mp.openapi.scan.exclude.classes`; the 5 redirect/binary resources (`Authenticate`, `Login`, `Logout`, `UiLanding`, `LocaleTransfer`) are deliberately out of contract scope. The `AccessToken`/`Project`/`Message` `*Payload`→`*Dto` collapse follow-up is done (PR TBD). Remaining tracked follow-ups: Nx codegen as a real target with `inputs` covering `openapi.yaml`; routing `AbstractService`'s consumers through generated TS clients; a `Temporalized<T>` fix for the wire-`string`/runtime-`Date` seam; turning off smallrye runtime scanning (needs the 5 out-of-scope endpoints folded in first).
 Issue: [#256](https://github.com/resamsel/translatr/issues/256) — "Adopt contract-first OpenAPI: single openapi.yaml as source of truth, generate DTOs/interfaces"
 Related: [#255](https://github.com/resamsel/translatr/issues/255) — multi-provider OIDC SSO, whose `GET /api/oidc-providers` + `OidcProviderStatusDto` is the pilot resource for this migration
 
@@ -432,7 +432,11 @@ migrated "all at once" to keep the docs endpoint accurate.
     that could, by this same logic, eventually be dropped by updating
     `AccessTokenService`/`ProjectService`/`MessageService` to consume the
     generated type directly — worth a dedicated follow-up plan of its own,
-    not a retrofit bundled into unrelated work.
+    not a retrofit bundled into unrelated work. — **done** in
+    `docs/superpowers/plans/2026-09-08-collapse-payload-dtos.md`: all three
+    schemas renamed `*Payload`→`*Dto`, the hand-written DTOs deleted, and
+    their services/`DtoMapper` moved onto the generated types, exactly as
+    `LocaleResource` did.
   - On the frontend there's no equivalent internal/wire split, but there IS
     a consumer-count split (see the model-placement note in §3): a
     low-consumer hand-written model (the pilot's `oidc-provider-status.ts`,
