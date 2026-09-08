@@ -45,7 +45,7 @@ public class MessageService {
     private static final List<String> ORDERABLE = List.of("key.name", "value", "whenCreated", "whenUpdated");
 
     /**
-     * Stamps {@link MessageDto#localeDisplayName} - the human name of {@code dto.localeName}
+     * Stamps {@code localeDisplayName} - the human name of {@code dto.localeName}
      * rendered in {@code viewerLocale} (the signed-in user's preferred language, resolved by the
      * resource; never {@code null}). Mirrors {@code LocaleService.stampDisplayName}; like there,
      * only the read paths stamp it - create/update/delete responses and activity-log snapshots

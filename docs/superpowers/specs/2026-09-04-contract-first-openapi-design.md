@@ -432,7 +432,7 @@ migrated "all at once" to keep the docs endpoint accurate.
     that could, by this same logic, eventually be dropped by updating
     `AccessTokenService`/`ProjectService`/`MessageService` to consume the
     generated type directly — worth a dedicated follow-up plan of its own,
-    not a retrofit bundled into unrelated work. — **done** in
+    not a retrofit bundled into unrelated work. **Done** in
     `docs/superpowers/plans/2026-09-08-collapse-payload-dtos.md`: all three
     schemas renamed `*Payload`→`*Dto`, the hand-written DTOs deleted, and
     their services/`DtoMapper` moved onto the generated types, exactly as

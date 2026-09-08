@@ -1,5 +1,6 @@
 package com.translatr.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -43,8 +44,12 @@ public class LogEntry extends PanacheEntityBase {
 
     // Snapshots are DTOs that carry java.time fields (whenCreated/whenUpdated), so the
     // mapper needs the JSR-310 module; a bare ObjectMapper throws on Instant.
+    // NON_NULL inclusion mirrors quarkus.jackson.serialization-inclusion (which this
+    // bare mapper does not see) and the class-level @JsonInclude the hand-written DTOs
+    // used to carry, so before/after snapshots omit null fields as they always have.
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     public static <T> LogEntry from(ActionType type, User user, Project project,

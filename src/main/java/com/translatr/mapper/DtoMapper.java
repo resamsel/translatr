@@ -80,6 +80,13 @@ public class DtoMapper {
         return d;
     }
 
+    /**
+     * A just-persisted entity (mapped back right after {@code repo.persist()} in a
+     * {@code *Service.create}) can still have a null {@code whenCreated}/{@code whenUpdated}
+     * here: {@code @CreationTimestamp}/{@code @UpdateTimestamp} are populated by Hibernate at
+     * flush time, which has not happened yet. All six {@code toDto} methods pass through here,
+     * so a null Instant maps to a null OffsetDateTime rather than throwing.
+     */
     private static java.time.OffsetDateTime toOffsetDateTime(java.time.Instant i) {
         return i == null ? null : i.atOffset(java.time.ZoneOffset.UTC);
     }

@@ -102,6 +102,9 @@ public class ProjectService {
 
     @CacheResult(cacheName = "projects")
     public ProjectDto get(UUID id) {
+        // Hands back the Caffeine-cached generated ProjectDto directly (the collapse removed the
+        // controller's toApiDto copy). Callers must treat it as read-only: a dto.setX(...) on this
+        // path mutates the shared cache entry seen by every other reader.
         return mapper.toDto(projectRepo.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new));
     }
