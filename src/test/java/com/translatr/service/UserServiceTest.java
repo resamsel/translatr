@@ -206,6 +206,29 @@ class UserServiceTest {
     }
 
     @Test
+    void update_leavesSettingsUntouched_whenDtoSettingsIsEmpty() {
+        // The generated UserDto initialises `settings` to a non-null empty map, so any update
+        // body that omits `settings` arrives here with an empty (not null) map. The
+        // `!isEmpty()` guard in update() makes that a deliberate no-op: a persisted null
+        // stays null rather than being promoted to an empty map (and generating a spurious
+        // before/after activity diff) on every unrelated field update.
+        UUID id   = UUID.randomUUID();
+        User user = userWithId(id);
+        user.settings = null;                    // as Hibernate leaves it for a NULL column
+
+        UserDto dto = new UserDto();
+        dto.setId(id);
+        dto.setSettings(new HashMap<>());        // explicit empty map, e.g. from an omitted field
+
+        when(userRepo.findByIdOptional(id)).thenReturn(Optional.of(user));
+        when(mapper.toDto(user)).thenReturn(new UserDto());
+
+        service.update(dto);
+
+        assertThat(user.settings).isNull();
+    }
+
+    @Test
     void update_publishesUpdateActivity_withBeforeAndAfter() {
         UUID id   = UUID.randomUUID();
         User user = userWithId(id);

@@ -98,6 +98,11 @@ public class UserService {
         if (dto.getName()            != null) u.name            = dto.getName();
         if (dto.getEmail()           != null) u.email           = dto.getEmail();
         if (dto.getPreferredLocale() != null) u.preferredLocale = dto.getPreferredLocale();
+        // The generated UserDto initialises `settings` to a non-null empty map, so an update
+        // body that omits `settings` still reaches here with an empty one. Treat that as
+        // "not supplied" and leave u.settings alone - matching the pre-OpenAPI hand-written
+        // DTO, where an unset `settings` was null. This is a merge, never a replace: sending
+        // `{}` never cleared existing entries, so skipping the empty case loses nothing.
         if (dto.getSettings() != null && !dto.getSettings().isEmpty()) {
             if (u.settings == null) u.settings = new java.util.HashMap<>();
             u.settings.putAll(dto.getSettings());
