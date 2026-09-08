@@ -47,8 +47,8 @@ public class ProjectService {
     }
 
     private void fetchMembers(ProjectDto dto) {
-        dto.members = memberRepo.list("project.id", dto.id)
-                .stream().map(mapper::toDto).collect(Collectors.toList());
+        dto.setMembers(memberRepo.list("project.id", dto.getId())
+                .stream().map(mapper::toDto).collect(Collectors.toList()));
     }
 
     private static final List<String> ORDERABLE =
@@ -94,8 +94,8 @@ public class ProjectService {
             list.forEach(this::fetchMembers);
         }
         if (QuerySupport.wants(c.fetch, "progress")) {
-            var byProject = progress.projectProgress(list.stream().map(d -> d.id).toList());
-            list.forEach(d -> d.progress = byProject.getOrDefault(d.id, 0.0));
+            var byProject = progress.projectProgress(list.stream().map(d -> d.getId()).toList());
+            list.forEach(d -> d.setProgress(byProject.getOrDefault(d.getId(), 0.0)));
         }
         return new PagedList<>(list, total, c.offset, c.limit);
     }
@@ -120,21 +120,21 @@ public class ProjectService {
 
         if (QuerySupport.wants(fetch, "myrole") && loggedInUserId != null) {
             memberRepo.findByProjectAndUser(p.id, loggedInUserId)
-                      .ifPresent(pu -> dto.myRole = pu.role != null ? pu.role.name() : null);
+                      .ifPresent(pu -> dto.setMyRole(pu.role != null ? pu.role.name() : null));
         }
         if (QuerySupport.wants(fetch, "members")) {
             fetchMembers(dto);
         }
         if (QuerySupport.wants(fetch, "progress")) {
-            dto.progress = progress.projectProgress(List.of(p.id)).getOrDefault(p.id, 0.0);
+            dto.setProgress(progress.projectProgress(List.of(p.id)).getOrDefault(p.id, 0.0));
         }
         return dto;
     }
 
     @Transactional
     public ProjectDto create(ProjectDto dto, User owner) {
-        Project p = new Project(dto.name);
-        p.description = dto.description;
+        Project p = new Project(dto.getName());
+        p.description = dto.getDescription();
         p.owner       = owner;
         projectRepo.persist(p);
 
@@ -154,11 +154,11 @@ public class ProjectService {
     @Transactional
     @CacheInvalidate(cacheName = "projects")
     public ProjectDto update(ProjectDto dto) {
-        Project p = projectRepo.findByIdOptional(dto.id)
+        Project p = projectRepo.findByIdOptional(dto.getId())
                 .orElseThrow(NotFoundException::new);
         ProjectDto before = mapper.toDto(p);
-        if (dto.name        != null) p.name        = dto.name;
-        if (dto.description != null) p.description = dto.description;
+        if (dto.getName()        != null) p.name        = dto.getName();
+        if (dto.getDescription() != null) p.description = dto.getDescription();
         ProjectDto after = mapper.toDto(p);
         activity.publish(ActionType.Update, p, ProjectDto.class, before, after);
         return after;

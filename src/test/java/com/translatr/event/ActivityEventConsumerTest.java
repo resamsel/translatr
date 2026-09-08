@@ -30,8 +30,8 @@ class ActivityEventConsumerTest {
         User user = QuarkusTransaction.requiringNew().call(() -> userRepo.findById(userId));
 
         ProjectDto after = new ProjectDto();
-        after.name        = "brand-new-project";
-        after.whenCreated = java.time.Instant.EPOCH; // DTOs carry java.time fields — must serialize
+        after.setName("brand-new-project");
+        after.setWhenCreated(java.time.Instant.EPOCH.atOffset(java.time.ZoneOffset.UTC)); // DTOs carry java.time fields — must serialize
 
         producer.publish(ActionType.Create, user, null, ProjectDto.class, null, after);
 
@@ -68,7 +68,7 @@ class ActivityEventConsumerTest {
         User user = QuarkusTransaction.requiringNew().call(() -> userRepo.findById(userId));
 
         ProjectDto after = new ProjectDto();
-        after.name = "aggregated-project";
+        after.setName("aggregated-project");
         producer.publish(ActionType.Create, user, null, ProjectDto.class, null, after);
         awaitLatestEntryForUser(userId);
 

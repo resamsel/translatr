@@ -5,16 +5,12 @@ import com.translatr.criteria.ProjectCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.PagedProjectList;
 import com.translatr.dto.ProjectDto;
-import com.translatr.dto.ProjectPayload;
 import com.translatr.generated.api.ProjectsApi;
 import com.translatr.service.ProjectService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.UUID;
 
 public class ProjectResource implements ProjectsApi {
@@ -38,36 +34,36 @@ public class ProjectResource implements ProjectsApi {
 
     @Override
     @PermitAll
-    public ProjectPayload getProject(UUID id) {
-        return toApiDto(projectService.get(id));
+    public ProjectDto getProject(UUID id) {
+        return projectService.get(id);
     }
 
     @Override
     @PermitAll
-    public ProjectPayload getProjectByOwnerAndName(String username, String projectName, String fetch) {
+    public ProjectDto getProjectByOwnerAndName(String username, String projectName, String fetch) {
         UUID loggedInUserId = fetch != null && fetch.contains("myrole")
                 ? currentUserResolver.resolveOptional().map(u -> u.id).orElse(null)
                 : null;
-        return toApiDto(projectService.getByOwnerAndName(username, projectName, fetch, loggedInUserId));
+        return projectService.getByOwnerAndName(username, projectName, fetch, loggedInUserId);
     }
 
     @Override
     @Authenticated
-    public ProjectPayload createProject(ProjectPayload projectPayload) {
+    public ProjectDto createProject(ProjectDto projectPayload) {
         var owner = currentUserResolver.resolve();
-        return toApiDto(projectService.create(toServiceDto(projectPayload), owner));
+        return projectService.create(projectPayload, owner);
     }
 
     @Override
     @Authenticated
-    public ProjectPayload updateProject(ProjectPayload projectPayload) {
-        return toApiDto(projectService.update(toServiceDto(projectPayload)));
+    public ProjectDto updateProject(ProjectDto projectPayload) {
+        return projectService.update(projectPayload);
     }
 
     @Override
     @Authenticated
-    public ProjectPayload deleteProject(UUID id) {
-        return toApiDto(projectService.delete(id));
+    public ProjectDto deleteProject(UUID id) {
+        return projectService.delete(id);
     }
 
     static ProjectCriteria toCriteria(String search, Integer offset, Integer limit, String order, String fetch,
@@ -87,39 +83,6 @@ public class ProjectResource implements ProjectsApi {
 
     private static PagedProjectList toPagedDto(PagedList<ProjectDto> src) {
         return new PagedProjectList(
-                src.total, src.offset, src.limit, src.hasNext, src.hasPrev,
-                src.list.stream().map(ProjectResource::toApiDto).toList());
-    }
-
-    private static ProjectPayload toApiDto(ProjectDto d) {
-        ProjectPayload p = new ProjectPayload()
-                .id(d.id)
-                .whenCreated(toOffsetDateTime(d.whenCreated))
-                .whenUpdated(toOffsetDateTime(d.whenUpdated))
-                .name(d.name)
-                .description(d.description)
-                .ownerId(d.ownerId)
-                .ownerName(d.ownerName)
-                .ownerUsername(d.ownerUsername)
-                .ownerEmailHash(d.ownerEmailHash)
-                .wordCount(d.wordCount)
-                .progress(d.progress)
-                .myRole(d.myRole);
-        if (d.members != null) {
-            p.members(d.members);
-        }
-        return p;
-    }
-
-    private static OffsetDateTime toOffsetDateTime(Instant i) {
-        return i == null ? null : i.atOffset(ZoneOffset.UTC);
-    }
-
-    private static ProjectDto toServiceDto(ProjectPayload p) {
-        ProjectDto d = new ProjectDto();
-        d.id          = p.getId();
-        d.name        = p.getName();
-        d.description = p.getDescription();
-        return d;
+                src.total, src.offset, src.limit, src.hasNext, src.hasPrev, src.list);
     }
 }

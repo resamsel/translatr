@@ -28,18 +28,18 @@ public class DtoMapper {
 
     public ProjectDto toDto(Project p) {
         if (p == null) return null;
-        ProjectDto d = new ProjectDto();
-        d.id           = p.id;
-        d.whenCreated  = p.whenCreated;
-        d.whenUpdated  = p.whenUpdated;
-        d.name         = p.name;
-        d.description  = p.description;
-        d.wordCount    = p.wordCount;
+        ProjectDto d = new ProjectDto()
+                .id(p.id)
+                .whenCreated(toOffsetDateTime(p.whenCreated))
+                .whenUpdated(toOffsetDateTime(p.whenUpdated))
+                .name(p.name)
+                .description(p.description)
+                .wordCount(p.wordCount);
         if (p.owner != null) {
-            d.ownerId         = p.owner.id;
-            d.ownerName       = p.owner.name;
-            d.ownerUsername   = p.owner.username;
-            d.ownerEmailHash  = EmailUtils.hashEmail(p.owner.email);
+            d.setOwnerId(p.owner.id);
+            d.setOwnerName(p.owner.name);
+            d.setOwnerUsername(p.owner.username);
+            d.setOwnerEmailHash(EmailUtils.hashEmail(p.owner.email));
         }
         return d;
     }

@@ -82,7 +82,7 @@ class ProjectServiceTest {
         UUID id = UUID.randomUUID();
         Project p = projectWithId(id);
         ProjectDto dto = new ProjectDto();
-        dto.id = id;
+        dto.setId(id);
 
         PanacheQuery<Project> query = mock(PanacheQuery.class);
         when(projectRepo.find(anyString(), any(Object[].class))).thenReturn(query);
@@ -98,7 +98,7 @@ class ProjectServiceTest {
 
         var result = service.find(c);
 
-        assertThat(result.list.get(0).progress).isEqualTo(0.4);
+        assertThat(result.list.get(0).getProgress()).isEqualTo(0.4);
     }
 
     @Test
@@ -107,7 +107,7 @@ class ProjectServiceTest {
         UUID id = UUID.randomUUID();
         Project p = projectWithId(id);
         ProjectDto dto = new ProjectDto();
-        dto.id = id;
+        dto.setId(id);
 
         PanacheQuery<Project> query = mock(PanacheQuery.class);
         when(projectRepo.find(anyString(), any(Object[].class))).thenReturn(query);
@@ -121,7 +121,7 @@ class ProjectServiceTest {
 
         var result = service.find(c);
 
-        assertThat(result.list.get(0).progress).isNull();
+        assertThat(result.list.get(0).getProgress()).isNull();
         verify(progress, never()).projectProgress(any());
     }
 
@@ -131,7 +131,7 @@ class ProjectServiceTest {
         UUID id = UUID.randomUUID();
         Project p = projectWithId(id);
         ProjectDto dto = new ProjectDto();
-        dto.id = id;
+        dto.setId(id);
 
         ProjectUser pu = new ProjectUser(ProjectRole.Manager);
         MemberDto memberDto = new MemberDto();
@@ -151,7 +151,7 @@ class ProjectServiceTest {
 
         var result = service.find(c);
 
-        assertThat(result.list.get(0).members).containsExactly(memberDto);
+        assertThat(result.list.get(0).getMembers()).containsExactly(memberDto);
     }
 
     // -------------------------------------------------------------------------
@@ -164,7 +164,7 @@ class ProjectServiceTest {
         UUID userId    = UUID.randomUUID();
         Project p = projectWithId(projectId);
         ProjectDto dto = new ProjectDto();
-        dto.id = projectId;
+        dto.setId(projectId);
 
         ProjectUser membership = new ProjectUser(ProjectRole.Manager);
         when(projectRepo.findByOwnerUsernameAndName("alice", "acme")).thenReturn(Optional.of(p));
@@ -173,7 +173,7 @@ class ProjectServiceTest {
 
         ProjectDto result = service.getByOwnerAndName("alice", "acme", "myrole", userId);
 
-        assertThat(result.myRole).isEqualTo("Manager");
+        assertThat(result.getMyRole()).isEqualTo("Manager");
     }
 
     @Test
@@ -181,14 +181,14 @@ class ProjectServiceTest {
         UUID projectId = UUID.randomUUID();
         Project p = projectWithId(projectId);
         ProjectDto dto = new ProjectDto();
-        dto.id = projectId;
+        dto.setId(projectId);
 
         when(projectRepo.findByOwnerUsernameAndName("alice", "acme")).thenReturn(Optional.of(p));
         when(mapper.toDto(p)).thenReturn(dto);
 
         ProjectDto result = service.getByOwnerAndName("alice", "acme", null, null);
 
-        assertThat(result.myRole).isNull();
+        assertThat(result.getMyRole()).isNull();
         verify(memberRepo, never()).findByProjectAndUser(any(), any());
     }
 
@@ -216,22 +216,22 @@ class ProjectServiceTest {
         owner.name = "John";
 
         ProjectDto dto = new ProjectDto();
-        dto.name        = "my-project";
-        dto.description = "A test project";
+        dto.setName("my-project");
+        dto.setDescription("A test project");
 
         when(mapper.toDto(any(Project.class))).thenAnswer(inv -> {
             Project p = inv.getArgument(0);
             ProjectDto result = new ProjectDto();
-            result.name        = p.name;
-            result.description = p.description;
+            result.setName(p.name);
+            result.setDescription(p.description);
             return result;
         });
 
         ProjectDto result = service.create(dto, owner);
 
         verify(projectRepo).persist(any(Project.class));
-        assertThat(result.name).isEqualTo("my-project");
-        assertThat(result.description).isEqualTo("A test project");
+        assertThat(result.getName()).isEqualTo("my-project");
+        assertThat(result.getDescription()).isEqualTo("A test project");
     }
 
     @Test
@@ -240,7 +240,7 @@ class ProjectServiceTest {
         owner.id = UUID.randomUUID();
 
         ProjectDto dto = new ProjectDto();
-        dto.name = "my-project";
+        dto.setName("my-project");
 
         ProjectDto after = new ProjectDto();
         when(mapper.toDto(any(Project.class))).thenReturn(after);
@@ -257,7 +257,7 @@ class ProjectServiceTest {
         owner.id = UUID.randomUUID();
 
         ProjectDto dto = new ProjectDto();
-        dto.name = "my-project";
+        dto.setName("my-project");
 
         service.create(dto, owner);
 
@@ -275,7 +275,7 @@ class ProjectServiceTest {
         owner.id = UUID.randomUUID();
 
         ProjectDto dto = new ProjectDto();
-        dto.name = "my-project";
+        dto.setName("my-project");
 
         MemberDto memberAfter = new MemberDto();
         when(mapper.toDto(any(Project.class))).thenReturn(new ProjectDto());
@@ -293,8 +293,8 @@ class ProjectServiceTest {
         Project proj = projectWithId(id);
 
         ProjectDto dto = new ProjectDto();
-        dto.id   = id;
-        dto.name = "updated-name";
+        dto.setId(id);
+        dto.setName("updated-name");
 
         ProjectDto before = new ProjectDto();
         ProjectDto after  = new ProjectDto();
@@ -332,9 +332,9 @@ class ProjectServiceTest {
         Project proj = projectWithId(id);
 
         ProjectDto dto   = new ProjectDto();
-        dto.id           = id;
-        dto.name         = "updated-name";
-        dto.description  = "updated-desc";
+        dto.setId(id);
+        dto.setName("updated-name");
+        dto.setDescription("updated-desc");
 
         when(projectRepo.findByIdOptional(id)).thenReturn(Optional.of(proj));
         when(mapper.toDto(proj)).thenReturn(dto);
@@ -353,8 +353,8 @@ class ProjectServiceTest {
         proj.description = "original-desc";
 
         ProjectDto dto = new ProjectDto();
-        dto.id          = id;
-        dto.name        = null;
+        dto.setId(id);
+        dto.setName(null);
 
         when(projectRepo.findByIdOptional(id)).thenReturn(Optional.of(proj));
         when(mapper.toDto(proj)).thenReturn(new ProjectDto());
@@ -369,7 +369,7 @@ class ProjectServiceTest {
     void update_throwsNotFound_whenProjectMissing() {
         UUID id = UUID.randomUUID();
         ProjectDto dto = new ProjectDto();
-        dto.id = id;
+        dto.setId(id);
 
         when(projectRepo.findByIdOptional(id)).thenReturn(Optional.empty());
 

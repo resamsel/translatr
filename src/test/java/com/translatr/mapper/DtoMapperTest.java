@@ -85,13 +85,13 @@ class DtoMapperTest {
 
         ProjectDto dto = mapper.toDto(p);
 
-        assertThat(dto.id).isEqualTo(p.id);
-        assertThat(dto.name).isEqualTo("my-project");
-        assertThat(dto.description).isEqualTo("A great project");
-        assertThat(dto.wordCount).isEqualTo(42);
-        assertThat(dto.ownerId).isEqualTo(owner.id);
-        assertThat(dto.ownerName).isEqualTo("Jane");
-        assertThat(dto.ownerUsername).isEqualTo("jane");
+        assertThat(dto.getId()).isEqualTo(p.id);
+        assertThat(dto.getName()).isEqualTo("my-project");
+        assertThat(dto.getDescription()).isEqualTo("A great project");
+        assertThat(dto.getWordCount()).isEqualTo(42);
+        assertThat(dto.getOwnerId()).isEqualTo(owner.id);
+        assertThat(dto.getOwnerName()).isEqualTo("Jane");
+        assertThat(dto.getOwnerUsername()).isEqualTo("jane");
     }
 
     @Test
@@ -101,8 +101,8 @@ class DtoMapperTest {
 
         ProjectDto dto = mapper.toDto(p);
 
-        assertThat(dto.ownerId).isNull();
-        assertThat(dto.ownerName).isNull();
+        assertThat(dto.getOwnerId()).isNull();
+        assertThat(dto.getOwnerName()).isNull();
     }
 
     // -------------------------------------------------------------------------

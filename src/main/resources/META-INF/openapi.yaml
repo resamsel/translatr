@@ -200,7 +200,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectPayload'
+                $ref: '#/components/schemas/ProjectDto'
         '404':
           description: No project with that id.
           content:
@@ -224,7 +224,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectPayload'
+                $ref: '#/components/schemas/ProjectDto'
         '404':
           description: No project with that id.
           content:
@@ -254,7 +254,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectPayload'
+                $ref: '#/components/schemas/ProjectDto'
         '404':
           description: No project with that owner and name.
           content:
@@ -271,14 +271,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectPayload'
+              $ref: '#/components/schemas/ProjectDto'
       responses:
         '200':
           description: The created project.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectPayload'
+                $ref: '#/components/schemas/ProjectDto'
     put:
       operationId: updateProject
       tags:
@@ -288,14 +288,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectPayload'
+              $ref: '#/components/schemas/ProjectDto'
       responses:
         '200':
           description: The updated project.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectPayload'
+                $ref: '#/components/schemas/ProjectDto'
   /api/messages:
     get:
       operationId: findMessages
@@ -1666,12 +1666,12 @@ components:
             list:
               type: array
               items:
-                $ref: '#/components/schemas/ProjectPayload'
+                $ref: '#/components/schemas/ProjectDto'
           required: [list]
     MemberDto:
       type: object
       description: >-
-        A project's member. Embedded read-only in ProjectPayload.members, and also
+        A project's member. Embedded read-only in ProjectDto.members, and also
         MemberResource's own dual-purpose request/response body (projectId/userId/role are
         read on create; role is read on update; the rest are server-computed and ignored if
         supplied). No field is marked `required` — see AccessTokenDto's note on
@@ -1686,7 +1686,7 @@ components:
         userName: { type: string, readOnly: true }
         userEmailHash: { type: string, readOnly: true }
         role: { type: string }
-    ProjectPayload:
+    ProjectDto:
       type: object
       description: >-
         A project. Used for both the response body (all fields populated,
