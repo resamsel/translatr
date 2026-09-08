@@ -52,7 +52,7 @@ public class MessageService {
      * leave it null.
      */
     private void stampLocaleDisplayName(MessageDto dto, java.util.Locale viewerLocale) {
-        dto.localeDisplayName = LocaleDisplayNameUtils.formatDisplayName(dto.localeName, viewerLocale);
+        dto.setLocaleDisplayName(LocaleDisplayNameUtils.formatDisplayName(dto.getLocaleName(), viewerLocale));
     }
 
     public PagedList<MessageDto> find(MessageCriteria c, java.util.Locale viewerLocale) {
@@ -112,9 +112,9 @@ public class MessageService {
 
     @Transactional
     public MessageDto create(MessageDto dto) {
-        var locale = localeRepo.findByIdOptional(dto.localeId).orElseThrow(NotFoundException::new);
-        var key    = keyRepo.findByIdOptional(dto.keyId).orElseThrow(NotFoundException::new);
-        Message m  = new Message(locale, key, dto.value);
+        var locale = localeRepo.findByIdOptional(dto.getLocaleId()).orElseThrow(NotFoundException::new);
+        var key    = keyRepo.findByIdOptional(dto.getKeyId()).orElseThrow(NotFoundException::new);
+        Message m  = new Message(locale, key, dto.getValue());
         messageRepo.persist(m);
         MessageDto after = mapper.toDto(m);
         activity.publish(ActionType.Create, key.project, MessageDto.class, null, after);
@@ -124,9 +124,9 @@ public class MessageService {
 
     @Transactional
     public MessageDto update(MessageDto dto) {
-        Message m = messageRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        Message m = messageRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
         MessageDto before = mapper.toDto(m);
-        if (dto.value != null) m.value = dto.value;
+        if (dto.getValue() != null) m.value = dto.getValue();
         MessageDto after = mapper.toDto(m);
         activity.publish(ActionType.Update, m.key != null ? m.key.project : null,
                 MessageDto.class, before, after);

@@ -86,23 +86,23 @@ public class DtoMapper {
 
     public MessageDto toDto(Message m) {
         if (m == null) return null;
-        MessageDto d = new MessageDto();
-        d.id          = m.id;
-        d.whenCreated = m.whenCreated;
-        d.whenUpdated = m.whenUpdated;
-        d.value       = m.value;
-        d.wordCount   = m.wordCount;
+        MessageDto d = new MessageDto()
+                .id(m.id)
+                .whenCreated(toOffsetDateTime(m.whenCreated))
+                .whenUpdated(toOffsetDateTime(m.whenUpdated))
+                .value(m.value)
+                .wordCount(m.wordCount);
         if (m.locale != null) {
-            d.localeId   = m.locale.id;
-            d.localeName = m.locale.name;
+            d.setLocaleId(m.locale.id);
+            d.setLocaleName(m.locale.name);
             if (m.locale.project != null) {
-                d.projectId   = m.locale.project.id;
-                d.projectName = m.locale.project.name;
+                d.setProjectId(m.locale.project.id);
+                d.setProjectName(m.locale.project.name);
             }
         }
         if (m.key != null) {
-            d.keyId   = m.key.id;
-            d.keyName = m.key.name;
+            d.setKeyId(m.key.id);
+            d.setKeyName(m.key.name);
         }
         return d;
     }

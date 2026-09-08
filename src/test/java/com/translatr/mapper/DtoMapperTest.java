@@ -185,17 +185,17 @@ class DtoMapperTest {
 
         MessageDto dto = mapper.toDto(m);
 
-        assertThat(dto.id).isEqualTo(m.id);
-        assertThat(dto.value).isEqualTo("Hello");
-        assertThat(dto.wordCount).isEqualTo(1);
-        assertThat(dto.localeId).isEqualTo(locale.id);
-        assertThat(dto.localeName).isEqualTo("en");
+        assertThat(dto.getId()).isEqualTo(m.id);
+        assertThat(dto.getValue()).isEqualTo("Hello");
+        assertThat(dto.getWordCount()).isEqualTo(1);
+        assertThat(dto.getLocaleId()).isEqualTo(locale.id);
+        assertThat(dto.getLocaleName()).isEqualTo("en");
         // localeDisplayName is stamped by MessageService (needs the viewer locale), not the mapper.
-        assertThat(dto.localeDisplayName).isNull();
-        assertThat(dto.keyId).isEqualTo(key.id);
-        assertThat(dto.keyName).isEqualTo("greeting");
-        assertThat(dto.projectId).isEqualTo(project.id);
-        assertThat(dto.projectName).isEqualTo("proj");
+        assertThat(dto.getLocaleDisplayName()).isNull();
+        assertThat(dto.getKeyId()).isEqualTo(key.id);
+        assertThat(dto.getKeyName()).isEqualTo("greeting");
+        assertThat(dto.getProjectId()).isEqualTo(project.id);
+        assertThat(dto.getProjectName()).isEqualTo("proj");
     }
 
     // -------------------------------------------------------------------------

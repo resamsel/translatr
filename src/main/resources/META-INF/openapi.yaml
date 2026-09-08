@@ -409,7 +409,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessagePayload'
+                $ref: '#/components/schemas/MessageDto'
         '404':
           description: No message with that id.
           content:
@@ -433,7 +433,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessagePayload'
+                $ref: '#/components/schemas/MessageDto'
         '404':
           description: No message with that id.
           content:
@@ -450,14 +450,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MessagePayload'
+              $ref: '#/components/schemas/MessageDto'
       responses:
         '200':
           description: The created message.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessagePayload'
+                $ref: '#/components/schemas/MessageDto'
         '404':
           description: No locale or key with the given id.
           content:
@@ -473,14 +473,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MessagePayload'
+              $ref: '#/components/schemas/MessageDto'
       responses:
         '200':
           description: The updated message.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessagePayload'
+                $ref: '#/components/schemas/MessageDto'
         '404':
           description: No message with that id.
           content:
@@ -1558,9 +1558,9 @@ components:
             list:
               type: array
               items:
-                $ref: '#/components/schemas/MessagePayload'
+                $ref: '#/components/schemas/MessageDto'
           required: [list]
-    MessagePayload:
+    MessageDto:
       type: object
       description: >-
         A translated message. Used for both the response body (all fields

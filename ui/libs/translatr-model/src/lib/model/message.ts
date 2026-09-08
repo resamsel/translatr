@@ -1,6 +1,6 @@
-import { MessagePayload } from '../generated/model/messagePayload';
+import { MessageDto } from '../generated/model/messageDto';
 
-export interface Message extends MessagePayload {
+export interface Message extends MessageDto {
   projectOwnerUsername?: string;
   dirty?: boolean;
   originalValue?: string;

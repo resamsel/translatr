@@ -104,7 +104,7 @@ class MessageServiceTest {
     void find_stampsLocaleDisplayNameInTheViewersLanguage() {
         Message msg = new Message();
         MessageDto dto = new MessageDto();
-        dto.localeName = "en";
+        dto.setLocaleName("en");
 
         PanacheQuery<Message> query = mock(PanacheQuery.class);
         when(messageRepo.find(anyString(), any(Object[].class))).thenReturn(query);
@@ -119,7 +119,7 @@ class MessageServiceTest {
 
         var result = service.find(c, java.util.Locale.GERMAN);
 
-        assertThat(result.list.get(0).localeDisplayName).isEqualTo("Englisch");
+        assertThat(result.list.get(0).getLocaleDisplayName()).isEqualTo("Englisch");
     }
 
     @Test
@@ -128,13 +128,13 @@ class MessageServiceTest {
         Message msg = new Message();
         msg.id = id;
         MessageDto dto = new MessageDto();
-        dto.localeName = "de";
+        dto.setLocaleName("de");
         when(messageRepo.findByIdOptional(id)).thenReturn(Optional.of(msg));
         when(mapper.toDto(msg)).thenReturn(dto);
 
         var result = service.get(id, java.util.Locale.ENGLISH);
 
-        assertThat(result.localeDisplayName).isEqualTo("German");
+        assertThat(result.getLocaleDisplayName()).isEqualTo("German");
     }
 
     @Test
@@ -146,23 +146,23 @@ class MessageServiceTest {
         Key key       = new Key();   key.id    = keyId;
 
         MessageDto dto = new MessageDto();
-        dto.localeId   = localeId;
-        dto.keyId      = keyId;
-        dto.value      = "Hello";
+        dto.setLocaleId(localeId);
+        dto.setKeyId(keyId);
+        dto.setValue("Hello");
 
         when(localeRepo.findByIdOptional(localeId)).thenReturn(Optional.of(locale));
         when(keyRepo.findByIdOptional(keyId)).thenReturn(Optional.of(key));
         when(mapper.toDto(any(Message.class))).thenAnswer(inv -> {
             Message m = inv.getArgument(0);
             MessageDto result = new MessageDto();
-            result.value = m.value;
+            result.setValue(m.value);
             return result;
         });
 
         MessageDto result = service.create(dto);
 
         verify(messageRepo).persist(any(Message.class));
-        assertThat(result.value).isEqualTo("Hello");
+        assertThat(result.getValue()).isEqualTo("Hello");
     }
 
     @Test
@@ -175,9 +175,9 @@ class MessageServiceTest {
         Key key       = new Key();   key.id    = keyId; key.project = project;
 
         MessageDto dto = new MessageDto();
-        dto.localeId = localeId;
-        dto.keyId    = keyId;
-        dto.value    = "Hello";
+        dto.setLocaleId(localeId);
+        dto.setKeyId(keyId);
+        dto.setValue("Hello");
 
         MessageDto after = new MessageDto();
         when(localeRepo.findByIdOptional(localeId)).thenReturn(Optional.of(locale));
@@ -200,8 +200,8 @@ class MessageServiceTest {
         msg.key = key;
 
         MessageDto dto = new MessageDto();
-        dto.id    = id;
-        dto.value = "new value";
+        dto.setId(id);
+        dto.setValue("new value");
 
         MessageDto before = new MessageDto();
         MessageDto after  = new MessageDto();
@@ -237,8 +237,8 @@ class MessageServiceTest {
     void create_throwsNotFound_whenLocaleMissing() {
         UUID localeId = UUID.randomUUID();
         MessageDto dto = new MessageDto();
-        dto.localeId   = localeId;
-        dto.keyId      = UUID.randomUUID();
+        dto.setLocaleId(localeId);
+        dto.setKeyId(UUID.randomUUID());
 
         when(localeRepo.findByIdOptional(localeId)).thenReturn(Optional.empty());
 
@@ -254,8 +254,8 @@ class MessageServiceTest {
         msg.value    = "old";
 
         MessageDto dto = new MessageDto();
-        dto.id    = id;
-        dto.value = "new value";
+        dto.setId(id);
+        dto.setValue("new value");
 
         when(messageRepo.findByIdOptional(id)).thenReturn(Optional.of(msg));
         when(mapper.toDto(msg)).thenReturn(dto);
@@ -269,7 +269,7 @@ class MessageServiceTest {
     void update_throwsNotFound_whenMessageMissing() {
         UUID id = UUID.randomUUID();
         MessageDto dto = new MessageDto();
-        dto.id = id;
+        dto.setId(id);
 
         when(messageRepo.findByIdOptional(id)).thenReturn(Optional.empty());
 
