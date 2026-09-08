@@ -1,0 +1,49 @@
+# translatr's own OpenTelemetry Collector for the load-test overlay.
+# app --OTLP--> here (traces, logs); here --scrape--> app /metrics; here --OTLP--> SigNoz.
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: translatr
+          scrape_interval: 15s
+          metrics_path: /metrics
+          static_configs:
+            - targets: ['translatr:9000']
+
+processors:
+  memory_limiter:
+    check_interval: 2s
+    limit_percentage: 80
+    spike_limit_percentage: 20
+  batch:
+    timeout: 5s
+  resourcedetection/env:
+    detectors: [env]
+    timeout: 2s
+
+exporters:
+  otlp/signoz:
+    endpoint: signoz-otel-collector:4317
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection/env, batch]
+      exporters: [otlp/signoz]
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [memory_limiter, resourcedetection/env, batch]
+      exporters: [otlp/signoz]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection/env, batch]
+      exporters: [otlp/signoz]
