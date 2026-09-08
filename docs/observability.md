@@ -63,6 +63,10 @@ Traces and logs travel by OTLP.
 
 ### Prerequisites
 
+- **A `.env` file at the repo root** (or an exported `POSTGRES_PASSWORD`). `docker-compose-loadtest.yml`
+  sets `POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}` with **no default**, so `docker compose … up`
+  aborts with a "variable is not set" warning and an unusable Postgres if it is missing. A
+  one-line `POSTGRES_PASSWORD=translatr` is enough. Quarkus also reads this `.env` at startup.
 - **Internet on the first `up`.** Two reasons:
   1. `Dockerfile.jvm` resolves build dependencies.
   2. `init-clickhouse` downloads a `histogram-quantile` binary from GitHub
@@ -125,16 +129,27 @@ docker compose -f docker-compose-loadtest.yml -f docker-compose-signoz.yml down 
 ## 3. Dashboard rows
 
 `monitoring/dashboards/translatr-load-test.json` — **"Translatr — Load Test"**, 7 rows.
-Every panel is keyed to a metric the code actually emits today; a couple of rows are
-**latent** until an opt-in Micrometer binder is switched on (noted inline, and in §5).
+Every panel is keyed to a metric the code actually emits today.
+
+Two gates apply (both **on** under the overlay, **off** everywhere else):
+
+- **`translatr.observability.metrics-enabled`** — the branch's master switch for the custom
+  instrumentation. Off by default in `application.properties`; the overlay sets
+  `TRANSLATR_OBSERVABILITY_METRICS_ENABLED=true`. While off, the `http_server_requests`
+  percentile histogram + quantiles, the `auth_type` tag, `translatr_apikey_requests_total`
+  and `translatr_apikey_auth_failures_total` are **not emitted** (rows 1, 6, 7 lose those
+  series). `@QuarkusTest` re-enables it via `%test.` so the observability tests still run.
+- A couple of rows are also **latent** until a Micrometer binder is switched on — Agroal pool
+  metrics (build-fixed, baked into `Dockerfile.jvm`) and Caffeine cache metrics (runtime env
+  var). Noted inline below and in §5.
 
 | # | Row | What it shows | Backing metric(s) |
 |---|---|---|---|
 | 1 | **Throughput & latency** | request rate; p50/p90/p95/p99; a histogram cross-check of p95; 5xx ratio | `http_server_requests_seconds_count`, `http_server_requests_seconds{quantile="0.5\|0.9\|0.95\|0.99"}`, `http_server_requests_seconds_bucket` |
 | 2 | **Concurrency & queueing** | in-flight HTTP requests; threads waiting for a DB connection; active DB connections | `http_server_active_requests`, `agroal_awaiting_count`, `agroal_active_count` |
 | 3 | **Runtime (JVM)** | process vs system CPU; heap used vs max; GC pause rate and time-in-GC | `process_cpu_usage`, `system_cpu_usage`, `jvm_memory_used_bytes{area="heap"}`, `jvm_memory_max_bytes{area="heap"}`, `jvm_gc_pause_seconds_count`, `jvm_gc_pause_seconds_sum` |
-| 4 | **Persistence (DB pool)** | pool active / available / max-used; connection-acquire wait | `agroal_active_count`, `agroal_available_count`, `agroal_max_used_count`, `agroal_blocking_time_average` — **needs `quarkus.datasource.jdbc.enable-metrics=true`** |
-| 5 | **Cache** | hit ratio per cache; put rate per cache (caches: `projects`, `keys`, `locales`, `users`) | `cache_gets_total{cache,result}`, `cache_puts_total{cache}` — **needs `quarkus.cache.caffeine."<name>".metrics-enabled=true`** |
+| 4 | **Persistence (DB pool)** | pool active / available / max-used; connection-acquire wait | `agroal_active_count`, `agroal_available_count`, `agroal_max_used_count`, `agroal_blocking_time_average` — **needs `quarkus.datasource.jdbc.enable-metrics=true`, which is BUILD-fixed and baked into `Dockerfile.jvm` (not an env var)** |
+| 5 | **Cache** | hit ratio per cache; put rate per cache (caches: `projects`, `keys`, `locales`, `users`) | `cache_gets_total{cache,result}`, `cache_puts_total{cache}` — **needs `quarkus.cache.caffeine.metrics-enabled=true`; runtime, so the overlay sets it as `QUARKUS_CACHE_CAFFEINE_METRICS_ENABLED`** |
 | 6 | **API usage** | request rate by route; by `auth_type`; per-key usage; API-key auth failures by reason | `http_server_requests_seconds_count` (by `uri` / `auth_type`), `translatr_apikey_requests_total{key_id,endpoint,status}`, `translatr_apikey_auth_failures_total{reason}` |
 | 7 | **Errors** | 5xx timeline by status; ERROR-severity log rate | `http_server_requests_seconds_count{status=~"5.."}`; SigNoz logs (`severity_text = ERROR`, via OTLP) |
 
@@ -142,23 +157,34 @@ Notes on specific series:
 
 - **`http_server_requests_seconds`** — Quarkus/Micrometer renders `http.server.requests` as a
   Prometheus timer: `_count`, `_sum`, `_bucket{le=…}`, plus `{quantile=…}` gauge series.
-  The percentile histogram and the `0.5 / 0.9 / 0.95 / 0.99` quantiles come from the
-  `HttpServerHistogramConfig` `MeterFilter` bean (the
+  The `_count`/`_sum` and the `method`/`status`/`outcome`/`uri` tags are always on; the
+  **percentile histogram** and the `0.5 / 0.9 / 0.95 / 0.99` quantiles come from the
+  `HttpServerHistogramConfig` `MeterFilter` bean, which is now **gated on
+  `translatr.observability.metrics-enabled`** — off by default, on under the overlay (the
   `quarkus.micrometer.binder.http-server.request.metrics.*` properties are **not** honoured
-  by Quarkus 3.32). Tags include `method`, `status`, `outcome`, `uri`, and our `auth_type`.
+  by Quarkus 3.32). So `quantile=…` and `_bucket` series exist only when the gate is on.
 - **`auth_type`** — added to every `http_server_requests` sample by `AuthTypeTagsContributor`;
-  one of `access-key`, `session`, `anonymous`. Requires
-  `quarkus.http.auth.propagate-security-identity=true` (set in `application.properties`).
+  one of `access-key`, `session`, `anonymous`. Also **gated on
+  `translatr.observability.metrics-enabled`** (the contributor returns no tag when off).
+  Requires `quarkus.http.auth.propagate-security-identity=true` — that flag is
+  **build-fixed and app-wide** (it cannot be turned off per environment); its cost is one
+  `putLocal` on the Vert.x duplicated context per request.
 - **Connection pool = Agroal, not HikariCP.** translatr uses `quarkus-jdbc-postgresql`, whose
   pool is Agroal. The metric family is `agroal_*` (tag `datasource="default"`), **not**
   `hikaricp_*`. (The `# HikariCP pool tuning` comment and the `com.zaxxer.hikari` log category
   in `application.properties` are vestigial from the pre-Quarkus Play stack.) These metrics
-  are **off by default** — the "Persistence" and "Concurrency" pool panels stay empty until
-  `quarkus.datasource.jdbc.enable-metrics=true` is added.
+  are **off by default**. `quarkus.datasource.jdbc.enable-metrics` is
+  **`BUILD_AND_RUN_TIME_FIXED`**, so an overlay env var is silently ignored — it is instead
+  **baked into `Dockerfile.jvm`** (`-Dquarkus.datasource.jdbc.enable-metrics=true` on the
+  Gradle build line), and only that load-test image carries pool metrics. The base native
+  `Dockerfile` and normal builds do not, and it is deliberately kept out of
+  `application.properties`.
 - **Cache metrics are off by default.** `quarkus-cache` only wires Caffeine caches to
-  Micrometer when `quarkus.cache.caffeine."<name>".metrics-enabled=true` (or the global
-  `quarkus.cache.caffeine.metrics-enabled=true`). Until then `cache_gets_total` /
-  `cache_puts_total` do not exist and the "Cache" row is empty.
+  Micrometer when `quarkus.cache.caffeine.metrics-enabled=true` (global) or
+  `quarkus.cache.caffeine."<name>".metrics-enabled=true` (per cache). This key is
+  **`RUN_TIME`**, so an env var works — the overlay sets
+  `QUARKUS_CACHE_CAFFEINE_METRICS_ENABLED=true` on the `translatr` container. Until then
+  `cache_gets_total` / `cache_puts_total` do not exist and the "Cache" row is empty.
 - **`translatr_apikey_requests_total`** — per-key counter from `ApiMetricsFilter`, incremented
   on the response path for key-authenticated `/api` calls. Tags: `key_id` (gated by the
   cardinality flag, see §5), `endpoint` (the JAX-RS template, e.g. `/api/user/{id}`, or the
@@ -166,6 +192,32 @@ Notes on specific series:
 - **`translatr_apikey_auth_failures_total`** — counter from `AccessTokenAuthMechanism`'s
   reject path. `reason` is **`invalid`** or **`missing`** only. **There is no `expired`
   reason** — the `AccessToken` entity has no expiry field.
+
+### Known limitation — the API-usage row (row 6) is empty with the stock rig
+
+The `translatr_apikey_*` panels only populate when a request carries a **valid**
+`X-Access-Token` (or `Authorization: Bearer <opaque>`, or `?access_token=`) that matches a
+**persisted `AccessToken` row**. The stock `resamsel/translatr-loadgenerator` image sends its
+`ACCESS_TOKEN` env value, but **the Quarkus backend does not honour it**: the token wired into
+`docker-compose-loadtest.yml` is a Play-era `ADMIN_ACCESS_TOKEN`, and that env var is
+**unmapped** — `TranslatrConfig.adminAccessToken()` is declared but read nowhere in
+`src/main/java`, and no `AccessToken` row is seeded from it. Wiring it is out of scope for
+[#239](https://github.com/resamsel/translatr/issues/239).
+
+Net effect of a stock load-test run: every `/api/**` call authenticates as **anonymous**,
+`translatr_apikey_requests_total` stays empty, and `translatr_apikey_auth_failures_total`
+does **not** move either (a token that matches nothing but *is* a non-blank string would count
+as `reason="invalid"`, but the load generator's calls are treated as token-less browser
+flows). `auth_type` is `anonymous` for the whole run.
+
+To actually exercise row 6:
+
+1. As an authenticated user, `POST /api/accesstokens` (or `INSERT` an `access_token` row
+   directly against the load-test DB).
+2. Drive some `/api/**` traffic with that key, e.g.
+   `curl -H 'X-Access-Token: <key>' http://localhost:9000/api/me`.
+3. `key_id` / `endpoint` / `status` series then appear, and a deliberately bad key bumps
+   `translatr_apikey_auth_failures_total{reason="invalid"}`.
 
 ## 4. Before/after procedure
 
@@ -200,22 +252,33 @@ All are env vars on the `translatr` container (the overlay sets the load-test va
 | Env var | Property | Default | Overlay value | Effect |
 |---|---|---|---|---|
 | `QUARKUS_OTEL_SDK_DISABLED` | `quarkus.otel.sdk.disabled` | **`true`** (dormant) | `false` | Master switch for the OTel **SDK** (trace + log export). `true` everywhere else — `quarkusDev`, base compose, prod/Heroku — so the compiled-in extension does nothing. Metrics are unaffected (Prometheus scrape). |
+| `TRANSLATR_OBSERVABILITY_METRICS_ENABLED` | `translatr.observability.metrics-enabled` | **`false`** (dormant) | `true` | Master switch for **this branch's custom instrumentation**: the `http_server_requests` percentile histogram + quantiles (`HttpServerHistogramConfig`), the `auth_type` tag (`AuthTypeTagsContributor`), the per-key `translatr_apikey_requests_total` counter + span attributes (`ApiMetricsFilter`), and `translatr_apikey_auth_failures_total` (`AccessTokenAuthMechanism`). `false` everywhere except the overlay; `@QuarkusTest` re-enables it via `%test.` so the observability tests still exercise the code. Off ⇒ none of those series/tags exist and the filters early-return. |
 | `QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT` | `quarkus.otel.exporter.otlp.endpoint` | `http://localhost:4317` | `http://otel-collector:4317` | Where spans + logs are shipped (OTLP/gRPC). Points at **our** collector, not SigNoz's. |
 | `QUARKUS_OTEL_TRACES_SAMPLER_ARG` | `quarkus.otel.traces.sampler.arg` | `1.0` (all traces) | `0.1` | Fraction of traces sampled. Sampler is `parentbased_traceidratio`, so a sampled request keeps its whole span tree. An ad-hoc `SDK_DISABLED=false` with no overlay gets full traces for debugging; the overlay drops to 10 % to keep tracing overhead low under load. Raise/lower as needed. |
-| `TRANSLATR_OBSERVABILITY_APIKEY_METRICS_KEY_ID_LABEL` | `translatr.observability.apikey-metrics.key-id-label` | **`true`** | (unset → `true`) | Cardinality guard. `true`: `translatr_apikey_requests_total` carries `key_id` + `endpoint` + `status`. `false`: `key_id` is dropped from the counter (keeps `endpoint` + `status`); the key id then survives only as the `translatr.key_id` **span** attribute. Set `false` if per-key time-series count ever bites. |
+| `QUARKUS_CACHE_CAFFEINE_METRICS_ENABLED` | `quarkus.cache.caffeine.metrics-enabled` | `false` | `true` | **`RUN_TIME`** property, so this env var works. Wires every Caffeine cache to Micrometer → `cache_gets_total` / `cache_puts_total` (dashboard row 5). |
+| `TRANSLATR_OBSERVABILITY_APIKEY_METRICS_KEY_ID_LABEL` | `translatr.observability.apikey-metrics.key-id-label` | **`true`** | (unset → `true`) | Secondary cardinality guard, **only consulted when `metrics-enabled` is on**. `true`: `translatr_apikey_requests_total` carries `key_id` + `endpoint` + `status`. `false`: `key_id` is dropped from the counter (keeps `endpoint` + `status`); the key id then survives only as the `translatr.key_id` **span** attribute. Set `false` if per-key time-series count ever bites. |
+
+**Not an env var — build-fixed:** `quarkus.datasource.jdbc.enable-metrics` (Agroal pool
+metrics → dashboard rows 2 & 4) is **`BUILD_AND_RUN_TIME_FIXED`**. An overlay env var is
+silently ignored, so it is compiled in via `-Dquarkus.datasource.jdbc.enable-metrics=true`
+on the `./gradlew build` line in **`Dockerfile.jvm`** — only the load-test image gets pool
+metrics; the base native `Dockerfile` and normal builds do not, and it is kept out of
+`application.properties`.
 
 Related, set in `application.properties` (not per-run knobs, but load-bearing):
 `quarkus.otel.service.name=translatr`, `quarkus.otel.metrics.enabled=false` (metrics go via
 Prometheus scrape), `quarkus.otel.logs.enabled=true`,
-`quarkus.otel.traces.sampler=parentbased_traceidratio`,
-`quarkus.http.auth.propagate-security-identity=true` (needed for the `auth_type` tag). The
-overlay also sets `OTEL_RESOURCE_ATTRIBUTES` to stamp
+`quarkus.otel.traces.sampler=parentbased_traceidratio`. `quarkus.http.auth.propagate-security-identity=true`
+(needed for the `auth_type` tag) is **build-fixed and app-wide — it cannot be disabled
+per-environment**; its runtime cost is one `putLocal` on the Vert.x duplicated context per
+request, incurred everywhere regardless of `metrics-enabled`. The overlay also sets
+`OTEL_RESOURCE_ATTRIBUTES` to stamp
 `deployment.environment=loadtest,service.version=…,git.sha=…` onto every signal.
 
-To light up the two latent dashboard rows (not committed — decide per investigation):
+Per-cache metrics can also be scoped instead of the global switch (either style, not
+committed — decide per investigation):
 
 ```properties
-quarkus.datasource.jdbc.enable-metrics=true                 # Agroal pool metrics  -> rows 2 & 4
 quarkus.cache.caffeine."projects".metrics-enabled=true      # Caffeine cache metrics -> row 5
 quarkus.cache.caffeine."keys".metrics-enabled=true
 quarkus.cache.caffeine."locales".metrics-enabled=true
@@ -224,13 +287,15 @@ quarkus.cache.caffeine."users".metrics-enabled=true
 
 ## 6. Adding a metric or span attribute
 
-The custom instrumentation lives in **`src/main/java/com/translatr/observability/`**:
+The custom instrumentation lives in **`src/main/java/com/translatr/observability/`**. All four
+classes below are **gated on `translatr.observability.metrics-enabled`** (default `false`; see
+§5) — when it is off they produce no series and the filters early-return:
 
 | Class | Hook | Emits |
 |---|---|---|
-| `HttpServerHistogramConfig` | `@Produces MeterFilter` | percentile histogram + `0.5/0.9/0.95/0.99` quantiles on `http.server.requests` |
-| `AuthTypeTagsContributor` | `io.quarkus.micrometer.runtime.HttpServerMetricsTagsContributor` (`@Singleton`) | the `auth_type` tag on every `http_server_requests` sample |
-| `ApiMetricsFilter` | JAX-RS `@Provider` request + response filter, `/api/**` | **request:** span attributes `user.id`, `translatr.auth_provider` (`access-key` / `oidc` / `none`), `translatr.key_id`, `translatr.project_id`. **response:** increments `translatr.apikey.requests` for key-authenticated calls. |
+| `HttpServerHistogramConfig` | `@Produces MeterFilter` (config-gated) | percentile histogram + `0.5/0.9/0.95/0.99` quantiles on `http.server.requests` |
+| `AuthTypeTagsContributor` | `io.quarkus.micrometer.runtime.HttpServerMetricsTagsContributor` (`@Singleton`) | the `auth_type` tag on every `http_server_requests` sample (returns no tag when gated off) |
+| `ApiMetricsFilter` | JAX-RS `@Provider` request + response filter, `/api/**` | **request:** span attributes `user.id`, `translatr.auth_provider` (`access-key` / `oidc` / `none`), `translatr.key_id`, `translatr.project_id`. **response:** increments `translatr.apikey.requests` for key-authenticated calls. The resolved JAX-RS `endpoint` template is memoised per resource method (`TEMPLATE_CACHE`) to keep the hot path off reflection. |
 | `com.translatr.auth.AccessTokenAuthMechanism` | auth reject path | increments `translatr.apikey.auth.failures{reason}` |
 
 Conventions:
@@ -246,10 +311,10 @@ Conventions:
 - **A new tag on `http_server_requests`:** add it in `AuthTypeTagsContributor` (or a second
   `HttpServerMetricsTagsContributor` bean). Same bounded-cardinality rule.
 - **A new span attribute:** set it in `ApiMetricsFilter.filter(ContainerRequestContext)` via
-  `Span.current().setAttribute(...)`, guarded by
-  `span.getSpanContext().isValid()` (the SDK is dormant by default, so `Span.current()` is
-  the no-op span and the filter must stay a no-op then). Namespace app-specific keys
-  `translatr.*`.
+  `Span.current().setAttribute(...)`, guarded by both the `translatr.observability.metrics-enabled`
+  master gate and `span.getSpanContext().isValid()` (the SDK is dormant by default, so
+  `Span.current()` is the no-op span and the filter must stay a no-op then). Namespace
+  app-specific keys `translatr.*`.
 - **After any change,** re-run `./gradlew test` — `MetricsEndpointTest`,
   `AuthTypeTagsContributorTest`, `ApiMetricsFilterTest`, `ApiKeyAuthFailureMetricTest` and
   `OtelDisabledByDefaultTest` guard these names and the dormant-by-default contract. Update
