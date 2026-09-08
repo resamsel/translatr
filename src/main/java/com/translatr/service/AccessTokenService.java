@@ -68,6 +68,11 @@ public class AccessTokenService {
         return tokenRepo.findByKey(key).map(t -> t.user);
     }
 
+    /** The full token entity for a raw key, for callers that need its id (observability). */
+    public Optional<com.translatr.model.AccessToken> findByKey(String key) {
+        return tokenRepo.findByKey(key);
+    }
+
     @Transactional
     public AccessTokenDto create(AccessTokenDto dto, User owner) {
         AccessToken t = new AccessToken();
