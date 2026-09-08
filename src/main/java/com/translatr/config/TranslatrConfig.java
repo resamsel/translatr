@@ -46,6 +46,8 @@ public interface TranslatrConfig {
 
     SearchConfig search();
 
+    ObservabilityConfig observability();
+
     /** Comma-separated admin e-mail list (env ADMINS); lower-cased, trimmed, blanks dropped. */
     default Set<String> adminEmails() {
         return admins()
@@ -79,6 +81,21 @@ public interface TranslatrConfig {
          * entry without scopes, which must never break boot.
          */
         Optional<List<String>> scopes();
+    }
+
+    interface ObservabilityConfig {
+        ApikeyMetricsConfig apikeyMetrics();
+
+        interface ApikeyMetricsConfig {
+            /**
+             * Per-key metric cardinality guard for {@code translatr.apikey.requests}
+             * ({@link com.translatr.observability.ApiMetricsFilter}). {@code false} drops the
+             * {@code key_id} label (keeping {@code endpoint}+{@code status}); {@code key_id} then
+             * survives only as a span attribute.
+             */
+            @WithDefault("true")
+            boolean keyIdLabel();
+        }
     }
 
     interface SearchConfig {
