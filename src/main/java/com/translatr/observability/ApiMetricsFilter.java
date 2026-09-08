@@ -40,7 +40,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  * therefore walks the resource type hierarchy (class, superclasses, all interfaces) to recover
  * the class- and method-level {@code @Path} values, so {@code endpoint} is e.g.
  * {@code /api/project/{id}} — never a raw id/UUID. A sanitising fallback replaces any id-shaped
- * segment with {@code {id}} should the reflective lookup ever miss.
+ * segment with {@code {id}} should the reflective lookup ever miss. Requests that match no route
+ * at all (any 404 under {@code /api/**}) collapse to the single constant {@code /api/{unmatched}}
+ * so an attacker cannot mint unbounded {@code endpoint} label values with junk paths.
  *
  * <h2>Key-auth detection</h2>
  * {@code @Inject SecurityIdentity} is a CDI client proxy, so {@code instanceof
@@ -172,11 +174,20 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
         Class<?> resourceClass = resourceInfo != null ? resourceInfo.getResourceClass() : null;
         Method resourceMethod = resourceInfo != null ? resourceInfo.getResourceMethod() : null;
 
-        String built = "";
-        if (resourceClass != null && resourceMethod != null) {
-            built = norm(classTemplate(resourceClass))
-                    + norm(methodTemplate(resourceClass, resourceMethod));
+        // No resource method matched — any 404 under /api/**. resourceInfo then carries a null
+        // class/method, and the raw request path is attacker-controlled (auth resolves before
+        // routing, and this response filter still runs for 404s). Feeding it to sanitize() would
+        // only rewrite id-shaped segments; every other junk literal (/api/foo/bar/baz) would pass
+        // through verbatim and mint a fresh time series per distinct path. Collapse all unmatched
+        // /api paths to one constant instead.
+        if (resourceClass == null || resourceMethod == null) {
+            return "/api/{unmatched}";
         }
+
+        String built = norm(classTemplate(resourceClass))
+                + norm(methodTemplate(resourceClass, resourceMethod));
+        // Defensive only: a matched route whose reflective @Path lookup still missed. sanitize()
+        // is never fed a raw *unmatched* request path (handled above).
         if (built.isEmpty() || RAW_ID_IN_PATH.matcher(built).find()) {
             built = sanitize("/" + (uriInfo != null ? uriInfo.getPath() : ""));
         }
