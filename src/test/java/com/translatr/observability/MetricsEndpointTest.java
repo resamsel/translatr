@@ -21,4 +21,14 @@ class MetricsEndpointTest {
                 .body(containsString("http_server_requests_seconds{"))
                 .body(containsString("quantile=\"0.95\""));
     }
+
+    @Test
+    void httpServerRequestsCarryAuthTypeTag() {
+        given().when().get("/health").then().statusCode(200);
+
+        given().when().get("/metrics")
+                .then().statusCode(200)
+                .body(containsString("http_server_requests_seconds"))
+                .body(containsString("auth_type="));
+    }
 }
