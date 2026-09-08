@@ -38,13 +38,13 @@ public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
         String token = extractToken(context);
         if (token == null) return Uni.createFrom().nullItem();
 
-        // tokenService.findUserByKey() runs a blocking Hibernate/Panache query, but
+        // tokenService.findByKey() runs a blocking Hibernate/Panache query, but
         // HttpAuthenticationMechanism#authenticate() is invoked on the Vert.x IO thread.
         // Offload to the worker pool to avoid BlockingOperationNotAllowedException.
-        return Uni.createFrom().item(() -> tokenService.findUserByKey(token))
+        return Uni.createFrom().item(() -> tokenService.findByKey(token))
                 .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
-                .map(userOpt -> userOpt
-                        .<SecurityIdentity>map(user -> new AccessTokenSecurityIdentity(user, token))
+                .map(tokenOpt -> tokenOpt
+                        .<SecurityIdentity>map(AccessTokenSecurityIdentity::new)
                         .orElse(null));
     }
 
