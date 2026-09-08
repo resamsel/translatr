@@ -32,11 +32,21 @@ public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
 
     @Inject AccessTokenService tokenService;
 
+    @Inject io.micrometer.core.instrument.MeterRegistry registry;
+
     @Override
     public Uni<SecurityIdentity> authenticate(RoutingContext context,
                                               IdentityProviderManager identityProviderManager) {
+        String rawHeader = context.request().getHeader(HEADER_NAME);
         String token = extractToken(context);
-        if (token == null) return Uni.createFrom().nullItem();
+        if (token == null) {
+            // A fully token-less request is a normal OIDC/browser flow — not an API-key
+            // failure. Only an explicit but blank X-Access-Token header counts as "missing".
+            if (rawHeader != null && rawHeader.isBlank()) {
+                registry.counter("translatr.apikey.auth.failures", "reason", "missing").increment();
+            }
+            return Uni.createFrom().nullItem();
+        }
 
         // tokenService.findByKey() runs a blocking Hibernate/Panache query, but
         // HttpAuthenticationMechanism#authenticate() is invoked on the Vert.x IO thread.
@@ -45,7 +55,11 @@ public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
                 .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
                 .map(tokenOpt -> tokenOpt
                         .<SecurityIdentity>map(AccessTokenSecurityIdentity::new)
-                        .orElse(null));
+                        .orElseGet(() -> {
+                            // A token string was supplied but matched no AccessToken entity.
+                            registry.counter("translatr.apikey.auth.failures", "reason", "invalid").increment();
+                            return null;
+                        }));
     }
 
     @Override
