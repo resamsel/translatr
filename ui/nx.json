@@ -17,8 +17,16 @@
     ]
   },
   "targetDefaults": {
+    "codegen": {
+      "cache": true,
+      "outputs": [
+        "{projectRoot}/src/lib/generated"
+      ]
+    },
     "build": {
       "dependsOn": [
+        "codegen",
+        "^codegen",
         "^build"
       ],
       "inputs": [
@@ -28,6 +36,10 @@
       "cache": true
     },
     "test": {
+      "dependsOn": [
+        "codegen",
+        "^codegen"
+      ],
       "inputs": [
         "default",
         "^production"
@@ -35,12 +47,19 @@
       "cache": true
     },
     "lint": {
+      "dependsOn": [
+        "codegen",
+        "^codegen"
+      ],
       "inputs": [
         "default"
       ],
       "cache": true
     },
     "e2e": {
+      "dependsOn": [
+        "^codegen"
+      ],
       "cache": true
     }
   },

@@ -5,6 +5,18 @@ const angular = require("angular-eslint");
 
 module.exports = tseslint.config(
   {
+    // openapi-generator output (gitignored, regenerated every build from
+    // ../src/main/resources/META-INF/openapi.yaml). Not ours to lint -- the
+    // generator's templates emit `let` that's never reassigned, `@ts-ignore`,
+    // and unused imports. Linting it only surfaces when `codegen` has already
+    // run in the same tree (e.g. before `nx lint`); CI historically linted
+    // before generating and never saw it.
+    ignores: [
+      "libs/translatr-model/src/lib/generated/**",
+      "libs/translatr-sdk/src/lib/generated/**",
+    ],
+  },
+  {
     files: ["**/*.ts"],
     extends: [
       eslint.configs.recommended,
