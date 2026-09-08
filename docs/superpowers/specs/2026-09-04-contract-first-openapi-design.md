@@ -1,7 +1,7 @@
 # Contract-First OpenAPI — Design
 
 Date: 2026-09-04 (pagination/criteria patterns added 2026-09-05)
-Status: Per-resource rollout complete — all 15 JSON API resources implement a generated interface and are in `mp.openapi.scan.exclude.classes`; the 5 redirect/binary resources (`Authenticate`, `Login`, `Logout`, `UiLanding`, `LocaleTransfer`) are deliberately out of contract scope. The `AccessToken`/`Project`/`Message` `*Payload`→`*Dto` collapse follow-up is done ([PR #281](https://github.com/resamsel/translatr/pull/281)). Remaining tracked follow-ups: Nx codegen as a real target with `inputs` covering `openapi.yaml`; routing `AbstractService`'s consumers through generated TS clients; a `Temporalized<T>` fix for the wire-`string`/runtime-`Date` seam; turning off smallrye runtime scanning (needs the 5 out-of-scope endpoints folded in first).
+Status: **#256 closed.** All 15 JSON API resources implement a generated interface and are in `mp.openapi.scan.exclude.classes`; the 5 redirect/binary resources (`Authenticate`, `Login`, `Logout`, `UiLanding`, `LocaleTransfer`) are deliberately out of contract scope. The `AccessToken`/`Project`/`Message` `*Payload`→`*Dto` collapse is done ([PR #281](https://github.com/resamsel/translatr/pull/281)); frontend codegen is a proper Nx target that observes the contract ([PR #285](https://github.com/resamsel/translatr/pull/285)). Remaining follow-ups are tracked as their own issues: #282 (route `AbstractService` consumers through generated TS clients), #283 (`Temporalized<T>` for the wire-`string`/runtime-`Date` seam), #284 (turn off smallrye runtime annotation scanning).
 Issue: [#256](https://github.com/resamsel/translatr/issues/256) — "Adopt contract-first OpenAPI: single openapi.yaml as source of truth, generate DTOs/interfaces"
 Related: [#255](https://github.com/resamsel/translatr/issues/255) — multi-provider OIDC SSO, whose `GET /api/oidc-providers` + `OidcProviderStatusDto` is the pilot resource for this migration
 
@@ -751,7 +751,18 @@ resource tests called out in §2, added ahead of those resources' migration.
   file). Converting generation into a proper Nx target with declared
   `inputs` covering `openapi.yaml` is a workspace-wide fix, not a single
   resource's job — tracked as a follow-up, not a blocker for continuing
-  the one-resource-at-a-time rollout.
+  the one-resource-at-a-time rollout. **Done** (PR #285): `translatr-sdk`
+  and `translatr-model` each got a cached `codegen` Nx target whose
+  `inputs` include `{ "runtime": "shasum ../src/main/resources/META-INF/openapi.yaml" }`
+  (Nx can't glob a path above its workspace root, but it can hash the
+  output of a command), plus `openapitools.json` / `package.json`;
+  `outputs` is the generated dir; `codegen` / `^codegen` is wired into
+  `build` / `test` / `lint` / `e2e` `dependsOn`, and the npm pre-hooks now
+  call `nx run-many -t codegen`. A contract-only edit now flips the
+  `codegen` cache from a 100% hit to a 0% hit, cascading into `test` /
+  `build`. `eslint.config.js` gained a global `ignores` for both
+  `src/lib/generated/**` (the generator emits lint-dirty code, and
+  `codegen` now runs before `lint`).
 - **`mp.openapi.scan.exclude.classes` excludes at whole-class granularity,
   with no per-method equivalent that actually works — discovered scoping
   `LocaleResource`'s two un-migratable binary import/export endpoints.**
@@ -790,8 +801,7 @@ resource tests called out in §2, added ahead of those resources' migration.
   (see §3) — that's a single change affecting 8 resources at once, distinct
   from and larger than any one resource's contract migration. Needs its own
   design pass before any of those 8 resources goes beyond "types only."
-- Converting frontend codegen from npm pre-hooks into a proper Nx target
+- ~~Converting frontend codegen from npm pre-hooks into a proper Nx target
   with declared `inputs`/`outputs` covering `openapi.yaml` (see §5) — a
-  workspace-wide build-tooling change, not any single resource's job.
-  Tracked as a real gap (Nx's cache can't see a contract-only change), not
-  a blocker for continuing the one-resource-at-a-time rollout.
+  workspace-wide build-tooling change, not any single resource's job.~~
+  **Done** in PR #285 — see the resolved §5 bullet.
