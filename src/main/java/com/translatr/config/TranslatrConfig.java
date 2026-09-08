@@ -84,6 +84,19 @@ public interface TranslatrConfig {
     }
 
     interface ObservabilityConfig {
+        /**
+         * Master gate for the branch's custom, cardinality-heavy instrumentation
+         * ({@code http.server.requests} percentile histogram, the per-key
+         * {@code translatr.apikey.requests} counter and its span attributes, the
+         * {@code auth_type} tag, and the {@code translatr.apikey.auth.failures} counter).
+         * {@code false} everywhere except the SigNoz load-test overlay (which sets
+         * {@code TRANSLATR_OBSERVABILITY_METRICS_ENABLED=true}) and {@code @QuarkusTest}
+         * (via {@code %test.} in {@code application.properties}). Property:
+         * {@code translatr.observability.metrics-enabled}.
+         */
+        @WithDefault("false")
+        boolean metricsEnabled();
+
         ApikeyMetricsConfig apikeyMetrics();
 
         interface ApikeyMetricsConfig {

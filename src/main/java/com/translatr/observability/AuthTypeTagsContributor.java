@@ -3,12 +3,14 @@ package com.translatr.observability;
 import com.translatr.auth.AccessTokenSecurityIdentity;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+import io.quarkus.logging.Log;
 import io.quarkus.micrometer.runtime.HttpServerMetricsTagsContributor;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.vertx.http.runtime.security.QuarkusHttpUser;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.web.RoutingContext;
 import jakarta.inject.Singleton;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * Adds an {@code auth_type} tag to every {@code http_server_requests} meter so the SigNoz
@@ -57,8 +59,15 @@ public class AuthTypeTagsContributor implements HttpServerMetricsTagsContributor
      */
     static final String ROUTING_CONTEXT_LOCAL_KEY = "quarkus.http.routing.context";
 
+    /** Master gate — see {@code com.translatr.config.TranslatrConfig.ObservabilityConfig#metricsEnabled}. */
+    @ConfigProperty(name = "translatr.observability.metrics-enabled", defaultValue = "false")
+    boolean metricsEnabled;
+
     @Override
     public Tags contribute(Context context) {
+        if (!metricsEnabled) {
+            return Tags.empty();
+        }
         return Tags.of(Tag.of(TAG_KEY, resolveAuthType(context)));
     }
 
@@ -79,6 +88,7 @@ public class AuthTypeTagsContributor implements HttpServerMetricsTagsContributor
             return isAccessToken(identity) ? ACCESS_KEY : SESSION;
         } catch (RuntimeException e) {
             // Never let tag resolution break metrics recording.
+            Log.debugf(e, "auth_type resolution failed, tagging anonymous");
             return ANONYMOUS;
         }
     }

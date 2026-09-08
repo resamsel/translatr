@@ -25,10 +25,25 @@ services:
       dockerfile: Dockerfile.jvm
     image: translatr:loadtest-otel
     environment:
+      # The base docker-compose-loadtest.yml only sets the Play-era DATABASE_URL /
+      # DATABASE_DRIVER, which the Quarkus app does not read. Point Quarkus at the
+      # load-test DB explicitly (user `translatr`, DB `translatr-load-test` — created by
+      # docker/entrypoint-initdb.d/init-translatr.sh); without JDBC_DATABASE_URL the
+      # container falls back to its own localhost and Flyway migrate-at-start hard-fails.
+      JDBC_DATABASE_URL: jdbc:postgresql://database:5432/translatr-load-test
+      DATABASE_USER: translatr
+      DATABASE_PASSWORD: translatr
       QUARKUS_OTEL_SDK_DISABLED: "false"
       QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
       QUARKUS_OTEL_TRACES_SAMPLER_ARG: "0.1"
       OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=loadtest,service.version=${TRANSLATR_VERSION:-dev},git.sha=${GIT_SHA:-unknown}"
+      # Master gate for the branch's custom instrumentation (histogram buckets, per-key
+      # counter + span attributes, auth_type tag, apikey auth-failure counter). Dormant
+      # everywhere else; the load-test overlay opts in.
+      TRANSLATR_OBSERVABILITY_METRICS_ENABLED: "true"
+      # Caffeine cache metrics -> dashboard row 5. RUN_TIME property, so an env var works.
+      # (Agroal pool metrics are BUILD_AND_RUN_TIME_FIXED and are baked into Dockerfile.jvm.)
+      QUARKUS_CACHE_CAFFEINE_METRICS_ENABLED: "true"
     depends_on:
       - otel-collector
 
