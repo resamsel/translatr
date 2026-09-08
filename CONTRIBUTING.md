@@ -183,6 +183,9 @@ the live PostgreSQL instance started by `docker-compose`.
 
 The test report is written to `build/reports/tests/test/index.html`.
 
+For load-test performance work, see [docs/observability.md](docs/observability.md) for the
+OpenTelemetry + SigNoz observability stack and the before/after comparison procedure.
+
 ### Debugging
 
 Add the Quarkus debug flags to attach a remote debugger on port 5005:

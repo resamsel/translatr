@@ -84,6 +84,8 @@ This will overwrite any existing files locally. All known locales will be downlo
 Information about contributing to this project can be found on the
 [CONTRIBUTING](CONTRIBUTING.md) page.
 
+See [docs/observability.md](docs/observability.md) for the OpenTelemetry + SigNoz load-test observability stack.
+
 ## Resources
 
 SVG Icons from: https://www.svgrepo.com/collection/soft-colored-ui-icons/
