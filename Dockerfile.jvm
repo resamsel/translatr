@@ -1,0 +1,29 @@
+# Fast JVM build of CURRENT code, for the SigNoz load-test overlay.
+# The native Dockerfile stays the release path; this one is a fast-jar build, not
+# the ~8 min native Mandrel compile.
+#
+# The quarkus-opentelemetry extension is present here exactly as in the native
+# image; the SDK stays dormant unless the overlay sets QUARKUS_OTEL_SDK_DISABLED=false.
+#
+# Quinoa (the Angular SPA build) is switched off for this image: the overlay
+# load-tests the JVM backend + tracing, not the UI. The disable key is the bare
+# `quarkus.quinoa` (Quinoa 2.7.2 maps `enabled` with @WithParentName, so
+# `quarkus.quinoa.enabled` is a no-op); without it the container build tries to
+# run `npm run build:ui:prod` against the host's node_modules and fails.
+FROM eclipse-temurin:21-jdk AS build
+WORKDIR /app
+COPY . /app
+RUN ./gradlew build \
+      -Dquarkus.package.jar.type=fast-jar \
+      -Dquarkus.quinoa=false \
+      -x test \
+      --no-daemon
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/build/quarkus-app/lib/ /app/lib/
+COPY --from=build /app/build/quarkus-app/*.jar /app/
+COPY --from=build /app/build/quarkus-app/app/ /app/app/
+COPY --from=build /app/build/quarkus-app/quarkus/ /app/quarkus/
+EXPOSE 9000
+ENTRYPOINT ["java", "-Dquarkus.http.host=0.0.0.0", "-jar", "/app/quarkus-run.jar"]
