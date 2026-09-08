@@ -69,6 +69,7 @@ public class AccessTokenService {
     }
 
     /** The full token entity for a raw key, for callers that need its id (observability). */
+    @Transactional
     public Optional<com.translatr.model.AccessToken> findByKey(String key) {
         return tokenRepo.findByKey(key);
     }
