@@ -1,0 +1,225 @@
+# Observability overlay for the load test.
+#
+#   docker compose -f docker-compose-loadtest.yml -f docker-compose-signoz.yml up
+#
+# It layers three things on top of docker-compose-loadtest.yml:
+#   1. rebuilds `translatr` from Dockerfile.jvm (Task 2) with the Quarkus OTel SDK
+#      switched on, exporting OTLP to our collector;
+#   2. adds `otel-collector` — translatr's own OpenTelemetry Collector
+#      (monitoring/otel-collector/config.yaml, Task 7), which fans out to SigNoz;
+#   3. inlines a pinned SigNoz stack (ClickHouse + Zookeeper + schema migrator +
+#      SigNoz's own OTel collector + the SigNoz query/UI), trimmed from
+#      github.com/SigNoz/signoz @ v0.129.0 `deploy/docker/docker-compose.yaml`.
+#      The config files those services mount are vendored verbatim under
+#      monitoring/signoz/ — see monitoring/signoz/README.md.
+#
+# Base docker-compose*.yml files are NOT modified; everything here is an overlay.
+# `docker compose ... config -q` (via monitoring/validate.sh) is the gate.
+
+services:
+
+  # --- translatr: rebuild from source with OTel on ------------------------------
+  translatr:
+    build:
+      context: .
+      dockerfile: Dockerfile.jvm
+    image: translatr:loadtest-otel
+    environment:
+      QUARKUS_OTEL_SDK_DISABLED: "false"
+      QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      QUARKUS_OTEL_TRACES_SAMPLER_ARG: "0.1"
+      OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=loadtest,service.version=${TRANSLATR_VERSION:-dev},git.sha=${GIT_SHA:-unknown}"
+    depends_on:
+      - otel-collector
+
+  # --- translatr's own OpenTelemetry Collector ---------------------------------
+  # Image tag MUST stay identical to COLLECTOR_IMAGE in monitoring/validate.sh.
+  #
+  # resourcedetection/env decision (Task 7 review): we deliberately do NOT set
+  # OTEL_RESOURCE_ATTRIBUTES on this container. The collector config runs
+  # `resourcedetection/env` in every pipeline with its default `override: true`,
+  # so any attribute set here (e.g. service.name) would clobber the same
+  # attribute on the *app's* spans/metrics/logs passing through. Leaving it unset
+  # makes the processor a harmless no-op and the app's own resource attributes
+  # (set on the `translatr` service above) pass through untouched.
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.160.0
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./monitoring/otel-collector/config.yaml:/etc/otel/config.yaml:ro
+    depends_on:
+      - signoz-otel-collector
+    restart: unless-stopped
+
+  # --- SigNoz stack (vendored from github.com/SigNoz/signoz @ v0.129.0) --------
+  # Trimmed from deploy/docker/docker-compose.yaml: YAML anchors expanded inline,
+  # `networks:` dropped (all services share the compose project's default
+  # network), container_name/logging/labels dropped. Config mounts point at the
+  # verbatim copies under monitoring/signoz/. SigNoz's collector service is
+  # renamed `otel-collector` -> `signoz-otel-collector` so it does not collide
+  # with translatr's `otel-collector` above (Task 7's config exports to
+  # `signoz-otel-collector:4317`).
+
+  init-clickhouse:
+    image: clickhouse/clickhouse-server:25.5.6
+    restart: on-failure
+    command:
+      - bash
+      - -c
+      - |
+        version="v0.0.1"
+        node_os=$$(uname -s | tr '[:upper:]' '[:lower:]')
+        node_arch=$$(uname -m | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+        echo "Fetching histogram-binary for $${node_os}/$${node_arch}"
+        cd /tmp
+        wget -O histogram-quantile.tar.gz "https://github.com/SigNoz/signoz/releases/download/histogram-quantile%2F$${version}/histogram-quantile_$${node_os}_$${node_arch}.tar.gz"
+        tar -xvzf histogram-quantile.tar.gz
+        mv histogram-quantile /var/lib/clickhouse/user_scripts/histogramQuantile
+    volumes:
+      - ./monitoring/signoz/common/clickhouse/user_scripts:/var/lib/clickhouse/user_scripts/
+
+  zookeeper-1:
+    image: signoz/zookeeper:3.7.1
+    user: root
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s -m 2 http://localhost:8080/commands/ruok | grep error | grep null
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - zookeeper-1:/bitnami/zookeeper
+    environment:
+      - ZOO_SERVER_ID=1
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_AUTOPURGE_INTERVAL=1
+      - ZOO_ENABLE_PROMETHEUS_METRICS=yes
+      - ZOO_PROMETHEUS_METRICS_PORT_NUMBER=9141
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.5.6
+    tty: true
+    restart: unless-stopped
+    depends_on:
+      init-clickhouse:
+        condition: service_completed_successfully
+      zookeeper-1:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - 0.0.0.0:8123/ping
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    environment:
+      - CLICKHOUSE_SKIP_USER_SETUP=1
+    volumes:
+      - ./monitoring/signoz/common/clickhouse/config.xml:/etc/clickhouse-server/config.xml:ro
+      - ./monitoring/signoz/common/clickhouse/users.xml:/etc/clickhouse-server/users.xml:ro
+      - ./monitoring/signoz/common/clickhouse/custom-function.xml:/etc/clickhouse-server/custom-function.xml:ro
+      - ./monitoring/signoz/common/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml:ro
+      - ./monitoring/signoz/common/clickhouse/user_scripts:/var/lib/clickhouse/user_scripts/
+      - clickhouse:/var/lib/clickhouse/
+
+  signoz:
+    image: signoz/signoz:v0.129.0
+    restart: unless-stopped
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    ports:
+      - "8080:8080"   # SigNoz query service + UI, exposed on the host at :8080
+    volumes:
+      - sqlite:/var/lib/signoz/
+    environment:
+      - SIGNOZ_ALERTMANAGER_PROVIDER=signoz
+      - SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN=tcp://clickhouse:9000
+      - SIGNOZ_SQLSTORE_SQLITE_PATH=/var/lib/signoz/signoz.db
+      - SIGNOZ_TOKENIZER_JWT_SECRET=secret
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - localhost:8080/api/v1/health
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # SigNoz's own OTLP -> ClickHouse writer. Upstream name: `otel-collector`.
+  signoz-otel-collector:
+    image: signoz/signoz-otel-collector:v0.144.5
+    restart: unless-stopped
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+    command:
+      - -c
+      - |
+        /signoz-otel-collector migrate sync check &&
+        /signoz-otel-collector --config=/etc/otel-collector-config.yaml --manager-config=/etc/manager-config.yaml --copy-path=/var/tmp/collector-config.yaml
+    volumes:
+      - ./monitoring/signoz/docker/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+      - ./monitoring/signoz/common/signoz/otel-collector-opamp-config.yaml:/etc/manager-config.yaml:ro
+    environment:
+      - OTEL_RESOURCE_ATTRIBUTES=host.name=signoz-host,os.type=linux
+      - LOW_CARDINAL_EXCEPTION_GROUPING=false
+      - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_DSN=tcp://clickhouse:9000
+      - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_CLUSTER=cluster
+      - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION=true
+      - SIGNOZ_OTEL_COLLECTOR_TIMEOUT=10m
+    ports:
+      - "4317:4317"   # OTLP gRPC  (SigNoz collector; translatr's collector is internal-only)
+      - "4318:4318"   # OTLP HTTP
+
+  # Schema migrator: bootstraps + migrates the ClickHouse schema, then exits.
+  signoz-telemetrystore-migrator:
+    image: signoz/signoz-otel-collector:v0.144.5
+    restart: on-failure
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    environment:
+      - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_DSN=tcp://clickhouse:9000
+      - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_CLUSTER=cluster
+      - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION=true
+      - SIGNOZ_OTEL_COLLECTOR_TIMEOUT=10m
+    entrypoint:
+      - /bin/sh
+    command:
+      - -c
+      - |
+        /signoz-otel-collector migrate bootstrap &&
+        /signoz-otel-collector migrate sync up &&
+        /signoz-otel-collector migrate async up
+
+  # --- base-compose override --------------------------------------------------
+  # docker-compose-loadtest.yml maps Keycloak (`sso`) to host :8080 / :8443,
+  # which the SigNoz UI now needs. Keycloak is only ever reached in-network as
+  # `sso:8080` (see translatr's OIDC_KEYCLOAK_AUTH_SERVER_URL) and the load
+  # generator does not touch the host, so remap the host-side ports out of the
+  # way instead of contending for :8080. `!override` replaces the base list
+  # outright (a plain `ports:` would be unioned with it, leaving :8080 bound).
+  sso:
+    ports: !override
+      - "8085:8080"
+      - "8543:8443"
+
+volumes:
+  clickhouse:
+  sqlite:
+  zookeeper-1:
