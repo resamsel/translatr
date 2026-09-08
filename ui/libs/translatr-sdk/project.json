@@ -9,6 +9,20 @@
     "api"
   ],
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        { "runtime": "shasum ../src/main/resources/META-INF/openapi.yaml" },
+        "{workspaceRoot}/openapitools.json",
+        "{workspaceRoot}/package.json",
+        "{workspaceRoot}/tools/suppress-unused-generated-imports.js"
+      ],
+      "outputs": ["{projectRoot}/src/lib/generated"],
+      "options": {
+        "command": "npm run generate:api"
+      }
+    },
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {

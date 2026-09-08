@@ -8,6 +8,19 @@
     "lib"
   ],
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        { "runtime": "shasum ../src/main/resources/META-INF/openapi.yaml" },
+        "{workspaceRoot}/openapitools.json",
+        "{workspaceRoot}/package.json"
+      ],
+      "outputs": ["{projectRoot}/src/lib/generated"],
+      "options": {
+        "command": "npm run generate:models"
+      }
+    },
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
