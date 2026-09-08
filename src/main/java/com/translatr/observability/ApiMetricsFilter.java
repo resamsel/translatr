@@ -22,6 +22,7 @@ import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -61,6 +62,16 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
     /** The raw-id shape the ApiMetricsFilterTest gate forbids anywhere in {@code endpoint}. */
     private static final Pattern RAW_ID_IN_PATH = Pattern.compile("/[0-9a-fA-F-]{8,}");
 
+    /**
+     * Memoises the resolved JAX-RS template per matched resource method — {@link #templatedPath()}
+     * otherwise walks the resource type hierarchy with {@code getDeclaredMethod} (and a caught
+     * {@code NoSuchMethodException} per miss) on every request. Keyed on
+     * {@code ResourceInfo#getResourceMethod()}; the {@code null}-method case (any 404 under
+     * {@code /api/**}) returns the {@code /api/{unmatched}} constant and is never cached, and the
+     * request-specific {@code sanitize()} fallback is likewise not cached.
+     */
+    private static final ConcurrentHashMap<Method, String> TEMPLATE_CACHE = new ConcurrentHashMap<>();
+
     @Inject MeterRegistry registry;
     @Inject SecurityIdentity identity;
     @Context ResourceInfo resourceInfo;
@@ -76,9 +87,17 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
     @ConfigProperty(name = "translatr.observability.apikey-metrics.key-id-label", defaultValue = "true")
     boolean keyIdLabel;
 
+    /**
+     * Master gate (see {@code com.translatr.config.TranslatrConfig.ObservabilityConfig#metricsEnabled}).
+     * Read as a plain property for the same reason as {@link #keyIdLabel} — JAX-RS provider instances
+     * are built before {@code @ConfigMapping} beans resolve.
+     */
+    @ConfigProperty(name = "translatr.observability.metrics-enabled", defaultValue = "false")
+    boolean metricsEnabled;
+
     @Override
     public void filter(ContainerRequestContext req) {
-        if (!isApi(req)) {
+        if (!isApi(req) || !metricsEnabled) {
             return;
         }
         Span span = Span.current();
@@ -87,14 +106,16 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
             return;
         }
 
-        String keyId = identity.getAttribute(AccessTokenSecurityIdentity.KEY_ID_ATTRIBUTE);
-        span.setAttribute("user.id",
-                identity == null || identity.isAnonymous() || identity.getPrincipal() == null
-                        ? "anonymous" : identity.getPrincipal().getName());
-        span.setAttribute("translatr.auth_provider", authProvider());
-        if (keyId != null) {
-            span.setAttribute("translatr.key_id", keyId);
+        if (identity == null || identity.isAnonymous() || identity.getPrincipal() == null) {
+            span.setAttribute("user.id", "anonymous");
+        } else {
+            span.setAttribute("user.id", identity.getPrincipal().getName());
+            String keyId = identity.getAttribute(AccessTokenSecurityIdentity.KEY_ID_ATTRIBUTE);
+            if (keyId != null) {
+                span.setAttribute("translatr.key_id", keyId);
+            }
         }
+        span.setAttribute("translatr.auth_provider", authProvider());
 
         String projectId = projectId(req);
         if (projectId != null) {
@@ -104,7 +125,7 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext resp) {
-        if (!isApi(req)) {
+        if (!isApi(req) || !metricsEnabled) {
             return;
         }
         if (!isAccessKey(identity)) {
@@ -184,14 +205,22 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
             return "/api/{unmatched}";
         }
 
+        String cached = TEMPLATE_CACHE.get(resourceMethod);
+        if (cached != null) {
+            return cached;
+        }
+
         String built = norm(classTemplate(resourceClass))
                 + norm(methodTemplate(resourceClass, resourceMethod));
         // Defensive only: a matched route whose reflective @Path lookup still missed. sanitize()
-        // is never fed a raw *unmatched* request path (handled above).
+        // is never fed a raw *unmatched* request path (handled above). This branch is
+        // request-specific (it folds in uriInfo.getPath()), so it is NOT memoised.
         if (built.isEmpty() || RAW_ID_IN_PATH.matcher(built).find()) {
-            built = sanitize("/" + (uriInfo != null ? uriInfo.getPath() : ""));
+            String fallback = sanitize("/" + (uriInfo != null ? uriInfo.getPath() : ""));
+            return fallback.isEmpty() ? "/" : fallback;
         }
-        return built.isEmpty() ? "/" : built;
+        TEMPLATE_CACHE.put(resourceMethod, built);
+        return built;
     }
 
     /** First {@code @Path} found on the class, its superclasses, or any implemented interface. */

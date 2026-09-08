@@ -11,6 +11,7 @@ import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.ext.web.RoutingContext;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Set;
 
@@ -34,6 +35,15 @@ public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
 
     @Inject io.micrometer.core.instrument.MeterRegistry registry;
 
+    /**
+     * Master gate for the branch's custom instrumentation — see
+     * {@code com.translatr.config.TranslatrConfig.ObservabilityConfig#metricsEnabled}. When
+     * {@code false} (the default outside the SigNoz overlay and {@code @QuarkusTest}), the
+     * {@code translatr.apikey.auth.failures} counter is not touched.
+     */
+    @ConfigProperty(name = "translatr.observability.metrics-enabled", defaultValue = "false")
+    boolean metricsEnabled;
+
     @Override
     public Uni<SecurityIdentity> authenticate(RoutingContext context,
                                               IdentityProviderManager identityProviderManager) {
@@ -42,7 +52,7 @@ public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
         if (token == null) {
             // A fully token-less request is a normal OIDC/browser flow — not an API-key
             // failure. Only an explicit but blank X-Access-Token header counts as "missing".
-            if (rawHeader != null && rawHeader.isBlank()) {
+            if (metricsEnabled && rawHeader != null && rawHeader.isBlank()) {
                 registry.counter("translatr.apikey.auth.failures", "reason", "missing").increment();
             }
             return Uni.createFrom().nullItem();
@@ -57,7 +67,9 @@ public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
                         .<SecurityIdentity>map(AccessTokenSecurityIdentity::new)
                         .orElseGet(() -> {
                             // A token string was supplied but matched no AccessToken entity.
-                            registry.counter("translatr.apikey.auth.failures", "reason", "invalid").increment();
+                            if (metricsEnabled) {
+                                registry.counter("translatr.apikey.auth.failures", "reason", "invalid").increment();
+                            }
                             return null;
                         }));
     }

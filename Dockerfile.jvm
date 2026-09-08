@@ -13,9 +13,14 @@
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 COPY . /app
+# -Dquarkus.datasource.jdbc.enable-metrics=true: Agroal pool metrics are
+# BUILD_AND_RUN_TIME_FIXED, so an overlay env var is silently ignored — the flag has to be
+# baked in here. Deliberately NOT in application.properties: the base native Dockerfile /
+# normal builds do not get pool metrics, only this load-test image does.
 RUN ./gradlew build \
       -Dquarkus.package.jar.type=fast-jar \
       -Dquarkus.quinoa=false \
+      -Dquarkus.datasource.jdbc.enable-metrics=true \
       -x test \
       --no-daemon
 
