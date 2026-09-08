@@ -15,7 +15,7 @@
     "prestart:admin": "npm run buildinfo && npm run generate",
     "generate:api": "openapi-generator-cli generate -i ../src/main/resources/META-INF/openapi.yaml -g typescript-angular -o libs/translatr-sdk/src/lib/generated --additional-properties=ngVersion=22.0.8,providedInRoot=true,withInterfaces=true,supportsES6=true,modelPropertyNaming=original",
     "postgenerate:api": "node tools/suppress-unused-generated-imports.js",
-    "generate:model:access-token": "openapi-generator-cli generate -i ../src/main/resources/META-INF/openapi.yaml -g typescript-angular -o libs/translatr-model/src/lib/generated --global-property models=AccessTokenPayload",
+    "generate:model:access-token": "openapi-generator-cli generate -i ../src/main/resources/META-INF/openapi.yaml -g typescript-angular -o libs/translatr-model/src/lib/generated --global-property models=AccessTokenDto",
     "generate:model:project": "openapi-generator-cli generate -i ../src/main/resources/META-INF/openapi.yaml -g typescript-angular -o libs/translatr-model/src/lib/generated --global-property models=ProjectPayload",
     "generate:model:member": "openapi-generator-cli generate -i ../src/main/resources/META-INF/openapi.yaml -g typescript-angular -o libs/translatr-model/src/lib/generated --global-property models=MemberDto",
     "generate:model:message": "openapi-generator-cli generate -i ../src/main/resources/META-INF/openapi.yaml -g typescript-angular -o libs/translatr-model/src/lib/generated --global-property models=MessagePayload",

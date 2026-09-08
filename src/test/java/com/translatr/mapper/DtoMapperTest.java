@@ -222,12 +222,12 @@ class DtoMapperTest {
 
         AccessTokenDto dto = mapper.toDto(t);
 
-        assertThat(dto.id).isEqualTo(42L);
-        assertThat(dto.name).isEqualTo("my-token");
-        assertThat(dto.key).isEqualTo("abc123");
-        assertThat(dto.scope).isEqualTo("read");
-        assertThat(dto.userId).isEqualTo(user.id);
-        assertThat(dto.userUsername).isEqualTo("john");
+        assertThat(dto.getId()).isEqualTo(42L);
+        assertThat(dto.getName()).isEqualTo("my-token");
+        assertThat(dto.getKey()).isEqualTo("abc123");
+        assertThat(dto.getScope()).isEqualTo("read");
+        assertThat(dto.getUserId()).isEqualTo(user.id);
+        assertThat(dto.getUserUsername()).isEqualTo("john");
     }
 
     // -------------------------------------------------------------------------

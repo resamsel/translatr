@@ -72,9 +72,9 @@ public class AccessTokenService {
     public AccessTokenDto create(AccessTokenDto dto, User owner) {
         AccessToken t = new AccessToken();
         t.user  = owner;
-        t.name  = dto.name;
+        t.name  = dto.getName();
         t.key   = java.util.UUID.randomUUID().toString().replace("-", "");
-        t.scope = dto.scope;
+        t.scope = dto.getScope();
         tokenRepo.persist(t);
         AccessTokenDto after = mapper.toDto(t);
         activity.publish(ActionType.Create, null, AccessTokenDto.class, null, after);
@@ -83,10 +83,10 @@ public class AccessTokenService {
 
     @Transactional
     public AccessTokenDto update(AccessTokenDto dto) {
-        AccessToken t = tokenRepo.findByIdOptional(dto.id).orElseThrow(NotFoundException::new);
+        AccessToken t = tokenRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
         AccessTokenDto before = mapper.toDto(t);
-        if (dto.name  != null) t.name  = dto.name;
-        if (dto.scope != null) t.scope = dto.scope;
+        if (dto.getName()  != null) t.name  = dto.getName();
+        if (dto.getScope() != null) t.scope = dto.getScope();
         AccessTokenDto after = mapper.toDto(t);
         activity.publish(ActionType.Update, null, AccessTokenDto.class, before, after);
         return after;

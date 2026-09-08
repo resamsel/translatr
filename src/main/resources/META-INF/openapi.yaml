@@ -71,7 +71,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccessTokenPayload'
+                $ref: '#/components/schemas/AccessTokenDto'
         '404':
           description: No access token with that id.
           content:
@@ -96,7 +96,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccessTokenPayload'
+                $ref: '#/components/schemas/AccessTokenDto'
         '404':
           description: No access token with that id.
           content:
@@ -114,14 +114,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AccessTokenPayload'
+              $ref: '#/components/schemas/AccessTokenDto'
       responses:
         '200':
           description: The created access token (key populated).
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccessTokenPayload'
+                $ref: '#/components/schemas/AccessTokenDto'
     put:
       operationId: updateAccessToken
       summary: Update an access token (name/scope). Carries its id in the body.
@@ -132,14 +132,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AccessTokenPayload'
+              $ref: '#/components/schemas/AccessTokenDto'
       responses:
         '200':
           description: The updated access token.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccessTokenPayload'
+                $ref: '#/components/schemas/AccessTokenDto'
         '404':
           description: No access token with that id.
           content:
@@ -1445,7 +1445,7 @@ components:
       description: >-
         A project's locale. Used for both the response body (all fields populated) and the
         create/update request body (projectId/name are read; the rest are server-computed
-        and ignored if supplied). No field is marked `required` — see AccessTokenPayload's
+        and ignored if supplied). No field is marked `required` — see AccessTokenDto's
         note on dual-purpose schemas.
       type: object
       properties:
@@ -1497,7 +1497,7 @@ components:
         A project's translation key. Used for both the response body (all fields populated)
         and the create/update request body (projectId/name are read; the rest are
         server-computed and ignored if supplied). No field is marked `required` — see
-        AccessTokenPayload's note on dual-purpose schemas.
+        AccessTokenDto's note on dual-purpose schemas.
       type: object
       properties:
         id:
@@ -1566,7 +1566,7 @@ components:
         A translated message. Used for both the response body (all fields
         populated) and the create/update request body (id/localeId/keyId/
         value are read; the rest are server-computed and ignored if
-        supplied). No field is marked `required` — see AccessTokenPayload's
+        supplied). No field is marked `required` — see AccessTokenDto's
         note on dual-purpose schemas.
       properties:
         id: { type: string, format: uuid, readOnly: true }
@@ -1615,9 +1615,9 @@ components:
             list:
               type: array
               items:
-                $ref: '#/components/schemas/AccessTokenPayload'
+                $ref: '#/components/schemas/AccessTokenDto'
           required: [list]
-    AccessTokenPayload:
+    AccessTokenDto:
       type: object
       description: >-
         A personal access token. Used for both the response body (all fields
@@ -1674,7 +1674,7 @@ components:
         A project's member. Embedded read-only in ProjectPayload.members, and also
         MemberResource's own dual-purpose request/response body (projectId/userId/role are
         read on create; role is read on update; the rest are server-computed and ignored if
-        supplied). No field is marked `required` — see AccessTokenPayload's note on
+        supplied). No field is marked `required` — see AccessTokenDto's note on
         dual-purpose schemas.
       properties:
         id: { type: integer, format: int64, readOnly: true }
@@ -1692,7 +1692,7 @@ components:
         A project. Used for both the response body (all fields populated,
         members/progress/myRole only when requested via ?fetch=) and the
         create/update request body (only name/description are read). No
-        field is marked `required` — see AccessTokenPayload's note on
+        field is marked `required` — see AccessTokenDto's note on
         dual-purpose schemas.
       properties:
         id: { type: string, format: uuid, readOnly: true }
@@ -1876,7 +1876,7 @@ components:
         A global override for one feature flag. Used for both the response body (all fields
         populated) and the create/update request body (feature/enabled are read; the rest are
         server-computed and ignored if supplied). No field is marked `required` — see
-        AccessTokenPayload's note on dual-purpose schemas.
+        AccessTokenDto's note on dual-purpose schemas.
       properties:
         id:
           type: string
@@ -1981,7 +1981,7 @@ components:
         One user-scoped feature-flag override. Used for both the response body (all fields
         populated) and the create/update request body (feature/enabled/userId/id are read;
         whenCreated is server-computed and ignored if supplied). No field is marked
-        `required` — see AccessTokenPayload's note on dual-purpose schemas.
+        `required` — see AccessTokenDto's note on dual-purpose schemas.
       properties:
         id:
           type: string
@@ -2013,7 +2013,7 @@ components:
         A user account. Used for both the response body (all fields populated) and the
         update request body (username/name/email/preferredLocale/settings are read; the
         rest are server-computed and ignored if supplied). No field is marked `required`
-        — see AccessTokenPayload's note on dual-purpose schemas.
+        — see AccessTokenDto's note on dual-purpose schemas.
       properties:
         id:
           type: string

@@ -109,16 +109,16 @@ public class DtoMapper {
 
     public AccessTokenDto toDto(AccessToken t) {
         if (t == null) return null;
-        AccessTokenDto d = new AccessTokenDto();
-        d.id          = t.id;
-        d.whenCreated = t.whenCreated;
-        d.whenUpdated = t.whenUpdated;
-        d.name        = t.name;
-        d.key         = t.key;
-        d.scope       = t.scope;
+        AccessTokenDto d = new AccessTokenDto()
+                .id(t.id)
+                .whenCreated(toOffsetDateTime(t.whenCreated))
+                .whenUpdated(toOffsetDateTime(t.whenUpdated))
+                .name(t.name)
+                .key(t.key)
+                .scope(t.scope);
         if (t.user != null) {
-            d.userId      = t.user.id;
-            d.userUsername = t.user.username;
+            d.setUserId(t.user.id);
+            d.setUserUsername(t.user.username);
         }
         return d;
     }

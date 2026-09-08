@@ -80,24 +80,24 @@ class AccessTokenServiceTest {
         owner.id   = UUID.randomUUID();
 
         AccessTokenDto dto = new AccessTokenDto();
-        dto.name  = "my-token";
-        dto.scope = "read";
+        dto.setName("my-token");
+        dto.setScope("read");
 
         when(mapper.toDto(any(AccessToken.class))).thenAnswer(inv -> {
             AccessToken t = inv.getArgument(0);
             AccessTokenDto result = new AccessTokenDto();
-            result.name  = t.name;
-            result.scope = t.scope;
-            result.key   = t.key;
+            result.setName(t.name);
+            result.setScope(t.scope);
+            result.setKey(t.key);
             return result;
         });
 
         AccessTokenDto result = service.create(dto, owner);
 
         verify(tokenRepo).persist(any(AccessToken.class));
-        assertThat(result.name).isEqualTo("my-token");
-        assertThat(result.scope).isEqualTo("read");
-        assertThat(result.key).isNotBlank().doesNotContain("-"); // UUID stripped of dashes
+        assertThat(result.getName()).isEqualTo("my-token");
+        assertThat(result.getScope()).isEqualTo("read");
+        assertThat(result.getKey()).isNotBlank().doesNotContain("-"); // UUID stripped of dashes
     }
 
     @Test
@@ -106,7 +106,7 @@ class AccessTokenServiceTest {
         owner.id = UUID.randomUUID();
 
         AccessTokenDto dto = new AccessTokenDto();
-        dto.name = "my-token";
+        dto.setName("my-token");
 
         AccessTokenDto after = new AccessTokenDto();
         when(mapper.toDto(any(AccessToken.class))).thenReturn(after);
@@ -123,8 +123,8 @@ class AccessTokenServiceTest {
         token.id = 1L;
 
         AccessTokenDto dto = new AccessTokenDto();
-        dto.id   = 1L;
-        dto.name = "updated-name";
+        dto.setId(1L);
+        dto.setName("updated-name");
 
         AccessTokenDto before = new AccessTokenDto();
         AccessTokenDto after  = new AccessTokenDto();
@@ -158,9 +158,9 @@ class AccessTokenServiceTest {
         token.scope = "read";
 
         AccessTokenDto dto = new AccessTokenDto();
-        dto.id    = 1L;
-        dto.name  = "updated-name";
-        dto.scope = "read,write";
+        dto.setId(1L);
+        dto.setName("updated-name");
+        dto.setScope("read,write");
 
         when(tokenRepo.findByIdOptional(1L)).thenReturn(Optional.of(token));
         when(mapper.toDto(token)).thenReturn(dto);
@@ -179,8 +179,8 @@ class AccessTokenServiceTest {
         token.scope = "read";
 
         AccessTokenDto dto = new AccessTokenDto();
-        dto.id   = 2L;
-        dto.name = null; // not updating
+        dto.setId(2L);
+        dto.setName(null); // not updating
 
         when(tokenRepo.findByIdOptional(2L)).thenReturn(Optional.of(token));
         when(mapper.toDto(token)).thenReturn(new AccessTokenDto());
@@ -194,7 +194,7 @@ class AccessTokenServiceTest {
     @Test
     void update_throwsNotFound_whenTokenMissing() {
         AccessTokenDto dto = new AccessTokenDto();
-        dto.id = 99L;
+        dto.setId(99L);
 
         when(tokenRepo.findByIdOptional(99L)).thenReturn(Optional.empty());
 
