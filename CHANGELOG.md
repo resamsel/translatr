@@ -4,6 +4,7 @@
 
 **Implemented enhancements:**
 
+- OpenTelemetry instrumentation (dormant by default) + a local SigNoz observability stack and "Translatr — Load Test" dashboard for load-test verification [\#239](https://github.com/resamsel/translatr/issues/239)
 - Support any Quarkus OIDC provider (Google, GitHub, Facebook, Twitter/X, Microsoft, Apple, …) for SSO, selected by configuration [\#255](https://github.com/resamsel/translatr/issues/255)
 
 **Fixed bugs:**
