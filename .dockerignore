@@ -1,0 +1,54 @@
+# Build context excludes for `COPY . /app` in Dockerfile.jvm (SigNoz load-test
+# overlay). Keep this conservative: the container runs `./gradlew build`, so
+# src/, ui/, gradle/, gradlew, *.gradle.kts, gradle.properties and
+# system.properties must all stay in the context.
+
+# version control
+.git
+.gitignore
+.gitattributes
+
+# build outputs / caches (regenerated inside the image)
+build
+**/build
+.gradle
+.quinoa
+public/ui
+out
+dist
+tmp
+
+# node deps (huge; UI build is disabled via -Dquarkus.quinoa=false)
+node_modules
+**/node_modules
+ui/node_modules
+
+# agent / tooling scratch
+.superpowers
+.claude
+.github
+.idea
+*.iml
+
+# local / editor cruft
+.DS_Store
+*.log
+*.env
+.env
+.env.*
+
+# docker + compose (not needed to build the app)
+Dockerfile
+Dockerfile.jvm
+docker-compose*.yml
+.dockerignore
+
+# docs & unrelated trees (not part of the Gradle build)
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+doc
+docs
+k8s
+playground
+lets-release
