@@ -93,7 +93,7 @@ describe('AppEffects', () => {
         {
           provide: Store,
           useFactory: () => ({
-            select: jest.fn()
+            select: jest.fn(() => of({}))
           })
         }
       ]

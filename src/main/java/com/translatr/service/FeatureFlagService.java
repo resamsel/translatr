@@ -4,12 +4,14 @@ import com.translatr.criteria.FeatureFlagCriteria;
 import com.translatr.dto.FeatureFlagDto;
 import com.translatr.dto.PagedList;
 import com.translatr.mapper.DtoMapper;
+import com.translatr.model.User;
 import com.translatr.model.UserFeatureFlag;
 import com.translatr.repository.UserFeatureFlagRepository;
 import com.translatr.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.NotFoundException;
 
 import java.util.ArrayList;
@@ -62,7 +64,8 @@ public class FeatureFlagService {
     }
 
     @Transactional
-    public FeatureFlagDto create(FeatureFlagDto dto) {
+    public FeatureFlagDto create(FeatureFlagDto dto, User caller) {
+        requireOwnerOrAdmin(dto.getUserId(), caller);
         var user = userRepo.findByIdOptional(dto.getUserId()).orElseThrow(NotFoundException::new);
         var flag = UserFeatureFlag.of(user, dto.getFeature(), Boolean.TRUE.equals(dto.getEnabled()));
         featureFlagRepo.persist(flag);
@@ -70,17 +73,26 @@ public class FeatureFlagService {
     }
 
     @Transactional
-    public FeatureFlagDto update(FeatureFlagDto dto) {
+    public FeatureFlagDto update(FeatureFlagDto dto, User caller) {
         var flag = featureFlagRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
+        requireOwnerOrAdmin(flag.user.id, caller);
         flag.enabled = Boolean.TRUE.equals(dto.getEnabled());
         if (dto.getFeature() != null) flag.feature = dto.getFeature();
         return mapper.toDto(flag);
     }
 
     @Transactional
-    public FeatureFlagDto delete(UUID id) {
+    public FeatureFlagDto delete(UUID id, User caller) {
         var flag = featureFlagRepo.findByIdOptional(id).orElseThrow(NotFoundException::new);
+        requireOwnerOrAdmin(flag.user.id, caller);
         featureFlagRepo.delete(flag);
         return mapper.toDto(flag);
+    }
+
+    /** A non-admin may only touch their own per-user overrides; an admin may touch anyone's. */
+    private static void requireOwnerOrAdmin(UUID targetUserId, User caller) {
+        if (!caller.isAdmin() && !caller.id.equals(targetUserId)) {
+            throw new ForbiddenException("Admin role required");
+        }
     }
 }

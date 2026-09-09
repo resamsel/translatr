@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Params } from '@angular/router';
 import {
   AccessToken,
   Activity,
@@ -95,6 +96,7 @@ import {
 } from './app.actions';
 import { AppState } from './app.reducer';
 import { appQuery } from './app.selectors';
+import { routerQuery } from './router.selectors';
 
 @Injectable()
 export class AppEffects {
@@ -272,11 +274,12 @@ export class AppEffects {
 
   createFeatureFlag$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.CreateFeatureFlag),
-    switchMap((action: CreateFeatureFlag) =>
+    withLatestFrom(this.store.select(routerQuery.selectQueryParams)),
+    switchMap(([action, params]: [CreateFeatureFlag, Params]) =>
       this.featureFlagService.create(action.payload).pipe(
         mergeMap((payload: UserFeatureFlag) => [
           new FeatureFlagCreated(payload),
-          new LoadResolvedFeatures()
+          new LoadResolvedFeatures(params.userId ? { userId: params.userId } : undefined)
         ]),
         catchError(error => of(new FeatureFlagCreateError(error)))
       )
@@ -285,11 +288,12 @@ export class AppEffects {
 
   updateFeatureFlag$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.UpdateFeatureFlag),
-    switchMap((action: UpdateFeatureFlag) =>
+    withLatestFrom(this.store.select(routerQuery.selectQueryParams)),
+    switchMap(([action, params]: [UpdateFeatureFlag, Params]) =>
       this.featureFlagService.update(action.payload).pipe(
         mergeMap((payload: UserFeatureFlag) => [
           new FeatureFlagUpdated(payload),
-          new LoadResolvedFeatures()
+          new LoadResolvedFeatures(params.userId ? { userId: params.userId } : undefined)
         ]),
         catchError(error => of(new FeatureFlagUpdateError(error)))
       )
@@ -298,11 +302,12 @@ export class AppEffects {
 
   deleteFeatureFlag$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.DeleteFeatureFlag),
-    switchMap((action: DeleteFeatureFlag) =>
+    withLatestFrom(this.store.select(routerQuery.selectQueryParams)),
+    switchMap(([action, params]: [DeleteFeatureFlag, Params]) =>
       this.featureFlagService.delete(action.payload.id).pipe(
         mergeMap((payload: UserFeatureFlag) => [
           new FeatureFlagDeleted(payload),
-          new LoadResolvedFeatures()
+          new LoadResolvedFeatures(params.userId ? { userId: params.userId } : undefined)
         ]),
         catchError(error => of(new FeatureFlagDeleteError(error)))
       )
@@ -313,8 +318,8 @@ export class AppEffects {
 
   loadResolvedFeatures$ = createEffect(() => this.actions$.pipe(
     ofType(AppActionTypes.LoadResolvedFeatures),
-    switchMap(() =>
-      this.featureFlagService.resolved().pipe(
+    switchMap((action: LoadResolvedFeatures) =>
+      this.featureFlagService.resolved(action.payload?.userId).pipe(
         map((payload: ResolvedFeature[]) => new ResolvedFeaturesLoaded(payload)),
         catchError(error => of(new ResolvedFeaturesLoadError(error)))
       )

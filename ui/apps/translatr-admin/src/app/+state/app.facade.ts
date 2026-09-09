@@ -14,6 +14,7 @@ import {
   UserFeatureFlag
 } from '@dev/translatr-model';
 import { Actions, ofType } from '@ngrx/effects';
+import { Params } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -46,10 +47,13 @@ import {
 } from './app.actions';
 import { AppPartialState } from './app.reducer';
 import { appQuery } from './app.selectors';
+import { routerQuery } from './router.selectors';
 
 @Injectable()
 export class AppFacade extends FeatureFlagFacade {
   readonly me$ = this.store.pipe(select(appQuery.getLoggedInUser));
+
+  readonly queryParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectQueryParams));
 
   // Users
 
@@ -241,8 +245,8 @@ export class AppFacade extends FeatureFlagFacade {
     );
   }
 
-  loadResolvedFeatures(): void {
-    this.store.dispatch(new LoadResolvedFeatures());
+  loadResolvedFeatures(userId?: string): void {
+    this.store.dispatch(new LoadResolvedFeatures(userId ? { userId } : undefined));
   }
 
   loadGlobalFeatureFlags(): void {

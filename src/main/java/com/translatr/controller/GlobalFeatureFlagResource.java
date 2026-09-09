@@ -30,8 +30,13 @@ public class GlobalFeatureFlagResource implements FeatureflagsApi {
 
     @Override
     @Authenticated
-    public List<ResolvedFeatureDto> listResolvedFeatures() {
-        return featureResolver.resolveDetail(currentUserResolver.resolve().id);
+    public List<ResolvedFeatureDto> listResolvedFeatures(UUID userId) {
+        var caller   = currentUserResolver.resolve();
+        var targetId = userId != null ? userId : caller.id;
+        if (!targetId.equals(caller.id) && !caller.isAdmin()) {
+            throw new ForbiddenException("Admin role required");
+        }
+        return featureResolver.resolveDetail(targetId);
     }
 
     @Override

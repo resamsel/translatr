@@ -15,6 +15,11 @@
   }
 }
 
+.user-picker {
+  display: block;
+  max-width: 320px;
+}
+
 .hint {
   color: rgba(0, 0, 0, 0.6);
   margin-bottom: 1rem;

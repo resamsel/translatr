@@ -39,17 +39,17 @@ public class FeatureFlagResource implements UserFeatureFlagsApi {
 
     @Override
     public FeatureFlagDto createUserFeatureFlag(FeatureFlagDto featureFlagDto) {
-        return featureFlagService.create(featureFlagDto);
+        return featureFlagService.create(featureFlagDto, currentUserResolver.resolve());
     }
 
     @Override
     public FeatureFlagDto updateUserFeatureFlag(FeatureFlagDto featureFlagDto) {
-        return featureFlagService.update(featureFlagDto);
+        return featureFlagService.update(featureFlagDto, currentUserResolver.resolve());
     }
 
     @Override
     public FeatureFlagDto deleteUserFeatureFlag(UUID id) {
-        return featureFlagService.delete(id);
+        return featureFlagService.delete(id, currentUserResolver.resolve());
     }
 
     static FeatureFlagCriteria toCriteria(String search, Integer offset, Integer limit, String order, String fetch,

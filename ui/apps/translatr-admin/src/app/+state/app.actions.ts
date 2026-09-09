@@ -485,6 +485,8 @@ export class UpdatePreferredLanguage implements Action {
 
 export class LoadResolvedFeatures implements Action {
   readonly type = AppActionTypes.LoadResolvedFeatures;
+
+  constructor(public payload?: { userId?: string }) {}
 }
 
 export class ResolvedFeaturesLoaded implements Action {

@@ -7,14 +7,14 @@ import { LoginPageModule } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { TranslatrSdkModule } from '@dev/translatr-sdk';
 import { EffectsModule } from '@ngrx/effects';
-import { RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
+import { routerReducer, RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { environment } from '../environments/environment';
 import { AppEffects } from './+state/app.effects';
 import { AppFacade } from './+state/app.facade';
-import { appReducer, initialState as appInitialState } from './+state/app.reducer';
+import { appReducer } from './+state/app.reducer';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SidenavModule } from './modules/nav/sidenav/sidenav.module';
@@ -33,9 +33,8 @@ import { TranslocoRootModule } from './modules/transloco';
     LoginPageModule,
     FeatureFlagModule,
     StoreModule.forRoot(
-      { app: appReducer },
+      { app: appReducer, router: routerReducer },
       {
-        initialState: { app: appInitialState },
         metaReducers: [],
         runtimeChecks: {
           strictStateImmutability: true,

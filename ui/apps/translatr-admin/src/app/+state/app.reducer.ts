@@ -7,6 +7,7 @@ import {
   ResolvedFeature,
   User
 } from '@dev/translatr-model';
+import * as fromRouter from '@ngrx/router-store';
 import { AppAction, AppActionTypes } from './app.actions';
 
 export const APP_FEATURE_KEY = 'app';
@@ -19,10 +20,16 @@ export interface AppState {
   activities?: PagedList<Activity>;
   resolvedFeatures?: ResolvedFeature[];
   globalFeatureFlags?: GlobalFeatureFlag[];
+  // Not actually populated under this key — the router feature is registered separately at
+  // the store root (see app.module.ts). Declared here only so Store<AppState> (used by the
+  // effects, which select router state via withLatestFrom) type-checks against routerQuery's
+  // selectors, matching the identical convention in the main translatr app.
+  router?: fromRouter.RouterReducerState<any>;
 }
 
 export interface AppPartialState {
   readonly [APP_FEATURE_KEY]: AppState;
+  router?: fromRouter.RouterReducerState<any>;
 }
 
 export const initialState: AppState = {};

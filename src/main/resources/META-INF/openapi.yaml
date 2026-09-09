@@ -976,6 +976,15 @@ paths:
       operationId: listResolvedFeatures
       tags:
         - featureflags
+      parameters:
+        - name: userId
+          in: query
+          description: >-
+            Resolve for this user instead of the caller. Requires Admin unless it is the
+            caller's own id.
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: Override -> global -> default resolution detail for the caller, one entry per feature.
