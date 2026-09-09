@@ -1,34 +1,32 @@
-describe('Not Found', () => {
-  beforeEach(() => {
-    cy.clearCookies();
+import { test, expect } from '../../support/test';
+import { mockApi } from '../../support/mock-api';
 
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/me*', { fixture: 'me' });
+test.describe('Not Found', () => {
+  test('should show the not-found page when the project API answers 404', async ({ page }) => {
+    await mockApi(
+      page,
+      '/api/johndoe/nope*',
+      { error: { type: 'NotFoundException', entity: 'Project' } },
+      { status: 404 },
+    );
+
+    await page.goto('johndoe/nope');
+
+    // the AuthInterceptor routes 404 to the not-found page (skipLocationChange)
+    const header = page.locator('.error-header');
+    await expect(header).toBeVisible();
+    await expect(header).toContainText('Page not found');
   });
 
-  it('should show the not-found page when the project API answers 404', () => {
-    // given
-    cy.intercept('/api/johndoe/nope*', {
-      statusCode: 404,
-      body: { error: { type: 'NotFoundException', entity: 'Project' } }
-    });
+  test('should land on /not-found for an unknown top-level route', async ({ page }) => {
+    await mockApi(page, '/api/this-route-does-not-exist*', null, { status: 200 });
 
-    // when
-    cy.visit('/johndoe/nope');
+    await page.goto('this-route-does-not-exist');
 
-    // then — the AuthInterceptor routes 404 to the not-found page (skipLocationChange)
-    cy.get('.error-header').should('be.visible').and('contain.text', 'Page not found');
-  });
-
-  it('should land on /not-found for an unknown top-level route', () => {
-    // given
-    cy.intercept('/api/this-route-does-not-exist*', { statusCode: 200, body: null });
-
-    // when
-    cy.visit('/this-route-does-not-exist', { failOnStatusCode: false });
-
-    // then — UserGuard cannot resolve the username and redirects to /not-found
-    cy.url().should('contain', '/not-found');
-    cy.get('.error-header').should('be.visible').and('contain.text', 'Page not found');
+    // UserGuard cannot resolve the username and redirects to /not-found
+    await expect(page).toHaveURL(/\/not-found/);
+    const header = page.locator('.error-header');
+    await expect(header).toBeVisible();
+    await expect(header).toContainText('Page not found');
   });
 });

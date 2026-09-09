@@ -1,25 +1,25 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi } from '../../../support/mock-api';
 import { UserAccessTokensPage } from '../../../support/user/user-access-tokens-page.po';
 
-describe('User Access Tokens Visibility', () => {
-  beforeEach(() => {
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'janesmith' });
-    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
-    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
-    cy.intercept('/api/accesstokens*', { fixture: 'johndoe/access-tokens' });
+test.describe('User Access Tokens Visibility', () => {
+  test.beforeEach(async ({ page }) => {
+    await remockApi(page, '/api/me*', 'janesmith');
+    await mockApi(page, '/api/johndoe', 'johndoe');
+    await mockApi(page, '/api/projects*', 'johndoe/projects');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
+    await mockApi(page, '/api/accesstokens*', 'johndoe/access-tokens');
   });
 
-  it('should block another user from johndoe access-tokens (MyselfGuard)', () => {
+  test('should block another user from johndoe access-tokens (MyselfGuard)', async ({ page }) => {
     // given
-    const page = new UserAccessTokensPage('johndoe');
+    const tokensPage = new UserAccessTokensPage(page, 'johndoe');
 
     // when
-    page.navigateTo();
+    await tokensPage.navigateTo();
 
     // then — MyselfGuard cancels the navigation, the screen never renders
-    cy.get('app-user-access-tokens').should('not.exist');
-    cy.get('.floating-action-btn').should('not.exist');
+    await expect(page.locator('app-user-access-tokens')).toHaveCount(0);
+    await expect(page.locator('.floating-action-btn')).toHaveCount(0);
   });
 });

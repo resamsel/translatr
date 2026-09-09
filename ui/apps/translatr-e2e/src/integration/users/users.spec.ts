@@ -1,79 +1,76 @@
+import { test, expect } from '../../support/test';
+import { mockApi, waitForApi } from '../../support/mock-api';
 import { UsersPage } from '../../support/users-page.po';
 
-describe('Users', () => {
-  let page: UsersPage;
-
-  beforeEach(() => {
-    page = new UsersPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/user*', { fixture: 'users' });
+test.describe('Users', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/user*', 'users');
   });
 
-  it('should list users', () => {
+  test('should list users', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const users = await new UsersPage(page).navigateTo();
 
     // then
-    page.getRows().should('have.length', 3);
+    await expect(users.getRows()).toHaveCount(3);
   });
 
-  it('should filter on search input', () => {
+  test('should filter on search input', async ({ page }) => {
     // given
-    cy.intercept('/api/user*search=*', { fixture: 'users-search' }).as('search');
+    await mockApi(page, '/api/user*search=*', 'users-search');
 
     // when
-    page.navigateTo();
-    page.getSearchField().type('jane');
-    cy.get('mat-option').first().click();
+    const users = await new UsersPage(page).navigateTo();
+    const search = waitForApi(page, '/api/user*search=*', 'GET');
+    await users.getSearchField().pressSequentially('jane');
+    await page.locator('mat-option').first().click();
 
     // then
-    cy.wait('@search').its('request.url').should('contain', 'search=jane');
-    page.getRows().should('have.length', 1);
+    expect((await search).url()).toContain('search=jane');
+    await expect(users.getRows()).toHaveCount(1);
   });
 
-  it('should load more users', () => {
+  test('should load more users', async ({ page }) => {
     // given
-    cy.intercept('/api/user*limit=16*', { fixture: 'users-page2' }).as('more');
+    await mockApi(page, '/api/user*limit=16*', 'users-page2');
 
     // when
-    page.navigateTo();
-    page.getRows().should('have.length', 3);
-    page.getLoadMoreButton().click();
+    const users = await new UsersPage(page).navigateTo();
+    await expect(users.getRows()).toHaveCount(3);
+    const more = waitForApi(page, '/api/user*limit=16*', 'GET');
+    await users.getLoadMoreButton().click();
 
     // then
-    cy.wait('@more').its('request.url').should('contain', 'limit=16');
-    page.getRows().should('have.length', 3);
-    page.getRows().first().should('contain', 'Ronny Lee');
+    expect((await more).url()).toContain('limit=16');
+    await expect(users.getRows()).toHaveCount(3);
+    await expect(users.getRows().first()).toContainText('Ronny Lee');
   });
 
-  it('should show no user rows when there are no users', () => {
+  test('should show no user rows when there are no users', async ({ page }) => {
     // given
-    cy.intercept('/api/user*', { fixture: 'users-empty' });
+    await mockApi(page, '/api/user*', 'users-empty');
 
     // when
-    page.navigateTo();
+    const users = await new UsersPage(page).navigateTo();
 
     // then
-    cy.get('app-user-list mat-nav-list').should('exist');
-    page.getRows().should('have.length', 0);
+    await expect(page.locator('app-user-list mat-nav-list')).toHaveCount(1);
+    await expect(users.getRows()).toHaveCount(0);
   });
 
-  it('should navigate to a user page on row click', () => {
+  test('should navigate to a user page on row click', async ({ page }) => {
     // given
-    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
-    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
+    await mockApi(page, '/api/johndoe', 'johndoe');
+    await mockApi(page, '/api/projects*', 'johndoe/projects');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
 
     // when
-    page.navigateTo();
-    page.getRows().first().click();
+    const users = await new UsersPage(page).navigateTo();
+    await users.getRows().first().click();
 
     // then
-    cy.url().should('match', /\/johndoe$/);
+    await expect(page).toHaveURL(/\/johndoe$/);
   });
 });

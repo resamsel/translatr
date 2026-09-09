@@ -1,16 +1,21 @@
-import { Page } from '../page.po';
+import type { Locator, Page } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class ProjectLocalesPage extends Page {
-  constructor(private readonly username: string, private readonly projectName: string) {
-    super();
+export class ProjectLocalesPage extends PageObject {
+  constructor(
+    page: Page,
+    private readonly username: string,
+    private readonly projectName: string,
+  ) {
+    super(page);
   }
 
-  navigateTo(): ProjectLocalesPage {
-    cy.visit(`/${this.username}/${this.projectName}/locales`);
+  async navigateTo(): Promise<ProjectLocalesPage> {
+    await this.page.goto(`${this.username}/${this.projectName}/locales`);
     return this;
   }
 
-  getLocaleList(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-locale-list mat-nav-list');
+  getLocaleList(): Locator {
+    return this.page.locator('app-locale-list mat-nav-list');
   }
 }

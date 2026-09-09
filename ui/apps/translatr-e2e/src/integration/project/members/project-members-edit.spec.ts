@@ -1,77 +1,72 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, waitForApi } from '../../../support/mock-api';
 import { ProjectMembersPage } from '../../../support/project/project-members-page.po';
 
-describe('Project Members Edit Member', () => {
-  let page: ProjectMembersPage;
+test.describe('Project Members Edit Member', () => {
+  let members: ProjectMembersPage;
 
-  beforeEach(() => {
-    page = new ProjectMembersPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    members = new ProjectMembersPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/me?fetch=features', 'me');
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await mockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should show the edit button on a non-owner row', () => {
+  test('should show the edit button on a non-owner row', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await members.navigateTo();
 
     // then
-    page.getEditButton('Jane Smith').should('be.visible');
+    await expect(members.getEditButton('Jane Smith')).toBeVisible();
   });
 
-  it('should open the edit dialog pre-filled', () => {
+  test('should open the edit dialog pre-filled', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getEditButton('Jane Smith').click();
+    await members.navigateTo();
+    await members.getEditButton('Jane Smith').click();
 
     // then
-    page.getDialog().should('have.length', 1);
-    page
-      .getDialogTitle()
-      .should('have.attr', 'transloco', 'member.edit.title');
-    page
-      .getDialog()
-      .find('input')
-      .first()
-      .should('have.value', 'janesmith');
+    await expect(members.getDialog()).toHaveCount(1);
+    await expect(members.getDialogTitle()).toHaveAttribute('transloco', 'member.edit.title');
+    await expect(members.getDialog().locator('input').first()).toHaveValue('janesmith');
   });
 
-  it('should update the role on save', () => {
+  test('should update the role on save', async ({ page }) => {
     // given
-    cy.intercept('PUT', '/api/member', { fixture: 'johndoe/p1/member-updated' }).as('updateMember');
+    await mockApi(page, '/api/member', 'johndoe/p1/member-updated', { method: 'PUT' });
 
     // when
-    page.navigateTo();
-    page.getEditButton('Jane Smith').click();
-    page.selectMemberRole('Manager');
-    page.getDialogSaveButton().click();
+    await members.navigateTo();
+    await members.getEditButton('Jane Smith').click();
+    await members.selectMemberRole('Manager');
+    const updateMember = waitForApi(page, '/api/member', 'PUT');
+    await members.getDialogSaveButton().click();
 
     // then
-    cy.wait('@updateMember');
-    page.getDialog().should('have.length', 0);
-    page.getMemberRow('Jane Smith').should('contain.text', 'Manager');
+    await updateMember;
+    await expect(members.getDialog()).toHaveCount(0);
+    await expect(members.getMemberRow('Jane Smith')).toContainText('Manager');
   });
 
-  it('should hide the dialog on cancel', () => {
+  test('should hide the dialog on cancel', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getEditButton('Jane Smith').click();
-    page.getDialogCancelButton().click();
+    await members.navigateTo();
+    await members.getEditButton('Jane Smith').click();
+    await members.getDialogCancelButton().click();
 
     // then
-    page.getDialog().should('have.length', 0);
+    await expect(members.getDialog()).toHaveCount(0);
   });
 });

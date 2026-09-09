@@ -1,63 +1,43 @@
+import { test, expect } from '../../support/test';
+import { mockApi } from '../../support/mock-api';
 import { HomePage } from '../../support/app.po';
 
-describe('Home', () => {
-  let page: HomePage;
-
-  beforeEach(() => {
-    page = new HomePage();
-
-    cy.clearCookies();
+test.describe('Home', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/me?fetch=features', 'me');
+    await mockApi(page, '/api/statistics', 'statistics');
+    await mockApi(page, '/api/activities/aggregated', 'activities-aggregated');
   });
 
-  it('should have page name Home', () => {
-    // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/statistics', { fixture: 'statistics' });
-    cy.intercept('/api/activities/aggregated', { fixture: 'activities-aggregated' });
-
+  test('should have page name Home', async ({ page }) => {
     // when
-    page.navigateTo();
+    const home = await new HomePage(page).navigateTo();
 
     // then
-    page.getPageName().should('have.text', 'Translatr');
+    await expect(home.getPageName()).toHaveText('Translatr');
   });
 
-  it('should have project metric value', () => {
-    // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/statistics', { fixture: 'statistics' });
-    cy.intercept('/api/activities/aggregated', { fixture: 'activities-aggregated' });
-
+  test('should have project metric value', async ({ page }) => {
     // when
-    page.navigateTo();
+    const home = await new HomePage(page).navigateTo();
 
     // then
-    page.getProjectMetricValue().should('have.text', '15');
+    await expect(home.getProjectMetricValue()).toHaveText('15');
   });
 
-  it('should have user metric value', () => {
-    // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/statistics', { fixture: 'statistics' });
-    cy.intercept('/api/activities/aggregated', { fixture: 'activities-aggregated' });
-
+  test('should have user metric value', async ({ page }) => {
     // when
-    page.navigateTo();
+    const home = await new HomePage(page).navigateTo();
 
     // then
-    page.getUserMetricValue().should('have.text', '25');
+    await expect(home.getUserMetricValue()).toHaveText('25');
   });
 
-  it('should have activity metric value', () => {
-    // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/statistics', { fixture: 'statistics' });
-    cy.intercept('/api/activities/aggregated', { fixture: 'activities-aggregated' });
-
+  test('should have activity metric value', async ({ page }) => {
     // when
-    page.navigateTo();
+    const home = await new HomePage(page).navigateTo();
 
     // then
-    page.getActivityMetricValue().should('have.text', '100');
+    await expect(home.getActivityMetricValue()).toHaveText('100');
   });
 });

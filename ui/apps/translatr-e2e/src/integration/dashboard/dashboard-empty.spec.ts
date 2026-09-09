@@ -1,53 +1,45 @@
+import { test, expect } from '../../support/test';
+import { mockApi } from '../../support/mock-api';
 import { DashboardPage } from '../../support/dashboard.po';
 
-describe('Dashboard Empty', () => {
-  let page: DashboardPage;
-
-  beforeEach(() => {
-    page = new DashboardPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/users?limit=1&fetch=count', { fixture: 'dashboard/empty/users-limit1' });
-    cy.intercept('/api/projects?owner=*', { fixture: 'dashboard/empty/projects-owner-limit4' });
-    cy.intercept('/api/projects?memberId=*', { fixture: 'dashboard/empty/projects-memberId-limit4' });
-    cy.intercept('/api/activities*', { fixture: 'dashboard/empty/activities-userId-limit4' });
+test.describe('Dashboard Empty', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/users?limit=1&fetch=count', 'dashboard/empty/users-limit1');
+    await mockApi(page, '/api/projects?owner=*', 'dashboard/empty/projects-owner-limit4');
+    await mockApi(page, '/api/projects?memberId=*', 'dashboard/empty/projects-memberId-limit4');
+    await mockApi(page, '/api/activities*', 'dashboard/empty/activities-userId-limit4');
   });
 
-  it('should show teasers for empty contents', () => {
+  test('should show teasers for empty contents', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const dashboard = await new DashboardPage(page).navigateTo();
 
     // then
-    page.getProjectCardLinks().should('have.length', 0);
-    page.getProjectEmptyView().should('have.length', 1);
+    await expect(dashboard.getProjectCardLinks()).toHaveCount(0);
+    await expect(dashboard.getProjectEmptyView()).toHaveCount(1);
   });
 
-  it('should show dialog when using teaser button', () => {
+  test('should show dialog when using teaser button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const dashboard = await new DashboardPage(page).navigateTo();
 
     // then
-    page
-      .getProjectEmptyView()
-      .find('button')
-      .click();
-    page.getProjectCreationDialog().should('be.visible');
+    await dashboard.getProjectEmptyView().locator('button').click();
+    await expect(dashboard.getProjectCreationDialog()).toBeVisible();
   });
 
-  it('should show dialog when using floating action button', () => {
+  test('should show dialog when using floating action button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const dashboard = await new DashboardPage(page).navigateTo();
 
     // then
-    page.getFloatingActionButton().click();
-    page.getProjectCreationDialog().should('be.visible');
+    await dashboard.getFloatingActionButton().click();
+    await expect(dashboard.getProjectCreationDialog()).toBeVisible();
   });
 });

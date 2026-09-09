@@ -1,84 +1,57 @@
+import { test, expect } from '../../support/test';
+import { mockApi, remockApi } from '../../support/mock-api';
 import { NavbarPage } from '../../support/nav/navbar.po';
 
-describe('Navbar', () => {
-  let page: NavbarPage;
-
-  beforeEach(() => {
-    page = new NavbarPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/users?limit=1&fetch=count', { fixture: 'dashboard/users-limit1' });
-    cy.intercept('/api/projects?owner=*', { fixture: 'dashboard/projects-owner-limit4' });
-    cy.intercept('/api/projects?memberId=*', { fixture: 'dashboard/projects-memberId-limit4' });
-    cy.intercept('/api/activities*', { fixture: 'dashboard/activities-userId-limit4' });
+test.describe('Navbar', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/me?fetch=features', 'me');
+    await mockApi(page, '/api/users?limit=1&fetch=count', 'dashboard/users-limit1');
+    await mockApi(page, '/api/projects?owner=*', 'dashboard/projects-owner-limit4');
+    await mockApi(page, '/api/projects?memberId=*', 'dashboard/projects-memberId-limit4');
+    await mockApi(page, '/api/activities*', 'dashboard/activities-userId-limit4');
   });
 
-  it('should switch the active language via the language switcher', () => {
+  test('should switch the active language via the language switcher', async ({ page }) => {
     // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'me-language-switcher' });
+    await remockApi(page, '/api/me?fetch=features', 'me-language-switcher');
 
     // when
-    page.navigateTo();
-    page.getLanguageSwitcher().should('exist');
-    page.getLanguageSwitcherTrigger().click();
+    const nav = await new NavbarPage(page).navigateTo();
+    await expect(nav.getLanguageSwitcher()).toHaveCount(1);
+    await nav.getLanguageSwitcherTrigger().click();
 
     // then
-    page
-      .getMenuPanel()
-      .find('button[mat-menu-item]')
-      .should('have.length', 2);
-    page
-      .getMenuPanel()
-      .find('button[mat-menu-item]')
-      .eq(0)
-      .should('have.class', 'active');
-    page
-      .getMenuPanel()
-      .find('button[mat-menu-item]')
-      .eq(1)
-      .should('not.have.class', 'active');
+    const items = nav.getMenuPanel().locator('button[mat-menu-item]');
+    await expect(items).toHaveCount(2);
+    await expect(items.nth(0)).toHaveClass(/\bactive\b/);
+    await expect(items.nth(1)).not.toHaveClass(/\bactive\b/);
 
     // when — switch to the second language
-    page
-      .getMenuPanel()
-      .find('button[mat-menu-item]')
-      .eq(1)
-      .click();
-    page.getLanguageSwitcherTrigger().click();
+    await items.nth(1).click();
+    await nav.getLanguageSwitcherTrigger().click();
 
     // then — the second language is now active
-    page
-      .getMenuPanel()
-      .find('button[mat-menu-item]')
-      .eq(1)
-      .should('have.class', 'active');
-    page
-      .getMenuPanel()
-      .find('button[mat-menu-item]')
-      .eq(0)
-      .should('not.have.class', 'active');
+    const itemsAfter = nav.getMenuPanel().locator('button[mat-menu-item]');
+    await expect(itemsAfter.nth(1)).toHaveClass(/\bactive\b/);
+    await expect(itemsAfter.nth(0)).not.toHaveClass(/\bactive\b/);
   });
 
-  it('should expose profile and logout in the user menu', () => {
+  test('should expose profile and logout in the user menu', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
-    page.getUserMenuTrigger().click();
+    const nav = await new NavbarPage(page).navigateTo();
+    await nav.getUserMenuTrigger().click();
 
     // then
-    page.getMenuPanel().should('be.visible');
-    page
-      .getMenuPanel()
-      .find('[transloco="user.profile"]')
-      .should('have.attr', 'href')
-      .and('match', /\/johndoe$/);
-    page
-      .getMenuPanel()
-      .find('[transloco="auth.logout"]')
-      .should('have.attr', 'href')
-      .and('include', '/logout');
+    await expect(nav.getMenuPanel()).toBeVisible();
+    await expect(nav.getMenuPanel().locator('[transloco="user.profile"]')).toHaveAttribute(
+      'href',
+      /\/johndoe$/,
+    );
+    await expect(nav.getMenuPanel().locator('[transloco="auth.logout"]')).toHaveAttribute(
+      'href',
+      /\/logout/,
+    );
   });
 });

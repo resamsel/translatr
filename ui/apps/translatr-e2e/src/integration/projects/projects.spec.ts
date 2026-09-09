@@ -1,59 +1,58 @@
+import { test, expect } from '../../support/test';
+import { mockApi, waitForApi } from '../../support/mock-api';
 import { ProjectsPage } from '../../support/projects-page.po';
 
-describe('Projects', () => {
-  let page: ProjectsPage;
-
-  beforeEach(() => {
-    page = new ProjectsPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/project*', { fixture: 'projects' });
+test.describe('Projects', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/project*', 'projects');
   });
 
-  it('should list projects', () => {
+  test('should list projects', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const projects = await new ProjectsPage(page).navigateTo();
 
     // then
-    page.getCards().should('have.length', 3);
+    await expect(projects.getCards()).toHaveCount(3);
   });
 
-  it('should filter on search input', () => {
+  test('should filter on search input', async ({ page }) => {
     // given
-    cy.intercept('/api/project*search=*', { fixture: 'projects-search' }).as('s');
+    await mockApi(page, '/api/project*search=*', 'projects-search');
 
     // when
-    page.navigateTo();
-    page.getSearchField().type('p1');
-    cy.get('mat-option').first().click();
+    const projects = await new ProjectsPage(page).navigateTo();
+    const s = waitForApi(page, '/api/project*search=*', 'GET');
+    await projects.getSearchField().pressSequentially('p1');
+    await page.locator('mat-option').first().click();
 
     // then
-    cy.wait('@s').its('request.url').should('contain', 'search=p1');
-    page.getCards().should('have.length', 1);
+    expect((await s).url()).toContain('search=p1');
+    await expect(projects.getCards()).toHaveCount(1);
   });
 
-  it('should create a project from the floating action button and redirect', () => {
+  test('should create a project from the floating action button and redirect', async ({ page }) => {
     // given
-    cy.intercept('POST', '/api/project', { fixture: 'project-created' }).as('create');
-    cy.intercept('/api/johndoe/newproj*', { fixture: 'project-created' });
-    cy.intercept('/api/project/*/locales*', { body: { list: [], offset: 0, limit: 50, total: 0 } });
-    cy.intercept('/api/project/*/keys*', { body: { list: [], offset: 0, limit: 50, total: 0 } });
-    cy.intercept('/api/project/*/members*', { body: { list: [], offset: 0, limit: 50, total: 0 } });
-    cy.intercept('/api/activities*', { body: { list: [], offset: 0, limit: 20, total: 0 } });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'activities-aggregated' });
+    await mockApi(page, '/api/project', 'project-created', { method: 'POST' });
+    await mockApi(page, '/api/johndoe/newproj*', 'project-created');
+    await mockApi(page, '/api/project/*/locales*', { list: [], offset: 0, limit: 50, total: 0 });
+    await mockApi(page, '/api/project/*/keys*', { list: [], offset: 0, limit: 50, total: 0 });
+    await mockApi(page, '/api/project/*/members*', { list: [], offset: 0, limit: 50, total: 0 });
+    await mockApi(page, '/api/activities*', { list: [], offset: 0, limit: 20, total: 0 });
+    await mockApi(page, '/api/activities/aggregated*', 'activities-aggregated');
 
     // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
-    page.getDialog().find('input').first().clear().type('newproj');
-    page.getDialog().find('button[transloco="button.save"]').should('not.be.disabled').click();
+    const projects = await new ProjectsPage(page).navigateTo();
+    await projects.getFloatingActionButton().click();
+    await projects.getDialog().locator('input').first().fill('newproj');
+    const saveButton = projects.getDialog().locator('button[transloco="button.save"]');
+    await expect(saveButton).toBeEnabled();
+    const create = waitForApi(page, '/api/project', 'POST');
+    await saveButton.click();
 
     // then
-    cy.wait('@create').its('request.body').should('have.property', 'name', 'newproj');
-    cy.url().should('include', '/johndoe/newproj');
+    expect((await create).postDataJSON()).toMatchObject({ name: 'newproj' });
+    await expect(page).toHaveURL(/\/johndoe\/newproj/);
   });
 });

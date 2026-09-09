@@ -1,54 +1,54 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi, waitForApi } from '../../../support/mock-api';
 import { UserActivityPage } from '../../../support/user/user-activity-page.po';
 
-describe('User Activity', () => {
-  let page: UserActivityPage;
+test.describe('User Activity', () => {
+  let activityPage: UserActivityPage;
 
-  beforeEach(() => {
-    page = new UserActivityPage('johndoe');
+  test.beforeEach(async ({ page }) => {
+    activityPage = new UserActivityPage(page, 'johndoe');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
-    cy.intercept('/api/user/*/activity*', { fixture: 'johndoe/activities' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'activities-aggregated' });
+    await mockApi(page, '/api/johndoe', 'johndoe');
+    await mockApi(page, '/api/user/*/activity*', 'johndoe/activities');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
+    await remockApi(page, '/api/activities/aggregated*', 'activities-aggregated');
   });
 
-  it('should render the activity list', () => {
+  test('should render the activity list', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    await activityPage.navigateTo();
 
     // then
-    cy.get('app-activity-list').should('exist');
-    page.getActivityRows().should('have.length', 3);
+    await expect(page.locator('app-activity-list')).toHaveCount(1);
+    await expect(activityPage.getActivityRows()).toHaveCount(3);
   });
 
-  it('should navigate to the user on an activity link click', () => {
+  test('should navigate to the user on an activity link click', async ({ page }) => {
     // given
-    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
+    await mockApi(page, '/api/projects*', 'johndoe/projects');
 
     // when
-    page.navigateTo();
-    page.getUserLink().first().click();
+    await activityPage.navigateTo();
+    await activityPage.getUserLink().first().click();
 
     // then
-    cy.url().should('match', /\/johndoe$/);
+    await expect(page).toHaveURL(/\/johndoe$/);
   });
 
-  it('should load more activities', () => {
+  test('should load more activities', async ({ page }) => {
     // given
-    cy.intercept('/api/activities*limit=8*', { fixture: 'johndoe/activities-page2' }).as('more');
+    await mockApi(page, '/api/activities*limit=8*', 'johndoe/activities-page2');
 
     // when
-    page.navigateTo();
-    page.getActivityRows().should('have.length', 3);
-    page.getLoadMoreButton().click();
+    await activityPage.navigateTo();
+    await expect(activityPage.getActivityRows()).toHaveCount(3);
+    const more = waitForApi(page, '/api/activities*limit=8*');
+    await activityPage.getLoadMoreButton().click();
 
     // then
-    cy.wait('@more').its('request.url').should('contain', 'limit=8');
-    page.getActivityRows().should('have.length', 2);
+    expect((await more).url()).toContain('limit=8');
+    await expect(activityPage.getActivityRows()).toHaveCount(2);
   });
 });

@@ -1,90 +1,77 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi, waitForApi } from '../../../support/mock-api';
 import { ProjectKeysPage } from '../../../support/project/project-keys-page.po';
 
-describe('Project Keys Add Key', () => {
-  let page: ProjectKeysPage;
+test.describe('Project Keys Add Key', () => {
+  let keys: ProjectKeysPage;
 
-  beforeEach(() => {
-    page = new ProjectKeysPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    keys = new ProjectKeysPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await remockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should show key add button', () => {
+  test('should show key add button', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await keys.navigateTo();
 
     // then
-    page.getFloatingActionButton().should('be.visible');
+    await expect(keys.getFloatingActionButton()).toBeVisible();
   });
 
-  it('should show key add dialog on clicking add button', () => {
+  test('should show key add dialog on clicking add button', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
+    await keys.navigateTo();
+    await keys.getFloatingActionButton().click();
 
     // then
-    page.getDialog().should('be.visible');
-    page
-      .getDialog()
-      .find('mat-form-field.name input')
-      .should('have.value', '');
-    page
-      .getDialog()
-      .find('[mat-dialog-title]')
-      .should('have.text', 'Add Key');
+    await expect(keys.getDialog()).toBeVisible();
+    await expect(keys.getDialog().locator('mat-form-field.name input')).toHaveValue('');
+    await expect(keys.getDialog().locator('[mat-dialog-title]')).toHaveText('Add Key');
   });
 
-  it('should hide key add dialog on clicking cancel button', () => {
+  test('should hide key add dialog on clicking cancel button', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
-    page
-      .getDialog()
-      .find('button.cancel')
-      .click();
+    await keys.navigateTo();
+    await keys.getFloatingActionButton().click();
+    await keys.getDialog().locator('button.cancel').click();
 
     // then
-    page.getDialog().should('have.length', 0);
+    await expect(keys.getDialog()).toHaveCount(0);
   });
 
-  it('should add the key and open the new key on save', () => {
+  test('should add the key and open the new key on save', async ({ page }) => {
     // given
-    cy.intercept('POST', '/api/key', { fixture: 'johndoe/p1/key-created' }).as('createKey');
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys-added' });
-    cy.intercept('/api/johndoe/p1/keys/home.title', { fixture: 'johndoe/p1/key-created' });
+    await mockApi(page, '/api/key', 'johndoe/p1/key-created', { method: 'POST' });
+    await mockApi(page, '/api/johndoe/p1/keys/home.title', 'johndoe/p1/key-created');
 
     // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
-    page
-      .getDialog()
-      .find('mat-form-field.name input')
-      .type('home.title');
-    page
-      .getDialog()
-      .find('button[transloco="button.save"], button.save')
-      .click();
+    await keys.navigateTo();
+    await keys.getFloatingActionButton().click();
+    await keys.getDialog().locator('mat-form-field.name input').fill('home.title');
+
+    const createKey = waitForApi(page, '/api/key', 'POST');
+    await keys.getDialog().locator('button[transloco="button.save"], button.save').click();
+    await createKey;
+
+    // the base `keys*` list is swapped for `keys-added` once the POST has landed
+    await remockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys-added');
 
     // then
-    cy.wait('@createKey')
-      .its('request.body')
-      .should('deep.include', { name: 'home.title' });
-    page.getDialog().should('have.length', 0);
-    cy.url().should('match', /\/johndoe\/p1\/keys\/home\.title$/);
+    expect((await createKey).postDataJSON()).toMatchObject({ name: 'home.title' });
+    await expect(keys.getDialog()).toHaveCount(0);
+    await expect(page).toHaveURL(/\/johndoe\/p1\/keys\/home\.title$/);
   });
 });

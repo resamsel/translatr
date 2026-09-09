@@ -1,33 +1,24 @@
+import { test, expect } from '../support/test';
+import { mockApi, remockApi } from '../support/mock-api';
 import { UsersPage } from '../support/users-page.po';
 
-describe('Admin Auth Guard', () => {
-  beforeEach(() => {
-    cy.clearCookies();
+test.describe('Admin Auth Guard', () => {
+  test('should redirect a non-admin user to /forbidden', async ({ page }) => {
+    await remockApi(page, '/api/me*', 'me-non-admin');
+
+    await page.goto('users');
+
+    await expect(page).toHaveURL(/\/forbidden/);
   });
 
-  it('should redirect a non-admin user to /forbidden', () => {
-    // given
-    cy.intercept('/api/me*', { fixture: 'me-non-admin' });
+  test('should let an admin user through to a guarded route', async ({ page }) => {
+    await mockApi(page, '/api/user*', 'users');
+    await mockApi(page, '/api/project*', 'projects');
+    await mockApi(page, '/api/activities*', 'activities');
 
-    // when
-    cy.visit('/users');
+    await new UsersPage(page).navigateTo();
 
-    // then
-    cy.url().should('contain', '/forbidden');
-  });
-
-  it('should let an admin user through to a guarded route', () => {
-    // given
-    cy.intercept('/api/me*', { fixture: 'me' });
-    cy.intercept('/api/user*', { fixture: 'users' });
-    cy.intercept('/api/project*', { fixture: 'projects' });
-    cy.intercept('/api/activities*', { fixture: 'activities' });
-
-    // when
-    new UsersPage().navigateTo();
-
-    // then
-    cy.url().should('match', /\/users$/);
-    cy.get('h1.page').should('have.text', 'Users');
+    await expect(page).toHaveURL(/\/users$/);
+    await expect(page.locator('h1.page')).toHaveText('Users');
   });
 });

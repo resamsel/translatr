@@ -1,92 +1,77 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, mockApiWith, remockApi, waitForApi } from '../../../support/mock-api';
 import { LocaleEditorPage } from '../../../support/project/locale-editor-page.po';
 
-describe('Project Locale Editor Save', () => {
-  let page: LocaleEditorPage;
-
-  beforeEach(() => {
-    page = new LocaleEditorPage('johndoe', 'p1', 'default');
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/johndoe/p1/locales/default', { fixture: 'johndoe/p1/locales/default' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/keys?*missing=true*', { fixture: 'johndoe/p1/keys-missing' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages-locale-default' });
-    cy.intercept('/api/project/*/messages?*keyName=k1', { fixture: 'johndoe/p1/messages-key-k1' });
-    cy.intercept('/api/project/*/messages?*keyIds=*', {
-      fixture: 'johndoe/p1/messages-locale-default'
-    });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
+test.describe('Project Locale Editor Save', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/johndoe/p1/locales/default', 'johndoe/p1/locales/default');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/keys?*missing=true*', 'johndoe/p1/keys-missing');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages-locale-default');
+    await mockApi(page, '/api/project/*/messages?*keyName=k1', 'johndoe/p1/messages-key-k1');
+    await mockApi(page, '/api/project/*/messages?*keyIds=*', 'johndoe/p1/messages-locale-default');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
   });
 
-  it('should persist the translation on Save', () => {
+  test('should persist the translation on Save', async ({ page }) => {
     // given
-    cy.intercept('PUT', '/api/message', req =>
-      req.reply({ statusCode: 200, body: { ...req.body, id: 'm-new' } })
-    ).as('saveMessage');
+    await mockApiWith(
+      page,
+      '/api/message',
+      async (route) => {
+        await route.fulfill({ json: { ...route.request().postDataJSON(), id: 'm-new' } });
+      },
+      { method: 'PUT' },
+    );
 
     // when
-    page.navigateTo();
-    page
-      .getNavList()
-      .find('a.key')
-      .first()
-      .click();
-    page
-      .getEditor()
-      .find('.CodeMirror textarea')
-      .type('Bonjour', { force: true });
-    cy.get('.save-button').click();
+    const editor = await new LocaleEditorPage(page, 'johndoe', 'p1', 'default').navigateTo();
+    await editor.getNavList().locator('a.key').first().click();
+    // PORT-NOTE: CodeMirror's backing textarea is hidden; `fill` with `force: true`
+    // mirrors the old `.type('Bonjour', { force: true })` bypass of actionability.
+    await editor.getEditor().locator('.CodeMirror textarea').fill('Bonjour', { force: true });
+
+    const saveMessage = waitForApi(page, '/api/message', 'PUT');
+    await page.locator('.save-button').click();
 
     // then
-    cy.wait('@saveMessage').then(({ request }) => {
-      expect(request.body.value).to.contain('Bonjour');
-      expect(request.body.id).to.eq('d8a87a83-ad7f-42b5-ade4-94a0e5cf54b3');
-    });
-    cy.get('.save-button').should('have.text', 'Save');
-    page
-      .getNavList()
-      .find('a.key.active .translation')
-      .should('contain.text', 'Bonjour');
+    const body = (await saveMessage).postDataJSON();
+    expect(body.value).toContain('Bonjour');
+    expect(body.id).toBe('d8a87a83-ad7f-42b5-ade4-94a0e5cf54b3');
+    await expect(page.locator('.save-button')).toHaveText('Save');
+    await expect(editor.getNavList().locator('a.key.active .translation')).toContainText('Bonjour');
   });
 
-  it('should advance to the next key on "Save and next"', () => {
+  test('should advance to the next key on "Save and next"', async ({ page }) => {
     // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'me-save-behavior-saveandnext' });
-    cy.intercept('PUT', '/api/message', req =>
-      req.reply({ statusCode: 200, body: { ...req.body, id: 'm-new' } })
-    ).as('saveMessage');
+    await remockApi(page, '/api/me*', 'me-save-behavior-saveandnext');
+    await mockApiWith(
+      page,
+      '/api/message',
+      async (route) => {
+        await route.fulfill({ json: { ...route.request().postDataJSON(), id: 'm-new' } });
+      },
+      { method: 'PUT' },
+    );
 
     // when
-    page.navigateTo();
-    page
-      .getNavList()
-      .find('a.key')
-      .first()
-      .click()
-      .should('have.class', 'active');
-    page
-      .getEditor()
-      .find('.CodeMirror textarea')
-      .type('Bonjour', { force: true });
-    cy.get('.save-button').should('have.text', 'Save and next');
-    cy.get('.save-button').click();
+    const editor = await new LocaleEditorPage(page, 'johndoe', 'p1', 'default').navigateTo();
+    const firstKey = editor.getNavList().locator('a.key').first();
+    await firstKey.click();
+    await expect(firstKey).toHaveClass(/\bactive\b/);
+    // PORT-NOTE: see sibling test - hidden CodeMirror textarea, forced fill.
+    await editor.getEditor().locator('.CodeMirror textarea').fill('Bonjour', { force: true });
+    await expect(page.locator('.save-button')).toHaveText('Save and next');
+
+    const saveMessage = waitForApi(page, '/api/message', 'PUT');
+    await page.locator('.save-button').click();
 
     // then
-    cy.wait('@saveMessage');
-    page
-      .getNavList()
-      .find('a.key')
-      .eq(1)
-      .should('have.class', 'active');
-    page
-      .getNavList()
-      .find('a.key')
-      .first()
-      .should('not.have.class', 'active');
+    await saveMessage;
+    await expect(editor.getNavList().locator('a.key').nth(1)).toHaveClass(/\bactive\b/);
+    await expect(editor.getNavList().locator('a.key').first()).not.toHaveClass(/\bactive\b/);
   });
 });

@@ -1,70 +1,65 @@
-import { Page } from '../page.po';
+import type { Locator, Page } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class ProjectMembersPage extends Page {
-  constructor(private readonly username: string, private readonly projectName: string) {
-    super();
+export class ProjectMembersPage extends PageObject {
+  constructor(
+    page: Page,
+    private readonly username: string,
+    private readonly projectName: string,
+  ) {
+    super(page);
   }
 
-  navigateTo(): ProjectMembersPage {
-    cy.visit(`/${this.username}/${this.projectName}/members`);
+  async navigateTo(): Promise<ProjectMembersPage> {
+    await this.page.goto(`${this.username}/${this.projectName}/members`);
     return this;
   }
 
-  getMemberList(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-member-list app-nav-list mat-nav-list');
+  getMemberList(): Locator {
+    return this.page.locator('app-member-list app-nav-list mat-nav-list');
   }
 
-  getMemberRows(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-member-list a[mat-list-item]');
+  getMemberRows(): Locator {
+    return this.page.locator('app-member-list a[mat-list-item]');
   }
 
-  getMemberRow(userName: string): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.contains('app-member-list a[mat-list-item]', userName);
+  getMemberRow(userName: string): Locator {
+    return this.page.locator('app-member-list a[mat-list-item]').filter({ hasText: userName });
   }
 
-  getEditButton(userName: string): Cypress.Chainable<JQuery<HTMLElement>> {
-    return this.getMemberRow(userName).find('button.edit');
+  getEditButton(userName: string): Locator {
+    return this.getMemberRow(userName).locator('button.edit');
   }
 
-  getDeleteButton(userName: string): Cypress.Chainable<JQuery<HTMLElement>> {
-    return this.getMemberRow(userName).find('confirm-button.delete');
+  getDeleteButton(userName: string): Locator {
+    return this.getMemberRow(userName).locator('confirm-button.delete');
   }
 
-  getTransferButton(userName: string): Cypress.Chainable<JQuery<HTMLElement>> {
-    return this.getMemberRow(userName).find('button.edit');
+  getTransferButton(userName: string): Locator {
+    return this.getMemberRow(userName).locator('button.edit');
   }
 
-  getDialogTitle(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return this.getDialog().find('[mat-dialog-title]');
+  getDialogTitle(): Locator {
+    return this.getDialog().locator('[mat-dialog-title]');
   }
 
-  getDialogSaveButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return this.getDialog().find('button[transloco="button.save"]');
+  getDialogSaveButton(): Locator {
+    return this.getDialog().locator('button[transloco="button.save"]');
   }
 
-  getDialogCancelButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return this.getDialog().find('button[transloco="button.cancel"]');
+  getDialogCancelButton(): Locator {
+    return this.getDialog().locator('button[transloco="button.cancel"]');
   }
 
-  fillMemberUser(search: string): ProjectMembersPage {
-    this.getDialog()
-      .find('input')
-      .first()
-      .clear()
-      .type(search);
-    cy.get('mat-option')
-      .contains(search)
-      .click();
+  async fillMemberUser(search: string): Promise<ProjectMembersPage> {
+    await this.getDialog().locator('input').first().fill(search);
+    await this.page.getByRole('option', { name: search }).click();
     return this;
   }
 
-  selectMemberRole(role: string): ProjectMembersPage {
-    this.getDialog()
-      .find('mat-select')
-      .click();
-    cy.get('.mat-mdc-select-panel mat-option')
-      .contains(role)
-      .click();
+  async selectMemberRole(role: string): Promise<ProjectMembersPage> {
+    await this.getDialog().locator('mat-select').click();
+    await this.page.locator('.mat-mdc-select-panel mat-option').filter({ hasText: role }).click();
     return this;
   }
 }

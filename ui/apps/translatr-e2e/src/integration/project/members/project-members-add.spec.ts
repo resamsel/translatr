@@ -1,76 +1,75 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi, waitForApi } from '../../../support/mock-api';
 import { ProjectMembersPage } from '../../../support/project/project-members-page.po';
 
-describe('Project Members Add Member', () => {
-  let page: ProjectMembersPage;
+test.describe('Project Members Add Member', () => {
+  let members: ProjectMembersPage;
 
-  beforeEach(() => {
-    page = new ProjectMembersPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    members = new ProjectMembersPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/me?fetch=features', 'me');
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await mockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should show the add member FAB', () => {
+  test('should show the add member FAB', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await members.navigateTo();
 
     // then
-    page.getFloatingActionButton().should('be.visible');
+    await expect(members.getFloatingActionButton()).toBeVisible();
   });
 
-  it('should open the add member dialog on FAB click', () => {
+  test('should open the add member dialog on FAB click', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
+    await members.navigateTo();
+    await members.getFloatingActionButton().click();
 
     // then
-    page.getDialog().should('have.length', 1);
-    page
-      .getDialogTitle()
-      .should('have.attr', 'transloco', 'member.create.title');
+    await expect(members.getDialog()).toHaveCount(1);
+    await expect(members.getDialogTitle()).toHaveAttribute('transloco', 'member.create.title');
   });
 
-  it('should hide the dialog on cancel', () => {
+  test('should hide the dialog on cancel', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
-    page.getDialogCancelButton().click();
+    await members.navigateTo();
+    await members.getFloatingActionButton().click();
+    await members.getDialogCancelButton().click();
 
     // then
-    page.getDialog().should('have.length', 0);
+    await expect(members.getDialog()).toHaveCount(0);
   });
 
-  it('should add the member and show the new row on save', () => {
+  test('should add the member and show the new row on save', async ({ page }) => {
     // given
-    cy.intercept('POST', '/api/member', { fixture: 'johndoe/p1/member-created' }).as('createMember');
-    cy.intercept('/api/users*', { fixture: 'johndoe/p1/users-mika' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members-added' });
+    await mockApi(page, '/api/member', 'johndoe/p1/member-created', { method: 'POST' });
+    await mockApi(page, '/api/users*', 'johndoe/p1/users-mika');
+    await remockApi(page, '/api/project/*/members*', 'johndoe/p1/members-added');
 
     // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
-    page.fillMemberUser('mika');
-    page.selectMemberRole('Developer');
-    page.getDialogSaveButton().click();
+    await members.navigateTo();
+    await members.getFloatingActionButton().click();
+    await members.fillMemberUser('mika');
+    await members.selectMemberRole('Developer');
+    const createMember = waitForApi(page, '/api/member', 'POST');
+    await members.getDialogSaveButton().click();
 
     // then
-    cy.wait('@createMember');
-    page.getDialog().should('have.length', 0);
-    page.getMemberRow('Mika Novak').should('exist');
-    page.getMemberRow('Mika Novak').should('contain.text', 'Developer');
+    await createMember;
+    await expect(members.getDialog()).toHaveCount(0);
+    await expect(members.getMemberRow('Mika Novak').first()).toBeVisible();
+    await expect(members.getMemberRow('Mika Novak').first()).toContainText('Developer');
   });
 });

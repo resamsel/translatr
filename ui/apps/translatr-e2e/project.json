@@ -6,17 +6,17 @@
   "tags": [
     "e2e"
   ],
+  "implicitDependencies": [
+    "translatr"
+  ],
   "targets": {
     "e2e": {
-      "executor": "@nx/cypress:cypress",
+      "executor": "@nx/playwright:playwright",
       "options": {
-        "cypressConfig": "apps/translatr-e2e/cypress.config.js",
-        "devServerTarget": "translatr:serve"
+        "config": "apps/translatr-e2e/playwright.config.ts"
       },
       "configurations": {
-        "production": {
-          "devServerTarget": "translatr:serve:production"
-        }
+        "production": {}
       }
     },
     "lint": {

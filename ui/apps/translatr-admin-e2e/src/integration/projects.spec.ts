@@ -1,39 +1,28 @@
+import { test, expect } from '../support/test';
+import { mockApi, waitForApi } from '../support/mock-api';
 import { ProjectsPage } from '../support/projects-page.po';
 
-describe('Admin Projects', () => {
-  let page: ProjectsPage;
-
-  beforeEach(() => {
-    page = new ProjectsPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me*', { fixture: 'me' });
-    cy.intercept('/api/project*', { fixture: 'projects' });
+test.describe('Admin Projects', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/project*', 'projects');
   });
 
-  it('should list the projects returned by the API', () => {
-    // given
+  test('should list the projects returned by the API', async ({ page }) => {
+    const projects = await new ProjectsPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-
-    // then
-    page.getPageName().should('have.text', 'Projects');
-    page.getRows().should('have.length', 3);
-    page.getRows().first().should('contain.text', 'alpha');
+    await expect(projects.getPageName()).toHaveText('Projects');
+    await expect(projects.getRows()).toHaveCount(3);
+    await expect(projects.getRows().first()).toContainText('alpha');
   });
 
-  it('should push the search term into the projects request', () => {
-    // given
-    cy.intercept('/api/project*search=*', { fixture: 'projects' }).as('search');
+  test('should push the search term into the projects request', async ({ page }) => {
+    await mockApi(page, '/api/project*search=*', 'projects');
+    const projects = await new ProjectsPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-    page.getSearchField().type('beta');
-    cy.get('mat-option').first().click();
+    const search = waitForApi(page, '/api/project*search=*');
+    await projects.getSearchField().fill('beta');
+    await page.locator('mat-option').first().click();
 
-    // then
-    cy.wait('@search').its('request.url').should('contain', 'search=beta');
+    expect((await search).url()).toContain('search=beta');
   });
 });

@@ -1,25 +1,27 @@
+import type { Locator, Page } from '@playwright/test';
 import { EditorPage } from './editor-page.po';
 import { ProjectLocalesPage } from './project-locales-page.po';
 
 export class LocaleEditorPage extends EditorPage {
   constructor(
+    page: Page,
     public readonly username: string,
     public readonly projectName: string,
-    public readonly localeName: string
+    public readonly localeName: string,
   ) {
-    super();
+    super(page);
   }
 
-  navigateTo(): LocaleEditorPage {
-    cy.visit(`/${this.username}/${this.projectName}/locales/${this.localeName}`);
+  async navigateTo(): Promise<LocaleEditorPage> {
+    await this.page.goto(`${this.username}/${this.projectName}/locales/${this.localeName}`);
     return this;
   }
 
-  navigateToLocales(): ProjectLocalesPage {
-    return new ProjectLocalesPage(this.username, this.projectName).navigateTo();
+  async navigateToLocales(): Promise<ProjectLocalesPage> {
+    return new ProjectLocalesPage(this.page, this.username, this.projectName).navigateTo();
   }
 
-  getSelectedLocaleField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.selector .selected-locale');
+  getSelectedLocaleField(): Locator {
+    return this.page.locator('.selector .selected-locale');
   }
 }

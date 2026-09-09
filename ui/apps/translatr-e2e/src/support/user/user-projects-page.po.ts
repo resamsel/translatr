@@ -1,12 +1,13 @@
-import { Page } from '../page.po';
+import type { Page } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class UserProjectsPage extends Page {
-  constructor(private readonly username: string) {
-    super();
+export class UserProjectsPage extends PageObject {
+  constructor(page: Page, private readonly username: string) {
+    super(page);
   }
 
-  navigateTo(): UserProjectsPage {
-    cy.visit(`/${this.username}/projects`);
+  async navigateTo(): Promise<UserProjectsPage> {
+    await this.page.goto(`${this.username}/projects`);
     return this;
   }
 }

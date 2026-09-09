@@ -1,75 +1,50 @@
+import { test, expect } from '../../../support/test';
+import { mockApi } from '../../../support/mock-api';
 import { ProjectLocalesPage } from '../../../support/project/project-locales-page.po';
 
-describe('Project Locales Edit Locale', () => {
-  let page: ProjectLocalesPage;
-
-  beforeEach(() => {
-    page = new ProjectLocalesPage('johndoe', 'p1');
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+test.describe('Project Locales Edit Locale', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await mockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should show locale edit button', () => {
+  test('should show locale edit button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const locales = await new ProjectLocalesPage(page, 'johndoe', 'p1').navigateTo();
 
     // then
-    page
-      .getLocaleList()
-      .find('button.edit')
-      .should('be.visible');
+    await expect(locales.getLocaleList().locator('button.edit').first()).toBeVisible();
   });
 
-  it('should show locale edit dialog on clicking edit button', () => {
+  test('should show locale edit dialog on clicking edit button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
-    page
-      .getLocaleList()
-      .find('button.edit')
-      .first()
-      .click();
+    const locales = await new ProjectLocalesPage(page, 'johndoe', 'p1').navigateTo();
+    await locales.getLocaleList().locator('button.edit').first().click();
 
     // then
-    page.getDialog().should('be.visible');
-    page
-      .getDialog()
-      .find('[mat-dialog-title]')
-      .should('have.text', 'Edit Language');
-    page
-      .getDialog()
-      .find('mat-form-field.name input')
-      .should('have.value', 'de');
+    await expect(locales.getDialog()).toBeVisible();
+    await expect(locales.getDialog().locator('[mat-dialog-title]')).toHaveText('Edit Language');
+    await expect(locales.getDialog().locator('mat-form-field.name input')).toHaveValue('de');
   });
 
-  it('should hide locale edit dialog on clicking cancel button', () => {
+  test('should hide locale edit dialog on clicking cancel button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
-    page
-      .getLocaleList()
-      .find('button.edit')
-      .first()
-      .click();
-    page
-      .getDialog()
-      .find('button.cancel')
-      .click();
+    const locales = await new ProjectLocalesPage(page, 'johndoe', 'p1').navigateTo();
+    await locales.getLocaleList().locator('button.edit').first().click();
+    await locales.getDialog().locator('button.cancel').click();
 
     // then
-    page.getDialog().should('have.length', 0);
+    await expect(locales.getDialog()).toHaveCount(0);
   });
 });

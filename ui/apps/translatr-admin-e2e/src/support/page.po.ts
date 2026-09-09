@@ -1,13 +1,18 @@
-export class Page {
-  getPageName(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('h1.page');
+import type { Locator, Page } from '@playwright/test';
+
+/** Base page object: common chrome shared by every admin screen. */
+export class PageObject {
+  constructor(protected readonly page: Page) {}
+
+  getPageName(): Locator {
+    return this.page.locator('h1.page');
   }
 
-  getFloatingActionButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.floating-action-btn');
+  getFloatingActionButton(): Locator {
+    return this.page.locator('.floating-action-btn');
   }
 
-  getDialog(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('mat-dialog-container');
+  getDialog(): Locator {
+    return this.page.locator('mat-dialog-container');
   }
 }

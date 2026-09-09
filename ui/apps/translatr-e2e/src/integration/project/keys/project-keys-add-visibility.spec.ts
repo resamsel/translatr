@@ -1,66 +1,66 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi } from '../../../support/mock-api';
 import { ProjectKeysPage } from '../../../support/project/project-keys-page.po';
 
-describe('Project Keys Add Key Visibility', () => {
-  let page: ProjectKeysPage;
+test.describe('Project Keys Add Key Visibility', () => {
+  let keys: ProjectKeysPage;
 
-  beforeEach(() => {
-    page = new ProjectKeysPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    keys = new ProjectKeysPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await remockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should not show key add button for member role Developer', () => {
+  test('should not show key add button for member role Developer', async ({ page }) => {
     // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'janesmith' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1-developer' });
+    await remockApi(page, '/api/me*', 'janesmith');
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1-developer');
 
     // when
-    page.navigateTo();
+    await keys.navigateTo();
 
     // then
-    page.getFloatingActionButton().should('exist');
+    await expect(keys.getFloatingActionButton()).toBeAttached();
   });
 
-  it('should not show key add button for member role Translator', () => {
+  test('should not show key add button for member role Translator', async ({ page }) => {
     // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'sophiaoreilly' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1-translator' });
+    await remockApi(page, '/api/me*', 'sophiaoreilly');
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1-translator');
 
     // when
-    page.navigateTo();
+    await keys.navigateTo();
 
     // then
-    page.getFloatingActionButton().should('not.exist');
+    await expect(keys.getFloatingActionButton()).toHaveCount(0);
   });
 
-  it('should show key add button for member role Manager', () => {
+  test('should show key add button for member role Manager', async ({ page }) => {
     // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'ronnylee' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1-manager' });
+    await remockApi(page, '/api/me*', 'ronnylee');
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1-manager');
 
     // when
-    page.navigateTo();
+    await keys.navigateTo();
 
     // then
-    page.getFloatingActionButton().should('exist');
+    await expect(keys.getFloatingActionButton()).toBeAttached();
   });
 
-  it('should show key add button for user role Admin', () => {
+  test('should show key add button for user role Admin', async ({ page }) => {
     // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'anneearth' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
+    await remockApi(page, '/api/me*', 'anneearth');
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
 
     // when
-    page.navigateTo();
+    await keys.navigateTo();
 
     // then
-    page.getFloatingActionButton().should('exist');
+    await expect(keys.getFloatingActionButton()).toBeAttached();
   });
 });

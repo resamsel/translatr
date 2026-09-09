@@ -1,72 +1,68 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, waitForApi } from '../../../support/mock-api';
 import { ProjectMembersPage } from '../../../support/project/project-members-page.po';
 
-describe('Project Members Transfer Ownership', () => {
-  let page: ProjectMembersPage;
+test.describe('Project Members Transfer Ownership', () => {
+  let members: ProjectMembersPage;
 
-  beforeEach(() => {
-    page = new ProjectMembersPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    members = new ProjectMembersPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members-two-owners' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/me?fetch=features', 'me');
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members-two-owners');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await mockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should show the transfer-ownership button on an owner row when two owners exist', () => {
+  test('should show the transfer-ownership button on an owner row when two owners exist', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await members.navigateTo();
 
     // then
-    page
-      .getMemberRow('John Doe')
-      .find('button.edit mat-icon')
-      .should('contain.text', 'swap_horiz');
+    await expect(members.getMemberRow('John Doe').locator('button.edit mat-icon')).toContainText(
+      'swap_horiz',
+    );
   });
 
-  it('should open the owner edit dialog on clicking the transfer button', () => {
+  test('should open the owner edit dialog on clicking the transfer button', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getMemberRow('John Doe').find('button.edit').click();
+    await members.navigateTo();
+    await members.getMemberRow('John Doe').locator('button.edit').click();
 
     // then
-    page.getDialog().should('have.length', 1);
-    page
-      .getDialogTitle()
-      .should('have.attr', 'transloco', 'project.transferOwnership.title');
+    await expect(members.getDialog()).toHaveCount(1);
+    await expect(members.getDialogTitle()).toHaveAttribute(
+      'transloco',
+      'project.transferOwnership.title',
+    );
   });
 
-  it('should transfer ownership and return to the members page on save', () => {
+  test('should transfer ownership and return to the members page on save', async ({ page }) => {
     // given
-    cy.intercept('/api/users*', { fixture: 'johndoe/p1/users-mika' });
-    cy.intercept('PUT', '/api/project', { fixture: 'johndoe/p1' }).as('updateProject');
+    await mockApi(page, '/api/users*', 'johndoe/p1/users-mika');
+    await mockApi(page, '/api/project', 'johndoe/p1', { method: 'PUT' });
 
     // when
-    page.navigateTo();
-    page.getMemberRow('John Doe').find('button.edit').click();
-    page
-      .getDialog()
-      .find('input')
-      .first()
-      .clear()
-      .type('ronnylee');
-    cy.get('mat-option').contains('ronnylee').click();
-    page.getDialogSaveButton().click();
+    await members.navigateTo();
+    await members.getMemberRow('John Doe').locator('button.edit').click();
+    await members.getDialog().locator('input').first().fill('ronnylee');
+    await page.getByRole('option', { name: 'ronnylee' }).click();
+    const updateProject = waitForApi(page, '/api/project', 'PUT');
+    await members.getDialogSaveButton().click();
 
     // then
-    cy.wait('@updateProject').its('request.body').should('deep.include', {
-      ownerId: '5e15a05d-c583-45a0-84fa-1e770b2a4534'
+    expect((await updateProject).postDataJSON()).toMatchObject({
+      ownerId: '5e15a05d-c583-45a0-84fa-1e770b2a4534',
     });
-    page.getDialog().should('have.length', 0);
-    cy.url().should('include', '/johndoe/p1/members');
+    await expect(members.getDialog()).toHaveCount(0);
+    await expect(page).toHaveURL(/\/johndoe\/p1\/members/);
   });
 });

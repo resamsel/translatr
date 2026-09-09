@@ -1,73 +1,58 @@
+import { test, expect } from '../support/test';
+import { mockApi, waitForApi } from '../support/mock-api';
 import { UsersPage } from '../support/users-page.po';
 
-describe('Admin Users', () => {
-  let page: UsersPage;
-
-  beforeEach(() => {
-    page = new UsersPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me*', { fixture: 'me' });
-    cy.intercept('/api/user*', { fixture: 'users' });
-    cy.intercept('/api/user/*', { fixture: 'user' });
-    cy.intercept('/api/project*', { fixture: 'projects' });
-    cy.intercept('/api/activities*', { fixture: 'activities' });
+test.describe('Admin Users', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/user*', 'users');
+    await mockApi(page, '/api/user/*', 'user');
+    await mockApi(page, '/api/project*', 'projects');
+    await mockApi(page, '/api/activities*', 'activities');
   });
 
-  it('should list the users returned by the API', () => {
-    // given
+  test('should list the users returned by the API', async ({ page }) => {
+    const users = await new UsersPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-
-    // then
-    page.getRows().should('have.length', 3);
-    page.getRow('Jane Smith').should('contain.text', 'janesmith');
+    await expect(users.getRows()).toHaveCount(3);
+    await expect(users.getRow('Jane Smith')).toContainText('janesmith');
   });
 
-  it('should push the search term into the users request', () => {
-    // given
-    cy.intercept('/api/user*search=*', { fixture: 'users' }).as('search');
+  test('should push the search term into the users request', async ({ page }) => {
+    await mockApi(page, '/api/user*search=*', 'users');
+    const users = await new UsersPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-    page.getSearchField().type('jane');
-    cy.get('mat-option').first().click();
+    const search = waitForApi(page, '/api/user*search=*');
+    await users.getSearchField().fill('jane');
+    await page.locator('mat-option').first().click();
 
-    // then
-    cy.wait('@search').its('request.url').should('contain', 'search=jane');
+    expect((await search).url()).toContain('search=jane');
   });
 
-  it('should navigate to the user detail page on row click', () => {
-    // given
+  test('should navigate to the user detail page on row click', async ({ page }) => {
+    const users = await new UsersPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-    page.getRows().first().find('a.link').click();
+    await users.getRows().first().locator('a.link').click();
 
-    // then
-    cy.url().should('match', /\/users\/[0-9a-f-]+$/);
-    page.getPageName().should('have.text', 'Jane Smith');
+    await expect(page).toHaveURL(/\/users\/[0-9a-f-]+$/);
+    await expect(users.getPageName()).toHaveText('Jane Smith');
   });
 
-  it('should persist a role change from the user edit dialog', () => {
-    // given
-    cy.intercept('PUT', '/api/user*', { fixture: 'user-updated' }).as('update');
+  test('should persist a role change from the user edit dialog', async ({ page }) => {
+    await mockApi(page, '/api/user*', 'user-updated', { method: 'PUT' });
+    const users = await new UsersPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-    page.getEditButton('Jane Smith').click();
-    // given: the row's role prefills as Admin before we change it
-    page.getDialog().find('mat-select[formControlName="role"]').should('contain.text', 'Admin');
-    page.getDialog().find('mat-select[formControlName="role"]').click();
-    cy.get('mat-option').contains('User').click();
-    page.getDialog().find('button[transloco="button.save"]').click();
+    await users.getEditButton('Jane Smith').click();
+    const roleSelect = users.getDialog().locator('mat-select[formControlName="role"]');
+    await expect(roleSelect).toContainText('Admin');
+    await roleSelect.click();
+    await page.getByRole('option', { name: 'User', exact: true }).click();
 
-    // then
-    cy.wait('@update').its('request.body').should('deep.include', {
+    const update = waitForApi(page, '/api/user*', 'PUT');
+    await users.getDialog().locator('button[transloco="button.save"]').click();
+
+    expect((await update).postDataJSON()).toMatchObject({
       id: '5e15a05d-c583-45a0-84fa-1e770b2a4532',
-      role: 'User'
+      role: 'User',
     });
   });
 });

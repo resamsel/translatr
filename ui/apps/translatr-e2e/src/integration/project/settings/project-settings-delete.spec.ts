@@ -1,114 +1,98 @@
+import { test, expect } from '../../../support/test';
+import { mockApi } from '../../../support/mock-api';
 import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
 
-describe('Project Settings Delete', () => {
-  let page: ProjectSettingsPage;
+test.describe('Project Settings Delete', () => {
+  let settingsPage: ProjectSettingsPage;
 
-  beforeEach(() => {
-    page = new ProjectSettingsPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    settingsPage = new ProjectSettingsPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await mockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should show the delete project button', () => {
+  test('should show the delete project button', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page.getDeleteProjectButton().should('be.visible');
+    await expect(settingsPage.getDeleteProjectButton()).toBeVisible();
   });
 
-  it('should show the delete project dialog when on delete project', () => {
+  test('should show the delete project dialog when on delete project', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getDeleteProjectButton().click();
+    await settingsPage.navigateTo();
+    await settingsPage.getDeleteProjectButton().click();
 
     // then
-    page.getDeleteProjectDialog().should('have.length', 1);
+    await expect(settingsPage.getDeleteProjectDialog()).toHaveCount(1);
   });
 
-  it('should hide the delete project dialog on cancel', () => {
+  test('should hide the delete project dialog on cancel', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getDeleteProjectButton().click();
-    page.getCancelProjectDeleteDialogButton().click();
+    await settingsPage.navigateTo();
+    await settingsPage.getDeleteProjectButton().click();
+    await settingsPage.getCancelProjectDeleteDialogButton().click();
 
     // then
-    page.getDeleteProjectDialog().should('have.length', 0);
+    await expect(settingsPage.getDeleteProjectDialog()).toHaveCount(0);
   });
 
-  it('should disable the delete button when project name empty', () => {
+  test('should disable the delete button when project name empty', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getDeleteProjectButton().click();
+    await settingsPage.navigateTo();
+    await settingsPage.getDeleteProjectButton().click();
 
     // then
-    page
-      .getDeleteProjectDialog()
-      .find('button.delete')
-      .should('be.disabled');
+    await expect(settingsPage.getDeleteProjectDialog().locator('button.delete')).toBeDisabled();
   });
 
-  it('should disable the delete button when project name incorrect', () => {
+  test('should disable the delete button when project name incorrect', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getDeleteProjectButton().click();
-    page
-      .getDeleteProjectDialog()
-      .find('input')
-      .type('INCORRECT');
+    await settingsPage.navigateTo();
+    await settingsPage.getDeleteProjectButton().click();
+    await settingsPage.getDeleteProjectDialog().locator('input').fill('INCORRECT');
 
     // then
-    page
-      .getDeleteProjectDialog()
-      .find('button.delete')
-      .should('be.disabled');
+    await expect(settingsPage.getDeleteProjectDialog().locator('button.delete')).toBeDisabled();
   });
 
-  it('should hide the delete project dialog on successful delete', () => {
+  test('should hide the delete project dialog on successful delete', async ({ page }) => {
     // given
-    cy.intercept('DELETE', '/api/project/*', { fixture: 'johndoe/p1' });
+    await mockApi(page, '/api/project/*', 'johndoe/p1', { method: 'DELETE' });
 
     // dashboard
-    cy.intercept('/api/users?limit=1&fetch=count', { fixture: 'dashboard/users-limit1' });
-    cy.intercept('/api/projects?owner=*', { fixture: 'dashboard/projects-owner-limit4' });
-    cy.intercept('/api/projects?memberId=*', { fixture: 'dashboard/projects-memberId-limit4' });
-    cy.intercept('/api/activities*', { fixture: 'dashboard/activities-userId-limit4' });
+    await mockApi(page, '/api/users?limit=1&fetch=count', 'dashboard/users-limit1');
+    await mockApi(page, '/api/projects?owner=*', 'dashboard/projects-owner-limit4');
+    await mockApi(page, '/api/projects?memberId=*', 'dashboard/projects-memberId-limit4');
+    await mockApi(page, '/api/activities*', 'dashboard/activities-userId-limit4');
 
     // when
-    page.navigateTo();
-    page.getDeleteProjectButton().click();
-    page
-      .getDeleteProjectDialog()
-      .find('input')
-      .type('p1');
-    page
-      .getDeleteProjectDialog()
-      .find('button.delete')
-      .click();
+    await settingsPage.navigateTo();
+    await settingsPage.getDeleteProjectButton().click();
+    await settingsPage.getDeleteProjectDialog().locator('input').fill('p1');
+    await settingsPage.getDeleteProjectDialog().locator('button.delete').click();
 
     // then
-    page.getDeleteProjectDialog().should('have.length', 0);
+    await expect(settingsPage.getDeleteProjectDialog()).toHaveCount(0);
 
-    cy.url().should('contain', '/dashboard');
+    await expect(page).toHaveURL(/\/dashboard/);
   });
 
   // describe('Delete Project as Manager', () => {

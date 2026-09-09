@@ -1,30 +1,29 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi } from '../../../support/mock-api';
 import { ProjectKeysPage } from '../../../support/project/project-keys-page.po';
 
-describe('Project Keys', () => {
-  let page: ProjectKeysPage;
+test.describe('Project Keys', () => {
+  let keys: ProjectKeysPage;
 
-  beforeEach(() => {
-    page = new ProjectKeysPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    keys = new ProjectKeysPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await remockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should have page name Project Keys', () => {
+  test('should have page name Project Keys', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await keys.navigateTo();
 
     // then
-    page.getPageName().should('have.text', 'johndoe/p1');
+    await expect(keys.getPageName()).toHaveText('johndoe/p1');
   });
 });
