@@ -42,4 +42,14 @@ export class FeatureFlagsPage extends Page {
   getToggle(featureKey: string): Cypress.Chainable<JQuery<HTMLElement>> {
     return this.getRow(featureKey).find('.feature-actions button');
   }
+
+  getUserPickerInput(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('.user-picker input');
+  }
+
+  pickUser(search: string): FeatureFlagsPage {
+    this.getUserPickerInput().clear().type(search);
+    cy.get('mat-option').contains(search).click();
+    return this;
+  }
 }

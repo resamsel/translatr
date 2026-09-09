@@ -1,5 +1,25 @@
+@if (isAdmin$ | async) {
+  <mat-form-field class="user-picker">
+    <mat-label>Manage flags for</mat-label>
+    <input
+      matInput
+      [formControl]="userControl"
+      [matAutocomplete]="userAuto"
+    />
+    <mat-autocomplete
+      #userAuto="matAutocomplete"
+      [displayWith]="displayFn"
+      (optionSelected)="onUserSelected($event)"
+    >
+      @for (user of userOptions$ | async; track user.id) {
+        <mat-option [value]="user">{{ user.username }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+}
+
 <p class="hint">
-  Toggle a feature for your account. “Global default” is what you get without an override.
+  Toggle a feature for {{ (isAdmin$ | async) ? 'the selected user' : 'your account' }}. “Global default” is what you get without an override.
 </p>
 
 @for (row of rows$ | async; track row) {

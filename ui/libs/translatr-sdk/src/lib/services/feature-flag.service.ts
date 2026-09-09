@@ -14,8 +14,13 @@ export class FeatureFlagService extends AbstractService<UserFeatureFlag, Feature
     super(http, errorHandler, languageProvider, () => '/api/featureflags', '/api/featureflag');
   }
 
-  /** override → global → default detail for the current user, one entry per feature. */
-  resolved(): Observable<ResolvedFeature[]> {
-    return this.http.get<ResolvedFeature[]>('/api/featureflags/resolved');
+  /**
+   * override → global → default detail for `userId`, one entry per feature. Omit `userId` to
+   * resolve for the caller; resolving for anyone else requires Admin.
+   */
+  resolved(userId?: string): Observable<ResolvedFeature[]> {
+    return this.http.get<ResolvedFeature[]>('/api/featureflags/resolved', {
+      params: userId ? { userId } : {}
+    });
   }
 }

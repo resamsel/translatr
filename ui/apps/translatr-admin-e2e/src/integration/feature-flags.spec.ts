@@ -61,4 +61,42 @@ describe('Admin Feature Flags', () => {
       .should('equal', 'DELETE');
     page.getToggle('language-switcher').find('mat-icon').should('have.text', 'toggle_off');
   });
+
+  // The whole admin app is already gated to Admin users by AuthGuard (a non-admin never
+  // reaches this page at all — see auth.guard.ts), so every scenario here runs as the
+  // fixture's admin. isAdmin$-gating the picker itself is covered at the component-spec
+  // level, which can exercise a non-admin me$ without going through the real router guard.
+  describe('managing another user\'s flags', () => {
+    beforeEach(() => {
+      cy.intercept('/api/user*', { fixture: 'users' });
+    });
+
+    it('an admin can pick another user, which updates the URL to a sharable link', () => {
+      cy.intercept('GET', '/api/featureflags/resolved*', { fixture: 'resolved-features' }).as('resolved');
+
+      page.navigateTo();
+      cy.wait('@resolved');
+
+      page.pickUser('janesmith');
+
+      cy.location('search').should('include', 'userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+      cy.wait('@resolved')
+        .its('request.url')
+        .should('include', 'userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+    });
+
+    it('opening a shared ?userId= link loads that user\'s flags directly', () => {
+      cy.intercept('GET', '/api/featureflags/resolved*', { fixture: 'resolved-features' }).as('resolved');
+      cy.intercept('/api/user/5e15a05d-c583-45a0-84fa-1e770b2a4532*', {
+        body: { id: '5e15a05d-c583-45a0-84fa-1e770b2a4532', username: 'janesmith', name: 'Jane Smith' }
+      });
+
+      cy.visit('/featureflags/user?userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+
+      cy.wait('@resolved')
+        .its('request.url')
+        .should('include', 'userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+      page.getUserPickerInput().should('have.value', 'janesmith');
+    });
+  });
 });
