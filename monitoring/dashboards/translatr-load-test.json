@@ -1,1370 +1,193 @@
 {
-  "_comment": "SEED DASHBOARD - hand-authored against the metric names shipped by tasks 1-8 of issue #239; a live SigNoz was not available to author/export against. Import it, drive one loadgenerator run, refine panels/units/queries in the SigNoz UI, then re-export over this file and re-commit. The JSON schema is SigNoz-version-coupled (authored for signoz v0.129.0) - re-export on a SigNoz bump. Some panels are latent until their Micrometer binder is enabled: the Persistence row needs quarkus.datasource.jdbc.enable-metrics=true and the Cache row needs quarkus.cache.caffeine.\"<name>\".metrics-enabled=true - neither is set today. See docs/observability.md.",
-  "title": "Translatr - Load Test",
-  "description": "Load-test observability for the Quarkus backend (OpenTelemetry + SigNoz, issue #239): throughput, latency percentiles, error rate, saturation, JVM runtime, DB pool, cache, and API-key usage. SEED DASHBOARD - hand-authored against the metric names shipped by tasks 1-8 of issue #239; a live SigNoz was not available to author/export against. Import it, drive one loadgenerator run, refine panels/units/queries in the SigNoz UI, then re-export over this file and re-commit. The JSON schema is SigNoz-version-coupled (authored for signoz v0.129.0) - re-export on a SigNoz bump. Some panels are latent until their Micrometer binder is enabled: the Persistence row needs quarkus.datasource.jdbc.enable-metrics=true and the Cache row needs quarkus.cache.caffeine.\"<name>\".metrics-enabled=true - neither is set today. See docs/observability.md.",
+  "_comment": "Load-test observability dashboard for issue #239. SigNoz query-builder widgets (queryType=builder) against the OTLP metric keys as SigNoz stores them (dotted: http_server_requests_seconds.count / .bucket, jvm_gc_pause_seconds.sum; custom: translatr_apikey_*). Validated live on 2026-09-09 against a running translatr load test. NOTE: the Persistence/Agroal-pool row is omitted \u2014 quarkus.datasource.jdbc.enable-metrics is BUILD-fixed and was not baked into the Dockerfile.jvm image used for that run. Re-export from SigNoz after tuning panels in the UI.",
+  "title": "Translatr \u2014 Load Test",
+  "description": "Throughput, latency percentiles, error rate, JVM runtime, cache, and API-key usage for a translatr-loadgenerator run.",
   "tags": [
     "translatr",
     "load-test",
     "observability",
-    "seed",
     "issue-239"
   ],
   "layout": [
     {
-      "i": "row-1-header",
-      "x": 0,
-      "y": 0,
+      "h": 1,
+      "i": "h1",
+      "moved": false,
+      "static": false,
       "w": 12,
-      "h": 2,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r1-throughput",
       "x": 0,
-      "y": 2,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 0
     },
     {
-      "i": "r1-latency-quantiles",
+      "h": 6,
+      "i": "wthr",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 1
+    },
+    {
+      "h": 6,
+      "i": "wlat",
+      "moved": false,
+      "static": false,
+      "w": 6,
       "x": 6,
-      "y": 2,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 1
     },
     {
-      "i": "r1-latency-histogram",
+      "h": 6,
+      "i": "wlatep",
+      "moved": false,
+      "static": false,
+      "w": 6,
       "x": 0,
-      "y": 4,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 7
     },
     {
-      "i": "r1-error-rate",
+      "h": 6,
+      "i": "wout",
+      "moved": false,
+      "static": false,
+      "w": 6,
       "x": 6,
-      "y": 4,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 7
     },
     {
-      "i": "row-2-header",
-      "x": 0,
-      "y": 14,
+      "h": 1,
+      "i": "h2",
+      "moved": false,
+      "static": false,
       "w": 12,
-      "h": 2,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r2-active",
       "x": 0,
-      "y": 16,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 7
     },
     {
-      "i": "r2-pool-wait",
+      "h": 6,
+      "i": "winf",
+      "moved": false,
+      "static": false,
+      "w": 4,
+      "x": 0,
+      "y": 8
+    },
+    {
+      "h": 6,
+      "i": "wcpu",
+      "moved": false,
+      "static": false,
+      "w": 4,
+      "x": 4,
+      "y": 8
+    },
+    {
+      "h": 6,
+      "i": "wheap",
+      "moved": false,
+      "static": false,
+      "w": 4,
+      "x": 8,
+      "y": 8
+    },
+    {
+      "h": 6,
+      "i": "wgc",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 14
+    },
+    {
+      "h": 6,
+      "i": "wthd",
+      "moved": false,
+      "static": false,
+      "w": 6,
       "x": 6,
-      "y": 16,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 14
     },
     {
-      "i": "r2-pool-active",
-      "x": 0,
-      "y": 18,
-      "w": 6,
-      "h": 6,
+      "h": 1,
+      "i": "h3",
       "moved": false,
-      "static": false
-    },
-    {
-      "i": "row-3-header",
-      "x": 0,
-      "y": 28,
+      "static": false,
       "w": 12,
-      "h": 2,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r3-cpu",
       "x": 0,
-      "y": 30,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 14
     },
     {
-      "i": "r3-heap",
+      "h": 6,
+      "i": "wcg",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 15
+    },
+    {
+      "h": 6,
+      "i": "wcs",
+      "moved": false,
+      "static": false,
+      "w": 6,
       "x": 6,
-      "y": 30,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 15
     },
     {
-      "i": "r3-gc-count",
-      "x": 0,
-      "y": 32,
-      "w": 6,
-      "h": 6,
+      "h": 1,
+      "i": "h4",
       "moved": false,
-      "static": false
-    },
-    {
-      "i": "r3-gc-time",
-      "x": 6,
-      "y": 32,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "row-4-header",
-      "x": 0,
-      "y": 42,
+      "static": false,
       "w": 12,
-      "h": 2,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r4-pool",
       "x": 0,
-      "y": 44,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 15
     },
     {
-      "i": "r4-acquire",
+      "h": 6,
+      "i": "waep",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 16
+    },
+    {
+      "h": 6,
+      "i": "wakey",
+      "moved": false,
+      "static": false,
+      "w": 6,
       "x": 6,
-      "y": 44,
-      "w": 6,
+      "y": 16
+    },
+    {
       "h": 6,
+      "i": "wat",
       "moved": false,
-      "static": false
-    },
-    {
-      "i": "row-5-header",
-      "x": 0,
-      "y": 50,
-      "w": 12,
-      "h": 2,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r5-hit-ratio",
-      "x": 0,
-      "y": 52,
+      "static": false,
       "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "x": 0,
+      "y": 22
     },
     {
-      "i": "r5-puts",
+      "h": 6,
+      "i": "waf",
+      "moved": false,
+      "static": false,
+      "w": 6,
       "x": 6,
-      "y": 52,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "row-6-header",
-      "x": 0,
-      "y": 58,
-      "w": 12,
-      "h": 2,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r6-by-uri",
-      "x": 0,
-      "y": 60,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r6-by-authtype",
-      "x": 6,
-      "y": 60,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r6-per-key",
-      "x": 0,
-      "y": 62,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r6-auth-failures",
-      "x": 6,
-      "y": 62,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "row-7-header",
-      "x": 0,
-      "y": 72,
-      "w": 12,
-      "h": 2,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r7-5xx",
-      "x": 0,
-      "y": 74,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
-    },
-    {
-      "i": "r7-error-logs",
-      "x": 6,
-      "y": 74,
-      "w": 6,
-      "h": 6,
-      "moved": false,
-      "static": false
+      "y": 22
     }
   ],
   "widgets": [
     {
-      "id": "row-1-header",
-      "title": "Row 1 - Throughput & latency  |  backing metric: http_server_requests_seconds",
-      "description": "Row 1 - Throughput & latency  |  backing metric: http_server_requests_seconds",
+      "id": "h1",
+      "title": "Row 1 \u2014 Throughput & latency",
+      "description": "",
       "panelTypes": "text",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "4ed812af-a517-4e49-b37d-9ac2dae56155"
-      },
-      "timePreferance": "GLOBAL",
-      "yAxisUnit": "none",
-      "thresholds": []
-    },
-    {
-      "id": "r1-throughput",
-      "title": "Request throughput (req/s)",
-      "description": "Server request rate. Backing metric: http_server_requests_seconds_count.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(rate(http_server_requests_seconds_count[1m]))",
-            "legend": "req/s",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "25fc3d63-becc-4c07-abcc-fb7982bd750a"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "reqps",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r1-latency-quantiles",
-      "title": "Latency percentiles (Micrometer client-side)",
-      "description": "p50/p90/p95/p99 published by the HttpServerHistogramConfig MeterFilter. Backing metric: http_server_requests_seconds{quantile=...}.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "max(http_server_requests_seconds{quantile=\"0.5\"})",
-            "legend": "p50",
-            "disabled": false
-          },
-          {
-            "name": "B",
-            "query": "max(http_server_requests_seconds{quantile=\"0.9\"})",
-            "legend": "p90",
-            "disabled": false
-          },
-          {
-            "name": "C",
-            "query": "max(http_server_requests_seconds{quantile=\"0.95\"})",
-            "legend": "p95",
-            "disabled": false
-          },
-          {
-            "name": "D",
-            "query": "max(http_server_requests_seconds{quantile=\"0.99\"})",
-            "legend": "p99",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "4a2008f4-7fea-4aee-ad38-8a2e621048d1"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "s",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r1-latency-histogram",
-      "title": "p95 latency from the histogram (server-side aggregate)",
-      "description": "histogram_quantile over the bucket series - cross-check against the client-side quantiles. Backing metric: http_server_requests_seconds_bucket.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket[5m])))",
-            "legend": "p95",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "3c629e47-b738-4e77-ae9c-7e586245e4de"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "s",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r1-error-rate",
-      "title": "Error ratio (5xx / all)",
-      "description": "Backing metric: http_server_requests_seconds_count filtered by status.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[1m])) / sum(rate(http_server_requests_seconds_count[1m]))",
-            "legend": "5xx ratio",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "dfc19d12-e904-479a-acb7-4a4a2872c346"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "percentunit",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "row-2-header",
-      "title": "Row 2 - Concurrency & queueing  |  backing metrics: http_server_active_requests, agroal_*",
-      "description": "Row 2 - Concurrency & queueing  |  backing metrics: http_server_active_requests, agroal_*",
-      "panelTypes": "text",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "9404299e-cd65-4c84-903b-5cfa2962d404"
-      },
-      "timePreferance": "GLOBAL",
-      "yAxisUnit": "none",
-      "thresholds": []
-    },
-    {
-      "id": "r2-active",
-      "title": "In-flight HTTP requests",
-      "description": "Concurrency at the HTTP layer. Backing metric: http_server_active_requests.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(http_server_active_requests)",
-            "legend": "active requests",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "e14d0a92-a1a1-4c31-8eea-9d50e59f2a7f"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r2-pool-wait",
-      "title": "Threads waiting for a DB connection",
-      "description": "Connection-pool back-pressure. Backing metric: agroal_awaiting_count (Agroal - translatr's pool; requires quarkus.datasource.jdbc.enable-metrics=true). The plan's hikaricp_connections_pending does not apply - translatr uses quarkus-jdbc-postgresql / Agroal, not HikariCP.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(agroal_awaiting_count)",
-            "legend": "awaiting",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "00529e2e-7882-4d5a-ba3a-35ef746958d0"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r2-pool-active",
-      "title": "Active (in-use) DB connections",
-      "description": "Backing metric: agroal_active_count (Agroal equivalent of the plan's hikaricp_connections_active).",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(agroal_active_count)",
-            "legend": "active connections",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "d8eb7afa-b449-43e2-8919-4083ec158518"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "row-3-header",
-      "title": "Row 3 - Runtime (JVM)  |  backing metrics: process_cpu_usage, system_cpu_usage, jvm_memory_used_bytes, jvm_gc_pause_seconds_*",
-      "description": "Row 3 - Runtime (JVM)  |  backing metrics: process_cpu_usage, system_cpu_usage, jvm_memory_used_bytes, jvm_gc_pause_seconds_*",
-      "panelTypes": "text",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "19f11954-db93-40b6-8234-71c7c6c7c958"
-      },
-      "timePreferance": "GLOBAL",
-      "yAxisUnit": "none",
-      "thresholds": []
-    },
-    {
-      "id": "r3-cpu",
-      "title": "CPU usage (process vs system)",
-      "description": "Backing metrics: process_cpu_usage, system_cpu_usage (0..1).",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "max(process_cpu_usage)",
-            "legend": "process",
-            "disabled": false
-          },
-          {
-            "name": "B",
-            "query": "max(system_cpu_usage)",
-            "legend": "system",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "9482d9cd-42b2-4027-bcf7-dd665328fb41"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "percentunit",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r3-heap",
-      "title": "Heap used vs max",
-      "description": "Backing metrics: jvm_memory_used_bytes / jvm_memory_max_bytes (area=heap).",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(jvm_memory_used_bytes{area=\"heap\"})",
-            "legend": "heap used",
-            "disabled": false
-          },
-          {
-            "name": "B",
-            "query": "sum(jvm_memory_max_bytes{area=\"heap\"})",
-            "legend": "heap max",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "9b2ca5c9-e1e8-42ba-96a2-b38839474e77"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "bytes",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r3-gc-count",
-      "title": "GC pause rate",
-      "description": "Backing metric: jvm_gc_pause_seconds_count.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(rate(jvm_gc_pause_seconds_count[1m]))",
-            "legend": "pauses/s",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "755c19a9-c347-48af-bebd-2cf59ed99284"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r3-gc-time",
-      "title": "Time spent in GC pauses",
-      "description": "Backing metric: jvm_gc_pause_seconds_sum.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(rate(jvm_gc_pause_seconds_sum[1m]))",
-            "legend": "s of pause / s",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "1e60edb1-ab26-471f-8cd2-bb1ac4204528"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "s",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "row-4-header",
-      "title": "Row 4 - Persistence (DB connection pool)  |  backing metrics: agroal_*  (needs quarkus.datasource.jdbc.enable-metrics=true)",
-      "description": "Row 4 - Persistence (DB connection pool)  |  backing metrics: agroal_*  (needs quarkus.datasource.jdbc.enable-metrics=true)",
-      "panelTypes": "text",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "cb7ba59a-0ea0-44d2-a699-a3a59e60ccb6"
-      },
-      "timePreferance": "GLOBAL",
-      "yAxisUnit": "none",
-      "thresholds": []
-    },
-    {
-      "id": "r4-pool",
-      "title": "Pool: active / available / max-used",
-      "description": "Backing metrics: agroal_active_count, agroal_available_count, agroal_max_used_count.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum(agroal_active_count)",
-            "legend": "active",
-            "disabled": false
-          },
-          {
-            "name": "B",
-            "query": "sum(agroal_available_count)",
-            "legend": "available",
-            "disabled": false
-          },
-          {
-            "name": "C",
-            "query": "sum(agroal_max_used_count)",
-            "legend": "max used",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "147747db-3e8c-41e0-8c44-30e98eb11fd1"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r4-acquire",
-      "title": "Connection acquire wait (avg blocking time)",
-      "description": "Backing metric: agroal_blocking_time_average (ms).",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "max(agroal_blocking_time_average)",
-            "legend": "avg blocking time",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "56b1022a-4135-4c29-adb1-ba878f8d57aa"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "ms",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "row-5-header",
-      "title": "Row 5 - Cache (Caffeine via quarkus-cache)  |  backing metrics: cache_gets_total, cache_puts_total  (needs quarkus.cache.caffeine.\"<name>\".metrics-enabled=true)",
-      "description": "Row 5 - Cache (Caffeine via quarkus-cache)  |  backing metrics: cache_gets_total, cache_puts_total  (needs quarkus.cache.caffeine.\"<name>\".metrics-enabled=true)",
-      "panelTypes": "text",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "e3233857-1504-4e5a-a3a4-17053fe0a4f3"
-      },
-      "timePreferance": "GLOBAL",
-      "yAxisUnit": "none",
-      "thresholds": []
-    },
-    {
-      "id": "r5-hit-ratio",
-      "title": "Cache hit ratio per cache",
-      "description": "Backing metric: cache_gets_total{cache,result}. Caches: projects, keys, locales, users. result label is hit|miss.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum by (cache) (rate(cache_gets_total{result=\"hit\"}[5m])) / sum by (cache) (rate(cache_gets_total[5m]))",
-            "legend": "{{cache}} hit ratio",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "f1a09b4b-1380-4cfd-8f1e-7dcd72106661"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "percentunit",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r5-puts",
-      "title": "Cache put rate per cache",
-      "description": "Backing metric: cache_puts_total{cache}.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum by (cache) (rate(cache_puts_total[5m]))",
-            "legend": "{{cache}} puts/s",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "8f45d7ae-c10f-4221-97f6-9c81607d3255"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "row-6-header",
-      "title": "Row 6 - API usage  |  backing metrics: http_server_requests_seconds_count (by uri / auth_type), translatr_apikey_requests_total, translatr_apikey_auth_failures_total",
-      "description": "Row 6 - API usage  |  backing metrics: http_server_requests_seconds_count (by uri / auth_type), translatr_apikey_requests_total, translatr_apikey_auth_failures_total",
-      "panelTypes": "text",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "645c4ea5-ac20-46cf-a6c6-4bfc187ae3cd"
-      },
-      "timePreferance": "GLOBAL",
-      "yAxisUnit": "none",
-      "thresholds": []
-    },
-    {
-      "id": "r6-by-uri",
-      "title": "Request rate by route",
-      "description": "Backing metric: http_server_requests_seconds_count, grouped by uri (JAX-RS template).",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum by (uri) (rate(http_server_requests_seconds_count[1m]))",
-            "legend": "{{uri}}",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "0eaf5cd6-7329-48a8-b381-a1ff760d69de"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "reqps",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r6-by-authtype",
-      "title": "Request rate by auth_type",
-      "description": "Backing metric: http_server_requests_seconds_count, tag auth_type in {access-key, session, anonymous} (AuthTypeTagsContributor).",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum by (auth_type) (rate(http_server_requests_seconds_count[1m]))",
-            "legend": "{{auth_type}}",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "88445038-e4fd-4948-898b-dc4ee7bbdc89"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "reqps",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r6-per-key",
-      "title": "Per-key API usage",
-      "description": "Backing metric: translatr_apikey_requests_total{key_id,endpoint,status} (ApiMetricsFilter; key_id label gated by translatr.observability.apikey-metrics.key-id-label=true).",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum by (key_id, endpoint) (rate(translatr_apikey_requests_total[5m]))",
-            "legend": "{{key_id}} {{endpoint}}",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "d621f565-d426-4805-8da0-f3588af8ef53"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "reqps",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r6-auth-failures",
-      "title": "API-key auth failures by reason",
-      "description": "Backing metric: translatr_apikey_auth_failures_total{reason}. reason in {invalid, missing} - there is no 'expired' reason (the AccessToken entity has no expiry field).",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum by (reason) (rate(translatr_apikey_auth_failures_total[5m]))",
-            "legend": "{{reason}}",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "1660861b-1a91-461d-8264-2290d7775d83"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "row-7-header",
-      "title": "Row 7 - Errors  |  backing metric: http_server_requests_seconds_count{status=~\"5..\"} + error-log rate (OTLP logs in SigNoz)",
-      "description": "Row 7 - Errors  |  backing metric: http_server_requests_seconds_count{status=~\"5..\"} + error-log rate (OTLP logs in SigNoz)",
-      "panelTypes": "text",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "c2906c83-3df9-4a0e-a568-e7a280612a61"
-      },
-      "timePreferance": "GLOBAL",
-      "yAxisUnit": "none",
-      "thresholds": []
-    },
-    {
-      "id": "r7-5xx",
-      "title": "5xx timeline by status",
-      "description": "Backing metric: http_server_requests_seconds_count filtered to status=~\"5..\".",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "queryType": "promql",
-        "promql": [
-          {
-            "name": "A",
-            "query": "sum by (status) (rate(http_server_requests_seconds_count{status=~\"5..\"}[1m]))",
-            "legend": "{{status}}",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "builder": {
-          "queryData": [],
-          "queryFormulas": []
-        },
-        "id": "3ff6fab6-e02c-4fc3-8763-54fa691ac3f6"
-      },
-      "timePreferance": "GLOBAL",
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
-      "thresholds": [],
-      "fillSpans": false
-    },
-    {
-      "id": "r7-error-logs",
-      "title": "Error-log rate",
-      "description": "Rate of ERROR-severity application logs shipped via OTLP to SigNoz. Builder logs query, filter severity_text = ERROR; refine field key against the live logs schema after the first run.",
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
+      "yAxisUnit": "",
       "query": {
         "queryType": "builder",
         "promql": [
@@ -1383,63 +206,1351 @@
             "disabled": false
           }
         ],
+        "id": "h1-q",
         "builder": {
-          "queryData": [
-            {
-              "dataSource": "logs",
-              "queryName": "A",
-              "aggregateOperator": "count",
-              "aggregateAttribute": {
-                "key": "",
-                "dataType": "",
-                "type": "",
-                "isColumn": false
-              },
-              "timeAggregation": "rate",
-              "spaceAggregation": "sum",
-              "functions": [],
-              "filters": {
-                "items": [
-                  {
-                    "key": {
-                      "key": "severity_text",
-                      "dataType": "string",
-                      "type": "",
-                      "isColumn": true
-                    },
-                    "op": "=",
-                    "value": "ERROR"
-                  }
-                ],
-                "op": "AND"
-              },
-              "expression": "A",
-              "disabled": false,
-              "stepInterval": 60,
-              "having": [],
-              "limit": null,
-              "orderBy": [],
-              "groupBy": [],
-              "legend": "error logs/s",
-              "reduceTo": "sum"
-            }
-          ],
-          "queryFormulas": []
-        },
-        "id": "26f21196-241e-47b4-b4f3-ae6ff4878e24"
+          "queryFormulas": [],
+          "queryData": []
+        }
       },
       "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
       "softMax": null,
       "softMin": null,
       "selectedLogFields": [],
-      "selectedTracesFields": [],
-      "yAxisUnit": "none",
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wthr",
+      "title": "Request rate by status (req/s)",
+      "description": "http_server_requests_seconds.count \u00b7 sum_rate",
+      "panelTypes": "graph",
+      "yAxisUnit": "reqps",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wthr-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{status}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "status",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
       "thresholds": [],
-      "fillSpans": false
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wlat",
+      "title": "Latency p50 / p95 / p99 (s)",
+      "description": "http_server_requests_seconds.bucket \u00b7 hist_quantile",
+      "panelTypes": "graph",
+      "yAxisUnit": "s",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wlat-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "p50",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.bucket",
+                "type": "Histogram"
+              },
+              "aggregateOperator": "hist_quantile_50",
+              "timeAggregation": "",
+              "spaceAggregation": "p50",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": false,
+              "legend": "p95",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.bucket",
+                "type": "Histogram"
+              },
+              "aggregateOperator": "hist_quantile_95",
+              "timeAggregation": "",
+              "spaceAggregation": "p95",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "C",
+              "expression": "C",
+              "disabled": false,
+              "legend": "p99",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.bucket",
+                "type": "Histogram"
+              },
+              "aggregateOperator": "hist_quantile_99",
+              "timeAggregation": "",
+              "spaceAggregation": "p99",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wlatep",
+      "title": "p95 latency by endpoint (s)",
+      "description": "top endpoints",
+      "panelTypes": "graph",
+      "yAxisUnit": "s",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wlatep-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{uri}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.bucket",
+                "type": "Histogram"
+              },
+              "aggregateOperator": "hist_quantile_95",
+              "timeAggregation": "",
+              "spaceAggregation": "p95",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "uri",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": 8,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wout",
+      "title": "Request rate by outcome (req/s)",
+      "description": "SUCCESS / CLIENT_ERROR / SERVER_ERROR",
+      "panelTypes": "graph",
+      "yAxisUnit": "reqps",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wout-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{outcome}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "outcome",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "h2",
+      "title": "Row 2 \u2014 Concurrency & runtime",
+      "description": "",
+      "panelTypes": "text",
+      "yAxisUnit": "",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "h2-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": []
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "winf",
+      "title": "In-flight HTTP requests",
+      "description": "http_server_active_requests",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "winf-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_active_requests",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wcpu",
+      "title": "CPU usage",
+      "description": "process vs system",
+      "panelTypes": "graph",
+      "yAxisUnit": "percentunit",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wcpu-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "process",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "process_cpu_usage",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "avg",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": false,
+              "legend": "system",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "system_cpu_usage",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "avg",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wheap",
+      "title": "JVM heap used (bytes)",
+      "description": "area=heap",
+      "panelTypes": "graph",
+      "yAxisUnit": "bytes",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wheap-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "jvm_memory_used_bytes",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "sum",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "dataType": "string",
+                      "isColumn": false,
+                      "key": "area",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "heap"
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wgc",
+      "title": "GC pause rate (s/s) by action",
+      "description": "jvm_gc_pause_seconds.sum \u00b7 rate",
+      "panelTypes": "graph",
+      "yAxisUnit": "s",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wgc-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{action}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "jvm_gc_pause_seconds.sum",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "action",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wthd",
+      "title": "JVM live threads",
+      "description": "jvm_threads_live_threads",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wthd-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "jvm_threads_live_threads",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "h3",
+      "title": "Row 3 \u2014 Cache (Caffeine)",
+      "description": "",
+      "panelTypes": "text",
+      "yAxisUnit": "",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "h3-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": []
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wcg",
+      "title": "Cache gets/s by cache + result",
+      "description": "cache_gets_total",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wcg-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{cache}} {{result}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "cache_gets_total",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "cache",
+                  "type": "tag"
+                },
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "result",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wcs",
+      "title": "Cache size (entries) by cache",
+      "description": "cache_size",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wcs-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{cache}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "cache_size",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "cache",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "h4",
+      "title": "Row 4 \u2014 API-key usage",
+      "description": "",
+      "panelTypes": "text",
+      "yAxisUnit": "",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "h4-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": []
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "waep",
+      "title": "API requests/s by endpoint (top 10)",
+      "description": "translatr_apikey_requests_total",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "waep-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{endpoint}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "translatr_apikey_requests_total",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "endpoint",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": 10,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wakey",
+      "title": "API requests/s by key_id",
+      "description": "per token",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wakey-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "key {{key_id}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "translatr_apikey_requests_total",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "key_id",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wat",
+      "title": "HTTP requests/s by auth_type",
+      "description": "access-key / session / anonymous",
+      "panelTypes": "graph",
+      "yAxisUnit": "reqps",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wat-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{auth_type}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "auth_type",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "waf",
+      "title": "API-key auth failures/s by reason",
+      "description": "translatr_apikey_auth_failures_total",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "waf-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{reason}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "translatr_apikey_auth_failures_total",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "reason",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
     }
   ],
   "variables": {},
-  "panelMap": {},
-  "version": "v4",
+  "version": "v5",
   "uploadedGrafana": false
 }
