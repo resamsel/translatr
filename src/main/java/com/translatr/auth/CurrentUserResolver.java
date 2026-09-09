@@ -4,7 +4,6 @@ import com.translatr.model.User;
 import com.translatr.service.UserService;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.NotAuthorizedException;
 import java.util.Optional;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -19,9 +18,15 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 @ApplicationScoped
 public class CurrentUserResolver {
 
-    @Inject SecurityIdentity identity;
-    @Inject UserService      userService;
-    @Inject JsonWebToken     jwt;
+    private final SecurityIdentity identity;
+    private final UserService      userService;
+    private final JsonWebToken     jwt;
+
+    public CurrentUserResolver(SecurityIdentity identity, UserService userService, JsonWebToken jwt) {
+        this.identity    = identity;
+        this.userService = userService;
+        this.jwt         = jwt;
+    }
 
     public User resolve() {
         // On a @PermitAll endpoint the request may be anonymous; without this guard the OIDC
