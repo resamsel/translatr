@@ -1,41 +1,29 @@
+import { test, expect } from '../../support/test';
+import { mockApi, mockUnauthenticated } from '../../support/mock-api';
 import { LoginPage } from '../../support/auth/login-page.po';
 
 const authClients = [
   { key: 'keycloak', url: '/login/keycloak' },
-  { key: 'google', url: '/login/google' }
+  { key: 'google', url: '/login/google' },
 ];
 
-describe('Login', () => {
-  let page: LoginPage;
-
-  beforeEach(() => {
-    page = new LoginPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me*', { statusCode: 401, body: {} });
-    cy.intercept('/api/authclients', { body: authClients });
+test.describe('Login', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockUnauthenticated(page);
+    await mockApi(page, '/api/authclients', authClients);
   });
 
-  it('should render the login page with provider links', () => {
-    // given
+  test('should render the login page with provider links', async ({ page }) => {
+    const login = await new LoginPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-
-    // then
-    page.getPageName().should('have.text', 'Sign in');
-    page.getProviderLinks().should('have.length', 2);
-    cy.get('a.client-keycloak').should('exist');
+    await expect(login.getPageName()).toHaveText('Sign in');
+    await expect(login.getProviderLinks()).toHaveCount(2);
+    await expect(page.locator('a.client-keycloak')).toHaveCount(1);
   });
 
-  it('should redirect an unauthenticated visit to /dashboard to /login', () => {
-    // given
+  test('should redirect an unauthenticated visit to /dashboard to /login', async ({ page }) => {
+    await page.goto('dashboard');
 
-    // when
-    cy.visit('/dashboard');
-
-    // then
-    cy.url().should('contain', '/login');
+    await expect(page).toHaveURL(/\/login/);
   });
 });

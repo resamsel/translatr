@@ -1,54 +1,46 @@
+import { test, expect } from '../support/test';
+import { mockApi } from '../support/mock-api';
 import { DashboardPage } from '../support/dashboard-page.po';
 
-describe('Admin Dashboard', () => {
-  let page: DashboardPage;
-
-  beforeEach(() => {
-    page = new DashboardPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me*', { fixture: 'me' });
-    cy.intercept('/api/statistics', { fixture: 'statistics' });
-    cy.intercept('/api/user*', { fixture: 'users' });
-    cy.intercept('/api/project*', { fixture: 'projects' });
-    cy.intercept('/api/accesstokens*', { fixture: 'access-tokens' });
-    cy.intercept('/api/activities*', { fixture: 'activities' });
-    cy.intercept('/api/featureflags*', {
-      body: { list: [], offset: 0, limit: 20, total: 0, hasPrev: false, hasNext: false }
+test.describe('Admin Dashboard', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/statistics', 'statistics');
+    await mockApi(page, '/api/user*', 'users');
+    await mockApi(page, '/api/project*', 'projects');
+    await mockApi(page, '/api/accesstokens*', 'access-tokens');
+    await mockApi(page, '/api/activities*', 'activities');
+    await mockApi(page, '/api/featureflags*', {
+      list: [],
+      offset: 0,
+      limit: 20,
+      total: 0,
+      hasPrev: false,
+      hasNext: false,
     });
   });
 
-  it('should render the dashboard with the page title', () => {
-    // given
+  test('should render the dashboard with the page title', async ({ page }) => {
+    const dashboard = await new DashboardPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-
-    // then
-    page.getPageName().should('have.text', 'Dashboard');
+    await expect(dashboard.getPageName()).toHaveText('Dashboard');
   });
 
-  it('should render the four metric cards with totals from the API', () => {
-    // given
+  test('should render the four metric cards with totals from the API', async ({ page }) => {
+    const dashboard = await new DashboardPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-
-    // then
-    page.getMetric('user').first().find('mat-card-title').should('have.text', '3');
-    page.getMetric('project').first().find('mat-card-title').should('have.text', '3');
-    page.getMetric('access-token').first().find('mat-card-title').should('have.text', '2');
-    page.getMetric('activity').first().find('mat-card-title').should('have.text', '3');
+    await expect(dashboard.getMetric('user').first().locator('mat-card-title')).toHaveText('3');
+    await expect(dashboard.getMetric('project').first().locator('mat-card-title')).toHaveText('3');
+    await expect(
+      dashboard.getMetric('access-token').first().locator('mat-card-title'),
+    ).toHaveText('2');
+    await expect(dashboard.getMetric('activity').first().locator('mat-card-title')).toHaveText('3');
   });
 
-  it('should show the latest user name in the secondary metric', () => {
-    // given
+  test('should show the latest user name in the secondary metric', async ({ page }) => {
+    const dashboard = await new DashboardPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-
-    // then
-    page.getMetric('user').eq(1).find('mat-card-title').should('have.text', 'Jane Smith');
+    await expect(dashboard.getMetric('user').nth(1).locator('mat-card-title')).toHaveText(
+      'Jane Smith',
+    );
   });
 });

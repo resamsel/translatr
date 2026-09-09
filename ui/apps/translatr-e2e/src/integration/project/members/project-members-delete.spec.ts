@@ -1,70 +1,69 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi, waitForApi } from '../../../support/mock-api';
 import { ProjectMembersPage } from '../../../support/project/project-members-page.po';
 
-describe('Project Members Delete Member', () => {
-  let page: ProjectMembersPage;
+test.describe('Project Members Delete Member', () => {
+  let members: ProjectMembersPage;
 
-  beforeEach(() => {
-    page = new ProjectMembersPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    members = new ProjectMembersPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/me?fetch=features', 'me');
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await mockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should show the delete button on a non-owner row', () => {
+  test('should show the delete button on a non-owner row', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await members.navigateTo();
 
     // then
-    page.getDeleteButton('Ronny Lee').should('exist');
+    await expect(members.getDeleteButton('Ronny Lee')).toHaveCount(1);
   });
 
-  it('should not show a delete button on the sole Owner row', () => {
+  test('should not show a delete button on the sole Owner row', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await members.navigateTo();
 
     // then
-    page.getMemberRow('John Doe').find('confirm-button.delete').should('not.exist');
+    await expect(members.getMemberRow('John Doe').locator('confirm-button.delete')).toHaveCount(0);
   });
 
-  it('should show the confirmation menu on clicking delete', () => {
+  test('should show the confirmation menu on clicking delete', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
-    page.getDeleteButton('Ronny Lee').click();
+    await members.navigateTo();
+    await members.getDeleteButton('Ronny Lee').click();
 
     // then
-    cy.get('.mat-mdc-menu-panel button.confirm').should('have.text', 'Remove');
+    await expect(page.locator('.mat-mdc-menu-panel button.confirm')).toHaveText('Remove');
   });
 
-  it('should remove the row after confirming delete', () => {
+  test('should remove the row after confirming delete', async ({ page }) => {
     // given
-    page.navigateTo();
-    page.getMemberRows().should('have.length', 4);
-    cy.intercept('DELETE', '/api/member/*', { fixture: 'johndoe/p1/member-deleted' }).as(
-      'deleteMember'
-    );
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members-minus-ronny' });
+    await members.navigateTo();
+    await expect(members.getMemberRows()).toHaveCount(4);
+    await mockApi(page, '/api/member/*', 'johndoe/p1/member-deleted', { method: 'DELETE' });
+    await remockApi(page, '/api/project/*/members*', 'johndoe/p1/members-minus-ronny');
 
     // when
-    page.getDeleteButton('Ronny Lee').click();
-    cy.get('.mat-mdc-menu-panel button.confirm').click();
+    await members.getDeleteButton('Ronny Lee').click();
+    const deleteMember = waitForApi(page, '/api/member/*', 'DELETE');
+    await page.locator('.mat-mdc-menu-panel button.confirm').click();
 
     // then
-    cy.wait('@deleteMember');
-    page.getMemberRow('Ronny Lee').should('not.exist');
-    page.getMemberRows().should('have.length', 3);
+    await deleteMember;
+    await expect(members.getMemberRow('Ronny Lee')).toHaveCount(0);
+    await expect(members.getMemberRows()).toHaveCount(3);
   });
 });

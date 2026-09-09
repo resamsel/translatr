@@ -1,36 +1,38 @@
-import { Page } from '../page.po';
+import type { Locator } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class RegistrationPage extends Page {
-  navigateTo(): RegistrationPage {
-    cy.visit('/register');
+export class RegistrationPage extends PageObject {
+  async navigateTo(): Promise<RegistrationPage> {
+    await this.page.goto('register');
     return this;
   }
 
-  getNameField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('input[formcontrolname="name"]');
+  getNameField(): Locator {
+    return this.page.locator('input[formcontrolname="name"]');
   }
 
-  getUsernameField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('input[formcontrolname="username"]');
+  getUsernameField(): Locator {
+    return this.page.locator('input[formcontrolname="username"]');
   }
 
-  getUsernameError(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('dev-user-edit-form mat-error');
+  getUsernameError(): Locator {
+    return this.page.locator('dev-user-edit-form mat-error');
   }
 
-  getSubmitButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('button[transloco="button.save"]');
+  getSubmitButton(): Locator {
+    return this.page.locator('button[transloco="button.save"]');
   }
 
-  // The Material outline label overlays the empty input, so a real click on the
-  // right-hand side of the field is needed to focus it before typing.
-  fillName(value: string): RegistrationPage {
-    this.getNameField().click(240, 15).type(value);
+  async fillName(value: string): Promise<RegistrationPage> {
+    await this.getNameField().click({ position: { x: 240, y: 15 } });
+    await this.getNameField().fill(value);
     return this;
   }
 
-  fillUsername(value: string): RegistrationPage {
-    this.getUsernameField().click(240, 15).type(value).blur();
+  async fillUsername(value: string): Promise<RegistrationPage> {
+    await this.getUsernameField().click({ position: { x: 240, y: 15 } });
+    await this.getUsernameField().fill(value);
+    await this.getUsernameField().blur();
     return this;
   }
 }

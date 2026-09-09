@@ -1,52 +1,51 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi } from '../../../support/mock-api';
 import { UserAccessTokensPage } from '../../../support/user/user-access-tokens-page.po';
 
-describe('User Access Tokens', () => {
-  let page: UserAccessTokensPage;
+test.describe('User Access Tokens', () => {
+  let tokensPage: UserAccessTokensPage;
 
-  beforeEach(() => {
-    page = new UserAccessTokensPage('johndoe');
+  test.beforeEach(async ({ page }) => {
+    tokensPage = new UserAccessTokensPage(page, 'johndoe');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
-    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
-    cy.intercept('/api/accesstokens*', { fixture: 'johndoe/access-tokens' });
+    await mockApi(page, '/api/johndoe', 'johndoe');
+    await mockApi(page, '/api/projects*', 'johndoe/projects');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
+    await mockApi(page, '/api/accesstokens*', 'johndoe/access-tokens');
   });
 
-  it('should list the access tokens', () => {
+  test('should list the access tokens', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await tokensPage.navigateTo();
 
     // then
-    page.getRows().should('have.length', 2);
-    page.getRows().should('contain.text', 'CI token');
-    page.getRows().should('contain.text', 'Local dev');
+    await expect(tokensPage.getRows()).toHaveCount(2);
+    await expect(tokensPage.getRows().filter({ hasText: 'CI token' })).toHaveCount(1);
+    await expect(tokensPage.getRows().filter({ hasText: 'Local dev' })).toHaveCount(1);
   });
 
-  it('should show an empty view when there are none', () => {
+  test('should show an empty view when there are none', async ({ page }) => {
     // given
-    cy.intercept('/api/accesstokens*', { fixture: 'johndoe/access-tokens-empty' });
+    await remockApi(page, '/api/accesstokens*', 'johndoe/access-tokens-empty');
 
     // when
-    page.navigateTo();
+    await tokensPage.navigateTo();
 
     // then
-    page.getEmptyView().should('be.visible');
-    page.getRows().should('have.length', 0);
+    await expect(tokensPage.getEmptyView()).toBeVisible();
+    await expect(tokensPage.getRows()).toHaveCount(0);
   });
 
-  it('should navigate to the create page from the FAB', () => {
+  test('should navigate to the create page from the FAB', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
-    page.getFloatingActionButton().click();
+    await tokensPage.navigateTo();
+    await tokensPage.getFloatingActionButton().click();
 
     // then
-    cy.url().should('contain', '/johndoe/access-tokens/create');
+    await expect(page).toHaveURL(/\/johndoe\/access-tokens\/create/);
   });
 });

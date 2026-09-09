@@ -1,21 +1,20 @@
-describe('Forbidden', () => {
-  beforeEach(() => {
-    cy.clearCookies();
+import { test, expect } from '../../support/test';
+import { mockApi } from '../../support/mock-api';
 
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-  });
+test.describe('Forbidden', () => {
+  test('should show the forbidden page when the project API answers 403', async ({ page }) => {
+    await mockApi(
+      page,
+      '/api/johndoe/p1*',
+      { error: { type: 'PermissionException', message: 'forbidden' } },
+      { status: 403 },
+    );
 
-  it('should show the forbidden page when the project API answers 403', () => {
-    // given
-    cy.intercept('/api/johndoe/p1*', {
-      statusCode: 403,
-      body: { error: { type: 'PermissionException', message: 'forbidden' } }
-    });
+    await page.goto('johndoe/p1');
 
-    // when
-    cy.visit('/johndoe/p1');
-
-    // then — the AuthInterceptor routes 403 to the forbidden page (skipLocationChange)
-    cy.get('.error-header').should('be.visible').and('contain.text', 'Forbidden');
+    // the AuthInterceptor routes 403 to the forbidden page (skipLocationChange)
+    const header = page.locator('.error-header');
+    await expect(header).toBeVisible();
+    await expect(header).toContainText('Forbidden');
   });
 });

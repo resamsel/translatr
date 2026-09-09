@@ -1,20 +1,21 @@
-import { Page } from './page.po';
+import type { Locator } from '@playwright/test';
+import { PageObject } from './page.po';
 
-export class ProjectsPage extends Page {
-  navigateTo(): ProjectsPage {
-    cy.visit('/projects');
+export class ProjectsPage extends PageObject {
+  async navigateTo(): Promise<ProjectsPage> {
+    await this.page.goto('projects');
     return this;
   }
 
-  getCards(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-project-list a[mat-list-item]');
+  getCards(): Locator {
+    return this.page.locator('app-project-list a[mat-list-item]');
   }
 
-  getSearchField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-project-list dev-filter-field input');
+  getSearchField(): Locator {
+    return this.page.locator('app-project-list dev-filter-field input');
   }
 
-  getEmptyView(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-project-list dev-empty-view');
+  getEmptyView(): Locator {
+    return this.page.locator('app-project-list dev-empty-view');
   }
 }

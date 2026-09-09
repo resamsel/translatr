@@ -1,77 +1,62 @@
+import { test, expect } from '../../support/test';
+import { mockApi, mockUnauthenticated, waitForApi } from '../../support/mock-api';
 import { RegistrationPage } from '../../support/auth/registration-page.po';
 
-describe('Registration', () => {
-  let page: RegistrationPage;
-
-  beforeEach(() => {
-    page = new RegistrationPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me*', { statusCode: 401, body: {} });
-    cy.intercept('/api/profile', { statusCode: 200, body: null });
+test.describe('Registration', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockUnauthenticated(page);
+    await mockApi(page, '/api/profile', null, { status: 200 });
   });
 
-  it('should show the username field', () => {
-    // given
+  test('should show the username field', async ({ page }) => {
+    const registration = await new RegistrationPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-
-    // then
-    page.getUsernameField().should('be.visible');
+    await expect(registration.getUsernameField()).toBeVisible();
   });
 
-  it('should keep submit disabled until name and username are filled', () => {
-    // given
+  test('should keep submit disabled until name and username are filled', async ({ page }) => {
+    const registration = await new RegistrationPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
+    await expect(registration.getSubmitButton()).toBeDisabled();
 
-    // then
-    page.getSubmitButton().should('be.disabled');
-
-    page.fillName('Fresh User');
-    page.fillUsername('freshuser');
-    page.getSubmitButton().should('not.be.disabled');
+    await registration.fillName('Fresh User');
+    await registration.fillUsername('freshuser');
+    await expect(registration.getSubmitButton()).toBeEnabled();
   });
 
-  it('should show a field error when the username is not unique', () => {
-    // given
-    cy.intercept('POST', '/api/user', {
-      statusCode: 400,
-      fixture: 'johndoe-register-not-unique'
-    }).as('register');
+  test('should show a field error when the username is not unique', async ({ page }) => {
+    await mockApi(page, '/api/user', 'johndoe-register-not-unique', {
+      method: 'POST',
+      status: 400,
+    });
+    const registration = await new RegistrationPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-    page.fillName('John Doe');
-    page.fillUsername('johndoe');
-    page.getSubmitButton().click();
+    await registration.fillName('John Doe');
+    await registration.fillUsername('johndoe');
+    const register = waitForApi(page, '/api/user', 'POST');
+    await registration.getSubmitButton().click();
+    await register;
 
-    // then
-    cy.wait('@register');
-    page.getUsernameError().should('be.visible').and('contain.text', 'Username already taken');
+    await expect(registration.getUsernameError()).toBeVisible();
+    await expect(registration.getUsernameError()).toContainText('Username already taken');
   });
 
-  it('should redirect to the dashboard on success', () => {
-    // given
-    cy.intercept('POST', '/api/user', { fixture: 'johndoe' }).as('register');
+  test('should redirect to the dashboard on success', async ({ page }) => {
+    await mockApi(page, '/api/user', 'johndoe', { method: 'POST' });
     // the session is valid once registration succeeded, so /dashboard's AuthGuard passes
-    cy.intercept('/api/me*', { fixture: 'me' });
-    cy.intercept('/api/users?limit=1&fetch=count', { fixture: 'dashboard/empty/users-limit1' });
-    cy.intercept('/api/projects?owner=*', { fixture: 'dashboard/empty/projects-owner-limit4' });
-    cy.intercept('/api/projects?memberId=*', { fixture: 'dashboard/empty/projects-memberId-limit4' });
-    cy.intercept('/api/activities*', { fixture: 'dashboard/empty/activities-userId-limit4' });
+    await mockApi(page, '/api/me*', 'me');
+    await mockApi(page, '/api/users?limit=1&fetch=count', 'dashboard/empty/users-limit1');
+    await mockApi(page, '/api/projects?owner=*', 'dashboard/empty/projects-owner-limit4');
+    await mockApi(page, '/api/projects?memberId=*', 'dashboard/empty/projects-memberId-limit4');
+    await mockApi(page, '/api/activities*', 'dashboard/empty/activities-userId-limit4');
+    const registration = await new RegistrationPage(page).navigateTo();
 
-    // when
-    page.navigateTo();
-    page.fillName('Fresh User');
-    page.fillUsername('freshuser');
-    page.getSubmitButton().click();
+    await registration.fillName('Fresh User');
+    await registration.fillUsername('freshuser');
+    const register = waitForApi(page, '/api/user', 'POST');
+    await registration.getSubmitButton().click();
+    await register;
 
-    // then
-    cy.wait('@register');
-    cy.url().should('contain', '/dashboard');
+    await expect(page).toHaveURL(/\/dashboard/);
   });
 });

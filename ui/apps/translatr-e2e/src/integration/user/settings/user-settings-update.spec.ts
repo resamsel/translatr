@@ -1,99 +1,97 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi } from '../../../support/mock-api';
 import { UserSettingsPage } from '../../../support/user/user-settings-page.po';
 
-describe('User Settings Update', () => {
-  let page: UserSettingsPage;
+test.describe('User Settings Update', () => {
+  let settingsPage: UserSettingsPage;
 
-  beforeEach(() => {
-    page = new UserSettingsPage('johndoe');
+  test.beforeEach(async ({ page }) => {
+    settingsPage = new UserSettingsPage(page, 'johndoe');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'johndoe' });
-    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
-    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
+    await remockApi(page, '/api/me*', 'johndoe');
+    await mockApi(page, '/api/johndoe', 'johndoe');
+    await mockApi(page, '/api/projects*', 'johndoe/projects');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
   });
 
-  it('should persist on save', () => {
+  test('should persist on save', async ({ page }) => {
     // given
-    cy.intercept('PUT', '/api/user', { fixture: 'johndoe2' });
-    cy.intercept('/api/johndoe2', { fixture: 'johndoe2' });
+    await mockApi(page, '/api/user', 'johndoe2', { method: 'PUT' });
+    await mockApi(page, '/api/johndoe2', 'johndoe2');
 
     // when
-    page.navigateTo();
-    page.getNameField().type('{selectall}John Doe2');
-    page.getUsernameField().type('{selectall}johndoe2');
-    page.getSaveButton().click();
+    await settingsPage.navigateTo();
+    await settingsPage.getNameField().fill('John Doe2');
+    await settingsPage.getUsernameField().fill('johndoe2');
+    await settingsPage.getSaveButton().click();
 
     // then
-    cy.url().should('contain', 'johndoe2/settings');
+    await expect(page).toHaveURL(/johndoe2\/settings/);
   });
 
-  it('should persist with 32 chars name on save', () => {
+  test('should persist with 32 chars name on save', async ({ page }) => {
     // given
     const name = `${'John Doe'.repeat(4)}`;
-    cy.intercept('PUT', '/api/user', { fixture: 'johndoe-name-32' });
+    await mockApi(page, '/api/user', 'johndoe-name-32', { method: 'PUT' });
 
     // when
-    page.navigateTo();
-    page.getNameField().type(`{selectall}${name}`);
-    page.getSaveButton().click();
+    await settingsPage.navigateTo();
+    await settingsPage.getNameField().fill(name);
+    await settingsPage.getSaveButton().click();
 
     // then
-    cy.url().should('contain', `johndoe/settings`);
+    await expect(page).toHaveURL(/johndoe\/settings/);
   });
 
-  it('should not persist when name not unique', () => {
+  test('should not persist when name not unique', async ({ page }) => {
     // given
-    cy.intercept({ method: 'PUT', url: '/api/user' }, { statusCode: 400, fixture: 'johndoe-not-unique' });
+    await mockApi(page, '/api/user', 'johndoe-not-unique', { method: 'PUT', status: 400 });
 
     // when
-    page.navigateTo();
-    page.getNameField().type('{selectall}janesmith');
+    await settingsPage.navigateTo();
+    await settingsPage.getNameField().fill('janesmith');
 
     // then
-    page.getSaveButton().click();
+    await settingsPage.getSaveButton().click();
 
-    page.getNameFieldError().should('be.visible');
-    cy.url().should('contain', 'johndoe/settings');
+    await expect(settingsPage.getNameFieldError()).toBeVisible();
+    await expect(page).toHaveURL(/johndoe\/settings/);
   });
 
-  it('should not persist if username does not match pattern', () => {
-    // given
-
-    // when
-    page.navigateTo();
-    page
-      .getUsernameField()
-      .type('{selectall}john doe')
-      .blur();
-
-    // then
-    page.getSaveButton().should('be.disabled');
-
-    page.getUsernameFieldError().should('be.visible');
-  });
-
-  it('should not persist if name is too long', () => {
+  test('should not persist if username does not match pattern', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page.getNameField().type(`{selectall}${'John Doe'.repeat(4)}J`);
+    await settingsPage.navigateTo();
+    await settingsPage.getUsernameField().fill('john doe');
+    await settingsPage.getUsernameField().blur();
 
     // then
-    page.getSaveButton().should('be.disabled');
+    await expect(settingsPage.getSaveButton()).toBeDisabled();
+
+    await expect(settingsPage.getUsernameFieldError()).toBeVisible();
   });
 
-  it('should not persist if username is too long', () => {
+  test('should not persist if name is too long', async () => {
+    // given
+
+    // when
+    await settingsPage.navigateTo();
+    await settingsPage.getNameField().fill(`${'John Doe'.repeat(4)}J`);
+
+    // then
+    await expect(settingsPage.getSaveButton()).toBeDisabled();
+  });
+
+  test('should not persist if username is too long', async () => {
     // given
     const name = `${'johndoe'.repeat(4)}johnd`;
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page.getUsernameField().type(`{selectall}${name}`);
-    page.getSaveButton().should('be.disabled');
+    await settingsPage.getUsernameField().fill(name);
+    await expect(settingsPage.getSaveButton()).toBeDisabled();
   });
 });

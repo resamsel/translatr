@@ -1,25 +1,27 @@
+import type { Locator, Page } from '@playwright/test';
 import { EditorPage } from './editor-page.po';
 import { ProjectKeysPage } from './project-keys-page.po';
 
 export class KeyEditorPage extends EditorPage {
   constructor(
+    page: Page,
     public readonly username: string,
     public readonly projectName: string,
-    public readonly keyName: string
+    public readonly keyName: string,
   ) {
-    super();
+    super(page);
   }
 
-  navigateTo(): KeyEditorPage {
-    cy.visit(`/${this.username}/${this.projectName}/keys/${this.keyName}`);
+  async navigateTo(): Promise<KeyEditorPage> {
+    await this.page.goto(`${this.username}/${this.projectName}/keys/${this.keyName}`);
     return this;
   }
 
-  navigateToKeys(): ProjectKeysPage {
-    return new ProjectKeysPage(this.username, this.projectName).navigateTo();
+  async navigateToKeys(): Promise<ProjectKeysPage> {
+    return new ProjectKeysPage(this.page, this.username, this.projectName).navigateTo();
   }
 
-  getSelectedKeyField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.selector input.selected-key');
+  getSelectedKeyField(): Locator {
+    return this.page.locator('.selector input.selected-key');
   }
 }

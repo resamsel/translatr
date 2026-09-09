@@ -1,26 +1,25 @@
+import { test, expect } from '../../support/test';
+import { mockApi } from '../../support/mock-api';
 import { UserPage } from '../../support/user/user-page.po';
 
-describe('User', () => {
-  let page: UserPage;
+test.describe('User', () => {
+  let userPage: UserPage;
 
-  beforeEach(() => {
-    page = new UserPage('johndoe');
+  test.beforeEach(async ({ page }) => {
+    userPage = new UserPage(page, 'johndoe');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
-    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
+    await mockApi(page, '/api/johndoe', 'johndoe');
+    await mockApi(page, '/api/projects*', 'johndoe/projects');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
   });
 
-  it('should show user page', () => {
+  test('should show user page', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    await userPage.navigateTo();
 
     // then
-    page.getTitle().should('have.text', 'John Doe - Translatr');
+    await expect(page).toHaveTitle('John Doe - Translatr');
   });
 });

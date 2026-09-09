@@ -1,131 +1,116 @@
+import { test, expect } from '../../../support/test';
+import { mockApi } from '../../../support/mock-api';
 import { ProjectPage } from '../../../support/project/project-page.po';
 import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
 
-describe('Project Settings Update', () => {
-  let page: ProjectSettingsPage;
+test.describe('Project Settings Update', () => {
+  let settingsPage: ProjectSettingsPage;
 
-  beforeEach(() => {
-    page = new ProjectSettingsPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    settingsPage = new ProjectSettingsPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/p1/activities' });
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
+    await mockApi(page, '/api/activities*', 'johndoe/p1/activities');
   });
 
-  it('should persist on save', () => {
+  test('should persist on save', async ({ page }) => {
     // given
-    cy.intercept('PUT', '/api/project', { fixture: 'johndoe/p2' });
-    cy.intercept('/api/johndoe/p2*', { fixture: 'johndoe/p2' });
+    await mockApi(page, '/api/project', 'johndoe/p2', { method: 'PUT' });
+    await mockApi(page, '/api/johndoe/p2*', 'johndoe/p2');
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page
-      .getNameField()
-      .type('{selectall}p2')
-      .should('have.value', 'p2');
-    page
-      .getDescriptionField()
-      .type('{selectall}p2d')
-      .should('have.value', 'p2d');
-    page.getSaveButton().click();
+    await settingsPage.getNameField().fill('p2');
+    await expect(settingsPage.getNameField()).toHaveValue('p2');
+    await settingsPage.getDescriptionField().fill('p2d');
+    await expect(settingsPage.getDescriptionField()).toHaveValue('p2d');
+    await settingsPage.getSaveButton().click();
 
     // cy.url().should('contain', 'johndoe/p2/settings');
 
-    const projectPage: ProjectPage = new ProjectPage('johndoe', 'p2').navigateTo();
+    const projectPage: ProjectPage = await new ProjectPage(page, 'johndoe', 'p2').navigateTo();
 
-    projectPage.getDescription().should('have.text', 'p2d');
+    await expect(projectPage.getDescription()).toHaveText('p2d');
   });
 
-  it('should persist with 255 chars name on save', () => {
+  test('should persist with 255 chars name on save', async ({ page }) => {
     // given
     const name = `2${'p2'.repeat(127)}`;
-    cy.intercept('PUT', '/api/project', { fixture: 'johndoe/p2-name-255' });
-    cy.intercept(`/api/johndoe/${name}*`, { fixture: 'johndoe/p2-name-255' });
+    await mockApi(page, '/api/project', 'johndoe/p2-name-255', { method: 'PUT' });
+    await mockApi(page, `/api/johndoe/${name}*`, 'johndoe/p2-name-255');
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page
-      .getNameField()
-      .type(`{selectall}${name}`, { delay: 0 })
-      .should('have.value', name);
-    page.getSaveButton().click();
+    await settingsPage.getNameField().fill(name);
+    await expect(settingsPage.getNameField()).toHaveValue(name);
+    await settingsPage.getSaveButton().click();
 
-    page.getPageName().should('have.text', `johndoe/${name}`);
+    await expect(settingsPage.getPageName()).toHaveText(`johndoe/${name}`);
     // cy.url().should('contain', `johndoe/${name}/settings`);
   });
 
-  it('should not persist when name not unique', () => {
+  test('should not persist when name not unique', async ({ page }) => {
     // given
-    cy.intercept({ method: 'PUT', url: '/api/project' }, { statusCode: 400, fixture: 'johndoe/p2-not-unique' });
+    await mockApi(page, '/api/project', 'johndoe/p2-not-unique', { method: 'PUT', status: 400 });
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page
-      .getNameField()
-      .type('{selectall}p2')
-      .should('have.value', 'p2');
-    page.getSaveButton().click();
+    await settingsPage.getNameField().fill('p2');
+    await expect(settingsPage.getNameField()).toHaveValue('p2');
+    await settingsPage.getSaveButton().click();
 
-    page.getNameFieldError().should('be.visible');
-    cy.url().should('contain', 'johndoe/p1/settings');
+    await expect(settingsPage.getNameFieldError()).toBeVisible();
+    await expect(page).toHaveURL(/johndoe\/p1\/settings/);
   });
 
-  it('should not persist if name does not match pattern', () => {
+  test('should not persist if name does not match pattern', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page
-      .getNameField()
-      .type('{selectall}p2 d2')
-      .should('have.value', 'p2 d2')
-      .blur();
-    page.getSaveButton().should('be.disabled');
+    await settingsPage.getNameField().fill('p2 d2');
+    await expect(settingsPage.getNameField()).toHaveValue('p2 d2');
+    await settingsPage.getNameField().blur();
+    await expect(settingsPage.getSaveButton()).toBeDisabled();
 
-    page.getNameFieldError().should('be.visible');
+    await expect(settingsPage.getNameFieldError()).toBeVisible();
   });
 
-  it('should not persist if name is too long', () => {
+  test('should not persist if name is too long', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page
-      .getNameField()
-      .type('{selectall}' + 'p2'.repeat(128), { delay: 0 })
-      .should('have.value', 'p2'.repeat(128));
-    page.getSaveButton().should('be.disabled');
+    await settingsPage.getNameField().fill('p2'.repeat(128));
+    await expect(settingsPage.getNameField()).toHaveValue('p2'.repeat(128));
+    await expect(settingsPage.getSaveButton()).toBeDisabled();
   });
 
-  it('should not persist if description is too long', () => {
+  test('should not persist if description is too long', async () => {
     // given
     const name = 'p2d '.repeat(501);
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page
-      .getDescriptionField()
-      .type(`{selectall}${name}`, { delay: 0.1 })
-      .should('have.value', name);
-    page.getSaveButton().should('be.disabled');
+    await settingsPage.getDescriptionField().fill(name);
+    await expect(settingsPage.getDescriptionField()).toHaveValue(name);
+    await expect(settingsPage.getSaveButton()).toBeDisabled();
   });
 });

@@ -1,48 +1,45 @@
+import { test, expect } from '../support/test';
+import { mockApi, waitForApi } from '../support/mock-api';
 import { FeatureFlagsPage } from '../support/feature-flags-page.po';
 
-describe('Admin Global Feature Flags', () => {
-  let page: FeatureFlagsPage;
-
-  beforeEach(() => {
-    page = new FeatureFlagsPage();
-    cy.clearCookies();
-    cy.intercept('/api/me*', { fixture: 'me' });
-    cy.intercept('/api/featureflags/resolved', { fixture: 'resolved-features' });
-    cy.intercept('/api/featureflags/global', { fixture: 'global-feature-flags' });
+test.describe('Admin Global Feature Flags', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/featureflags/resolved', 'resolved-features');
+    await mockApi(page, '/api/featureflags/global', 'global-feature-flags');
   });
 
-  it('renders one row per known feature with its default', () => {
-    page.navigateToGlobal();
-    page.getPageName().should('have.text', 'Feature Flags');
-    page.getActiveTab().should('contain.text', 'Global');
-    page.getRows().should('have.length', 4);
-    page.getToggle('header-graphic').find('mat-icon').should('have.text', 'toggle_on');
-    page.getToggle('language-switcher').find('mat-icon').should('have.text', 'toggle_off');
+  test('renders one row per known feature with its default', async ({ page }) => {
+    const flags = await new FeatureFlagsPage(page).navigateToGlobal();
+
+    await expect(flags.getPageName()).toHaveText('Feature Flags');
+    await expect(flags.getActiveTab()).toContainText('Global');
+    await expect(flags.getRows()).toHaveCount(4);
+    await expect(flags.getToggle('header-graphic').locator('mat-icon')).toHaveText('toggle_on');
+    await expect(flags.getToggle('language-switcher').locator('mat-icon')).toHaveText('toggle_off');
   });
 
-  it('POSTs feature + enabled when toggling a feature on globally', () => {
-    cy.intercept('POST', '/api/featureflag/global', { fixture: 'global-feature-flag-set' }).as('set');
+  test('POSTs feature + enabled when toggling a feature on globally', async ({ page }) => {
+    await mockApi(page, '/api/featureflag/global', 'global-feature-flag-set', { method: 'POST' });
+    const flags = await new FeatureFlagsPage(page).navigateToGlobal();
 
-    page.navigateToGlobal();
-    page.getToggle('language-switcher').click();
+    const set = waitForApi(page, '/api/featureflag/global', 'POST');
+    await flags.getToggle('language-switcher').click();
 
-    cy.wait('@set').its('request.body').should('deep.equal', {
-      feature: 'language-switcher',
-      enabled: true
-    });
+    expect((await set).postDataJSON()).toEqual({ feature: 'language-switcher', enabled: true });
   });
 
-  it('POSTs enabled=false when disabling a globally-enabled feature', () => {
-    cy.intercept('POST', '/api/featureflag/global', {
-      body: { id: 'a0000000-0000-0000-0000-000000000001', feature: 'header-graphic', enabled: false }
-    }).as('set');
+  test('POSTs enabled=false when disabling a globally-enabled feature', async ({ page }) => {
+    await mockApi(
+      page,
+      '/api/featureflag/global',
+      { id: 'a0000000-0000-0000-0000-000000000001', feature: 'header-graphic', enabled: false },
+      { method: 'POST' },
+    );
+    const flags = await new FeatureFlagsPage(page).navigateToGlobal();
 
-    page.navigateToGlobal();
-    page.getToggle('header-graphic').click();
+    const set = waitForApi(page, '/api/featureflag/global', 'POST');
+    await flags.getToggle('header-graphic').click();
 
-    cy.wait('@set').its('request.body').should('deep.equal', {
-      feature: 'header-graphic',
-      enabled: false
-    });
+    expect((await set).postDataJSON()).toEqual({ feature: 'header-graphic', enabled: false });
   });
 });

@@ -1,32 +1,33 @@
-import { Page } from '../page.po';
+import type { Locator, Page } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class UserSettingsPage extends Page {
-  constructor(private readonly username: string) {
-    super();
+export class UserSettingsPage extends PageObject {
+  constructor(page: Page, private readonly username: string) {
+    super(page);
   }
 
-  navigateTo(): UserSettingsPage {
-    cy.visit(`/${this.username}/settings`);
+  async navigateTo(): Promise<UserSettingsPage> {
+    await this.page.goto(`${this.username}/settings`);
     return this;
   }
 
-  getNameField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('mat-form-field.name input');
+  getNameField(): Locator {
+    return this.page.locator('mat-form-field.name input');
   }
 
-  getNameFieldError(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('mat-form-field.name mat-error');
+  getNameFieldError(): Locator {
+    return this.page.locator('mat-form-field.name mat-error');
   }
 
-  getUsernameField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('mat-form-field.username input');
+  getUsernameField(): Locator {
+    return this.page.locator('mat-form-field.username input');
   }
 
-  getUsernameFieldError(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('mat-form-field.username mat-error');
+  getUsernameFieldError(): Locator {
+    return this.page.locator('mat-form-field.username mat-error');
   }
 
-  getSaveButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('button.save');
+  getSaveButton(): Locator {
+    return this.page.locator('button.save');
   }
 }

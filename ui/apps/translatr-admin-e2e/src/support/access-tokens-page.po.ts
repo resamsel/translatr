@@ -1,16 +1,17 @@
-import { Page } from './page.po';
+import type { Locator } from '@playwright/test';
+import { PageObject } from './page.po';
 
-export class AccessTokensPage extends Page {
-  navigateTo(): AccessTokensPage {
-    cy.visit('/accesstokens');
+export class AccessTokensPage extends PageObject {
+  async navigateTo(): Promise<AccessTokensPage> {
+    await this.page.goto('accesstokens');
     return this;
   }
 
-  getRows(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('entity-table tbody tr');
+  getRows(): Locator {
+    return this.page.locator('entity-table tbody tr');
   }
 
-  getEditButton(name: string): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('entity-table tbody tr').contains('tr', name).find('button').first();
+  getEditButton(name: string): Locator {
+    return this.getRows().filter({ hasText: name }).locator('button').first();
   }
 }

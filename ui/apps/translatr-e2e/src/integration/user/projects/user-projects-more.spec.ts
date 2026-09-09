@@ -1,26 +1,25 @@
+import { test, expect } from '../../../support/test';
+import { mockApi } from '../../../support/mock-api';
 import { UserProjectsPage } from '../../../support/user/user-projects-page.po';
 
-describe('User Projects More', () => {
-  let page: UserProjectsPage;
+test.describe('User Projects More', () => {
+  let projectsPage: UserProjectsPage;
 
-  beforeEach(() => {
-    page = new UserProjectsPage('janesmith');
+  test.beforeEach(async ({ page }) => {
+    projectsPage = new UserProjectsPage(page, 'janesmith');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/janesmith', { fixture: 'janesmith' });
-    cy.intercept('/api/projects*', { fixture: 'janesmith/projects' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
+    await mockApi(page, '/api/janesmith', 'janesmith');
+    await mockApi(page, '/api/projects*', 'janesmith/projects');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
   });
 
-  it('should show more button', () => {
+  test('should show more button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    await projectsPage.navigateTo();
 
     // then
-    cy.get('a.more').should('have.length', 1);
+    await expect(page.locator('a.more')).toHaveCount(1);
   });
 });

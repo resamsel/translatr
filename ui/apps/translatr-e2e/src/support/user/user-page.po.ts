@@ -1,16 +1,17 @@
-import { Page } from '../page.po';
+import type { Locator, Page } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class UserPage extends Page {
-  constructor(private readonly username: string) {
-    super();
+export class UserPage extends PageObject {
+  constructor(page: Page, private readonly username: string) {
+    super(page);
   }
 
-  navigateTo(): UserPage {
-    cy.visit(`/${this.username}`);
+  async navigateTo(): Promise<UserPage> {
+    await this.page.goto(this.username);
     return this;
   }
 
-  getName(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.name');
+  getName(): Locator {
+    return this.page.locator('.name');
   }
 }

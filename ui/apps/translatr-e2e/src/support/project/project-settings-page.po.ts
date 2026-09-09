@@ -1,45 +1,50 @@
-import { Page } from '../page.po';
+import type { Locator, Page } from '@playwright/test';
+import { PageObject } from '../page.po';
 import { ProjectPage } from './project-page.po';
 
-export class ProjectSettingsPage extends Page {
-  constructor(private readonly username: string, private readonly projectName: string) {
-    super();
+export class ProjectSettingsPage extends PageObject {
+  constructor(
+    page: Page,
+    private readonly username: string,
+    private readonly projectName: string,
+  ) {
+    super(page);
   }
 
-  navigateTo(): ProjectSettingsPage {
-    cy.visit(`/${this.username}/${this.projectName}/settings`);
+  async navigateTo(): Promise<ProjectSettingsPage> {
+    await this.page.goto(`${this.username}/${this.projectName}/settings`);
     return this;
   }
 
-  navigateToProjectPage() {
-    return new ProjectPage(this.username, this.projectName).navigateTo();
+  async navigateToProjectPage(): Promise<ProjectPage> {
+    return new ProjectPage(this.page, this.username, this.projectName).navigateTo();
   }
 
-  getNameField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('mat-form-field.name input');
+  getNameField(): Locator {
+    return this.page.locator('mat-form-field.name input');
   }
 
-  getNameFieldError(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('mat-form-field.name mat-error');
+  getNameFieldError(): Locator {
+    return this.page.locator('mat-form-field.name mat-error');
   }
 
-  getDescriptionField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('mat-form-field.description textarea');
+  getDescriptionField(): Locator {
+    return this.page.locator('mat-form-field.description textarea');
   }
 
-  getSaveButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.update-project button.save');
+  getSaveButton(): Locator {
+    return this.page.locator('.update-project button.save');
   }
 
-  getDeleteProjectButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.delete-project button.delete');
+  getDeleteProjectButton(): Locator {
+    return this.page.locator('.delete-project button.delete');
   }
 
-  getDeleteProjectDialog(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-project-delete-dialog');
+  getDeleteProjectDialog(): Locator {
+    return this.page.locator('app-project-delete-dialog');
   }
 
-  getCancelProjectDeleteDialogButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-project-delete-dialog button.cancel');
+  getCancelProjectDeleteDialogButton(): Locator {
+    return this.page.locator('app-project-delete-dialog button.cancel');
   }
 }

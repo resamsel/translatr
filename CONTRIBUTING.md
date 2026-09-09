@@ -32,7 +32,7 @@ the feature you would like to see, why you need it, and how it should work.
 ## How to set up your environment and run tests
 
 The backend is a **Quarkus** application (Java 21, Gradle). The frontend is an
-**Angular 22** single-page app (Nx 23 workspace, Cypress 15 e2e) served by the
+**Angular 22** single-page app (Nx 23 workspace, Playwright e2e) served by the
 [Quinoa](https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/)
 extension. Authentication is handled by **Keycloak**.
 

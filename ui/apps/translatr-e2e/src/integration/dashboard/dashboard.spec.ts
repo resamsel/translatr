@@ -1,54 +1,37 @@
+import { test, expect } from '../../support/test';
+import { mockApi } from '../../support/mock-api';
 import { DashboardPage } from '../../support/dashboard.po';
 
-describe('Dashboard', () => {
-  let page: DashboardPage;
-
-  beforeEach(() => {
-    page = new DashboardPage();
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/users?limit=1&fetch=count', { fixture: 'dashboard/users-limit1' });
-    cy.intercept('/api/projects?owner=*', { fixture: 'dashboard/projects-owner-limit4' });
-    cy.intercept('/api/projects?memberId=*', { fixture: 'dashboard/projects-memberId-limit4' });
-    cy.intercept('/api/activities*', { fixture: 'dashboard/activities-userId-limit4' });
+test.describe('Dashboard', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/users?limit=1&fetch=count', 'dashboard/users-limit1');
+    await mockApi(page, '/api/projects?owner=*', 'dashboard/projects-owner-limit4');
+    await mockApi(page, '/api/projects?memberId=*', 'dashboard/projects-memberId-limit4');
+    await mockApi(page, '/api/activities*', 'dashboard/activities-userId-limit4');
   });
 
-  it('should have page name Dashboard', () => {
+  test('should have page name Dashboard', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const dashboard = await new DashboardPage(page).navigateTo();
 
     // then
-    page.getPageName().should('have.text', 'Dashboard');
+    await expect(dashboard.getPageName()).toHaveText('Dashboard');
   });
 
-  it('should have metrics values', () => {
+  test('should have metrics values', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const dashboard = await new DashboardPage(page).navigateTo();
 
     // then
-    page.getProjectCardLinks().should('have.length', 4);
-    page.getProjectEmptyView().should('have.length', 0);
-    page
-      .getMetric('my.project')
-      .find('mat-card-title')
-      .should('have.text', '11');
-    page
-      .getMetric('my.activity')
-      .find('mat-card-title')
-      .should('have.text', '1.6k');
-    page
-      .getMetric('all.project')
-      .find('mat-card-title')
-      .should('have.text', '13');
-    page
-      .getMetric('user')
-      .find('mat-card-title')
-      .should('have.text', '10.4k');
+    await expect(dashboard.getProjectCardLinks()).toHaveCount(4);
+    await expect(dashboard.getProjectEmptyView()).toHaveCount(0);
+    await expect(dashboard.getMetric('my.project').locator('mat-card-title')).toHaveText('11');
+    await expect(dashboard.getMetric('my.activity').locator('mat-card-title')).toHaveText('1.6k');
+    await expect(dashboard.getMetric('all.project').locator('mat-card-title')).toHaveText('13');
+    await expect(dashboard.getMetric('user').locator('mat-card-title')).toHaveText('10.4k');
   });
 });

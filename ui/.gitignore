@@ -59,3 +59,8 @@ Thumbs.db
 .nx/cache
 .nx/workspace-data
 .claude/settings.local.json
+
+# Playwright
+/playwright-report/
+/test-results/
+playwright/.cache/

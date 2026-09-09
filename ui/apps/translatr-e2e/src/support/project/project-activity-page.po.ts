@@ -1,20 +1,25 @@
-import { Page } from '../page.po';
+import type { Locator, Page } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class ProjectActivityPage extends Page {
-  constructor(private readonly username: string, private readonly projectName: string) {
-    super();
+export class ProjectActivityPage extends PageObject {
+  constructor(
+    page: Page,
+    private readonly username: string,
+    private readonly projectName: string,
+  ) {
+    super(page);
   }
 
-  navigateTo(): ProjectActivityPage {
-    cy.visit(`/${this.username}/${this.projectName}/activity`);
+  async navigateTo(): Promise<ProjectActivityPage> {
+    await this.page.goto(`${this.username}/${this.projectName}/activity`);
     return this;
   }
 
-  getActivityRows(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-activity-list mat-list-item');
+  getActivityRows(): Locator {
+    return this.page.locator('app-activity-list mat-list-item');
   }
 
-  getActivityGraph(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('dev-activity-graph');
+  getActivityGraph(): Locator {
+    return this.page.locator('dev-activity-graph');
   }
 }

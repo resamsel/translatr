@@ -1,12 +1,13 @@
-import { Page } from '../page.po';
+import type { Locator } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class LoginPage extends Page {
-  navigateTo(): LoginPage {
-    cy.visit('/login');
+export class LoginPage extends PageObject {
+  async navigateTo(): Promise<LoginPage> {
+    await this.page.goto('login');
     return this;
   }
 
-  getProviderLinks(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.options a.client');
+  getProviderLinks(): Locator {
+    return this.page.locator('.options a.client');
   }
 }

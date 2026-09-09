@@ -1,28 +1,33 @@
-import { Page } from '../page.po';
+import type { Locator, Page } from '@playwright/test';
+import { PageObject } from '../page.po';
 
-export class UserAccessTokenPage extends Page {
-  constructor(private readonly username: string, private readonly id: string = 'create') {
-    super();
+export class UserAccessTokenPage extends PageObject {
+  constructor(
+    page: Page,
+    private readonly username: string,
+    private readonly id: string = 'create',
+  ) {
+    super(page);
   }
 
-  navigateTo(): UserAccessTokenPage {
-    cy.visit(`/${this.username}/access-tokens/${this.id}`);
+  async navigateTo(): Promise<UserAccessTokenPage> {
+    await this.page.goto(`${this.username}/access-tokens/${this.id}`);
     return this;
   }
 
-  getNameField(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('input[formcontrolname="name"]');
+  getNameField(): Locator {
+    return this.page.locator('input[formcontrolname="name"]');
   }
 
-  getSaveButton(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('button[transloco="button.save"]');
+  getSaveButton(): Locator {
+    return this.page.locator('button[transloco="button.save"]');
   }
 
-  getCancelLink(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('a[transloco="button.cancel"]');
+  getCancelLink(): Locator {
+    return this.page.locator('a[transloco="button.cancel"]');
   }
 
-  getSecret(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('.key input[formcontrolname="key"]');
+  getSecret(): Locator {
+    return this.page.locator('.key input[formcontrolname="key"]');
   }
 }

@@ -1,24 +1,25 @@
-import { Page } from './page.po';
+import type { Locator } from '@playwright/test';
+import { PageObject } from './page.po';
 
-export class DashboardPage extends Page {
-  navigateTo(): DashboardPage {
-    cy.visit('/dashboard');
+export class DashboardPage extends PageObject {
+  async navigateTo(): Promise<DashboardPage> {
+    await this.page.goto('dashboard');
     return this;
   }
 
-  getProjectCardLinks(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-project-card-link');
+  getProjectCardLinks(): Locator {
+    return this.page.locator('app-project-card-link');
   }
 
-  getProjectEmptyView(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-project-empty-view');
+  getProjectEmptyView(): Locator {
+    return this.page.locator('app-project-empty-view');
   }
 
-  getMetric(kind: string): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get(`dev-metric.${kind}.count`);
+  getMetric(kind: string): Locator {
+    return this.page.locator(`dev-metric.${kind}.count`);
   }
 
-  getProjectCreationDialog(): Cypress.Chainable<JQuery<HTMLElement>> {
-    return cy.get('app-protect-creation-dialog');
+  getProjectCreationDialog(): Locator {
+    return this.page.locator('app-protect-creation-dialog');
   }
 }

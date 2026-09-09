@@ -1,36 +1,35 @@
+import { test, expect } from '../../../support/test';
+import { mockApi } from '../../../support/mock-api';
 import { UserProjectsPage } from '../../../support/user/user-projects-page.po';
 
-describe('User Projects', () => {
-  let page: UserProjectsPage;
+test.describe('User Projects', () => {
+  let projectsPage: UserProjectsPage;
 
-  beforeEach(() => {
-    page = new UserProjectsPage('johndoe');
+  test.beforeEach(async ({ page }) => {
+    projectsPage = new UserProjectsPage(page, 'johndoe');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
-    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
+    await mockApi(page, '/api/johndoe', 'johndoe');
+    await mockApi(page, '/api/projects*', 'johndoe/projects');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
   });
 
-  it('should show user projects', () => {
+  test('should show user projects', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await projectsPage.navigateTo();
 
     // then
-    page.getPageName().should('have.text', 'John Doe');
+    await expect(projectsPage.getPageName()).toHaveText('John Doe');
   });
 
-  it('should not show more button', () => {
+  test('should not show more button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    await projectsPage.navigateTo();
 
     // then
-    cy.get('a.more').should('have.length', 0);
+    await expect(page.locator('a.more')).toHaveCount(0);
   });
 });

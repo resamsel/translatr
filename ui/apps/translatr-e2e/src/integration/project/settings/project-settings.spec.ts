@@ -1,41 +1,40 @@
+import { test, expect } from '../../../support/test';
+import { mockApi } from '../../../support/mock-api';
 import { ProjectSettingsPage } from '../../../support/project/project-settings-page.po';
 
-describe('Project Settings', () => {
-  let page: ProjectSettingsPage;
+test.describe('Project Settings', () => {
+  let settingsPage: ProjectSettingsPage;
 
-  beforeEach(() => {
-    page = new ProjectSettingsPage('johndoe', 'p1');
+  test.beforeEach(async ({ page }) => {
+    settingsPage = new ProjectSettingsPage(page, 'johndoe', 'p1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p1/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
-    cy.intercept('/api/activities/aggregated*', { fixture: 'johndoe/p1/activities-aggregated' });
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p1/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
+    await mockApi(page, '/api/activities/aggregated*', 'johndoe/p1/activities-aggregated');
   });
 
-  it('should have page name Project Settings', () => {
+  test('should have page name Project Settings', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page.getPageName().should('have.text', 'johndoe/p1');
+    await expect(settingsPage.getPageName()).toHaveText('johndoe/p1');
   });
 
-  it('should have name and description set', () => {
+  test('should have name and description set', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page.getNameField().should('have.value', 'p1');
-    page.getDescriptionField().should('have.value', 'p1d');
+    await expect(settingsPage.getNameField()).toHaveValue('p1');
+    await expect(settingsPage.getDescriptionField()).toHaveValue('p1d');
   });
 });

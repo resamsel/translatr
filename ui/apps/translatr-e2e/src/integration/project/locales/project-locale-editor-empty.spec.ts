@@ -1,73 +1,69 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi } from '../../../support/mock-api';
 import { LocaleEditorPage } from '../../../support/project/locale-editor-page.po';
 
-describe('Project Locale Editor Empty State', () => {
-  let page: LocaleEditorPage;
-
-  beforeEach(() => {
-    page = new LocaleEditorPage('johndoe', 'p3', 'default');
-
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p3*', { fixture: 'johndoe/p3' });
-    cy.intercept('/api/johndoe/p3/locales/default', { fixture: 'johndoe/p3/locales/default' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p3/locales' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p3/keys' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p3/messages' });
+test.describe('Project Locale Editor Empty State', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockApi(page, '/api/johndoe/p3*', 'johndoe/p3');
+    await mockApi(page, '/api/johndoe/p3/locales/default', 'johndoe/p3/locales/default');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p3/locales');
+    await mockApi(page, '/api/project/*/keys*', 'johndoe/p3/keys');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p3/messages');
   });
 
-  it('should have no keys in sidebar', () => {
+  test('should have no keys in sidebar', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    const editor = await new LocaleEditorPage(page, 'johndoe', 'p3', 'default').navigateTo();
 
     // then
-    page.getNavListItems().should('not.exist');
+    await expect(editor.getNavListItems()).toHaveCount(0);
   });
 
-  it('should show key creation teaser in sidebar', () => {
+  test('should show key creation teaser in sidebar', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    await new LocaleEditorPage(page, 'johndoe', 'p3', 'default').navigateTo();
 
     // then
-    cy.get('dev-empty-view [data-test="key-teaser"]').should(
-      'have.text',
-      'It looks like there are no keys defined, yet - would you like to add one now?'
+    await expect(page.locator('dev-empty-view [data-test="key-teaser"]')).toHaveText(
+      'It looks like there are no keys defined, yet - would you like to add one now?',
     );
-    cy.get('dev-empty-view [data-test="create-key"]').should('have.text', 'Add key');
+    await expect(page.locator('dev-empty-view [data-test="create-key"]')).toHaveText('Add key');
   });
 
-  it('should show key creation dialog when clicking button', () => {
+  test('should show key creation dialog when clicking button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
-    cy.get('dev-empty-view [data-test="create-key"]').click();
+    await new LocaleEditorPage(page, 'johndoe', 'p3', 'default').navigateTo();
+    await page.locator('dev-empty-view [data-test="create-key"]').click();
 
     // then
-    cy.get('mat-dialog-container').should('exist');
+    await expect(page.locator('mat-dialog-container')).toHaveCount(1);
   });
 
-  it('should show key creation dialog when clicking button', () => {
+  // PORT-NOTE: the Cypress file had two `it()`s with the identical title
+  // "should show key creation dialog when clicking button". Playwright rejects
+  // duplicate test titles in one file, so this second one is suffixed. Body is
+  // ported unchanged.
+  test('should show key creation dialog when clicking button (create key on save)', async ({
+    page,
+  }) => {
     // given
 
     // when
-    page.navigateTo();
-    cy.get('dev-empty-view [data-test="create-key"]').click();
-    cy.get('mat-dialog-container input').type('de');
-    cy.intercept('POST', '/api/key', { fixture: 'johndoe/p3/key-created' });
-    cy.intercept('/api/project/*/keys*', { fixture: 'johndoe/p3/keys-added' });
-    cy.get('mat-dialog-container button.save').click();
+    const editor = await new LocaleEditorPage(page, 'johndoe', 'p3', 'default').navigateTo();
+    await page.locator('dev-empty-view [data-test="create-key"]').click();
+    await page.locator('mat-dialog-container input').fill('de');
+    await mockApi(page, '/api/key', 'johndoe/p3/key-created', { method: 'POST' });
+    await remockApi(page, '/api/project/*/keys*', 'johndoe/p3/keys-added');
+    await page.locator('mat-dialog-container button.save').click();
 
     // then
-    page
-      .getNavList()
-      .find('a.active')
-      .should('have.length', 1)
-      .find('h3')
-      .should('have.text', 'k1');
+    await expect(editor.getNavList().locator('a.active')).toHaveCount(1);
+    await expect(editor.getNavList().locator('a.active h3')).toHaveText('k1');
   });
 });

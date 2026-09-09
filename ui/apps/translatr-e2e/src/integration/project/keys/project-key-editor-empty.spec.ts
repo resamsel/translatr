@@ -1,74 +1,73 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi } from '../../../support/mock-api';
 import { KeyEditorPage } from '../../../support/project/key-editor-page.po';
 
-describe('Project Key Editor Empty State', () => {
-  let page: KeyEditorPage;
+test.describe('Project Key Editor Empty State', () => {
+  let editor: KeyEditorPage;
 
-  beforeEach(() => {
-    page = new KeyEditorPage('johndoe', 'p0', 'k1');
+  test.beforeEach(async ({ page }) => {
+    editor = new KeyEditorPage(page, 'johndoe', 'p0', 'k1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p0*', { fixture: 'johndoe/p0' });
-    cy.intercept('/api/johndoe/p0/keys/k1', { fixture: 'johndoe/p0/keys/k1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p0/locales' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p0/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p0/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p0/activities' });
+    await mockApi(page, '/api/johndoe/p0*', 'johndoe/p0');
+    await mockApi(page, '/api/johndoe/p0/keys/k1', 'johndoe/p0/keys/k1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p0/locales');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p0/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p0/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p0/activities');
   });
 
-  it('should have no languages in sidebar', () => {
+  test('should have no languages in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page.getNavListItems().should('not.exist');
+    await expect(editor.getNavListItems()).toHaveCount(0);
   });
 
-  it('should show language creation teaser in sidebar', () => {
+  test('should show language creation teaser in sidebar', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    cy.get('dev-empty-view [data-test="locale-teaser"]').should(
-      'have.text',
-      'It looks like there are no languages defined, yet - would you like to add one now?'
+    await expect(page.locator('dev-empty-view [data-test="locale-teaser"]')).toHaveText(
+      'It looks like there are no languages defined, yet - would you like to add one now?',
     );
-    cy.get('dev-empty-view [data-test="create-locale"]').should('have.text', 'Add language');
+    await expect(page.locator('dev-empty-view [data-test="create-locale"]')).toHaveText('Add language');
   });
 
-  it('should show language creation dialog when clicking button', () => {
+  test('should show language creation dialog when clicking button', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
-    cy.get('dev-empty-view [data-test="create-locale"]').click();
+    await editor.navigateTo();
+    await page.locator('dev-empty-view [data-test="create-locale"]').click();
 
     // then
-    cy.get('mat-dialog-container').should('exist');
+    await expect(page.locator('mat-dialog-container')).toBeAttached();
   });
 
-  it('should show language creation dialog when clicking button', () => {
+  test('should show language creation dialog when clicking button (creates locale)', async ({ page }) => {
+    // PORT-NOTE: the Cypress spec has two `it` blocks with the identical title
+    // "should show language creation dialog when clicking button"; kept both,
+    // disambiguating this (second) title so Playwright does not silently collide.
+
     // given
 
     // when
-    page.navigateTo();
-    cy.get('dev-empty-view [data-test="create-locale"]').click();
-    cy.get('mat-dialog-container input').type('de');
-    cy.intercept('POST', '/api/locale', { fixture: 'johndoe/p0/locale-created' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p0/locales-added' });
-    cy.get('mat-dialog-container button.save').click();
+    await editor.navigateTo();
+    await page.locator('dev-empty-view [data-test="create-locale"]').click();
+    await page.locator('mat-dialog-container input').fill('de');
+    await mockApi(page, '/api/locale', 'johndoe/p0/locale-created', { method: 'POST' });
+    await remockApi(page, '/api/project/*/locales*', 'johndoe/p0/locales-added');
+    await page.locator('mat-dialog-container button.save').click();
 
     // then
-    page
-      .getNavList()
-      .find('a.active')
-      .should('have.length', 1)
-      .find('h3')
-      .should('have.text', 'German');
+    const active = editor.getNavList().locator('a.active');
+    await expect(active).toHaveCount(1);
+    await expect(active.locator('h3')).toHaveText('German');
   });
 });

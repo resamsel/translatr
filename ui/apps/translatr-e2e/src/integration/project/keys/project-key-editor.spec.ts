@@ -1,266 +1,202 @@
+import { test, expect } from '../../../support/test';
+import { mockApi, remockApi, waitForApi } from '../../../support/mock-api';
 import { KeyEditorPage } from '../../../support/project/key-editor-page.po';
 
-describe('Project Key Editor', () => {
-  let page: KeyEditorPage;
+test.describe('Project Key Editor', () => {
+  let editor: KeyEditorPage;
 
-  beforeEach(() => {
-    page = new KeyEditorPage('johndoe', 'p1', 'k1');
+  test.beforeEach(async ({ page }) => {
+    editor = new KeyEditorPage(page, 'johndoe', 'p1', 'k1');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe/p1*', { fixture: 'johndoe/p1' });
-    cy.intercept('/api/johndoe/p1/keys/k1', { fixture: 'johndoe/p1/keys/k1' });
-    cy.intercept('/api/project/*/locales*', { fixture: 'johndoe/p1/locales' });
-    cy.intercept('/api/project/*/locales?*missing=true*', { fixture: 'johndoe/p1/locales-missing' });
-    cy.intercept('/api/project/*/messages*', { fixture: 'johndoe/p1/messages' });
-    cy.intercept('/api/project/*/members*', { fixture: 'johndoe/p1/members' });
-    cy.intercept('/api/project/*/activities*', { fixture: 'johndoe/p1/activities' });
+    await mockApi(page, '/api/johndoe/p1*', 'johndoe/p1');
+    await mockApi(page, '/api/johndoe/p1/keys/k1', 'johndoe/p1/keys/k1');
+    await mockApi(page, '/api/project/*/locales*', 'johndoe/p1/locales');
+    await mockApi(page, '/api/project/*/locales?*missing=true*', 'johndoe/p1/locales-missing');
+    await mockApi(page, '/api/project/*/messages*', 'johndoe/p1/messages');
+    await mockApi(page, '/api/project/*/members*', 'johndoe/p1/members');
+    await mockApi(page, '/api/project/*/activities*', 'johndoe/p1/activities');
   });
 
-  it('should have page title Key Editor', () => {
+  test('should have page title Key Editor', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page.getPageTitle().should('have.text', 'Key Editor');
+    await expect(editor.getPageTitle()).toHaveText('Key Editor');
   });
 
-  it('should have key k1 selected in sidebar', () => {
+  test('should have key k1 selected in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page.getSelectedKeyField().should('have.value', 'k1');
+    await expect(editor.getSelectedKeyField()).toHaveValue('k1');
   });
 
-  it('should have two locales in sidebar', () => {
+  test('should have two locales in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page
-      .getNavList()
-      .find('a.locale')
-      .should('have.length', 2);
+    await expect(editor.getNavList().locator('a.locale')).toHaveCount(2);
   });
 
-  it('should have no locale selected in sidebar', () => {
+  test('should have no locale selected in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page
-      .getNavList()
-      .find('a.active')
-      .should('have.length', 0);
+    await expect(editor.getNavList().locator('a.active')).toHaveCount(0);
   });
 
-  it('should have locale selected when activated in sidebar', () => {
+  test('should have locale selected when activated in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page
-      .getNavList()
-      .find('a.locale:first-of-type')
-      .should('not.have.class', 'active');
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click()
-      .should('have.class', 'active');
+    await expect(editor.getNavList().locator('a.locale:first-of-type')).not.toHaveClass(/\bactive\b/);
+    const firstLocale = editor.getNavList().locator('a.locale').first();
+    await firstLocale.click();
+    await expect(firstLocale).toHaveClass(/\bactive\b/);
   });
 
-  it('should show editor when locale activated in sidebar', () => {
+  test('should show editor when locale activated in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
+    await editor.getNavList().locator('a.locale').first().click();
 
-    page.getEditor().should('be.visible');
+    await expect(editor.getEditor()).toBeVisible();
   });
 
-  it('should show translation when locale activated in sidebar', () => {
+  test('should show translation when locale activated in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
+    await editor.navigateTo();
+    await editor.getNavList().locator('a.locale').first().click();
 
     // then
-    page.getEditorContents().should('have.text', 'Schlüssel 1');
+    await expect(editor.getEditorContents()).toHaveText('Schlüssel 1');
   });
 
-  it('should show meta when locale activated in sidebar', () => {
+  test('should show meta when locale activated in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
+    await editor.getNavList().locator('a.locale').first().click();
 
-    page.getMeta().should('be.visible');
+    await expect(editor.getMeta()).toBeVisible();
   });
 
-  it('should show preview when locale activated in sidebar', () => {
+  test('should show preview when locale activated in sidebar', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
+    await editor.getNavList().locator('a.locale').first().click();
 
-    page.getPreviewContents().should('have.text', 'Schlüssel 1');
+    await expect(editor.getPreviewContents()).toHaveText('Schlüssel 1');
   });
 
-  it('should show existing translations when translations tab selected', () => {
+  test('should show existing translations when translations tab selected', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
+    await editor.getNavList().locator('a.locale').first().click();
 
-    page.getTranslationsTab().click();
-    page
-      .getTranslationsBody()
-      .find('mat-card')
-      .should('have.length', 2);
+    await editor.getTranslationsTab().click();
+    await expect(editor.getTranslationsBody().locator('mat-card')).toHaveCount(2);
   });
 
-  it('should use translation when use translation is clicked', () => {
+  test('should use translation when use translation is clicked', async ({ page }) => {
     // given
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
     // then
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
+    await editor.getNavList().locator('a.locale').first().click();
 
-    page.getTranslationsTab().click();
-    cy.get('.meta [role="tabpanel"] mat-card button.use-value')
-      .last()
-      .click();
+    await editor.getTranslationsTab().click();
+    await page.locator('.meta [role="tabpanel"] mat-card button.use-value').last().click();
 
-    page.getEditorContents().should('have.text', 'Key One');
+    await expect(editor.getEditorContents()).toHaveText('Key One');
   });
 
-  it('should only show locales with missing translations when filtered by those', () => {
+  test('should only show locales with missing translations when filtered by those', async ({
+    page,
+  }) => {
     // given
-    cy.intercept('/api/project/*/messages?*localeIds=*', { fixture: 'johndoe/p1/messages-missing' });
+    await mockApi(page, '/api/project/*/messages?*localeIds=*', 'johndoe/p1/messages-missing');
 
     // when
-    page.navigateTo();
+    await editor.navigateTo();
 
-    page.getFilterField().focus();
-    cy.get('.autocomplete-option')
-      .first()
-      .trigger('click');
+    await editor.getFilterField().focus();
+    await page.locator('.autocomplete-option').first().click();
 
     // then
-    cy.get('.selected-option').should('have.length', 1);
-    page
-      .getNavList()
-      .find('a.locale')
-      .should('have.length', 1);
+    await expect(page.locator('.selected-option')).toHaveCount(1);
+    await expect(editor.getNavList().locator('a.locale')).toHaveCount(1);
   });
 
-  it('should display "Save" button when user settings say so', () => {
+  test('should display "Save" button when user settings say so', async ({ page }) => {
     // given, when
-    page.navigateTo();
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
+    await editor.navigateTo();
+    await editor.getNavList().locator('a.locale').first().click();
 
     // then
-    cy.get('.save-button').should('have.text', 'Save');
+    await expect(page.locator('.save-button')).toHaveText('Save');
   });
 
-  it('should display "Save and next" button when user settings say so', () => {
+  test('should display "Save and next" button when user settings say so', async ({ page }) => {
     // given
-    cy.intercept('/api/me?fetch=features', { fixture: 'me-save-behavior-saveandnext' });
+    await remockApi(page, '/api/me*', 'me-save-behavior-saveandnext');
 
     // when
-    page.navigateTo();
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
+    await editor.navigateTo();
+    await editor.getNavList().locator('a.locale').first().click();
 
     // then
-    cy.get('.save-button').should('have.text', 'Save and next');
+    await expect(page.locator('.save-button')).toHaveText('Save and next');
   });
 
-  it('should call updateSettings on "Save and next"', () => {
+  test('should call updateSettings on "Save and next"', async ({ page }) => {
     // given
-    cy.intercept('PUT', '/api/message', { fixture: 'johndoe/p1/message' });
-    cy.intercept('PATCH', '/api/user/*/settings', { fixture: 'me-save-behavior-saveandnext' }).as(
-      'updateSettings'
-    );
+    await mockApi(page, '/api/message', 'johndoe/p1/message', { method: 'PUT' });
+    await mockApi(page, '/api/user/*/settings', 'me-save-behavior-saveandnext', { method: 'PATCH' });
 
     // when
-    page.navigateTo();
-    page
-      .getNavList()
-      .find('a.locale')
-      .first()
-      .click();
-    cy.get('.menu-button').click();
-    cy.get('.save-behavior-saveandnext').click();
+    await editor.navigateTo();
+    await editor.getNavList().locator('a.locale').first().click();
+    const updateSettings = waitForApi(page, '/api/user/*/settings', 'PATCH');
+    await page.locator('.menu-button').click();
+    await page.locator('.save-behavior-saveandnext').click();
 
     // then
-    cy.wait('@updateSettings').then(xhr => {
-      expect(xhr.request.body).to.deep.equal({ 'save-behavior': 'saveandnext' });
-    });
-    page
-      .getNavList()
-      .find('a.locale')
-      .eq(1)
-      .should('have.class', 'active');
+    expect((await updateSettings).postDataJSON()).toEqual({ 'save-behavior': 'saveandnext' });
+    await expect(editor.getNavList().locator('a.locale').nth(1)).toHaveClass(/\bactive\b/);
   });
 });

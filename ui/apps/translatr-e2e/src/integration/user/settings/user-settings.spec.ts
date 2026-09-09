@@ -1,37 +1,36 @@
+import { test, expect } from '../../../support/test';
+import { mockApi } from '../../../support/mock-api';
 import { UserSettingsPage } from '../../../support/user/user-settings-page.po';
 
-describe('User Settings', () => {
-  let page: UserSettingsPage;
+test.describe('User Settings', () => {
+  let settingsPage: UserSettingsPage;
 
-  beforeEach(() => {
-    page = new UserSettingsPage('johndoe');
+  test.beforeEach(async ({ page }) => {
+    settingsPage = new UserSettingsPage(page, 'johndoe');
 
-    cy.clearCookies();
-
-    cy.intercept('/api/me?fetch=features', { fixture: 'me' });
-    cy.intercept('/api/johndoe', { fixture: 'johndoe' });
-    cy.intercept('/api/projects*', { fixture: 'johndoe/projects' });
-    cy.intercept('/api/activities*', { fixture: 'johndoe/activities' });
+    await mockApi(page, '/api/johndoe', 'johndoe');
+    await mockApi(page, '/api/projects*', 'johndoe/projects');
+    await mockApi(page, '/api/activities*', 'johndoe/activities');
   });
 
-  it('should show user settings', () => {
+  test('should show user settings', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page.getPageName().should('have.text', 'John Doe');
+    await expect(settingsPage.getPageName()).toHaveText('John Doe');
   });
 
-  it('should have name and username set', () => {
+  test('should have name and username set', async () => {
     // given
 
     // when
-    page.navigateTo();
+    await settingsPage.navigateTo();
 
     // then
-    page.getNameField().should('have.value', 'John Doe');
-    page.getUsernameField().should('have.value', 'johndoe');
+    await expect(settingsPage.getNameField()).toHaveValue('John Doe');
+    await expect(settingsPage.getUsernameField()).toHaveValue('johndoe');
   });
 });
