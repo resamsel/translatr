@@ -98,5 +98,34 @@ describe('Admin Feature Flags', () => {
         .should('include', 'userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
       page.getUserPickerInput().should('have.value', 'janesmith');
     });
+
+    it('toggling a flag while viewing another user targets that user, and the reload stays on them', () => {
+      cy.intercept('GET', '/api/featureflags/resolved*', { fixture: 'resolved-features' }).as('resolved');
+      cy.intercept('/api/user/5e15a05d-c583-45a0-84fa-1e770b2a4532*', {
+        body: { id: '5e15a05d-c583-45a0-84fa-1e770b2a4532', username: 'janesmith', name: 'Jane Smith' }
+      });
+      cy.intercept('POST', '/api/featureflag', { fixture: 'feature-flag-created' }).as('create');
+
+      cy.visit('/featureflags/user?userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+      cy.wait('@resolved');
+
+      page.getToggle('project-infographic').click();
+
+      // The write must target the user shown in the URL, not the signed-in admin.
+      cy.wait('@create')
+        .its('request.body')
+        .should('deep.include', {
+          userId: '5e15a05d-c583-45a0-84fa-1e770b2a4532',
+          feature: 'project-infographic',
+          enabled: true
+        });
+
+      // The reload the effect triggers afterwards must keep targeting that same user —
+      // not silently fall back to the admin's own flags.
+      cy.wait('@resolved')
+        .its('request.url')
+        .should('include', 'userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+      cy.location('search').should('include', 'userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+    });
   });
 });

@@ -111,6 +111,23 @@ class FeatureFlagResourceTest {
         @Claim(key = "name",  value = "Test FF User"),
         @Claim(key = "email", value = "testff@example.com")
     })
+    void resolved_forOwnUserId_isAllowedWhenNotAdmin() {
+        String ownId = given().when().get("/api/me").then().extract().path("id");
+
+        given()
+            .when().get("/api/featureflags/resolved?userId=" + ownId)
+            .then()
+            .statusCode(200)
+            .body("size()", is(com.translatr.model.Feature.values().length));
+    }
+
+    @Test
+    @TestSecurity(user = "testuser", roles = "User")
+    @JwtSecurity(claims = {
+        @Claim(key = "sub",   value = "test-ff-sub"),
+        @Claim(key = "name",  value = "Test FF User"),
+        @Claim(key = "email", value = "testff@example.com")
+    })
     void resolved_forAnotherUser_deniedWhenNotAdmin() {
         UUID otherId = persistOtherUser("ffres-oth");
 

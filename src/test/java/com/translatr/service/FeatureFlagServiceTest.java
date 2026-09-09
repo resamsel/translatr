@@ -108,6 +108,35 @@ class FeatureFlagServiceTest {
     }
 
     @Test
+    void update_allowsCallerToUpdateTheirOwnOverride_whenNotAdmin() {
+        UUID flagId = UUID.randomUUID();
+        User caller = userWithId(UUID.randomUUID(), UserRole.User);
+        FeatureFlagDto dto = new FeatureFlagDto().id(flagId).enabled(true);
+        UserFeatureFlag flag = UserFeatureFlag.of(flagId, caller, "beta-editor", false);
+
+        when(featureFlagRepo.findByIdOptional(flagId)).thenReturn(Optional.of(flag));
+        when(mapper.toDto(flag)).thenReturn(dto);
+
+        service.update(dto, caller);
+
+        assertThat(flag.enabled).isTrue();
+    }
+
+    @Test
+    void delete_allowsCallerToDeleteTheirOwnOverride_whenNotAdmin() {
+        UUID flagId = UUID.randomUUID();
+        User caller = userWithId(UUID.randomUUID(), UserRole.User);
+        UserFeatureFlag flag = UserFeatureFlag.of(flagId, caller, "beta-editor", false);
+
+        when(featureFlagRepo.findByIdOptional(flagId)).thenReturn(Optional.of(flag));
+        when(mapper.toDto(flag)).thenReturn(new FeatureFlagDto().id(flagId));
+
+        service.delete(flagId, caller);
+
+        verify(featureFlagRepo).delete(flag);
+    }
+
+    @Test
     void update_deniedForAnotherUsersOverride_whenCallerIsNotAdmin() {
         UUID flagId  = UUID.randomUUID();
         User caller  = userWithId(UUID.randomUUID(), UserRole.User);
