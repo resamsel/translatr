@@ -2,7 +2,6 @@ package com.translatr.event;
 
 import io.vertx.mutiny.core.eventbus.EventBus;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import java.util.UUID;
 
 /**
@@ -11,7 +10,11 @@ import java.util.UUID;
 @ApplicationScoped
 public class WordCountEventProducer {
 
-    @Inject EventBus bus;
+    private final EventBus bus;
+
+    public WordCountEventProducer(EventBus bus) {
+        this.bus = bus;
+    }
 
     public void publishMessage(UUID messageId) {
         bus.publish("word-count", new WordCountEvent(WordCountEvent.Target.MESSAGE, messageId));

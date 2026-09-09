@@ -10,7 +10,6 @@ import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.ext.web.RoutingContext;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Set;
@@ -31,9 +30,14 @@ public class AccessTokenAuthMechanism implements HttpAuthenticationMechanism {
     static final String HEADER_NAME = "X-Access-Token";
     static final String QUERY_PARAM = "access_token";
 
-    @Inject AccessTokenService tokenService;
+    private final AccessTokenService tokenService;
+    private final io.micrometer.core.instrument.MeterRegistry registry;
 
-    @Inject io.micrometer.core.instrument.MeterRegistry registry;
+    public AccessTokenAuthMechanism(AccessTokenService tokenService,
+                                     io.micrometer.core.instrument.MeterRegistry registry) {
+        this.tokenService = tokenService;
+        this.registry     = registry;
+    }
 
     /**
      * Master gate for the branch's custom instrumentation — see
