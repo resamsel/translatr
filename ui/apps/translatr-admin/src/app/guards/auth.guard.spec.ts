@@ -3,7 +3,7 @@ import { Router, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { User, UserRole } from '@dev/translatr-model';
 import { LOGIN_URL, WINDOW } from '@translatr/utils';
-import { EMPTY, of, Subject, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { AppFacade } from '../+state/app.facade';
 import { environment } from '../../environments/environment';
 import { AuthGuard } from './auth.guard';
@@ -107,7 +107,7 @@ describe('AuthGuard', () => {
   });
 
   it('fails closed when the user lookup errors (no user -> login)', done => {
-    configure({ me$: EMPTY, loggedInUserSettled$: throwError(() => new Error('load failed')) });
+    configure({ me$: of(undefined), loggedInUserSettled$: throwError(() => new Error('load failed')) });
 
     guard.canActivate(null, routeState('/users')).subscribe(result => {
       expect(result).toBe(false);
@@ -117,6 +117,18 @@ describe('AuthGuard', () => {
           queryParams: { redirect_uri: environment.adminUrl + '/users' }
         })
       );
+      done();
+    });
+  });
+
+  it('fails closed when the user lookup errors but a (stale) user is present (-> /forbidden, never allow)', done => {
+    configure({ me$: of(adminUser), loggedInUserSettled$: throwError(() => new Error('load failed')) });
+
+    guard.canActivate(null, routeState('/users')).subscribe(result => {
+      expect(result).toBe(false);
+      expect(router.navigate).toHaveBeenCalledWith(['/forbidden'], {
+        queryParams: { path: '/users' }
+      });
       done();
     });
   });

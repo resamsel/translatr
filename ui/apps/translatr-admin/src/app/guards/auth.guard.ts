@@ -8,7 +8,7 @@ import {
 } from '@angular/router';
 import { User, UserRole } from '@dev/translatr-model';
 import { LOGIN_URL, WINDOW } from '@translatr/utils';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map, take, timeout, withLatestFrom } from 'rxjs/operators';
 import { AppFacade } from '../+state/app.facade';
 import { environment } from '../../environments/environment';
@@ -61,11 +61,21 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       timeout(AuthGuard.RESOLVE_TIMEOUT_MS),
       withLatestFrom(this.facade.me$),
       map(([, user]: [unknown, User | null | undefined]) => this.decide(user, state)),
-      catchError(() => {
+      catchError(() =>
         // User state could not be resolved (load error or timeout): fail closed.
-        this.denyUnresolved(state);
-        return of(false);
-      })
+        // Never allow while unknown - /forbidden if a user is present, else login.
+        this.facade.me$.pipe(
+          take(1),
+          map(user => {
+            if (user) {
+              this.redirectToForbidden(state);
+            } else {
+              this.redirectToLogin(state);
+            }
+            return false;
+          })
+        )
+      )
     );
   }
 
@@ -81,18 +91,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     }
 
     return true;
-  }
-
-  /** Error/timeout path: /forbidden if a user is present, otherwise login. */
-  private denyUnresolved(state: RouterStateSnapshot): void {
-    let currentUser: User | null | undefined;
-    this.facade.me$.pipe(take(1)).subscribe(user => (currentUser = user));
-
-    if (currentUser) {
-      this.redirectToForbidden(state);
-    } else {
-      this.redirectToLogin(state);
-    }
   }
 
   private redirectToForbidden(state: RouterStateSnapshot): void {
