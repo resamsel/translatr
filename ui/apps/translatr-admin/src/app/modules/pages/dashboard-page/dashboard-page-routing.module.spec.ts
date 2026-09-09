@@ -6,7 +6,7 @@ import { User, UserRole } from '@dev/translatr-model';
 import { LOGIN_URL, WINDOW } from '@translatr/utils';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
-import { routerRoutes } from './dashboard-page-routing.module';
+import { routes } from './dashboard-page-routing.module';
 
 @Component({ standalone: false, template: '' })
 class StubComponent {}
@@ -15,8 +15,8 @@ class StubComponent {}
  * Swap every real page component for a stub so the route tree (paths + guards)
  * can be exercised without pulling in Material, dialogs and the SDK.
  */
-const stub = (routes: Routes): Routes =>
-  routes.map((route: Route) => {
+const stub = (input: Routes): Routes =>
+  input.map((route: Route) => {
     const next: Route = { ...route };
     if (next.component) {
       next.component = StubComponent;
@@ -58,7 +58,7 @@ describe('admin route authorization', () => {
       imports: [
         RouterTestingModule.withRoutes([
           { path: 'forbidden', component: StubComponent },
-          ...stub(routerRoutes)
+          ...stub(routes)
         ])
       ],
       providers: [

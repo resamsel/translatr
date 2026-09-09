@@ -104,17 +104,16 @@ export const routes: Routes = [
         ]
       }
     ]
-  }
+  },
+  // Any admin URL that matches no page falls back to the guarded shell rather
+  // than leaving the router with no active page. It belongs here (the last admin
+  // feature module loaded) so it sorts after the shell's own `path: ''` route;
+  // a wildcard in the root routing module would shadow every real route.
+  { path: '**', redirectTo: '' }
 ];
 
-// Any admin URL that matches no page falls back to the guarded shell rather than
-// leaving the router with no active page. This lives here (the last admin
-// feature module loaded) so it sorts after the shell's own `path: ''` route;
-// a wildcard in the root routing module would shadow every real route.
-export const routerRoutes: Routes = [...routes, { path: '**', redirectTo: '' }];
-
 @NgModule({
-  imports: [RouterModule.forChild(routerRoutes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: [{ provide: DASHBOARD_ROUTES, useValue: routes }]
 })
