@@ -13,7 +13,8 @@
     "e2e": {
       "executor": "@nx/playwright:playwright",
       "options": {
-        "config": "apps/translatr-admin-e2e/playwright.config.ts"
+        "config": "apps/translatr-admin-e2e/playwright.config.ts",
+        "skipInstall": true
       },
       "configurations": {
         "production": {}

@@ -76,6 +76,12 @@ jobs:
       working-directory: ui
       run: npm ci
 
+    - name: Generate build info and API client
+      working-directory: ui
+      run: |
+        npm run buildinfo
+        npm run codegen
+
     - name: Install Playwright browser
       working-directory: ui
       run: npx playwright install --with-deps chromium
