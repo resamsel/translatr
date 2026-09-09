@@ -53,6 +53,16 @@ import { routerQuery } from './router.selectors';
 export class AppFacade extends FeatureFlagFacade {
   readonly me$ = this.store.pipe(select(appQuery.getLoggedInUser));
 
+  /**
+   * Emits once every time a `loadMe()` attempt settles, whether the logged-in
+   * user was loaded or the load failed. Lets callers (e.g. the route guard) wait
+   * for a deterministic "user state is known" signal instead of guessing at
+   * `me$` emission timing.
+   */
+  readonly loggedInUserSettled$ = this.actions$.pipe(
+    ofType(AppActionTypes.LoggedInUserLoaded, AppActionTypes.LoggedInUserLoadError)
+  );
+
   readonly queryParams$: Observable<Params> = this.store.pipe(select(routerQuery.selectQueryParams));
 
   // Users
