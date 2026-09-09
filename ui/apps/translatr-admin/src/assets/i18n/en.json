@@ -169,7 +169,6 @@
   "footer.links" : "Links",
   "health.providers.heading" : "Identity providers",
   "health.providers.hint" : "OIDC providers from AUTH_PROVIDERS and the OIDC_<PROVIDER>_* environment variables. Client secrets are shown masked.",
-  "health.providers.refresh" : "Refresh",
   "health.providers.empty" : "No providers are configured.",
   "health.providers.error.load" : "Could not load provider status.",
   "health.providers.custom" : "Custom / Keycloak",

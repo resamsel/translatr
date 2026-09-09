@@ -6,6 +6,8 @@
   </div>
 </header>
 <div class="container flex">
+  <dev-activity-graph [data]="aggregatedActivity$ | async"></dev-activity-graph>
+
   <dev-metric
     routerLink="/users"
     name="Users"
@@ -32,22 +34,22 @@
 
   <dev-metric
     [routerLink]="userLink($safeNavigationMigration((users$ | async)?.list[0]))"
-    [value]="$safeNavigationMigration((users$ | async)?.list[0]?.name)"
+    [value]="$safeNavigationMigration((users$ | async)?.list[0]?.name ?? '-')"
     class="user count"
     icon="group"
     name="Latest user"></dev-metric>
   <dev-metric
-    [value]="$safeNavigationMigration((projects$ | async)?.list[0]?.name)"
+    [value]="$safeNavigationMigration((projects$ | async)?.list[0]?.name ?? '-')"
     class="project count"
     icon="library_books"
     name="Latest project"></dev-metric>
   <dev-metric
-    [value]="$safeNavigationMigration((accessTokens$ | async)?.list[0]?.name)"
+    [value]="$safeNavigationMigration((accessTokens$ | async)?.list[0]?.name ?? '-')"
     class="access-token count"
     icon="vpn_key"
     name="Latest access token"></dev-metric>
   <dev-metric
-    [value]="$safeNavigationMigration((activities$ | async)?.list[0]?.type)"
+    [value]="$safeNavigationMigration((activities$ | async)?.list[0]?.type ?? '-')"
     class="activity count"
     icon="change_history"
     name="Latest activity"></dev-metric>

@@ -22,6 +22,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   AccessTokenEditDialogModule,
+  ActivityGraphModule,
   ButtonModule,
   EllipsisModule,
   EntityTableModule,
@@ -29,12 +30,12 @@ import {
   MetricModule,
   ProjectEditDialogModule,
   ShortNumberModule,
+  TimeAgoModule,
   UserCardModule,
-  UserEditDialogModule
+  UserEditDialogModule,
 } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { AccessTokensComponent } from '../access-tokens/access-tokens.component';
 import { FeatureFlagsPageComponent } from '../feature-flags-page/feature-flags-page.component';
@@ -59,7 +60,7 @@ import { UsersComponent } from '../users/users.component';
     FeatureFlagsPageComponent,
     FeatureFlagsComponent,
     GlobalFeatureFlagsComponent,
-    HealthComponent
+    HealthComponent,
   ],
   imports: [
     CommonModule,
@@ -98,8 +99,9 @@ import { UsersComponent } from '../users/users.component';
     MetricModule,
     MatTooltipModule,
     ShortNumberModule,
-    TranslocoModule
+    TranslocoModule,
+    ActivityGraphModule,
   ],
-  providers: []
+  providers: [],
 })
 export class DashboardPageModule {}

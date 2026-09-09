@@ -27,89 +27,89 @@ export const routes: Routes = [
         path: '',
         data: {
           icon: 'view_quilt',
-          name: 'Dashboard'
-        }
+          name: 'Dashboard',
+        },
       },
       {
         path: 'users',
         data: {
           icon: 'group',
-          name: 'Users'
+          name: 'Users',
         },
         children: [
           {
             component: UsersComponent,
             path: '',
-            pathMatch: 'full'
+            pathMatch: 'full',
           },
           {
             component: UserComponent,
-            path: ':id'
-          }
-        ]
+            path: ':id',
+          },
+        ],
       },
       {
         component: ProjectsComponent,
         path: 'projects',
         data: {
           icon: 'library_books',
-          name: 'Projects'
-        }
+          name: 'Projects',
+        },
       },
       {
         component: AccessTokensComponent,
         path: 'accesstokens',
         data: {
           icon: 'vpn_key',
-          name: 'Access Tokens'
-        }
-      },
-      {
-        component: HealthComponent,
-        path: 'health',
-        data: {
-          icon: 'health_and_safety',
-          name: 'Health'
-        }
+          name: 'Access Tokens',
+        },
       },
       {
         component: FeatureFlagsPageComponent,
         path: 'featureflags',
         data: {
           icon: 'flag',
-          name: 'Feature Flags'
+          name: 'Feature Flags',
         },
         children: [
           {
             path: '',
             pathMatch: 'full',
-            redirectTo: 'user'
+            redirectTo: 'user',
           },
           {
             component: FeatureFlagsComponent,
             path: 'user',
             data: {
               icon: 'person',
-              name: 'featureFlags.tab.user'
-            }
+              name: 'featureFlags.tab.user',
+            },
           },
           {
             component: GlobalFeatureFlagsComponent,
             path: 'global',
             data: {
               icon: 'public',
-              name: 'featureFlags.tab.global'
-            }
-          }
-        ]
+              name: 'featureFlags.tab.global',
+            },
+          },
+        ],
+      },
+      {
+        component: HealthComponent,
+        path: 'health',
+        data: {
+          icon: 'health_and_safety',
+          name: 'Health',
+        },
       }
-    ]
+    ],
   },
   // Any admin URL that matches no page falls back to the guarded shell rather
   // than leaving the router with no active page. It belongs here (the last admin
   // feature module loaded) so it sorts after the shell's own `path: ''` route;
   // a wildcard in the root routing module would shadow every real route.
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

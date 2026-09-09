@@ -169,7 +169,6 @@
   "footer.links" : "Links",
   "health.providers.heading" : "Identitätsanbieter",
   "health.providers.hint" : "OIDC-Anbieter aus AUTH_PROVIDERS und den OIDC_<PROVIDER>_*-Umgebungsvariablen. Client-Secrets werden maskiert angezeigt.",
-  "health.providers.refresh" : "Aktualisieren",
   "health.providers.empty" : "Es sind keine Anbieter konfiguriert.",
   "health.providers.error.load" : "Anbieterstatus konnte nicht geladen werden.",
   "health.providers.custom" : "Benutzerdefiniert / Keycloak",

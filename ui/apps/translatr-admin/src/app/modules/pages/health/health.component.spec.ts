@@ -1,10 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthClientService, OidcProviderStatus } from '@dev/translatr-sdk';
@@ -45,12 +42,9 @@ describe('HealthComponent', () => {
         declarations: [HealthComponent],
         imports: [
           NoopAnimationsModule,
-          MatButtonModule,
           MatCardModule,
           MatChipsModule,
-          MatIconModule,
           MatProgressSpinnerModule,
-          MatTooltipModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
         ],
         providers: [{ provide: AuthClientService, useValue: authClientService }]
@@ -91,11 +85,30 @@ describe('HealthComponent', () => {
     );
     setup();
 
-    const items = fixture.debugElement.queryAll(By.css('.provider-card .errors li'));
+    const items = fixture.debugElement.queryAll(By.css('.provider-card .warnings li'));
     expect(items.map(i => i.nativeElement.textContent.trim())).toEqual([
       'client-id is missing',
       'client-secret is missing'
     ]);
+  });
+
+  it('lists errors of an active provider under .errors, of an inactive one under .warnings', () => {
+    authClientService.getProviderStatus.mockReturnValue(
+      of([
+        provider({ key: 'active-with-errors', active: true, errors: ['token endpoint slow'] }),
+        provider({ key: 'inactive-with-errors', active: false, errors: ['client-secret is missing'] })
+      ])
+    );
+    setup();
+
+    expect(cards()[0].query(By.css('.errors li')).nativeElement.textContent.trim()).toBe(
+      'token endpoint slow'
+    );
+    expect(cards()[0].query(By.css('.warnings'))).toBeNull();
+    expect(cards()[1].query(By.css('.warnings li')).nativeElement.textContent.trim()).toBe(
+      'client-secret is missing'
+    );
+    expect(cards()[1].query(By.css('.errors'))).toBeNull();
   });
 
   it('shows a spinner while the request is in flight', () => {
@@ -106,26 +119,11 @@ describe('HealthComponent', () => {
     expect(cards()).toHaveLength(0);
   });
 
-  it('shows an error with a retry button when the request fails, and retry re-requests', () => {
+  it('shows an error message when the request fails', () => {
     authClientService.getProviderStatus.mockReturnValue(throwError(() => new Error('boom')));
     setup();
 
-    const error = fixture.debugElement.query(By.css('.error'));
-    expect(error).toBeTruthy();
-
-    authClientService.getProviderStatus.mockReturnValue(of([provider({})]));
-    error.query(By.css('button')).nativeElement.click();
-    fixture.detectChanges();
-
-    expect(authClientService.getProviderStatus).toHaveBeenCalledTimes(2);
-    expect(cards()).toHaveLength(1);
-  });
-
-  it('refresh() re-requests provider status', () => {
-    setup();
-    expect(authClientService.getProviderStatus).toHaveBeenCalledTimes(1);
-
-    component.refresh();
-    expect(authClientService.getProviderStatus).toHaveBeenCalledTimes(2);
+    expect(fixture.debugElement.query(By.css('.error'))).toBeTruthy();
+    expect(cards()).toHaveLength(0);
   });
 });
