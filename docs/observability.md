@@ -329,3 +329,29 @@ monitoring/validate.sh
 Runs the collector's own `validate` against `monitoring/otel-collector/config.yaml` and
 `docker compose -f docker-compose-loadtest.yml -f docker-compose-signoz.yml config -q`. No
 stack, no ClickHouse, no internet beyond pulling the collector image once.
+
+
+## Gotchas found on the first real run (2026-09-09)
+
+- **SigNoz needs its first-run org before any telemetry flows.** SigNoz's OTel
+  collector connects via opamp and the query-service refuses to register the
+  collector agent (`cannot create agent without orgId`) until an organisation
+  exists — so the collector never opens its OTLP `:4317` listener and nothing
+  is ingested. Open `http://localhost:8080`, create the admin account, then
+  `docker restart <project>-signoz-otel-collector-1` so it re-does the opamp
+  handshake.
+- **The committed dashboard uses SigNoz *builder* queries, not PromQL.** SigNoz
+  v0.129 does not resolve PromQL against OTLP metric names that contain dots
+  (`http_server_requests_seconds.count`, `.bucket`, `jvm_gc_pause_seconds.sum`).
+  The panels are keyed on the exact metric name + type SigNoz stores.
+- **`http_server_requests_seconds` percentile pre-aggregates are dropped by the
+  collector** (`'le' label ... missing` warnings) because Micrometer emits both
+  `_bucket{le=}` and bare `{quantile=}` series under one name. The histogram
+  buckets still flow, so p50/p95/p99 panels compute from buckets.
+- **The stock `docker-compose-loadtest.yml` needs local fixes to run the current
+  app:** its `postgres` image is untagged (now 18, incompatible data path — pin
+  16); `docker/entrypoint-initdb.d/init-translatr.sh` `GRANT`s on a DB it never
+  `CREATE`s, so with `ON_ERROR_STOP` the whole entrypoint aborts; and `sso`
+  (Keycloak) uses deprecated env so it exits immediately, which breaks every
+  load-generator persona that does an OIDC login (only the token-only personas
+  produce traffic).
