@@ -1,26 +1,5 @@
-:host {
-  display: block;
-  padding: 1rem;
-}
-
-.health-section {
-  max-width: 56rem;
-}
-
-.section-head {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  h2 {
-    margin: 0;
-    flex: 1;
-  }
-}
-
-.hint {
-  margin: 0.25rem 0 1rem;
-  opacity: 0.7;
+.header {
+  background-color: #0288d1;
 }
 
 .loading {
@@ -102,9 +81,17 @@
     word-break: break-word;
   }
 
-  .errors {
+  .errors,
+  .warnings {
     margin: 0.75rem 0 0;
     padding-left: 1.25rem;
+  }
+
+  .errors {
     color: #b71c1c;
+  }
+
+  .warnings {
+    color: #b77e1c;
   }
 }

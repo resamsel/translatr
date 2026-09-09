@@ -1,7 +1,13 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ShortNumberModule } from '@dev/translatr-components';
-import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
+import { ActivityService } from '@dev/translatr-sdk';
+import {
+  ActivityGraphTestingModule,
+  FeatureFlagTestingModule,
+  MetricTestingModule
+} from '@translatr/components/testing';
+import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
 import { InfoComponent } from './info.component';
 
@@ -14,6 +20,7 @@ describe('InfoComponent', () => {
       TestBed.configureTestingModule({
         declarations: [InfoComponent],
         imports: [
+          ActivityGraphTestingModule,
           FeatureFlagTestingModule,
           MetricTestingModule,
           ShortNumberModule,
@@ -29,6 +36,10 @@ describe('InfoComponent', () => {
               loadAccessTokens: jest.fn(),
               loadActivities: jest.fn()
             })
+          },
+          {
+            provide: ActivityService,
+            useValue: { aggregated: () => of({ list: [] }) }
           }
         ]
       }).compileComponents();
