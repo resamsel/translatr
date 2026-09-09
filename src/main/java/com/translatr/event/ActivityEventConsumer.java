@@ -7,7 +7,6 @@ import com.translatr.repository.UserRepository;
 import io.quarkus.vertx.ConsumeEvent;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +21,16 @@ public class ActivityEventConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActivityEventConsumer.class);
 
-    @Inject LogEntryRepository logRepo;
-    @Inject UserRepository     userRepo;
-    @Inject ProjectRepository  projectRepo;
+    private final LogEntryRepository logRepo;
+    private final UserRepository     userRepo;
+    private final ProjectRepository  projectRepo;
+
+    public ActivityEventConsumer(LogEntryRepository logRepo, UserRepository userRepo,
+                                  ProjectRepository projectRepo) {
+        this.logRepo     = logRepo;
+        this.userRepo    = userRepo;
+        this.projectRepo = projectRepo;
+    }
 
     @ConsumeEvent("activity")
     @Blocking
