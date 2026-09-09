@@ -4,7 +4,6 @@ import com.translatr.service.AuthProviderStatusService;
 import com.translatr.service.OidcProviderStatus;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
 
@@ -16,7 +15,11 @@ public class AuthProviderStartupLogger {
 
     private static final Logger LOG = Logger.getLogger(AuthProviderStartupLogger.class);
 
-    @Inject AuthProviderStatusService statusService;
+    private final AuthProviderStatusService statusService;
+
+    public AuthProviderStartupLogger(AuthProviderStatusService statusService) {
+        this.statusService = statusService;
+    }
 
     void onStart(@Observes StartupEvent ev) {
         try {

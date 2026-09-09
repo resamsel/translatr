@@ -5,7 +5,6 @@ import com.translatr.model.Project;
 import com.translatr.model.User;
 import io.vertx.mutiny.core.eventbus.EventBus;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 /**
  * Replaces ActivityActorRef — publishes activity events to the Vert.x event bus.
@@ -14,7 +13,11 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class ActivityEventProducer {
 
-    @Inject EventBus bus;
+    private final EventBus bus;
+
+    public ActivityEventProducer(EventBus bus) {
+        this.bus = bus;
+    }
 
     /**
      * @param user    the acting user (required)

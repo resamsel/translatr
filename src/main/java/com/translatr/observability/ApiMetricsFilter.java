@@ -5,7 +5,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.opentelemetry.api.trace.Span;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.Priority;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -72,10 +71,15 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
      */
     private static final ConcurrentHashMap<Method, String> TEMPLATE_CACHE = new ConcurrentHashMap<>();
 
-    @Inject MeterRegistry registry;
-    @Inject SecurityIdentity identity;
+    private final MeterRegistry registry;
+    private final SecurityIdentity identity;
     @Context ResourceInfo resourceInfo;
     @Context UriInfo uriInfo;
+
+    public ApiMetricsFilter(MeterRegistry registry, SecurityIdentity identity) {
+        this.registry = registry;
+        this.identity = identity;
+    }
 
     /**
      * Read as a plain property (not via {@link com.translatr.config.TranslatrConfig}) because JAX-RS
