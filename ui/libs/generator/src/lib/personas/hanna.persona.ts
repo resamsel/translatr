@@ -16,6 +16,7 @@ import { catchError, concatMap, filter, map } from 'rxjs/operators';
 import { chooseAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectRandomProjectAccessToken } from '../project';
+import { toggleSuffix } from '../toggle-suffix';
 import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
@@ -86,9 +87,7 @@ export class HannaPersona extends Persona {
           )
           .update({
             ...key,
-            name: key.name.endsWith(suffix)
-              ? key.name.replace(suffix + '$', '')
-              : key.name + suffix,
+            name: toggleSuffix(key.name, suffix),
           })
           .pipe(map((k) => ({ project, key: k }))),
       ),

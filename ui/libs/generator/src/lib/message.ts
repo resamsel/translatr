@@ -13,6 +13,7 @@ import { concatMap, filter, map } from 'rxjs/operators';
 import { chooseAccessToken } from './access-token';
 import { messageSuffix } from './constants';
 import { selectRandomProjectAccessToken } from './project';
+import { toggleSuffix } from './toggle-suffix';
 
 export const updateMessage = (
   messageService: MessageService,
@@ -44,9 +45,7 @@ export const updateMessage = (
         } else {
           message = {
             ...message,
-            value: message.value.endsWith(messageSuffix)
-              ? message.value.replace(messageSuffix + '$', '')
-              : message.value + messageSuffix,
+            value: toggleSuffix(message.value, messageSuffix),
           };
         }
         const scopedMessageService = messageService.withAuth(

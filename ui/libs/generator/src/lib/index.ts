@@ -10,6 +10,7 @@ export * from './message';
 export * from './personas';
 export * from './project';
 export * from './state';
+export * from './toggle-suffix';
 export * from './user';
 export * from './utils';
 export * from './weighted-persona';
