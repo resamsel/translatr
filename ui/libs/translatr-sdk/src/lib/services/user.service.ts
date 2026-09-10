@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   Aggregate,
@@ -6,22 +6,66 @@ import {
   Profile,
   RequestCriteria,
   Setting,
-  User
+  User,
 } from '@dev/translatr-model';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
-import { AbstractService, encodePathParam, RequestOptions } from './abstract.service';
+import { UsersService } from '../generated/api/users.service';
+import { UserDto } from '../generated/model/userDto';
+import {
+  AbstractService,
+  PagedListLike,
+  RequestOptions,
+  encodePathParam,
+} from './abstract.service';
 import { ErrorHandler } from './error-handler';
-import { HttpHeader } from './http-header';
 import { LanguageProvider } from './language-provider';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService extends AbstractService<User, RequestCriteria> {
-  constructor(http: HttpClient, errorHandler: ErrorHandler, languageProvider: LanguageProvider) {
-    super(http, errorHandler, languageProvider, () => '/api/users', '/api/user');
+  constructor(
+    http: HttpClient,
+    errorHandler: ErrorHandler,
+    languageProvider: LanguageProvider,
+    client: UsersService,
+  ) {
+    super(http, errorHandler, languageProvider, {
+      entityPath: '/api/user',
+      listPath: () => '/api/users',
+      list: (c: RequestCriteria | undefined, context?: HttpContext) =>
+        client.findUsers(
+          c?.search,
+          c?.offset,
+          c?.limit,
+          c?.order,
+          c?.fetch,
+          undefined,
+          undefined,
+          'body',
+          false,
+          { context },
+        ) as unknown as Observable<PagedListLike<User>>,
+      get: (id: string | number, context?: HttpContext) =>
+        client.getUser(String(id), 'body', false, { context }) as unknown as Observable<User>,
+      // No user-creation operation exists in the OpenAPI contract, and adding one
+      // is out of scope for #282. See design.md Decision 8.
+      create: () =>
+        throwError(
+          () =>
+            new Error(
+              'User creation is not available through the SDK transport (no contract operation) — see #282',
+            ),
+        ),
+      update: (dto: Partial<User>, context?: HttpContext) =>
+        client.updateUser(dto as unknown as UserDto, 'body', false, {
+          context,
+        }) as unknown as Observable<User>,
+      delete: (id: string | number, context?: HttpContext) =>
+        client.deleteUser(String(id), 'body', false, { context }) as unknown as Observable<User>,
+    });
   }
 
   byUsername(
@@ -32,15 +76,13 @@ export class UserService extends AbstractService<User, RequestCriteria> {
         | {
             [param: string]: string | string[];
           };
-    }
+    },
   ): Observable<User | undefined> {
     const path = `/api/${encodePathParam(username)}`;
     return this.http
       .get<User>(path, {
-        headers: {
-          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
-        },
-        ...options
+        context: this.authContext,
+        ...options,
       })
       .pipe(
         map(convertTemporals),
@@ -49,9 +91,9 @@ export class UserService extends AbstractService<User, RequestCriteria> {
             name: 'byUsername',
             params: [username, options],
             method: 'get',
-            path
-          })
-        )
+            path,
+          }),
+        ),
       );
   }
 
@@ -59,10 +101,8 @@ export class UserService extends AbstractService<User, RequestCriteria> {
     const path = '/api/me';
     return this.http
       .get<User>(path, {
-        headers: {
-          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
-        },
-        params
+        context: this.authContext,
+        params,
       })
       .pipe(
         map(convertTemporals),
@@ -71,9 +111,9 @@ export class UserService extends AbstractService<User, RequestCriteria> {
             name: 'me',
             params: [params],
             method: 'get',
-            path
-          })
-        )
+            path,
+          }),
+        ),
       );
   }
 
@@ -81,9 +121,7 @@ export class UserService extends AbstractService<User, RequestCriteria> {
     const path = `/api/user/${userId}/activity`;
     return this.http
       .get<PagedList<Aggregate>>(path, {
-        headers: {
-          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
-        }
+        context: this.authContext,
       })
       .pipe(
         catchError((err: HttpErrorResponse) =>
@@ -91,24 +129,22 @@ export class UserService extends AbstractService<User, RequestCriteria> {
             name: 'activity',
             params: [userId],
             method: 'get',
-            path
-          })
-        )
+            path,
+          }),
+        ),
       );
   }
 
   updateSettings(
     userId: string,
     settings: Record<Setting, string>,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Observable<User | undefined> {
     const path = `/api/user/${userId}/settings`;
     return this.http
       .patch<User>(path, settings, {
-        headers: {
-          [HttpHeader.AcceptLanguage]: this.languageProvider.getActiveLang()
-        },
-        ...options
+        context: this.authContext,
+        ...options,
       })
       .pipe(
         map(convertTemporals),
@@ -117,19 +153,24 @@ export class UserService extends AbstractService<User, RequestCriteria> {
             name: 'updateSettings',
             params: [userId, settings, options],
             method: 'patch',
-            path
-          })
-        )
+            path,
+          }),
+        ),
       );
   }
 
   authProfile(): Observable<Profile | undefined> {
     const path = '/api/profile';
-    return this.http.get<Profile>(path).pipe(
+    return this.http.get<Profile>(path, { context: this.authContext }).pipe(
       map(convertTemporals),
       catchError((err: HttpErrorResponse) =>
-        this.errorHandler.handleError(err, { name: 'authProfile', params: [], method: 'get', path })
-      )
+        this.errorHandler.handleError(err, {
+          name: 'authProfile',
+          params: [],
+          method: 'get',
+          path,
+        }),
+      ),
     );
   }
 }

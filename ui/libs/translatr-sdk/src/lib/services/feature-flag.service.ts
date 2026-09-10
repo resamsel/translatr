@@ -1,17 +1,56 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FeatureFlagCriteria, ResolvedFeature, UserFeatureFlag } from '@dev/translatr-model';
 import { Observable } from 'rxjs';
-import { AbstractService } from './abstract.service';
+import { UserFeatureFlagsService } from '../generated/api/userFeatureFlags.service';
+import { FeatureFlagDto } from '../generated/model/featureFlagDto';
+import { AbstractService, PagedListLike } from './abstract.service';
 import { ErrorHandler } from './error-handler';
 import { LanguageProvider } from './language-provider';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FeatureFlagService extends AbstractService<UserFeatureFlag, FeatureFlagCriteria> {
-  constructor(http: HttpClient, errorHandler: ErrorHandler, languageProvider: LanguageProvider) {
-    super(http, errorHandler, languageProvider, () => '/api/featureflags', '/api/featureflag');
+  constructor(
+    http: HttpClient,
+    errorHandler: ErrorHandler,
+    languageProvider: LanguageProvider,
+    client: UserFeatureFlagsService,
+  ) {
+    super(http, errorHandler, languageProvider, {
+      entityPath: '/api/featureflag',
+      listPath: () => '/api/featureflags',
+      list: (c: FeatureFlagCriteria | undefined, context?: HttpContext) =>
+        client.findUserFeatureFlags(
+          c?.search,
+          c?.offset,
+          c?.limit,
+          c?.order,
+          c?.fetch,
+          c?.userId,
+          undefined,
+          'body',
+          false,
+          { context },
+        ) as unknown as Observable<PagedListLike<UserFeatureFlag>>,
+      get: (id: string | number, context?: HttpContext) =>
+        client.getUserFeatureFlag(String(id), 'body', false, {
+          context,
+        }) as unknown as Observable<UserFeatureFlag>,
+      create: (dto: UserFeatureFlag, context?: HttpContext) =>
+        client.createUserFeatureFlag(dto as unknown as FeatureFlagDto, 'body', false, {
+          context,
+        }) as unknown as Observable<UserFeatureFlag>,
+      update: (dto: Partial<UserFeatureFlag>, context?: HttpContext) =>
+        client.updateUserFeatureFlag(dto as unknown as FeatureFlagDto, 'body', false, {
+          context,
+        }) as unknown as Observable<UserFeatureFlag>,
+      delete: (id: string | number, context?: HttpContext) =>
+        client.deleteUserFeatureFlag(String(id), 'body', false, {
+          context,
+        }) as unknown as Observable<UserFeatureFlag>,
+    });
   }
 
   /**
@@ -20,7 +59,8 @@ export class FeatureFlagService extends AbstractService<UserFeatureFlag, Feature
    */
   resolved(userId?: string): Observable<ResolvedFeature[]> {
     return this.http.get<ResolvedFeature[]>('/api/featureflags/resolved', {
-      params: userId ? { userId } : {}
+      context: this.authContext,
+      params: userId ? { userId } : {},
     });
   }
 }
