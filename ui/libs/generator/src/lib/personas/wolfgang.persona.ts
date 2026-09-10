@@ -17,6 +17,7 @@ import { chooseAccessToken } from '../access-token';
 import { messageSuffix } from '../constants';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectRandomProjectAccessToken } from '../project';
+import { toggleSuffix } from '../toggle-suffix';
 import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
@@ -88,9 +89,7 @@ export class WolfgangPersona extends Persona {
           )
           .update({
             ...message,
-            value: message.value.endsWith(messageSuffix)
-              ? message.value.replace(messageSuffix + '$', '')
-              : message.value + messageSuffix,
+            value: toggleSuffix(message.value, messageSuffix),
           })
           .pipe(map((m) => ({ project, message: m }))),
       ),

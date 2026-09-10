@@ -22,6 +22,7 @@ import { catchError, concatMap, filter, map, mapTo, retry } from 'rxjs/operators
 import * as _ from 'underscore';
 import { chooseAccessToken } from '../access-token';
 import { keyNames, localeNames } from '../constants';
+import { toggleSuffix } from '../toggle-suffix';
 import { selectRandomUserAccessToken } from '../user';
 import { getRandomProject } from './get';
 
@@ -189,9 +190,7 @@ export const updateRandomProject = (
         .withAuth(chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectWrite))
         .update({
           ...project,
-          description: project.description.endsWith('!')
-            ? project.description.replace('!', '')
-            : `${project.description}!`,
+          description: toggleSuffix(project.description, '!'),
         }),
     ),
   );

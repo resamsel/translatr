@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { chooseAccessToken, selectRandomAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
+import { toggleSuffix } from '../toggle-suffix';
 import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
@@ -34,9 +35,7 @@ export class MarioPersona extends Persona {
           .withAuth(chooseAccessToken(accessToken, this.config.accessToken, Scope.AccessTokenWrite))
           .update({
             ...accessToken,
-            name: accessToken.name.endsWith('!')
-              ? accessToken.name.substr(0, accessToken.name.length - 1)
-              : `${accessToken.name}!`,
+            name: toggleSuffix(accessToken.name, '!'),
             scope: scopes.join(','),
           }),
       ),

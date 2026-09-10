@@ -16,6 +16,7 @@ import { catchError, concatMap, filter, map } from 'rxjs/operators';
 import { chooseAccessToken } from '../access-token';
 import { LoadGeneratorConfig } from '../load-generator-config';
 import { selectRandomProjectAccessToken } from '../project';
+import { toggleSuffix } from '../toggle-suffix';
 import { WeightedPersona } from '../weighted-persona';
 import { Persona } from './persona';
 import { personas } from './personas';
@@ -87,9 +88,7 @@ export class MariusPersona extends Persona {
           )
           .update({
             ...locale,
-            name: locale.name.endsWith('_formal')
-              ? locale.name.replace(/_formal$/, '')
-              : locale.name + '_formal',
+            name: toggleSuffix(locale.name, '_formal'),
           })
           .pipe(map((l) => ({ project, locale: l }))),
       ),
