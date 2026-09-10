@@ -8,7 +8,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -24,7 +24,7 @@ const info: WeightedPersona = {
   type: 'read',
   name: 'Ferdinand',
   description: "I'm going to read all keys of a random project.",
-  weight: 20
+  weight: 20,
 };
 
 export class FerdinandPersona extends Persona {
@@ -53,32 +53,34 @@ export class FerdinandPersona extends Persona {
       this.projectService,
       this.localeService,
       this.keyService,
-      this.messageService
+      this.messageService,
     ).pipe(
       concatMap(({ accessToken, project }) =>
         this.keyService
-          .find({
-            projectId: project.id,
-            access_token: chooseAccessToken(
+          .withAuth(
+            chooseAccessToken(
               accessToken,
               this.config.accessToken,
               Scope.ProjectRead,
-              Scope.KeyRead
-            )
+              Scope.KeyRead,
+            ),
+          )
+          .find({
+            projectId: project.id,
           })
           .pipe(
-            map(paged => ({
+            map((paged) => ({
               project,
               accessToken,
-              keys: paged.list
-            }))
-          )
+              keys: paged.list,
+            })),
+          ),
       ),
       map(
         ({ accessToken: _accessToken, project, keys }) =>
-          `${keys.length} keys of project ${project.ownerUsername}/${project.name} viewed`
+          `${keys.length} keys of project ${project.ownerUsername}/${project.name} viewed`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
@@ -86,5 +88,5 @@ export class FerdinandPersona extends Persona {
 personas.push({
   ...info,
   create: (config: LoadGeneratorConfig, injector: Injector) =>
-    new FerdinandPersona(config, injector)
+    new FerdinandPersona(config, injector),
 });

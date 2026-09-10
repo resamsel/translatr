@@ -14,7 +14,7 @@ const info: WeightedPersona = {
   type: 'update',
   name: 'Gerald',
   description: "I'm going to update myself (a random user).",
-  weight: 20
+  weight: 20,
 };
 
 export class GeraldPersona extends Persona {
@@ -34,41 +34,32 @@ export class GeraldPersona extends Persona {
         userRole: UserRole.User,
         order: 'whenUpdated desc',
         limit: 1,
-        offset: Math.floor(Math.random() * 100)
+        offset: Math.floor(Math.random() * 100),
       })
       .pipe(
-        filter(paged => paged.list.length > 0),
-        map(paged => paged.list[0]),
-        switchMap(accessToken =>
+        filter((paged) => paged.list.length > 0),
+        map((paged) => paged.list[0]),
+        switchMap((accessToken) =>
           this.userService
             .me({
-              access_token: chooseAccessToken(accessToken, this.config.accessToken, Scope.UserRead)
+              access_token: chooseAccessToken(accessToken, this.config.accessToken, Scope.UserRead),
             })
-            .pipe(map(me => ({ me, accessToken })))
+            .pipe(map((me) => ({ me, accessToken }))),
         ),
         switchMap(({ me, accessToken }) =>
-          this.userService.update(
-            {
+          this.userService
+            .withAuth(chooseAccessToken(accessToken, this.config.accessToken, Scope.UserWrite))
+            .update({
               ...me,
-              name: me.name.indexOf('!') > 0 ? me.name.replace('!', '') : `${me.name}!`
-            },
-            {
-              params: {
-                access_token: chooseAccessToken(
-                  accessToken,
-                  this.config.accessToken,
-                  Scope.UserWrite
-                )
-              }
-            }
-          )
+              name: me.name.indexOf('!') > 0 ? me.name.replace('!', '') : `${me.name}!`,
+            }),
         ),
-        map(user => `user ${user.name} (${user.username}) updated`)
+        map((user) => `user ${user.name} (${user.username}) updated`),
       );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new GeraldPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new GeraldPersona(config, injector),
 });

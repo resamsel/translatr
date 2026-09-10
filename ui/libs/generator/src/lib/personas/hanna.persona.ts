@@ -8,7 +8,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
@@ -25,7 +25,7 @@ const info: WeightedPersona = {
   type: 'update',
   name: 'Hanna',
   description: "I'm going to update a key of a random project of mine.",
-  weight: 10
+  weight: 10,
 };
 
 const suffix = '.updated';
@@ -56,54 +56,52 @@ export class HannaPersona extends Persona {
       this.projectService,
       this.localeService,
       this.keyService,
-      this.messageService
+      this.messageService,
     ).pipe(
       concatMap(({ accessToken, project }) =>
         this.keyService
-          .find({
-            projectId: project.id,
-            access_token: chooseAccessToken(
+          .withAuth(
+            chooseAccessToken(
               accessToken,
               this.config.accessToken,
               Scope.ProjectRead,
-              Scope.KeyRead
-            )
+              Scope.KeyRead,
+            ),
+          )
+          .find({
+            projectId: project.id,
           })
-          .pipe(map(paged => ({ accessToken, project, key: pickRandomly(paged.list) })))
+          .pipe(map((paged) => ({ accessToken, project, key: pickRandomly(paged.list) }))),
       ),
       filter(({ key }) => Boolean(key)),
       concatMap(({ accessToken, project, key }) =>
         this.keyService
-          .update(
-            {
-              ...key,
-              name: key.name.endsWith(suffix)
-                ? key.name.replace(suffix + '$', '')
-                : key.name + suffix
-            },
-            {
-              params: {
-                access_token: chooseAccessToken(
-                  accessToken,
-                  this.config.accessToken,
-                  Scope.ProjectRead,
-                  Scope.KeyWrite
-                )
-              }
-            }
+          .withAuth(
+            chooseAccessToken(
+              accessToken,
+              this.config.accessToken,
+              Scope.ProjectRead,
+              Scope.KeyWrite,
+            ),
           )
-          .pipe(map(k => ({ project, key: k })))
+          .update({
+            ...key,
+            name: key.name.endsWith(suffix)
+              ? key.name.replace(suffix + '$', '')
+              : key.name + suffix,
+          })
+          .pipe(map((k) => ({ project, key: k }))),
       ),
       map(
         ({ project, key }) =>
-          `key ${key.name} of project ${project.ownerUsername}/${project.name} updated`
+          `key ${key.name} of project ${project.ownerUsername}/${project.name} updated`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new HannaPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new HannaPersona(config, injector),
 });

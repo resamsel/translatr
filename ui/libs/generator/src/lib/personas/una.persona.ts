@@ -8,7 +8,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -28,7 +28,7 @@ const info: WeightedPersona = {
   name: 'Una',
   description:
     "I'm going to create new keys and translate them for language English in a random project of mine.",
-  weight: 30
+  weight: 30,
 };
 
 export class UnaPersona extends Persona {
@@ -57,7 +57,7 @@ export class UnaPersona extends Persona {
       this.projectService,
       this.localeService,
       this.keyService,
-      this.messageService
+      this.messageService,
     ).pipe(
       concatMap(({ accessToken, project }) =>
         selectLocaleForProject(
@@ -65,105 +65,99 @@ export class UnaPersona extends Persona {
           this.localeService,
           project,
           accessToken,
-          this.config.accessToken
-        ).pipe(map(locale => ({ accessToken, project, locale })))
+          this.config.accessToken,
+        ).pipe(map((locale) => ({ accessToken, project, locale }))),
       ),
       concatMap(({ accessToken, project, locale }) =>
         // Retrieve all existing keys
         this.keyService
+          .withAuth(
+            chooseAccessToken(
+              accessToken,
+              this.config.accessToken,
+              Scope.ProjectRead,
+              Scope.KeyRead,
+            ),
+          )
           .find({
             projectId: project.id,
             localeId: locale.id,
             limit: 200,
-            access_token: chooseAccessToken(
-              accessToken,
-              this.config.accessToken,
-              Scope.ProjectRead,
-              Scope.KeyRead
-            )
           })
           .pipe(
-            map(paged => ({
+            map((paged) => ({
               project,
               accessToken,
               locale,
               newKeyNames: _.sample(
                 _.difference(
                   keyNames,
-                  paged.list.map(key => key.name)
+                  paged.list.map((key) => key.name),
                 ),
-                Math.ceil((Math.random() * keyNames.length) / 10)
-              ) as string[]
-            }))
-          )
+                Math.ceil((Math.random() * keyNames.length) / 10),
+              ) as string[],
+            })),
+          ),
       ),
       concatMap(({ accessToken, project, locale, newKeyNames }) =>
         // Create
         combineLatest(
-          newKeyNames.map(keyName =>
+          newKeyNames.map((keyName) =>
             this.keyService
-              .create(
-                { projectId: project.id, name: keyName },
-                {
-                  params: {
-                    access_token: chooseAccessToken(
-                      accessToken,
-                      this.config.accessToken,
-                      Scope.ProjectRead,
-                      Scope.KeyWrite
-                    )
-                  }
-                }
+              .withAuth(
+                chooseAccessToken(
+                  accessToken,
+                  this.config.accessToken,
+                  Scope.ProjectRead,
+                  Scope.KeyWrite,
+                ),
               )
-              .pipe(catchError(() => of(undefined)))
-          )
-        ).pipe(map(keys => ({ accessToken, project, locale, keys: keys.filter(Boolean) })))
+              .create({ projectId: project.id, name: keyName })
+              .pipe(catchError(() => of(undefined))),
+          ),
+        ).pipe(map((keys) => ({ accessToken, project, locale, keys: keys.filter(Boolean) }))),
       ),
       concatMap(({ accessToken, project, locale, keys }) =>
         // Translate created keys for given language
         combineLatest(
-          keys.map(key =>
+          keys.map((key) =>
             this.messageService
-              .create(
-                {
-                  projectId: project.id,
-                  localeId: locale.id,
-                  keyId: key.id,
-                  value: `${key.name} (${locale.displayName})`
-                },
-                {
-                  params: {
-                    access_token: chooseAccessToken(
-                      accessToken,
-                      this.config.accessToken,
-                      Scope.ProjectRead,
-                      Scope.MessageWrite
-                    )
-                  }
-                }
+              .withAuth(
+                chooseAccessToken(
+                  accessToken,
+                  this.config.accessToken,
+                  Scope.ProjectRead,
+                  Scope.MessageWrite,
+                ),
               )
-              .pipe(catchError(() => of(undefined)))
-          )
+              .create({
+                projectId: project.id,
+                localeId: locale.id,
+                keyId: key.id,
+                value: `${key.name} (${locale.displayName})`,
+              })
+              .pipe(catchError(() => of(undefined))),
+          ),
         ).pipe(
-          map(messages => ({
+          map((messages) => ({
             project,
             accessToken,
             locale,
             keys,
-            messages: messages.filter(Boolean)
-          }))
-        )
+            messages: messages.filter(Boolean),
+          })),
+        ),
       ),
       map(
         ({ project, locale, messages }) =>
-          `${messages.length} translations for language ${locale.name} for project ${project.ownerUsername}/${project.name} created`
+          `${messages.length} translations for language ${locale.name} for project ${project.ownerUsername}/${project.name} created`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new UnaPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new UnaPersona(config, injector),
 });

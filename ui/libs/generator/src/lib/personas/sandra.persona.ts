@@ -8,7 +8,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -24,7 +24,7 @@ const info: WeightedPersona = {
   type: 'read',
   name: 'Sandra',
   description: "I'm going to read all languages of a random project.",
-  weight: 20
+  weight: 20,
 };
 
 export class SandraPersona extends Persona {
@@ -53,37 +53,39 @@ export class SandraPersona extends Persona {
       this.projectService,
       this.localeService,
       this.keyService,
-      this.messageService
+      this.messageService,
     ).pipe(
       concatMap(({ accessToken, project }) =>
         this.localeService
-          .find({
-            projectId: project.id,
-            access_token: chooseAccessToken(
+          .withAuth(
+            chooseAccessToken(
               accessToken,
               this.config.accessToken,
               Scope.ProjectRead,
-              Scope.LocaleRead
-            )
+              Scope.LocaleRead,
+            ),
+          )
+          .find({
+            projectId: project.id,
           })
           .pipe(
-            map(paged => ({
+            map((paged) => ({
               project,
               accessToken,
-              locales: paged.list
-            }))
-          )
+              locales: paged.list,
+            })),
+          ),
       ),
       map(
         ({ accessToken: _accessToken, project, locales }) =>
-          `${locales.length} languages of project ${project.ownerUsername}/${project.name} viewed`
+          `${locales.length} languages of project ${project.ownerUsername}/${project.name} viewed`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new SandraPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new SandraPersona(config, injector),
 });

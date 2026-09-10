@@ -5,7 +5,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable } from 'rxjs';
@@ -20,55 +20,43 @@ export const updateMessage = (
   locale: Locale,
   key: Key,
   accessToken: AccessToken,
-  defaultAccessToken: string
+  defaultAccessToken: string,
 ): Observable<Message> =>
   messageService
+    .withAuth(
+      chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.MessageRead),
+    )
     .find({
       projectId: project.id,
       localeId: locale.id,
       keyName: key.name,
-      access_token: chooseAccessToken(
-        accessToken,
-        defaultAccessToken,
-        Scope.ProjectRead,
-        Scope.MessageRead
-      )
     })
     .pipe(
-      map(paged => paged.list[0]),
-      concatMap(message => {
+      map((paged) => paged.list[0]),
+      concatMap((message) => {
         if (message === undefined) {
           message = {
             projectId: project.id,
             localeId: locale.id,
             keyId: key.id,
-            value: `${key.name} (${locale.displayName})`
+            value: `${key.name} (${locale.displayName})`,
           };
         } else {
           message = {
             ...message,
             value: message.value.endsWith(messageSuffix)
               ? message.value.replace(messageSuffix + '$', '')
-              : message.value + messageSuffix
+              : message.value + messageSuffix,
           };
         }
-        return messageService[message.id === undefined ? 'create' : 'update'](
-          {
-            ...message,
-            value: message.value
-          },
-          {
-            params: {
-              access_token: chooseAccessToken(
-                accessToken,
-                defaultAccessToken,
-                Scope.ProjectRead,
-                Scope.MessageWrite
-              )
-            }
-          }
+        const scopedMessageService = messageService.withAuth(
+          chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.MessageWrite),
         );
-      })
+        const payload = { ...message, value: message.value };
+        return message.id === undefined
+          ? scopedMessageService.create(payload)
+          : scopedMessageService.update(payload);
+      }),
     );
 
 export const deleteRandomMessage = (
@@ -78,7 +66,7 @@ export const deleteRandomMessage = (
   localeService: LocaleService,
   keyService: KeyService,
   messageService: MessageService,
-  defaultAccessToken: string
+  defaultAccessToken: string,
 ): Observable<Message> => {
   return selectRandomProjectAccessToken(
     accessTokenService,
@@ -86,39 +74,31 @@ export const deleteRandomMessage = (
     projectService,
     localeService,
     keyService,
-    messageService
+    messageService,
   ).pipe(
     concatMap(({ accessToken, project }) =>
       messageService
+        .withAuth(
+          chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.MessageRead),
+        )
         .find({
           projectId: project.id,
-          access_token: chooseAccessToken(
-            accessToken,
-            defaultAccessToken,
-            Scope.ProjectRead,
-            Scope.MessageRead
-          )
         })
         .pipe(
           map((pagedList: PagedList<Message>) => ({
             accessToken,
             project,
-            messages: pagedList.list
-          }))
-        )
+            messages: pagedList.list,
+          })),
+        ),
     ),
     filter(({ messages }) => messages.length > 0),
     concatMap(({ accessToken, project: _project, messages }) =>
-      messageService.delete(pickRandomly(messages.map(message => message.id)), {
-        params: {
-          access_token: chooseAccessToken(
-            accessToken,
-            defaultAccessToken,
-            Scope.ProjectRead,
-            Scope.MessageWrite
-          )
-        }
-      })
-    )
+      messageService
+        .withAuth(
+          chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.MessageWrite),
+        )
+        .delete(pickRandomly(messages.map((message) => message.id))),
+    ),
   );
 };

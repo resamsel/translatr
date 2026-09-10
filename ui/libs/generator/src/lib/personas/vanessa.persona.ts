@@ -15,7 +15,7 @@ const info: WeightedPersona = {
   type: 'delete',
   name: 'Vanessa',
   description: "I'm going to delete a random access token.",
-  weight: 2
+  weight: 2,
 };
 
 export class VanessaPersona extends Persona {
@@ -31,31 +31,25 @@ export class VanessaPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomAccessToken(this.accessTokenService).pipe(
-      filter(accessToken => accessToken !== undefined),
+      filter((accessToken) => accessToken !== undefined),
       switchMap((accessToken: AccessToken) =>
-        this.accessTokenService.delete(accessToken.id, {
-          params: {
-            access_token: chooseAccessToken(
-              accessToken,
-              this.config.accessToken,
-              Scope.AccessTokenWrite
-            )
-          }
-        })
+        this.accessTokenService
+          .withAuth(chooseAccessToken(accessToken, this.config.accessToken, Scope.AccessTokenWrite))
+          .delete(accessToken.id),
       ),
       map(
         (accessToken: AccessToken) =>
-          `access token ${accessToken.userUsername}/${accessToken.name} deleted`
+          `access token ${accessToken.userUsername}/${accessToken.name} deleted`,
       ),
       catchError((err: HttpErrorResponse) => {
         this.errorHandler.handleError(err);
         return throwError(err);
-      })
+      }),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new VanessaPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new VanessaPersona(config, injector),
 });

@@ -14,7 +14,7 @@ const info: WeightedPersona = {
   type: 'read',
   name: 'Stella',
   description: "I'm going to read all access tokens of a random user.",
-  weight: 10
+  weight: 10,
 };
 
 export class StellaPersona extends Persona {
@@ -28,29 +28,25 @@ export class StellaPersona extends Persona {
 
   execute(): Observable<string> {
     return selectRandomAccessToken(this.accessTokenService).pipe(
-      filter(accessToken => accessToken !== undefined),
+      filter((accessToken) => accessToken !== undefined),
       switchMap((accessToken: AccessToken) =>
         this.accessTokenService
+          .withAuth(chooseAccessToken(accessToken, this.config.accessToken, Scope.AccessTokenRead))
           .find({
-            access_token: chooseAccessToken(
-              accessToken,
-              this.config.accessToken,
-              Scope.AccessTokenRead
-            ),
             userId: accessToken.userId,
-            limit: 1000
+            limit: 1000,
           })
-          .pipe(map(paged => ({ paged, accessToken })))
+          .pipe(map((paged) => ({ paged, accessToken }))),
       ),
       map(
         ({ paged, accessToken }) =>
-          `${paged.list.length} access tokens of ${accessToken.userUsername} viewed`
-      )
+          `${paged.list.length} access tokens of ${accessToken.userUsername} viewed`,
+      ),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new StellaPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new StellaPersona(config, injector),
 });

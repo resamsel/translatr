@@ -8,7 +8,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -27,7 +27,7 @@ const info: WeightedPersona = {
   name: 'Quentin',
   description:
     "I'm going to translate all missing keys for a language in a random project of mine.",
-  weight: 30
+  weight: 30,
 };
 
 export class QuentinPersona extends Persona {
@@ -56,74 +56,78 @@ export class QuentinPersona extends Persona {
       this.projectService,
       this.localeService,
       this.keyService,
-      this.messageService
+      this.messageService,
     ).pipe(
       concatMap(({ accessToken, project }) =>
         selectRandomLocaleForProject(
           this.localeService,
           project,
           accessToken,
-          this.config.accessToken
-        ).pipe(map(locale => ({ accessToken, project, locale })))
+          this.config.accessToken,
+        ).pipe(map((locale) => ({ accessToken, project, locale }))),
       ),
       concatMap(({ accessToken, project, locale }) =>
         this.keyService
+          .withAuth(
+            chooseAccessToken(
+              accessToken,
+              this.config.accessToken,
+              Scope.ProjectRead,
+              Scope.KeyRead,
+            ),
+          )
           .find({
             projectId: project.id,
             localeId: locale.id,
             limit: 200,
-            access_token: chooseAccessToken(
-              accessToken,
-              this.config.accessToken,
-              Scope.ProjectRead,
-              Scope.KeyRead
-            )
           })
-          .pipe(map(paged => ({ accessToken, project, locale, keys: paged.list })))
+          .pipe(map((paged) => ({ accessToken, project, locale, keys: paged.list }))),
       ),
       concatMap(({ accessToken, project, locale, keys }) =>
         this.messageService
+          .withAuth(
+            chooseAccessToken(
+              accessToken,
+              this.config.accessToken,
+              Scope.ProjectRead,
+              Scope.MessageRead,
+            ),
+          )
           .find({
             projectId: project.id,
             localeId: locale.id,
             limit: 200,
-            access_token: chooseAccessToken(
-              accessToken,
-              this.config.accessToken,
-              Scope.ProjectRead,
-              Scope.MessageRead
-            )
           })
-          .pipe(map(paged => ({ accessToken, project, locale, keys, messages: paged.list })))
+          .pipe(map((paged) => ({ accessToken, project, locale, keys, messages: paged.list }))),
       ),
       concatMap(({ accessToken, project, locale, keys, messages }) => {
-        const existingKeyIds = messages.map(message => message.keyId);
+        const existingKeyIds = messages.map((message) => message.keyId);
         return combineLatest(
           // Only create message for missing translations
           keys
-            .filter(key => !existingKeyIds.includes(key.id))
-            .map(key =>
+            .filter((key) => !existingKeyIds.includes(key.id))
+            .map((key) =>
               updateMessage(
                 this.messageService,
                 project,
                 locale,
                 key,
                 accessToken,
-                this.config.accessToken
-              )
-            )
+                this.config.accessToken,
+              ),
+            ),
         ).pipe(map(() => ({ project, locale, keys })));
       }),
       map(
         ({ project, locale, keys }) =>
-          `${keys.length} translations for language ${locale.name} for project ${project.ownerUsername}/${project.name} created`
+          `${keys.length} translations for language ${locale.name} for project ${project.ownerUsername}/${project.name} created`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new QuentinPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new QuentinPersona(config, injector),
 });

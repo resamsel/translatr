@@ -9,7 +9,7 @@ import {
   MemberService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
@@ -25,7 +25,7 @@ const info: WeightedPersona = {
   type: 'delete',
   name: 'Sebastian',
   description: "I'm going to remove a contributor from a random project of mine.",
-  weight: 1
+  weight: 1,
 };
 
 export class SebastianPersona extends Persona {
@@ -58,25 +58,26 @@ export class SebastianPersona extends Persona {
       this.keyService,
       this.messageService,
       {
-        fetch: 'members'
-      }
+        fetch: 'members',
+      },
     ).pipe(
       map(({ accessToken, project }) => ({
         project,
         accessToken,
-        members: project.members.filter(member => member.role !== MemberRole.Owner)
+        members: project.members.filter((member) => member.role !== MemberRole.Owner),
       })),
       filter(({ project: _project, members }) => members.length > 0),
       concatMap(({ accessToken, project, members }) =>
         this.memberService
-          .delete(pickRandomly(members).id, { params: { access_token: accessToken.key } })
-          .pipe(map(member => ({ project, member })))
+          .withAuth(accessToken.key)
+          .delete(pickRandomly(members).id)
+          .pipe(map((member) => ({ project, member }))),
       ),
       map(
         ({ project, member }) =>
-          `member ${member.userName} with role ${member.role} of project ${project.ownerUsername}/${project.name} removed`
+          `member ${member.userName} with role ${member.role} of project ${project.ownerUsername}/${project.name} removed`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
@@ -84,5 +85,5 @@ export class SebastianPersona extends Persona {
 personas.push({
   ...info,
   create: (config: LoadGeneratorConfig, injector: Injector) =>
-    new SebastianPersona(config, injector)
+    new SebastianPersona(config, injector),
 });

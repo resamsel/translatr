@@ -4,7 +4,7 @@ import {
   AccessTokenService,
   ActivityService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -20,7 +20,7 @@ const info: WeightedPersona = {
   type: 'read',
   name: 'Janine',
   description: "I'm going to peek at myself (a random user).",
-  weight: 100
+  weight: 100,
 };
 
 export class JaninePersona extends Persona {
@@ -42,27 +42,26 @@ export class JaninePersona extends Persona {
     return selectRandomUserAccessToken(this.accessTokenService, this.userService).pipe(
       switchMap((result: { user: User; accessToken: AccessToken }) =>
         this.projectService
+          .withAuth(
+            chooseAccessToken(result.accessToken, this.config.accessToken, Scope.ProjectRead),
+          )
           .find({
-            access_token: chooseAccessToken(
-              result.accessToken,
-              this.config.accessToken,
-              Scope.ProjectRead
-            ),
             ownerId: result.user.id,
-            fetch: 'count'
+            fetch: 'count',
           })
           .pipe(
             catchError(() => of({ total: -1 })),
-            map(paged => ({ ...result, projectCount: paged.total }))
-          )
+            map((paged) => ({ ...result, projectCount: paged.total })),
+          ),
       ),
       switchMap((result: { user: User; accessToken: AccessToken; projectCount: number }) =>
         this.accessTokenService
-          .find({ access_token: result.accessToken.key, userId: result.user.id, fetch: 'count' })
+          .withAuth(result.accessToken.key)
+          .find({ userId: result.user.id, fetch: 'count' })
           .pipe(
             catchError(() => of({ total: -1 })),
-            map(paged => ({ ...result, accessTokenCount: paged.total }))
-          )
+            map((paged) => ({ ...result, accessTokenCount: paged.total })),
+          ),
       ),
       switchMap(
         (result: {
@@ -72,21 +71,21 @@ export class JaninePersona extends Persona {
           accessTokenCount: number;
         }) =>
           this.activityService
-            .find({ access_token: result.accessToken.key, userId: result.user.id, fetch: 'count' })
+            .find({ userId: result.user.id, fetch: 'count', access_token: result.accessToken.key })
             .pipe(
               catchError(() => of({ total: -1 })),
-              map(paged => ({ ...result, activityCount: paged.total }))
-            )
+              map((paged) => ({ ...result, activityCount: paged.total })),
+            ),
       ),
       map(
         ({ user, projectCount, accessTokenCount, activityCount }) =>
-          `user ${user.name} (${user.username}, ${projectCount}/${accessTokenCount}/${activityCount}) viewed`
-      )
+          `user ${user.name} (${user.username}, ${projectCount}/${accessTokenCount}/${activityCount}) viewed`,
+      ),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new JaninePersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new JaninePersona(config, injector),
 });

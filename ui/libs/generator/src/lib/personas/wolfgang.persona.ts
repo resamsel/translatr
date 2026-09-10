@@ -8,7 +8,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
@@ -26,7 +26,7 @@ const info: WeightedPersona = {
   type: 'update',
   name: 'Wolfgang',
   description: "I'm going to update a translation of a random project of mine.",
-  weight: 50
+  weight: 50,
 };
 
 export class WolfgangPersona extends Persona {
@@ -57,55 +57,54 @@ export class WolfgangPersona extends Persona {
       this.keyService,
       this.messageService,
       {
-        fetch: 'members'
-      }
+        fetch: 'members',
+      },
     ).pipe(
       concatMap(({ accessToken, project }) =>
         this.messageService
-          .find({
-            projectId: project.id,
-            access_token: chooseAccessToken(
+          .withAuth(
+            chooseAccessToken(
               accessToken,
               this.config.accessToken,
               Scope.ProjectRead,
-              Scope.MessageRead
-            )
+              Scope.MessageRead,
+            ),
+          )
+          .find({
+            projectId: project.id,
           })
-          .pipe(map(paged => ({ accessToken, project, message: pickRandomly(paged.list) })))
+          .pipe(map((paged) => ({ accessToken, project, message: pickRandomly(paged.list) }))),
       ),
       filter(({ message }) => Boolean(message)),
       concatMap(({ accessToken, project, message }) =>
         this.messageService
-          .update(
-            {
-              ...message,
-              value: message.value.endsWith(messageSuffix)
-                ? message.value.replace(messageSuffix + '$', '')
-                : message.value + messageSuffix
-            },
-            {
-              params: {
-                access_token: chooseAccessToken(
-                  accessToken,
-                  this.config.accessToken,
-                  Scope.ProjectRead,
-                  Scope.MessageWrite
-                )
-              }
-            }
+          .withAuth(
+            chooseAccessToken(
+              accessToken,
+              this.config.accessToken,
+              Scope.ProjectRead,
+              Scope.MessageWrite,
+            ),
           )
-          .pipe(map(m => ({ project, message: m })))
+          .update({
+            ...message,
+            value: message.value.endsWith(messageSuffix)
+              ? message.value.replace(messageSuffix + '$', '')
+              : message.value + messageSuffix,
+          })
+          .pipe(map((m) => ({ project, message: m }))),
       ),
       map(
         ({ project, message }) =>
-          `translation ${message.keyName}/${message.localeName} of project ${project.ownerUsername}/${project.name} updated`
+          `translation ${message.keyName}/${message.localeName} of project ${project.ownerUsername}/${project.name} updated`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new WolfgangPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) =>
+    new WolfgangPersona(config, injector),
 });
