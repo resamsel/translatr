@@ -5,8 +5,8 @@ import { DashboardPage } from '../../support/dashboard.po';
 test.describe('Dashboard Empty', () => {
   test.beforeEach(async ({ page }) => {
     await mockApi(page, '/api/users?limit=1&fetch=count', 'dashboard/empty/users-limit1');
-    await mockApi(page, '/api/projects?owner=*', 'dashboard/empty/projects-owner-limit4');
-    await mockApi(page, '/api/projects?memberId=*', 'dashboard/empty/projects-memberId-limit4');
+    await mockApi(page, '/api/projects?*ownerUsername=*', 'dashboard/empty/projects-owner-limit4');
+    await mockApi(page, '/api/projects?*memberId=*', 'dashboard/empty/projects-memberId-limit4');
     await mockApi(page, '/api/activities*', 'dashboard/empty/activities-userId-limit4');
   });
 
