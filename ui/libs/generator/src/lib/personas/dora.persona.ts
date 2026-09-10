@@ -9,7 +9,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { Observable, of } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -24,7 +24,7 @@ const info: WeightedPersona = {
   type: 'read',
   name: 'Dora',
   description: "I'm going to look at a random project.",
-  weight: 200
+  weight: 200,
 };
 
 export class DoraPersona extends Persona {
@@ -55,42 +55,44 @@ export class DoraPersona extends Persona {
       this.projectService,
       this.localeService,
       this.keyService,
-      this.messageService
+      this.messageService,
     ).pipe(
       concatMap(({ accessToken, project }) =>
         this.localeService
+          .withAuth(accessToken.key)
           .find({
             projectId: project.id,
             limit: 100,
             fetch: 'count',
-            access_token: accessToken.key
           })
-          .pipe(map((paged: PagedList<Locale>) => ({ accessToken, project, locales: paged.total })))
+          .pipe(
+            map((paged: PagedList<Locale>) => ({ accessToken, project, locales: paged.total })),
+          ),
       ),
       concatMap(({ accessToken, project, locales }) =>
         this.keyService
+          .withAuth(accessToken.key)
           .find({
             projectId: project.id,
             limit: 100,
             fetch: 'count',
-            access_token: accessToken.key
           })
           .pipe(
             map((paged: PagedList<Key>) => ({
               accessToken,
               project,
               locales,
-              keys: paged.total
-            }))
-          )
+              keys: paged.total,
+            })),
+          ),
       ),
       concatMap(({ accessToken, project, locales, keys }) =>
         this.messageService
+          .withAuth(accessToken.key)
           .find({
             projectId: project.id,
             limit: 100,
             fetch: 'count',
-            access_token: accessToken.key
           })
           .pipe(
             map((paged: PagedList<Message>) => ({
@@ -98,9 +100,9 @@ export class DoraPersona extends Persona {
               project,
               locales,
               keys,
-              messages: paged.total
-            }))
-          )
+              messages: paged.total,
+            })),
+          ),
       ),
       concatMap(({ accessToken, project, locales, keys, messages }) =>
         this.activityService
@@ -108,7 +110,7 @@ export class DoraPersona extends Persona {
             projectId: project.id,
             limit: 100,
             fetch: 'count',
-            access_token: accessToken.key
+            access_token: accessToken.key,
           })
           .pipe(
             map((paged: PagedList<Activity>) => ({
@@ -117,21 +119,21 @@ export class DoraPersona extends Persona {
               locales,
               keys,
               messages,
-              activities: paged.total
-            }))
-          )
+              activities: paged.total,
+            })),
+          ),
       ),
       map(
         ({ project, locales, keys, messages, activities }) =>
           `project ${project.ownerUsername}/${project.name} with ${locales} languages, ${keys} \
-keys, ${messages} translations, and ${activities} activities viewed`
+keys, ${messages} translations, and ${activities} activities viewed`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new DoraPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new DoraPersona(config, injector),
 });

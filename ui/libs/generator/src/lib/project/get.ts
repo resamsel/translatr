@@ -7,12 +7,12 @@ import { map } from 'rxjs/operators';
 export const getRandomProject = (
   projectService: ProjectService,
   user: User,
-  accessToken: AccessToken
+  accessToken: AccessToken,
 ): Observable<Project> => {
   return projectService
+    .withAuth(accessToken.key)
     .find({
       owner: user.username,
-      access_token: accessToken.key
     })
     .pipe(map((pagedList: PagedList<Project>) => pickRandomly(pagedList.list)));
 };

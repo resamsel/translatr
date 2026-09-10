@@ -14,7 +14,7 @@ const info: WeightedPersona = {
   type: 'update',
   name: 'Mario',
   description: "I'm going to update an access token for a random user.",
-  weight: 5
+  weight: 5,
 };
 
 export class MarioPersona extends Persona {
@@ -30,34 +30,25 @@ export class MarioPersona extends Persona {
     return selectRandomAccessToken(this.accessTokenService).pipe(
       filter(Boolean),
       switchMap((accessToken: AccessToken) =>
-        this.accessTokenService.update(
-          {
+        this.accessTokenService
+          .withAuth(chooseAccessToken(accessToken, this.config.accessToken, Scope.AccessTokenWrite))
+          .update({
             ...accessToken,
             name: accessToken.name.endsWith('!')
               ? accessToken.name.substr(0, accessToken.name.length - 1)
               : `${accessToken.name}!`,
-            scope: scopes.join(',')
-          },
-          {
-            params: {
-              access_token: chooseAccessToken(
-                accessToken,
-                this.config.accessToken,
-                Scope.AccessTokenWrite
-              )
-            }
-          }
-        )
+            scope: scopes.join(','),
+          }),
       ),
       map(
         (accessToken: AccessToken) =>
-          `access token ${accessToken.userUsername}/${accessToken.name} updated`
-      )
+          `access token ${accessToken.userUsername}/${accessToken.name} updated`,
+      ),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new MarioPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new MarioPersona(config, injector),
 });

@@ -5,7 +5,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
@@ -19,48 +19,42 @@ export const createRandomLocaleForProject = (
   localeService: LocaleService,
   project: Project,
   accessToken: AccessToken,
-  defaultAccessToken: string
+  defaultAccessToken: string,
 ): Observable<Locale> =>
   localeService
+    .withAuth(
+      chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.LocaleRead),
+    )
     .find({
       projectId: project.id,
-      access_token: chooseAccessToken(
-        accessToken,
-        defaultAccessToken,
-        Scope.ProjectRead,
-        Scope.LocaleRead
-      )
     })
     .pipe(
       map((paged: PagedList<Locale>) => paged.list),
-      map(locales => ({
+      map((locales) => ({
         locales,
         localeName: pickRandomly(
           _.difference(
             localeNames,
-            locales.map(locale => locale.name)
-          )
-        )
+            locales.map((locale) => locale.name),
+          ),
+        ),
       })),
       filter(({ localeName }) => Boolean(localeName)),
       concatMap(({ locales: _locales, localeName }) =>
-        localeService.create(
-          {
+        localeService
+          .withAuth(
+            chooseAccessToken(
+              accessToken,
+              defaultAccessToken,
+              Scope.ProjectRead,
+              Scope.LocaleWrite,
+            ),
+          )
+          .create({
             name: localeName,
-            projectId: project.id
-          },
-          {
-            params: {
-              access_token: chooseAccessToken(
-                accessToken,
-                defaultAccessToken,
-                Scope.ProjectRead,
-                Scope.LocaleWrite
-              )
-            }
-          }
-        )
-      )
+            projectId: project.id,
+          }),
+      ),
     );
 
 /**
@@ -73,7 +67,7 @@ export const createRandomLocale = (
   localeService: LocaleService,
   keyService: KeyService,
   messageService: MessageService,
-  defaultAccessToken: string
+  defaultAccessToken: string,
 ): Observable<Locale> => {
   return selectRandomProjectAccessToken(
     accessTokenService,
@@ -81,11 +75,11 @@ export const createRandomLocale = (
     projectService,
     localeService,
     keyService,
-    messageService
+    messageService,
   ).pipe(
     concatMap(({ accessToken, project }) =>
-      createRandomLocaleForProject(localeService, project, accessToken, defaultAccessToken)
-    )
+      createRandomLocaleForProject(localeService, project, accessToken, defaultAccessToken),
+    ),
   );
 };
 
@@ -93,22 +87,19 @@ export const selectRandomLocaleForProject = (
   localeService: LocaleService,
   project: Project,
   accessToken: AccessToken,
-  defaultAccessToken: string
+  defaultAccessToken: string,
 ): Observable<Locale> =>
   localeService
+    .withAuth(
+      chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.LocaleRead),
+    )
     .find({
       projectId: project.id,
-      access_token: chooseAccessToken(
-        accessToken,
-        defaultAccessToken,
-        Scope.ProjectRead,
-        Scope.LocaleRead
-      ),
-      limit: 200
+      limit: 200,
     })
     .pipe(
-      map(paged => pickRandomly(paged.list)),
-      concatMap(locale => {
+      map((paged) => pickRandomly(paged.list)),
+      concatMap((locale) => {
         if (locale) {
           return of(locale);
         }
@@ -118,9 +109,9 @@ export const selectRandomLocaleForProject = (
           localeService,
           project,
           accessToken,
-          defaultAccessToken
+          defaultAccessToken,
         );
-      })
+      }),
     );
 
 export const selectLocaleForProject = (
@@ -128,22 +119,19 @@ export const selectLocaleForProject = (
   localeService: LocaleService,
   project: Project,
   accessToken: AccessToken,
-  defaultAccessToken: string
+  defaultAccessToken: string,
 ): Observable<Locale> =>
   localeService
+    .withAuth(
+      chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.LocaleRead),
+    )
     .find({
       projectId: project.id,
-      access_token: chooseAccessToken(
-        accessToken,
-        defaultAccessToken,
-        Scope.ProjectRead,
-        Scope.LocaleRead
-      ),
-      limit: 200
+      limit: 200,
     })
     .pipe(
-      map(paged => paged.list.find(locale => locale.name === localeName)),
-      concatMap(locale => {
+      map((paged) => paged.list.find((locale) => locale.name === localeName)),
+      concatMap((locale) => {
         if (locale) {
           return of(locale);
         }
@@ -153,9 +141,9 @@ export const selectLocaleForProject = (
           localeService,
           project,
           accessToken,
-          defaultAccessToken
+          defaultAccessToken,
         );
-      })
+      }),
     );
 
 export const deleteRandomLocale = (
@@ -165,7 +153,7 @@ export const deleteRandomLocale = (
   localeService: LocaleService,
   keyService: KeyService,
   messageService: MessageService,
-  defaultAccessToken: string
+  defaultAccessToken: string,
 ): Observable<Locale> => {
   return selectRandomProjectAccessToken(
     accessTokenService,
@@ -173,39 +161,31 @@ export const deleteRandomLocale = (
     projectService,
     localeService,
     keyService,
-    messageService
+    messageService,
   ).pipe(
     concatMap(({ accessToken, project }) =>
       localeService
+        .withAuth(
+          chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.LocaleRead),
+        )
         .find({
           projectId: project.id,
-          access_token: chooseAccessToken(
-            accessToken,
-            defaultAccessToken,
-            Scope.ProjectRead,
-            Scope.LocaleRead
-          )
         })
         .pipe(
           map((pagedList: PagedList<Locale>) => ({
             accessToken,
             project,
-            locales: pagedList.list
-          }))
-        )
+            locales: pagedList.list,
+          })),
+        ),
     ),
     filter(({ locales }) => locales.length > 0),
     concatMap(({ accessToken, project: _project, locales }) =>
-      localeService.delete(pickRandomly(locales.map(locale => locale.id)), {
-        params: {
-          access_token: chooseAccessToken(
-            accessToken,
-            defaultAccessToken,
-            Scope.ProjectRead,
-            Scope.LocaleWrite
-          )
-        }
-      })
-    )
+      localeService
+        .withAuth(
+          chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectRead, Scope.LocaleWrite),
+        )
+        .delete(pickRandomly(locales.map((locale) => locale.id))),
+    ),
   );
 };

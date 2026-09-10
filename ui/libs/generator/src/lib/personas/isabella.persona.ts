@@ -9,7 +9,7 @@ import {
   MemberService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
@@ -26,7 +26,7 @@ const info: WeightedPersona = {
   type: 'create',
   name: 'Isabella',
   description: "I'm going to add a contributor to a random project of mine.",
-  weight: 10
+  weight: 10,
 };
 
 export class IsabellaPersona extends Persona {
@@ -57,33 +57,32 @@ export class IsabellaPersona extends Persona {
       this.projectService,
       this.localeService,
       this.keyService,
-      this.messageService
+      this.messageService,
     ).pipe(
       concatMap(({ accessToken, project }) =>
-        selectRandomUser(this.userService).pipe(map(user => ({ accessToken, project, user })))
+        selectRandomUser(this.userService).pipe(map((user) => ({ accessToken, project, user }))),
       ),
       concatMap(({ accessToken, project, user }) =>
         this.memberService
-          .create(
-            {
-              projectId: project.id,
-              userId: user.id,
-              role: pickRandomly([MemberRole.Translator, MemberRole.Developer])
-            },
-            { params: { access_token: accessToken.key } }
-          )
-          .pipe(map(member => ({ project, user, member })))
+          .withAuth(accessToken.key)
+          .create({
+            projectId: project.id,
+            userId: user.id,
+            role: pickRandomly([MemberRole.Translator, MemberRole.Developer]),
+          })
+          .pipe(map((member) => ({ project, user, member }))),
       ),
       map(
         ({ project, member }) =>
-          `member ${member.userName} with role ${member.role} of project ${project.ownerUsername}/${project.name} created`
+          `member ${member.userName} with role ${member.role} of project ${project.ownerUsername}/${project.name} created`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new IsabellaPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) =>
+    new IsabellaPersona(config, injector),
 });

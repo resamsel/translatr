@@ -9,7 +9,7 @@ import {
   MemberService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
@@ -25,7 +25,7 @@ const info: WeightedPersona = {
   type: 'update',
   name: 'Oliver',
   description: "I'm going to update the role of a contributor of a random project of mine.",
-  weight: 25
+  weight: 25,
 };
 
 export class OliverPersona extends Persona {
@@ -58,13 +58,13 @@ export class OliverPersona extends Persona {
       this.keyService,
       this.messageService,
       {
-        fetch: 'members'
-      }
+        fetch: 'members',
+      },
     ).pipe(
       map(({ accessToken, project }) => ({
         project,
         accessToken,
-        members: project.members.filter(member => member.role !== MemberRole.Owner)
+        members: project.members.filter((member) => member.role !== MemberRole.Owner),
       })),
       // TODO: add a random member if none exist yet
       filter(({ project: _project, members }) => members.length > 0),
@@ -72,31 +72,29 @@ export class OliverPersona extends Persona {
         project,
         accessToken,
         members,
-        member: pickRandomly(members)
+        member: pickRandomly(members),
       })),
       concatMap(({ accessToken, project, members: _members, member }) =>
         this.memberService
-          .update(
-            {
-              ...member,
-              role: pickRandomly(
-                [MemberRole.Translator, MemberRole.Developer].filter(role => role !== member.role)
-              )
-            },
-            { params: { access_token: accessToken.key } }
-          )
-          .pipe(map(m => ({ project, member: m })))
+          .withAuth(accessToken.key)
+          .update({
+            ...member,
+            role: pickRandomly(
+              [MemberRole.Translator, MemberRole.Developer].filter((role) => role !== member.role),
+            ),
+          })
+          .pipe(map((m) => ({ project, member: m }))),
       ),
       map(
         ({ project, member }) =>
-          `role ${member.role} of member ${member.userName} of project ${project.ownerUsername}/${project.name} updated`
+          `role ${member.role} of member ${member.userName} of project ${project.ownerUsername}/${project.name} updated`,
       ),
-      catchError((err: HttpErrorResponse) => of(errorMessage(err)))
+      catchError((err: HttpErrorResponse) => of(errorMessage(err))),
     );
   }
 }
 
 personas.push({
   ...info,
-  create: (config: LoadGeneratorConfig, injector: Injector) => new OliverPersona(config, injector)
+  create: (config: LoadGeneratorConfig, injector: Injector) => new OliverPersona(config, injector),
 });

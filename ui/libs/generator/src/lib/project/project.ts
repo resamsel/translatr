@@ -5,7 +5,7 @@ import {
   Project,
   ProjectCriteria,
   Scope,
-  User
+  User,
 } from '@dev/translatr-model';
 import {
   AccessTokenService,
@@ -13,7 +13,7 @@ import {
   LocaleService,
   MessageService,
   ProjectService,
-  UserService
+  UserService,
 } from '@dev/translatr-sdk';
 import { pickRandomly } from '@translatr/utils';
 import * as randomName from 'random-name';
@@ -34,57 +34,49 @@ export const createRandomProject = (
   projectService: ProjectService,
   localeService: LocaleService,
   keyService: KeyService,
-  messageService: MessageService
+  messageService: MessageService,
 ): Observable<{ project: Project; locales: Locale[]; keys: Key[] }> =>
   projectService
-    .create(
-      {
-        name: randomName.place().replace(' ', ''),
-        description: 'Generated',
-        ownerId: user.id
-      },
-      {
-        params: { access_token: accessToken.key }
-      }
-    )
+    .withAuth(accessToken.key)
+    .create({
+      name: randomName.place().replace(' ', ''),
+      description: 'Generated',
+      ownerId: user.id,
+    })
     .pipe(
       retry(3),
       // A freshly created project has no contributors yet (only an owner, who isn't a
       // ProjectUser row) — set members: [] here so callers can treat the result the same
       // way as a project fetched with ?fetch=members, regardless of which path returned it.
-      map(project => ({ ...project, members: [] })),
-      concatMap(project =>
+      map((project) => ({ ...project, members: [] })),
+      concatMap((project) =>
         combineLatest(
           _.sample(localeNames, Math.ceil(Math.random() * localeNames.length))
-            .filter(name => name !== undefined && name !== '')
+            .filter((name) => name !== undefined && name !== '')
             .map((localeName: string) =>
               localeService
-                .create(
-                  {
-                    name: localeName,
-                    projectId: project.id
-                  },
-                  { params: { access_token: accessToken.key } }
-                )
-                .pipe(catchError(() => of(undefined)))
-            )
-        ).pipe(map((locales: Locale[]) => ({ project, locales: locales.filter(Boolean) })))
+                .withAuth(accessToken.key)
+                .create({
+                  name: localeName,
+                  projectId: project.id,
+                })
+                .pipe(catchError(() => of(undefined))),
+            ),
+        ).pipe(map((locales: Locale[]) => ({ project, locales: locales.filter(Boolean) }))),
       ),
       concatMap(({ project, locales }) => {
         return combineLatest(
           _.sample(keyNames, Math.ceil((Math.random() * keyNames.length) / 10))
-            .filter(name => name !== undefined && name !== '')
+            .filter((name) => name !== undefined && name !== '')
             .map((keyName: string) =>
               keyService
-                .create(
-                  {
-                    name: keyName,
-                    projectId: project.id
-                  },
-                  { params: { access_token: accessToken.key } }
-                )
-                .pipe(catchError(() => of(undefined)))
-            )
+                .withAuth(accessToken.key)
+                .create({
+                  name: keyName,
+                  projectId: project.id,
+                })
+                .pipe(catchError(() => of(undefined))),
+            ),
         ).pipe(map((keys: Key[]) => ({ project, locales, keys: keys.filter(Boolean) })));
       }),
       concatMap(({ project, locales, keys }) => {
@@ -92,18 +84,16 @@ export const createRandomProject = (
         return combineLatest(
           keys.map((key: Key) =>
             messageService
-              .create(
-                {
-                  localeId: locale.id,
-                  keyId: key.id,
-                  value: `${key.name} (${locale.displayName})`
-                },
-                { params: { access_token: accessToken.key } }
-              )
-              .pipe(catchError(() => of(undefined)))
-          )
+              .withAuth(accessToken.key)
+              .create({
+                localeId: locale.id,
+                keyId: key.id,
+                value: `${key.name} (${locale.displayName})`,
+              })
+              .pipe(catchError(() => of(undefined))),
+          ),
         ).pipe(mapTo({ project, locales, keys }));
-      })
+      }),
     );
 
 /**
@@ -116,19 +106,19 @@ export const selectRandomProject = (
   localeService: LocaleService,
   keyService: KeyService,
   messageService: MessageService,
-  criteria: ProjectCriteria = {}
+  criteria: ProjectCriteria = {},
 ): Observable<Project> => {
   return projectService
+    .withAuth(accessToken.key)
     .find({
       order: 'whenUpdated desc',
       limit: 1,
       offset: Math.floor(Math.random() * 100),
-      access_token: accessToken.key,
-      ...criteria
+      ...criteria,
     })
     .pipe(
-      map(paged => pickRandomly(paged.list)),
-      concatMap(project => {
+      map((paged) => pickRandomly(paged.list)),
+      concatMap((project) => {
         if (project === undefined) {
           return createRandomProject(
             accessToken,
@@ -136,11 +126,11 @@ export const selectRandomProject = (
             projectService,
             localeService,
             keyService,
-            messageService
+            messageService,
           ).pipe(map((payload: { project: Project }) => payload.project));
         }
         return of(project);
-      })
+      }),
     );
 };
 
@@ -154,7 +144,7 @@ export const selectRandomProjectAccessToken = (
   localeService: LocaleService,
   keyService: KeyService,
   messageService: MessageService,
-  projectCriteria: ProjectCriteria = {}
+  projectCriteria: ProjectCriteria = {},
 ): Observable<{ project: Project; accessToken: AccessToken }> => {
   return selectRandomUserAccessToken(accessTokenService, userService).pipe(
     concatMap(({ accessToken, user }) =>
@@ -165,9 +155,9 @@ export const selectRandomProjectAccessToken = (
         localeService,
         keyService,
         messageService,
-        projectCriteria
-      ).pipe(map(project => ({ accessToken, project })))
-    )
+        projectCriteria,
+      ).pipe(map((project) => ({ accessToken, project }))),
+    ),
   );
 };
 
@@ -181,7 +171,7 @@ export const updateRandomProject = (
   localeService: LocaleService,
   keyService: KeyService,
   messageService: MessageService,
-  defaultAccessToken: string
+  defaultAccessToken: string,
 ): Observable<Project> => {
   return selectRandomProjectAccessToken(
     accessTokenService,
@@ -191,53 +181,46 @@ export const updateRandomProject = (
     keyService,
     messageService,
     {
-      limit: 10
-    }
+      limit: 10,
+    },
   ).pipe(
     concatMap(({ accessToken, project }) =>
-      projectService.update(
-        {
+      projectService
+        .withAuth(chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectWrite))
+        .update({
           ...project,
           description: project.description.endsWith('!')
             ? project.description.replace('!', '')
-            : `${project.description}!`
-        },
-        {
-          params: {
-            access_token: chooseAccessToken(accessToken, defaultAccessToken, Scope.ProjectWrite)
-          }
-        }
-      )
-    )
+            : `${project.description}!`,
+        }),
+    ),
   );
 };
 
 export const deleteRandomProject = (
   accessTokenService: AccessTokenService,
   userService: UserService,
-  projectService: ProjectService
+  projectService: ProjectService,
 ): Observable<Project> => {
   // Randomly choose user, delete project of that user randomly
   return selectRandomUserAccessToken(accessTokenService, userService, {
-    limit: 10
+    limit: 10,
   }).pipe(
     filter(
       (payload: { user: User; accessToken: AccessToken }) =>
-        !!payload.user && !!payload.user.id && !!payload.accessToken && !!payload.accessToken.key
+        !!payload.user && !!payload.user.id && !!payload.accessToken && !!payload.accessToken.key,
     ),
     concatMap((payload: { user: User; accessToken: AccessToken }) =>
       getRandomProject(projectService, payload.user, payload.accessToken).pipe(
-        map((project: Project) => ({ ...payload, project }))
-      )
+        map((project: Project) => ({ ...payload, project })),
+      ),
     ),
     filter(
       (payload: { user: User; accessToken: AccessToken; project: Project }) =>
-        payload.project !== undefined
+        payload.project !== undefined,
     ),
     concatMap((payload: { user: User; accessToken: AccessToken; project: Project }) =>
-      projectService.delete(payload.project.id, {
-        params: { access_token: payload.accessToken.key }
-      })
-    )
+      projectService.withAuth(payload.accessToken.key).delete(payload.project.id),
+    ),
   );
 };
