@@ -79,8 +79,8 @@ test.describe('Project Settings Delete', () => {
 
     // dashboard
     await mockApi(page, '/api/users?limit=1&fetch=count', 'dashboard/users-limit1');
-    await mockApi(page, '/api/projects?owner=*', 'dashboard/projects-owner-limit4');
-    await mockApi(page, '/api/projects?memberId=*', 'dashboard/projects-memberId-limit4');
+    await mockApi(page, '/api/projects?*ownerUsername=*', 'dashboard/projects-owner-limit4');
+    await mockApi(page, '/api/projects?*memberId=*', 'dashboard/projects-memberId-limit4');
     await mockApi(page, '/api/activities*', 'dashboard/activities-userId-limit4');
 
     // when
