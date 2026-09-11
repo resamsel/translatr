@@ -12,6 +12,8 @@ import io.quarkus.test.security.jwt.JwtSecurity;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
 
@@ -64,6 +66,37 @@ class UserResourceTest {
             .statusCode(200)
             .body("offset", is(0))
             .body("limit",  is(1));
+    }
+
+    @Test
+    void testCreateUser_anonymous_returnsCreatedUser() {
+        String username = "freshregistrant-" + UUID.randomUUID().toString().substring(0, 8);
+        given()
+            .contentType("application/json")
+            .body("{\"username\": \"" + username + "\", \"name\": \"Fresh Registrant\", \"email\": \"fresh.registrant@example.com\"}")
+            .when().post("/api/user")
+            .then()
+            .statusCode(200)
+            .body("username", is(username))
+            .body("id", notNullValue());
+    }
+
+    @Test
+    void testCreateUser_duplicateUsername_returnsConflict() {
+        String username = "dupeusername-" + UUID.randomUUID().toString().substring(0, 8);
+        given()
+            .contentType("application/json")
+            .body("{\"username\": \"" + username + "\", \"name\": \"Dupe One\"}")
+            .when().post("/api/user")
+            .then()
+            .statusCode(200);
+
+        given()
+            .contentType("application/json")
+            .body("{\"username\": \"" + username + "\", \"name\": \"Dupe Two\"}")
+            .when().post("/api/user")
+            .then()
+            .statusCode(409);
     }
 
     @Test

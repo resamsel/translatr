@@ -135,6 +135,63 @@ class UserServiceTest {
     }
 
     // -------------------------------------------------------------------------
+    // create
+    // -------------------------------------------------------------------------
+
+    @Test
+    void create_persistsUserWithGivenFields() {
+        UserDto dto = new UserDto();
+        dto.setUsername("newuser");
+        dto.setName("New User");
+        dto.setEmail("new@example.com");
+
+        UserDto expected = new UserDto();
+        expected.setUsername("newuser");
+        when(mapper.toDto(any(User.class))).thenReturn(expected);
+
+        UserDto result = service.create(dto);
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepo).persist(captor.capture());
+        User persisted = captor.getValue();
+        assertThat(persisted.username).isEqualTo("newuser");
+        assertThat(persisted.name).isEqualTo("New User");
+        assertThat(persisted.email).isEqualTo("new@example.com");
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void create_defaultsRoleToUserAndActiveToTrue() {
+        UserDto dto = new UserDto();
+        dto.setUsername("newuser2");
+        dto.setName("New User 2");
+        when(mapper.toDto(any(User.class))).thenReturn(new UserDto());
+
+        service.create(dto);
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepo).persist(captor.capture());
+        assertThat(captor.getValue().role).isEqualTo(UserRole.User);
+        assertThat(captor.getValue().active).isTrue();
+    }
+
+    @Test
+    void create_publishesCreateActivity_withTheNewUserAsActor() {
+        UserDto dto = new UserDto();
+        dto.setUsername("newuser3");
+        dto.setName("New User 3");
+        UserDto after = new UserDto();
+        when(mapper.toDto(any(User.class))).thenReturn(after);
+
+        service.create(dto);
+
+        ArgumentCaptor<User> persisted = ArgumentCaptor.forClass(User.class);
+        verify(userRepo).persist(persisted.capture());
+        verify(activity).publish(eq(ActionType.Create), eq(persisted.getValue()), isNull(),
+                eq(UserDto.class), isNull(), eq(after));
+    }
+
+    // -------------------------------------------------------------------------
     // update
     // -------------------------------------------------------------------------
 
