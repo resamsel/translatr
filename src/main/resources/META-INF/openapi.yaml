@@ -1334,6 +1334,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserDto'
   /api/user:
+    post:
+      operationId: createUser
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '200':
+          description: The created user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '409':
+          description: A user with that username already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     put:
       operationId: updateUser
       tags:
