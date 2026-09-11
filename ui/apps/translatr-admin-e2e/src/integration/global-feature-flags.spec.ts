@@ -11,11 +11,10 @@ test.describe('Admin Global Feature Flags', () => {
   test('renders one row per known feature with its default', async ({ page }) => {
     const flags = await new FeatureFlagsPage(page).navigateToGlobal();
 
-    await expect(flags.getPageName()).toHaveText('Feature Flags');
-    await expect(flags.getActiveTab()).toContainText('Global');
+    await expect(flags.getPageName()).toHaveText('Global Feature Flags');
     await expect(flags.getRows()).toHaveCount(4);
-    await expect(flags.getToggle('header-graphic').locator('mat-icon')).toHaveText('toggle_on');
-    await expect(flags.getToggle('language-switcher').locator('mat-icon')).toHaveText('toggle_off');
+    await expect(flags.getToggle('header-graphic')).toBeChecked();
+    await expect(flags.getToggle('language-switcher')).not.toBeChecked();
   });
 
   test('POSTs feature + enabled when toggling a feature on globally', async ({ page }) => {
