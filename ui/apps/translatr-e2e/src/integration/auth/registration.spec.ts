@@ -24,11 +24,7 @@ test.describe('Registration', () => {
     await expect(registration.getSubmitButton()).toBeEnabled();
   });
 
-  // Skipped: UserService.create() has no generated endpoint to delegate to
-  // (openapi.yaml's users tag has no create operation) and now errors without
-  // issuing a request — see #282 (design.md Decision 8) and the follow-up
-  // https://github.com/resamsel/translatr/issues/296. Un-skip once #296 lands.
-  test.skip('should show a field error when the username is not unique', async ({ page }) => {
+  test('should show a field error when the username is not unique', async ({ page }) => {
     await mockApi(page, '/api/user', 'johndoe-register-not-unique', {
       method: 'POST',
       status: 400,
@@ -45,8 +41,7 @@ test.describe('Registration', () => {
     await expect(registration.getUsernameError()).toContainText('Username already taken');
   });
 
-  // Skipped: see https://github.com/resamsel/translatr/issues/296.
-  test.skip('should redirect to the dashboard on success', async ({ page }) => {
+  test('should redirect to the dashboard on success', async ({ page }) => {
     await mockApi(page, '/api/user', 'johndoe', { method: 'POST' });
     // the session is valid once registration succeeded, so /dashboard's AuthGuard passes
     await mockApi(page, '/api/me*', 'me');
