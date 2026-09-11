@@ -1,0 +1,5 @@
+{
+  "testRunner": "./gradlew test",
+  "canonicalTest": "src/test/java/com/translatr/dto/PagedListTest.java",
+  "testFileGlob": "src/test/java/**/*Test.java"
+}
