@@ -1,3 +1,4 @@
+<dev-admin-page [headerColor]="'#1976d2'">
 <header [featureFlagClass]="{ 'header-graphic': Feature.HeaderGraphic }" class="header">
   @if (user$ | async; as user) {
     <div class="container title">
@@ -59,3 +60,4 @@
     </div>
   </div>
 }
+</dev-admin-page>

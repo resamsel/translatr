@@ -15,6 +15,7 @@ import {
 import { mockObservable } from '@translatr/utils/testing';
 import { TimeAgoModule } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
+import { AdminPageTestingModule } from '../../admin-page/testing';
 
 import { UsersComponent } from './users.component';
 
@@ -27,6 +28,7 @@ describe('UsersComponent', () => {
       TestBed.configureTestingModule({
         declarations: [UsersComponent],
         imports: [
+          AdminPageTestingModule,
           FeatureFlagTestingModule,
           EntityTableTestingModule,
           ButtonTestingModule,

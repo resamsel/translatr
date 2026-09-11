@@ -5,10 +5,16 @@
   [backLink]="backLink"
   [sidenav]="sidenav"
   [elevated]="!overlay"
-  [overlay]="overlay"
+  [overlay]="false"
+  [showLogo]="showLogo"
+  [backgroundColor]="headerColor"
 >
   <ng-container ngProjectAs="app-search-bar">
     <ng-content select="app-search-bar"></ng-content>
+  </ng-container>
+
+  <ng-container ngProjectAs="mat-toolbar-row">
+    <ng-content select="mat-toolbar-row"></ng-content>
   </ng-container>
 
   <app-auth-bar-language-switcher

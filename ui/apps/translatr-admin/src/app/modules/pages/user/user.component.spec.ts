@@ -11,6 +11,7 @@ import {
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoModule } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
+import { AdminPageTestingModule } from '../../admin-page/testing';
 
 import { UserComponent } from './user.component';
 
@@ -23,6 +24,7 @@ describe('UserComponent', () => {
       TestBed.configureTestingModule({
         declarations: [UserComponent],
         imports: [
+          AdminPageTestingModule,
           FeatureFlagTestingModule,
           UserCardTestingModule,
           MetricTestingModule,

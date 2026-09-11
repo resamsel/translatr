@@ -1,7 +1,7 @@
 <mat-toolbar [class.mat-elevation-z2]="elevated" [color]="overlay ? undefined : 'primary'">
   <ng-container>
-    <mat-toolbar-row>
-      @if (sidenav) {
+    <mat-toolbar-row [style.background-color]="backgroundColor">
+      @if (sidenav && showLogo) {
         <button mat-icon-button class="burger" (click)="sidenav.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
@@ -33,7 +33,7 @@
         }
       }
       @if (!overlay && page) {
-        <span class="page">{{ page }}</span>
+        <span class="page" [ngClass]="{'with-title': showLogo}">{{ page }}</span>
       }
 
       <ng-content select="app-search-bar"></ng-content>

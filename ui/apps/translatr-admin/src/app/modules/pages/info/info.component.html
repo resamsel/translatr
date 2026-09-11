@@ -1,10 +1,4 @@
-<header [featureFlagClass]="{'header-graphic': Feature.HeaderGraphic}" class="header">
-  <div class="container title">
-    <div class="content">
-      <h1 class="page">Dashboard</h1>
-    </div>
-  </div>
-</header>
+<dev-admin-page [headerColor]="'#388e3c'">
 <div class="container flex">
   <dev-activity-graph [data]="aggregatedActivity$ | async"></dev-activity-graph>
 
@@ -54,4 +48,5 @@
     icon="change_history"
     name="Latest activity"></dev-metric>
 </div>
+</dev-admin-page>
 

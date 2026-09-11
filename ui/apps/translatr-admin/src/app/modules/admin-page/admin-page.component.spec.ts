@@ -1,4 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,14 +10,23 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { AppFacade } from '../../../+state/app.facade';
-import { SidenavTestingModule } from '../../testing';
-import { DashboardPageComponent } from './dashboard-page.component';
-import { DASHBOARD_ROUTES } from './dashboard-page.token';
+import { AppFacade } from '../../+state/app.facade';
+import { DASHBOARD_ROUTES } from '../pages/dashboard-page/dashboard-page.token';
+import { SidenavTestingModule } from '../nav/testing';
+import { AdminPageComponent } from './admin-page.component';
 
-describe('DashboardPageComponent', () => {
-  let component: DashboardPageComponent;
-  let fixture: ComponentFixture<DashboardPageComponent>;
+@Component({
+  standalone: false,
+  template: `
+    <dev-admin-page [headerColor]="'#e83a5f'">
+      <p>content</p>
+    </dev-admin-page>
+  `
+})
+class HostComponent {}
+
+describe('AdminPageComponent', () => {
+  let fixture: ComponentFixture<HostComponent>;
 
   const createComponent = (largeScreen: boolean) => {
     const breakpointObserver: Partial<BreakpointObserver> = {
@@ -25,7 +35,7 @@ describe('DashboardPageComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [DashboardPageComponent],
+      declarations: [HostComponent, AdminPageComponent],
       imports: [
         SidenavTestingModule,
 
@@ -41,15 +51,11 @@ describe('DashboardPageComponent', () => {
       providers: [
         { provide: AppFacade, useFactory: () => ({}) },
         { provide: BreakpointObserver, useValue: breakpointObserver },
-        {
-          provide: DASHBOARD_ROUTES,
-          useValue: [{ children: [] }]
-        }
+        { provide: DASHBOARD_ROUTES, useValue: [] }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DashboardPageComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(HostComponent);
     fixture.detectChanges();
   };
 
@@ -61,22 +67,14 @@ describe('DashboardPageComponent', () => {
 
   it('should create', waitForAsync(() => {
     createComponent(true);
-    expect(component).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   }));
-
-  const drawerToolbar = () => fixture.debugElement.query(By.css('mat-sidenav.sidenav mat-toolbar'));
 
   it('docks the sidebar open beside the content on large screens', waitForAsync(() => {
     createComponent(true);
 
     expect(drawer().mode).toBe('side');
     expect(drawer().opened).toBe(true);
-  }));
-
-  it('drops the redundant in-drawer toolbar when the sidebar is docked', waitForAsync(() => {
-    createComponent(true);
-
-    expect(drawerToolbar()).toBeNull();
   }));
 
   it('keeps the sidebar as a closed overlay below the large breakpoint', waitForAsync(() => {
@@ -86,16 +84,6 @@ describe('DashboardPageComponent', () => {
     expect(drawer().opened).toBe(false);
   }));
 
-  it('keeps the in-drawer toolbar as the close affordance on small screens', waitForAsync(() => {
-    createComponent(false);
-
-    expect(drawerToolbar()).not.toBeNull();
-  }));
-
-  // Regression guard: the drawer must be a real content child of the container,
-  // otherwise Material never pushes the content and the sidebar just overlays it
-  // (issue #243). `hasBackdrop` is derived from the drawer, so it only reflects
-  // the mode when the container actually sees the drawer.
   it('lets the container dock the docked sidebar without a backdrop on large screens', waitForAsync(() => {
     createComponent(true);
 
@@ -106,5 +94,20 @@ describe('DashboardPageComponent', () => {
     createComponent(false);
 
     expect(drawerContainer().hasBackdrop).toBe(true);
+  }));
+
+  it('passes the page-provided headerColor through to the navbar', waitForAsync(() => {
+    createComponent(true);
+
+    const sidenav = fixture.debugElement.query(By.css('app-sidenav'));
+    expect(sidenav.componentInstance.headerColor).toBe('#e83a5f');
+  }));
+
+  it('projects the page content', waitForAsync(() => {
+    createComponent(true);
+
+    expect(fixture.debugElement.query(By.css('.content p')).nativeElement.textContent).toBe(
+      'content'
+    );
   }));
 });

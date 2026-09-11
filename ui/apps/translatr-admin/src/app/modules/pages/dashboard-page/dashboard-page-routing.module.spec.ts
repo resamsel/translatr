@@ -38,7 +38,7 @@ const PAGE_PATHS = [
   '/projects',
   '/accesstokens',
   '/health',
-  '/featureflags/user',
+  '/featureflags',
   '/featureflags/global'
 ];
 

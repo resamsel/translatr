@@ -11,6 +11,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Feature, features, UserRole } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
+import { AdminPageTestingModule } from '../../admin-page/testing';
 import { FeatureFlagsComponent } from './feature-flags.component';
 
 describe('FeatureFlagsComponent', () => {
@@ -79,6 +80,7 @@ describe('FeatureFlagsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [FeatureFlagsComponent],
       imports: [
+        AdminPageTestingModule,
         NoopAnimationsModule,
         ReactiveFormsModule,
         MatAutocompleteModule,

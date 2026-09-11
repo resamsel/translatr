@@ -16,6 +16,8 @@ class MockSidenavComponent {
   @Input() sidenav: MatDrawer;
   @Input() showFooter = true;
   @Input() overlay = false;
+  @Input() showLogo = true;
+  @Input() headerColor: string | undefined;
 }
 
 @NgModule({

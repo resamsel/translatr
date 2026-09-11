@@ -9,6 +9,7 @@ import {
 } from '@translatr/components/testing';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
+import { AdminPageTestingModule } from '../../admin-page/testing';
 import { InfoComponent } from './info.component';
 
 describe('InfoComponent', () => {
@@ -21,6 +22,7 @@ describe('InfoComponent', () => {
         declarations: [InfoComponent],
         imports: [
           ActivityGraphTestingModule,
+          AdminPageTestingModule,
           FeatureFlagTestingModule,
           MetricTestingModule,
           ShortNumberModule,
