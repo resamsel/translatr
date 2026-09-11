@@ -7,6 +7,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthClientService, OidcProviderStatus } from '@dev/translatr-sdk';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Subject, of, throwError } from 'rxjs';
+import { AdminPageTestingModule } from '../../admin-page/testing';
 import { HealthComponent } from './health.component';
 
 const provider = (over: Partial<OidcProviderStatus>): OidcProviderStatus => ({
@@ -42,6 +43,7 @@ describe('HealthComponent', () => {
         declarations: [HealthComponent],
         imports: [
           NoopAnimationsModule,
+          AdminPageTestingModule,
           MatCardModule,
           MatChipsModule,
           MatProgressSpinnerModule,

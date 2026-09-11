@@ -21,6 +21,7 @@ export class NavbarComponent implements OnInit {
   @Input() sidenav: MatDrawer;
   @Input() elevated = true;
   @Input() showLogo = true;
+  @Input() backgroundColor : string;
   @HostBinding('class.overlay') @Input() overlay = false;
 
   constructor(private readonly titleService: TitleService) {}

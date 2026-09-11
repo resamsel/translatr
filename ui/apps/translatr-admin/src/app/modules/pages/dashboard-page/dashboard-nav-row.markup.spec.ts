@@ -9,7 +9,7 @@ import { By } from '@angular/platform-browser';
  *
  * The admin side-nav renders each entry as `<mat-icon matListItemIcon>` inside a
  * `mat-list-item`:
- *   apps/translatr-admin/src/app/modules/pages/dashboard-page/dashboard-page.component.html
+ *   apps/translatr-admin/src/app/modules/admin-page/admin-page.component.html
  *
  * Before the migration this used the removed `mat-list-icon` directive, so the
  * leading icons were not placed in the MDC leading slot. This spec pins the row

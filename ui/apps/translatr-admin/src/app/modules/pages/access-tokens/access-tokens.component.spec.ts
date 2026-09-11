@@ -15,6 +15,7 @@ import {
 import { mockObservable } from '@translatr/utils/testing';
 import { TimeAgoModule } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
+import { AdminPageTestingModule } from '../../admin-page/testing';
 
 import { AccessTokensComponent } from './access-tokens.component';
 
@@ -41,6 +42,7 @@ describe('AccessTokensComponent', () => {
       TestBed.configureTestingModule({
         declarations: [AccessTokensComponent],
         imports: [
+          AdminPageTestingModule,
           FeatureFlagTestingModule,
           EntityTableTestingModule,
           ButtonTestingModule,
