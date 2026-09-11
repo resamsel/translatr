@@ -8,7 +8,7 @@ import {
   Setting,
   User,
 } from '@dev/translatr-model';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { convertTemporals } from '../shared/mapper-utils';
 import { UsersService } from '../generated/api/users.service';
@@ -50,15 +50,10 @@ export class UserService extends AbstractService<User, RequestCriteria> {
         ) as unknown as Observable<PagedListLike<User>>,
       get: (id: string | number, context?: HttpContext) =>
         client.getUser(String(id), 'body', false, { context }) as unknown as Observable<User>,
-      // No user-creation operation exists in the OpenAPI contract, and adding one
-      // is out of scope for #282. See design.md Decision 8.
-      create: () =>
-        throwError(
-          () =>
-            new Error(
-              'User creation is not available through the SDK transport (no contract operation) — see #282',
-            ),
-        ),
+      create: (dto: Partial<User>, context?: HttpContext) =>
+        client.createUser(dto as unknown as UserDto, 'body', false, {
+          context,
+        }) as unknown as Observable<User>,
       update: (dto: Partial<User>, context?: HttpContext) =>
         client.updateUser(dto as unknown as UserDto, 'body', false, {
           context,

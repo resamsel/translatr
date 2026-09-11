@@ -76,15 +76,13 @@ describe('UserService — generated client delegation', () => {
     expect(spy.mock.calls[0][0]).toBe('u1');
   });
 
-  // No user-creation operation in the OpenAPI contract; adding one is out of
-  // scope for #282 (design.md Decision 8). create() errors, issues no request.
-  it('create() errors through the observable channel and issues no HTTP request', () => {
-    let error: unknown;
-    service.create({ name: 'New' } as never).subscribe({ error: (e) => (error = e) });
-
-    expect(error).toBeInstanceOf(Error);
-    expect((error as Error).message).toMatch(/user creation is not available/i);
-    httpMock.expectNone(() => true);
+  it('create() calls UsersService.createUser with the dto', () => {
+    const spy = jest
+      .spyOn(UsersService.prototype, 'createUser')
+      .mockReturnValue(of({ id: 'u1' }) as never);
+    const dto = { username: 'newuser', name: 'New User' } as never;
+    service.create(dto).subscribe({ error: () => undefined });
+    expect(spy.mock.calls[0][0]).toEqual(dto);
   });
 
   it('leaves bespoke me() on HttpClient (regression guard — stays green)', () => {
