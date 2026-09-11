@@ -55,16 +55,28 @@
   .options {
     // Material 22 (MDC) renders `mat-button` as `.mat-mdc-button`.
     .mat-mdc-button {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       width: 100%;
       margin: 8px 0;
       color: #fff;
+      background-color: #37474f;
 
       transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {
         box-shadow: 0px 2px 4px -1px rgba(0,0,0,.2), 0px 4px 5px 0px rgba(0,0,0,.14), 0px 1px 10px 0px rgba(0,0,0,.12);
       }
+
+      &.client-google { background-color: #ea4335; }
+      &.client-facebook { background-color: #1877f2; }
+      &.client-twitter { background-color: #1da1f2; }
+      &.client-github { background-color: #24292e; }
+      &.client-microsoft { background-color: #2f2f2f; }
+      &.client-apple { background-color: #000; }
+      &.client-keycloak { background-color: #37474f; }
     }
   }
 
