@@ -19,6 +19,6 @@ test.describe('Admin Auth Guard', () => {
     await new UsersPage(page).navigateTo();
 
     await expect(page).toHaveURL(/\/users$/);
-    await expect(page.locator('h1.page')).toHaveText('Users');
+    await expect(page.locator('app-navbar .page')).toHaveText('Users');
   });
 });

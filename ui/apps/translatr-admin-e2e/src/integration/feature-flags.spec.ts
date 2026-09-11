@@ -11,10 +11,9 @@ test.describe('Admin Feature Flags', () => {
     const flags = await new FeatureFlagsPage(page).navigateTo();
 
     await expect(flags.getPageName()).toHaveText('Feature Flags');
-    await expect(flags.getActiveTab()).toContainText('User');
     await expect(flags.getRows()).toHaveCount(4);
-    await expect(flags.getGlobalDefaultLine('header-graphic')).toContainText('Global default: on');
-    await expect(flags.getGlobalDefaultLine('project-cli-card')).toContainText('Global default: off');
+    await expect(flags.getGlobalDefaultCell('header-graphic')).toContainText('on');
+    await expect(flags.getGlobalDefaultCell('project-cli-card')).toContainText('off');
   });
 
   test('CREATE: toggling a feature with no override, away from the default, POSTs enabled=true', async ({
@@ -73,7 +72,7 @@ test.describe('Admin Feature Flags', () => {
     await flags.getToggle('language-switcher').click();
 
     expect((await remove).method()).toBe('DELETE');
-    await expect(flags.getToggle('language-switcher').locator('mat-icon')).toHaveText('toggle_off');
+    await expect(flags.getToggle('language-switcher')).not.toBeChecked();
   });
 
   // The whole admin app is already gated to Admin users by AuthGuard (a non-admin never
@@ -106,7 +105,7 @@ test.describe('Admin Feature Flags', () => {
       });
 
       const resolved = waitForApi(page, '/api/featureflags/resolved*', 'GET');
-      await page.goto('featureflags/user?userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+      await page.goto('featureflags?userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
 
       expect((await resolved).url()).toContain('userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
       await expect(new FeatureFlagsPage(page).getUserPickerInput()).toHaveValue('janesmith');
@@ -124,7 +123,7 @@ test.describe('Admin Feature Flags', () => {
       await mockApi(page, '/api/featureflag', 'feature-flag-created', { method: 'POST' });
 
       const flags = new FeatureFlagsPage(page);
-      await page.goto('featureflags/user?userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
+      await page.goto('featureflags?userId=5e15a05d-c583-45a0-84fa-1e770b2a4532');
 
       const create = waitForApi(page, '/api/featureflag', 'POST');
       const reload = waitForApi(page, '/api/featureflags/resolved*userId=*', 'GET');
