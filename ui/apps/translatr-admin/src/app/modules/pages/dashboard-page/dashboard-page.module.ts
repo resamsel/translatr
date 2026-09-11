@@ -43,6 +43,7 @@ import { DashboardPageRoutingModule } from './dashboard-page-routing.module';
 import { ProjectsComponent } from '../projects/projects.component';
 import { UserComponent } from '../user/user.component';
 import { UsersComponent } from '../users/users.component';
+import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -91,6 +92,8 @@ import { UsersComponent } from '../users/users.component';
     ShortNumberModule,
     TranslocoModule,
     ActivityGraphModule,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
   ],
   providers: [],
 })
