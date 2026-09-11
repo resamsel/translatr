@@ -1,20 +1,3 @@
-@use 'theme' as *;
-@use 'mixins' as *;
-
-@mixin feature-flags-theme($theme) {
-  $accent-color: #ffc107;
-
-  :host {
-    .enabled {
-      color: $accent-color;
-    }
-
-    .disabled {
-      color: rgba(0, 0, 0, 0.38);
-    }
-  }
-}
-
 .user-picker {
   display: block;
   max-width: 320px;
@@ -25,25 +8,21 @@
   margin-bottom: 1rem;
 }
 
-.feature-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+table {
+  width: 100%;
 
-  .feature-name .title {
+  .title {
     font-weight: 500;
   }
 
-  .feature-name .sub-title {
+  .sub-title {
     color: rgba(0, 0, 0, 0.5);
     font-size: 0.85em;
   }
 
-  .feature-actions {
+  .actions {
+    text-align: center;
+    width: 1px;
     white-space: nowrap;
   }
 }
-
-@include feature-flags-theme($app-theme);

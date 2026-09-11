@@ -1,5 +1,10 @@
 <dev-admin-page [headerColor]="'#0288d1'">
   <div class="container">
+    <p class="hint">
+      Toggle a feature for {{ (isAdmin$ | async) ? 'the selected user' : 'your account' }}. “Global default” is what you
+      get without an override.
+    </p>
+
     @if (isAdmin$ | async) {
       <mat-form-field class="user-picker">
         <mat-label>Manage flags for</mat-label>
@@ -20,30 +25,33 @@
       </mat-form-field>
     }
 
-    <p class="hint">
-      Toggle a feature for {{ (isAdmin$ | async) ? 'the selected user' : 'your account' }}. “Global default” is what you
-      get without an override.
-    </p>
-
-    @for (row of rows$ | async; track row) {
-      <div class="feature-row">
-        <div class="feature-name">
+    <table [dataSource]="rows$ | async" mat-table>
+      <ng-container matColumnDef="feature">
+        <th *matHeaderCellDef mat-header-cell>Feature</th>
+        <td *matCellDef="let row" mat-cell>
           <div class="title">{{ 'feature.name.' + row.feature | transloco }}</div>
           <div class="sub-title">{{ row.feature }}</div>
-          <div class="sub-title">Global default: {{ row.globalDefault ? 'on' : 'off' }}</div>
-        </div>
-        <div class="feature-actions">
-          <button
-            mat-icon-button
-            [class.enabled]="row.enabled"
-            [class.disabled]="!row.enabled"
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="globalDefault">
+        <th *matHeaderCellDef mat-header-cell>Global default</th>
+        <td *matCellDef="let row" mat-cell>{{ row.globalDefault ? 'on' : 'off' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef class="actions" mat-header-cell>Enabled</th>
+        <td *matCellDef="let row" class="actions" mat-cell>
+          <mat-slide-toggle
+            [checked]="row.enabled"
             [matTooltip]="row.enabled ? 'Enabled, toggle to disable' : 'Disabled, toggle to enable'"
-            (click)="onToggle(row)"
-          >
-            <mat-icon>{{ row.enabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-          </button>
-        </div>
-      </div>
-    }
+            (change)="onToggle(row)"
+          ></mat-slide-toggle>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+    </table>
   </div>
 </dev-admin-page>
