@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -45,5 +46,10 @@ describe('SearchBarComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders its search field with an outline appearance, matching the rest of the UI', () => {
+    const formField = fixture.debugElement.query(By.css('.search'));
+    expect(formField.nativeElement.getAttribute('appearance')).toBe('outline');
   });
 });

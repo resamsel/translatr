@@ -1,6 +1,6 @@
 <form [formGroup]="form">
   <section class="user">
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label transloco="user">User</mat-label>
       <input
         matInput
@@ -19,7 +19,7 @@
         <mat-error> {{ userFormControl.errors['violation'] }}</mat-error>
       }
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label transloco="member.role">Role</mat-label>
       <mat-select
         [disabled]="roleFormControl.value === 'Owner' && !canModifyOwner"

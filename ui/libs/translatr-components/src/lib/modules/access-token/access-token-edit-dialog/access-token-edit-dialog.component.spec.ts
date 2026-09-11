@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -58,6 +59,14 @@ describe('AccessTokenEditDialogComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders its name and scope fields with an outline appearance, matching the rest of the UI', () => {
+    const formFields = fixture.debugElement.queryAll(By.css('mat-form-field'));
+    expect(formFields).toHaveLength(2);
+    formFields.forEach(formField =>
+      expect(formField.nativeElement.getAttribute('appearance')).toBe('outline')
+    );
   });
 
   it('pre-fills the form from the access token, splitting the scope', () => {

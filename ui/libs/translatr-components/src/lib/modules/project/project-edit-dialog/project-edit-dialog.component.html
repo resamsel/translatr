@@ -14,7 +14,7 @@
   @if (form.errors && form.errors['']) {
     <mat-error>{{ form.errors[''] }}</mat-error>
   }
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <input
       matInput
       required
@@ -26,7 +26,7 @@
       <mat-error>{{ form.get('name').errors.violation }}</mat-error>
     }
   </mat-form-field>
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <textarea
       matInput
       [placeholder]="'project.description' | transloco"

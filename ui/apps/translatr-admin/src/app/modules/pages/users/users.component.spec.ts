@@ -75,4 +75,10 @@ describe('UsersComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('displayed columns', () => {
+    it('does not include email or when_created, so the table fits without horizontal scroll', () => {
+      expect(component.displayedColumns).toEqual(['name', 'username', 'role', 'actions']);
+    });
+  });
 });

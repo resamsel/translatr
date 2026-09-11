@@ -31,7 +31,7 @@ export const mapToAllowedRoles = () =>
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnDestroy {
-  readonly displayedColumns = ['name', 'username', 'email', 'when_created', 'role', 'actions'];
+  readonly displayedColumns = ['name', 'username', 'role', 'actions'];
 
   me$ = this.facade.me$;
   users$ = this.facade.users$;
