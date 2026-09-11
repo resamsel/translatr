@@ -30,6 +30,10 @@ export class HealthComponent {
     shareReplay({ bufferSize: 1, refCount: true }),
   );
 
+  readonly healthy$: Observable<boolean> = this.vm$.pipe(
+    map((v) => v.status === 'loaded' && v.providers.every(p => !p.active || p.errors.length === 0)),
+  );
+
   constructor(private readonly authClientService: AuthClientService) {}
 
   statusOf(provider: OidcProviderStatus): ProviderStatusKind {

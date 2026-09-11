@@ -2,6 +2,39 @@
   margin: 1rem 0;
 }
 
+.health-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 150%;
+  font-weight: 400;
+  margin: 64px;
+  gap: 16px;
+
+  .mat-icon {
+    width: 128px;
+    height: 128px;
+    font-size: 128px;
+  }
+}
+
+.mat-icon {
+  &.healthy {
+    --mat-icon-color: #66923d;
+  }
+
+  &.unhealthy {
+    --mat-icon-color: red;
+  }
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .error {
   display: flex;
   align-items: center;
