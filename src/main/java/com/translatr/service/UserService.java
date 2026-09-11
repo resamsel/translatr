@@ -91,6 +91,21 @@ public class UserService {
     }
 
     @Transactional
+    public UserDto create(UserDto dto) {
+        User u = new User();
+        u.username = dto.getUsername();
+        u.name     = dto.getName();
+        u.email    = dto.getEmail();
+        u.role     = UserRole.User;
+        u.active   = true;
+        userRepo.persist(u);
+
+        UserDto after = mapper.toDto(u);
+        activity.publish(ActionType.Create, u, null, UserDto.class, null, after);
+        return after;
+    }
+
+    @Transactional
     public UserDto update(UserDto dto) {
         User u = userRepo.findByIdOptional(dto.getId()).orElseThrow(NotFoundException::new);
         UserDto before = mapper.toDto(u);

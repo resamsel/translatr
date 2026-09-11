@@ -61,6 +61,12 @@ public class UserResource implements UsersApi {
     }
 
     @Override
+    @PermitAll
+    public UserDto createUser(UserDto userDto) {
+        return userService.create(userDto);
+    }
+
+    @Override
     @Authenticated
     public UserDto updateUser(UserDto userDto) {
         return userService.update(userDto);
