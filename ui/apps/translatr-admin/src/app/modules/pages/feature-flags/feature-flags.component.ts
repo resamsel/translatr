@@ -28,6 +28,7 @@ export interface FeatureRow {
 })
 export class FeatureFlagsComponent implements OnInit, OnDestroy {
   readonly Feature = Feature;
+  readonly displayedColumns = ['feature', 'globalDefault', 'actions'];
 
   private readonly destroy$ = new Subject<void>();
 

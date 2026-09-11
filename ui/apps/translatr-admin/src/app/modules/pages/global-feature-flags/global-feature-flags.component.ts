@@ -23,6 +23,8 @@ export interface GlobalFeatureRow {
   styleUrls: ['./global-feature-flags.component.scss']
 })
 export class GlobalFeatureFlagsComponent implements OnInit, OnDestroy {
+  readonly displayedColumns = ['feature', 'default', 'actions'];
+
   private readonly destroy$ = new Subject<void>();
 
   readonly rows$: Observable<GlobalFeatureRow[]> = combineLatest([
