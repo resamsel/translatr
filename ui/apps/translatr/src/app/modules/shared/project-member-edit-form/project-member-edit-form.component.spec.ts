@@ -1,5 +1,6 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -50,5 +51,13 @@ describe('ProjectMemberEditFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders its user and role fields with an outline appearance, matching the rest of the UI', () => {
+    const formFields = fixture.debugElement.queryAll(By.css('mat-form-field'));
+    expect(formFields).toHaveLength(2);
+    formFields.forEach(formField =>
+      expect(formField.nativeElement.getAttribute('appearance')).toBe('outline')
+    );
   });
 });

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -45,5 +46,10 @@ describe('LocaleEditDialogComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders its name field with an outline appearance, matching the rest of the UI', () => {
+    const formField = fixture.debugElement.query(By.css('.name'));
+    expect(formField.nativeElement.getAttribute('appearance')).toBe('outline');
   });
 });

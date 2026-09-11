@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -75,5 +77,14 @@ describe('LocaleEditorPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders its search field with an outline appearance, matching the rest of the UI', () => {
+    // The `dev-filter-field` lives inside `<app-editor>`'s projected content, which the
+    // EditorTestingModule stub (empty template, no <ng-content>) never renders into the DOM -
+    // so this reads the real template source instead of querying the rendered fixture.
+    const template = readFileSync(join(__dirname, 'locale-editor-page.component.html'), 'utf8');
+    const filterFieldMarkup = template.match(/<dev-filter-field[\s\S]*?>/)[0];
+    expect(filterFieldMarkup).toContain('appearance="outline"');
   });
 });

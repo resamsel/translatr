@@ -8,7 +8,7 @@
   @if (form.errors && form.errors['']) {
     <mat-error>{{ form.errors[''] }}</mat-error>
   }
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <input
       matInput
       required
@@ -20,7 +20,7 @@
       <mat-error>{{ form.get('name').errors.violation }}</mat-error>
     }
   </mat-form-field>
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label transloco="accessToken.scopes">Scopes</mat-label>
     <mat-select formControlName="scope" multiple>
       @for (scope of scopes; track scope) {

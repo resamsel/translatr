@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ProjectFacade } from '../../shared/project-state/+state';
 import { KeyEditorPageComponent } from './key-editor-page.component';
@@ -73,5 +75,22 @@ describe('KeyEditorPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders its search field with an outline appearance, matching the rest of the UI', () => {
+    // The `dev-filter-field` lives inside `<app-editor>`'s projected content, which the
+    // EditorTestingModule stub (empty template, no <ng-content>) never renders into the DOM -
+    // so this reads the real template source instead of querying the rendered fixture.
+    const template = readFileSync(join(__dirname, 'key-editor-page.component.html'), 'utf8');
+    const filterFieldMarkup = template.match(/<dev-filter-field[\s\S]*?>/)[0];
+    expect(filterFieldMarkup).toContain('appearance="outline"');
+  });
+
+  it('renders its selected-key field with an outline appearance, matching the rest of the UI', () => {
+    // Same projected-content limitation as above: `.selector` lives inside
+    // `<app-editor-selector>`, also stubbed with an empty template.
+    const template = readFileSync(join(__dirname, 'key-editor-page.component.html'), 'utf8');
+    const selectorMarkup = template.match(/<mat-form-field class="selector"[\s\S]*?>/)[0];
+    expect(selectorMarkup).toContain('appearance="outline"');
   });
 });

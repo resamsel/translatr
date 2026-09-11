@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
@@ -40,5 +41,10 @@ describe('EntityTableComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders its search field with an outline appearance, matching the rest of the admin UI', () => {
+    const filterField = fixture.debugElement.query(By.css('dev-filter-field'));
+    expect(filterField.componentInstance.appearance).toBe('outline');
   });
 });

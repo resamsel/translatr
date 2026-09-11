@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -152,6 +153,11 @@ describe('FeatureFlagsComponent', () => {
 
   describe('as an admin, with no ?userId= in the URL', () => {
     beforeEach(waitForAsync(() => configure(admin)));
+
+    it('renders the user picker with an outline appearance, matching the rest of the admin UI', () => {
+      const formField = fixture.debugElement.query(By.css('.user-picker'));
+      expect(formField.nativeElement.getAttribute('appearance')).toBe('outline');
+    });
 
     it('defaults the picker to its own id', () => {
       expect(facade.loadResolvedFeatures).toHaveBeenCalledWith(undefined);
