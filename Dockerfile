@@ -11,7 +11,8 @@ RUN ./gradlew build \
       -Dquarkus.package.jar.enabled=false \
       -Dquarkus.quinoa.enable=false \
       -x test \
-      --no-daemon
+      --no-daemon \
+      --info
 
 # Stage 2 — Minimal runtime image (~50 MB)
 FROM quay.io/quarkus/quarkus-micro-image:2.0
