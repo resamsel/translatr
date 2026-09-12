@@ -7,6 +7,7 @@ COPY --chown=quarkus:quarkus . /app
 WORKDIR /app
 RUN ./gradlew build \
       -Dquarkus.native.enabled=true \
+      -Dquarkus.native.container-build=false \
       -Dquarkus.package.jar.enabled=false \
       -Dquarkus.quinoa.enable=false \
       -x test \
