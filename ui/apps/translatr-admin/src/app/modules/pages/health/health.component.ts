@@ -31,7 +31,7 @@ export class HealthComponent {
   );
 
   readonly healthy$: Observable<boolean> = this.vm$.pipe(
-    map((v) => v.status === 'loaded' && v.providers.every(p => !p.active || p.errors.length === 0)),
+    map((v) => v.status === 'loaded' && v.providers.every(p => !p.listed || p.errors.length === 0)),
   );
 
   constructor(private readonly authClientService: AuthClientService) {}
