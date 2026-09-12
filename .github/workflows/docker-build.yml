@@ -1,0 +1,24 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+    - main
+    - feature/*
+    - release/*
+  pull_request:
+    branches:
+    - main
+    - feature/*
+    - release/*
+
+jobs:
+  build:
+    name: Build native image (Docker)
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build the release Docker image
+      run: docker build --target build -t translatr-build-check .
