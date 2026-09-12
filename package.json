@@ -6,8 +6,8 @@
     "test": "test"
   },
   "scripts": {
-    "i18n:pull": "./src/python/translatr.py pull && cd ui && npm run i18n:pull",
-    "i18n:push": "./src/python/translatr.py push && cd ui && npm run i18n:push",
+    "i18n:pull": "bun run cli/src/index.ts pull && cd ui && npm run i18n:pull",
+    "i18n:push": "bun run cli/src/index.ts push && cd ui && npm run i18n:push",
     "release:prerelease": "lets-release prerelease",
     "release:preminor": "lets-release preminor",
     "release:premajor": "lets-release premajor",

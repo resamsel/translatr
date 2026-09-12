@@ -34,6 +34,8 @@ jobs:
     name: Create Release
     needs: docker
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v2
 
@@ -57,3 +59,71 @@ jobs:
           body: ${{ steps.generate-changelog.output.changelog }}
           draft: false
           prerelease: ${{ contains(github.ref, '-') }}
+
+  cli-binaries:
+    name: Publish CLI binaries
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install CLI dependencies
+        working-directory: cli
+        run: bun install
+
+      - name: Build native binaries for all platforms
+        working-directory: cli
+        run: bun run compile:all
+
+      - name: Upload translatr-linux-x64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: cli/dist/bin/translatr-linux-x64
+          asset_name: translatr-linux-x64
+          asset_content_type: application/octet-stream
+
+      - name: Upload translatr-linux-arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: cli/dist/bin/translatr-linux-arm64
+          asset_name: translatr-linux-arm64
+          asset_content_type: application/octet-stream
+
+      - name: Upload translatr-macos-x64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: cli/dist/bin/translatr-macos-x64
+          asset_name: translatr-macos-x64
+          asset_content_type: application/octet-stream
+
+      - name: Upload translatr-macos-arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: cli/dist/bin/translatr-macos-arm64
+          asset_name: translatr-macos-arm64
+          asset_content_type: application/octet-stream
+
+      - name: Upload translatr-windows-x64.exe
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: cli/dist/bin/translatr-windows-x64.exe
+          asset_name: translatr-windows-x64.exe
+          asset_content_type: application/octet-stream
