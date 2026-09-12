@@ -9,6 +9,7 @@ RUN ./gradlew build \
       -Dquarkus.native.enabled=true \
       -Dquarkus.package.jar.enabled=false \
       -Dquarkus.quinoa.enable=false \
+      -x test \
       --no-daemon
 
 # Stage 2 — Minimal runtime image (~50 MB)
