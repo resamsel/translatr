@@ -231,5 +231,15 @@
         }
       ]
     }
+  },
+  "allowScripts": {
+    "@openapitools/openapi-generator-cli@2.41.0": true,
+    "@parcel/watcher@2.6.0": true,
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true,
+    "lmdb@3.5.6": true,
+    "msgpackr-extract@3.0.4": true,
+    "nx@23.1.2": true,
+    "unrs-resolver@1.12.2": true
   }
 }
