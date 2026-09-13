@@ -2,9 +2,9 @@ FROM node:24
 
 WORKDIR /usr/src/translatr
 
-COPY package*.json ./
+COPY package*.json .npmrc ./
 
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 COPY tsconfig.json ./
 
