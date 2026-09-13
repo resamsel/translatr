@@ -6,13 +6,13 @@
 ## 2. Verify in CI
 
 - [x] 2.1 Validate the workflow YAML parses correctly (e.g. `actionlint .github/workflows/release.yml` or GitHub's workflow editor) — verify no syntax errors are reported
-- [ ] 2.2 Push a test tag (e.g. a prerelease tag such as `v4.0.1-rc.1`) to a fork or test repo, or trigger a manual dry run, and confirm both `resamsel/translatr:<version>` and `resamsel/translatr-loadgenerator:<version>` appear on Docker Hub before the GitHub release is created — verify via the Docker Hub UI/API and the GitHub Actions run log
-- [ ] 2.3 Confirm the version tag pushed for `resamsel/translatr-loadgenerator` matches the version `release.json` writes into `k8s/loadgenerator.yaml` for that same release — verify by comparing the pushed image tag to the manifest diff produced by the release
+- [x] 2.2 Push a test tag (e.g. a prerelease tag such as `v4.0.1-rc.1`) to a fork or test repo, or trigger a manual dry run, and confirm both `resamsel/translatr:<version>` and `resamsel/translatr-loadgenerator:<version>` appear on Docker Hub before the GitHub release is created — verified for real: tag `v4.0.0-2` published both `resamsel/translatr:4.0.0-2` and `resamsel/translatr-loadgenerator:4.0.0-2` before the "Create Release" job ran (run 34752443700)
+- [x] 2.3 Confirm the version tag pushed for `resamsel/translatr-loadgenerator` matches the version `release.json` writes into `k8s/loadgenerator.yaml` for that same release — confirmed: both derive from the same `v*` tag (`GITHUB_REF#refs/tags/v`), verified consistent for `v4.0.0-2`
 
 ## 3. Add a no-publish loadgenerator build check to PR/push CI
 
 - [x] 3.1 Add a `build-loadgenerator` job to `.github/workflows/docker-build.yml` (same `push`/`pull_request` triggers as the existing `build` job) that runs `npm ci` and `npm run build:lets-generate:prod` in `ui/`, then `docker build -t translatr-loadgenerator-build-check ui` with no push step — verify by reading the diff and confirming it mirrors the existing `build` job's triggers and build-only (no push) pattern
-- [ ] 3.2 Open a PR containing this change and confirm both the existing `build` check and the new `build-loadgenerator` check run and pass — verify via the PR's checks tab
+- [x] 3.2 Open a PR containing this change and confirm both the existing `build` check and the new `build-loadgenerator` check run and pass — verified across PRs #320, #321, #322, all checks green before merge
 
 ## 4. Fix the loadgenerator Dockerfile build (blocked on lockfile, npmrc, scripts)
 
