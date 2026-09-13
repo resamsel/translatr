@@ -8,10 +8,10 @@
   "scripts": {
     "i18n:pull": "bun run cli/src/index.ts pull && cd ui && npm run i18n:pull",
     "i18n:push": "bun run cli/src/index.ts push && cd ui && npm run i18n:push",
-    "release:prerelease": "lets-release prerelease",
-    "release:preminor": "lets-release preminor",
-    "release:premajor": "lets-release premajor",
-    "release": "lets-release release",
+    "release:prerelease": "node lets-release/bin/run prerelease",
+    "release:preminor": "node lets-release/bin/run preminor",
+    "release:premajor": "node lets-release/bin/run premajor",
+    "release": "node lets-release/bin/run release",
     "kill:server": "fuser -k 9000/tcp 4200/tcp 4210/tcp 4211/tcp; echo 'ports freed'",
     "precommit": "./gradlew test",
     "svg-cleanup": "ts-node ./src/typescript/svg-cleanup.ts ui",
@@ -28,7 +28,6 @@
     "@types/prettier": "2.1.0",
     "glob": "7.1.6",
     "glob-promise": "3.4.0",
-    "lets-release": "file:lets-release",
     "prettier": "2.1.1",
     "subpackage": "1.1.0",
     "svgson": "4.1.0",
@@ -36,9 +35,7 @@
     "typescript": "^3.9.5"
   },
   "overrides": {
-    "braces": "^3.0.3",
-    "micromatch": "^4.0.8",
-    "flatted": "^3.3.4"
+    "cross-spawn": "^7.0.5"
   },
   "repository": {
     "type": "git",
