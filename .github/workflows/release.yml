@@ -51,6 +51,12 @@ jobs:
         working-directory: ui
         run: npm ci
 
+      - name: Generate build info and API client
+        working-directory: ui
+        run: |
+          npm run buildinfo
+          npm run codegen
+
       - name: Build load generator
         working-directory: ui
         run: npm run build:lets-generate:prod
