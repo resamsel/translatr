@@ -27,6 +27,18 @@
       "file": "k8s/loadgenerator.yaml",
       "search": "resamsel\\/translatr-loadgenerator:.*",
       "replace": "resamsel/translatr-loadgenerator:{{version}}"
+    },
+    {
+      "type": "file",
+      "file": "docker-compose-loadtest.yml",
+      "search": "resamsel\\/translatr:.*",
+      "replace": "resamsel/translatr:{{version}}"
+    },
+    {
+      "type": "file",
+      "file": "docker-compose-loadtest.yml",
+      "search": "resamsel\\/translatr-loadgenerator:.*",
+      "replace": "resamsel/translatr-loadgenerator:{{version}}"
     }
   ],
   "changelogCommand": "npm run generate:changelog"

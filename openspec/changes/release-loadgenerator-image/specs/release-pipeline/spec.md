@@ -33,6 +33,17 @@ The workflow SHALL create the GitHub release (with changelog) only after every D
 - **WHEN** the loadgenerator image build or push step fails for a tag
 - **THEN** the workflow does not create the GitHub release for that tag, the same way a failure of the translatr image publish already prevents the release
 
+### Requirement: Release process keeps docker-compose-loadtest.yml in sync
+When a release bumps the version, the release process SHALL update both the `resamsel/translatr` and `resamsel/translatr-loadgenerator` image tags referenced in `docker-compose-loadtest.yml` to the new version, the same way it already updates `k8s/manifest.yaml` and `k8s/loadgenerator.yaml`.
+
+#### Scenario: Release updates both image tags in the compose file
+- **WHEN** a release bumps the version to `4.1.0`
+- **THEN** `docker-compose-loadtest.yml`'s `translatr` service image becomes `resamsel/translatr:4.1.0` and its `loadgenerator` service image becomes `resamsel/translatr-loadgenerator:4.1.0`
+
+#### Scenario: Both tag updates in the same file are applied, not just one
+- **WHEN** a release applies two separate tag-rewrite rules against the same file (`docker-compose-loadtest.yml`)
+- **THEN** both rewrites take effect — neither update is lost due to the two writes racing against each other
+
 ### Requirement: PR/push checks build the load generator image without publishing
 The non-release Docker build check (triggered on pushes/PRs to `main`, `feature/*`, and `release/*`) SHALL also build the load generator image, without pushing it anywhere, so a broken loadgenerator build surfaces before a release tag is cut.
 

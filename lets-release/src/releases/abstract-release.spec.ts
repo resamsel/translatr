@@ -205,5 +205,58 @@ describe('abstract-release', () => {
         [config.update[0].file, /abc/, version.raw]
       ]);
     });
+
+    it('should apply multiple text-file updates to the same file sequentially', async () => {
+      // given
+      const version = parse('1.0.0') as SemVer;
+      const config: ReleaseConfig = {
+        ...defaultConfig,
+        releaseBranch: 'release/v1.0.0',
+        tag: 'v1.0.0',
+        githubToken: '',
+        update: [
+          {
+            type: VersionUpdateType.FILE,
+            file: 'docker-compose-loadtest.yml',
+            search: 'translatr:.*',
+            replace: '{{version}}'
+          },
+          {
+            type: VersionUpdateType.FILE,
+            file: 'docker-compose-loadtest.yml',
+            search: 'translatr-loadgenerator:.*',
+            replace: '{{version}}'
+          }
+        ]
+      };
+
+      const target = testBed.createTarget(config);
+
+      let firstUpdateResolved = false;
+      testBed.fileService.updateFile.mockImplementationOnce(
+        () =>
+          new Promise(resolve =>
+            setTimeout(() => {
+              firstUpdateResolved = true;
+              resolve(undefined);
+            }, 10)
+          )
+      );
+      testBed.fileService.updateFile.mockImplementationOnce(() => {
+        // Would fail here if FILE updates ran in parallel instead of sequentially,
+        // since this second update would start before the first one's write resolved.
+        expect(firstUpdateResolved).toBe(true);
+        return Promise.resolve(undefined);
+      });
+
+      // when
+      await target.updateVersion(version);
+
+      // then
+      expect(testBed.fileService.updateFile.mock.calls).toEqual([
+        [config.update[0].file, /translatr:.*/, version.raw],
+        [config.update[1].file, /translatr-loadgenerator:.*/, version.raw]
+      ]);
+    });
   });
 });

@@ -20,14 +20,18 @@ export abstract class AbstractRelease implements Release {
         ...this.config.update
           .filter(update => update.type === VersionUpdateType.JSON)
           .map(update => this.fileService.updateJson(update.file, version.raw)),
-        ...this.config.update
+        this.config.update
           .filter(update => update.type === VersionUpdateType.FILE)
-          .map((update: FileUpdate) =>
-            this.fileService.updateFile(
-              update.file,
-              new RegExp(update.search),
-              update.replace.replace('{{version}}', version.raw)
-            )
+          .reduce(
+            (previous, update: FileUpdate) =>
+              previous.then(() =>
+                this.fileService.updateFile(
+                  update.file,
+                  new RegExp(update.search),
+                  update.replace.replace('{{version}}', version.raw)
+                )
+              ),
+            Promise.resolve()
           )
       ])
     );
