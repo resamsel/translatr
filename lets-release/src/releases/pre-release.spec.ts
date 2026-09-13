@@ -102,6 +102,31 @@ describe('pre-release', () => {
       await target.release(version);
 
       // then
+      expect(testBed.gitService.checkoutNewBranch.mock.calls).toEqual([]);
+      expect(testBed.gitService.commit.mock.calls).toEqual([
+        [`Bump version to ${config.tag}`, '.']
+      ]);
+      expect(testBed.gitService.addTag.mock.calls).toEqual([[config.tag]]);
+    });
+
+    it('should create and switch to a work branch when starting a major or minor pre-release', async () => {
+      // given
+      const version = parse('1.0.0-0') as SemVer;
+      const config: ReleaseConfig = {
+        ...defaultConfig,
+        releaseBranch: 'release/v1.0.x',
+        tag: 'v1.0.0-0',
+        githubToken: '',
+        tagPreRelease: true
+      };
+
+      const target = testBed.createTarget(config);
+
+      // when
+      await target.release(version);
+
+      // then
+      expect(testBed.gitService.checkoutNewBranch.mock.calls).toEqual([[`release/${config.tag}`]]);
       expect(testBed.gitService.commit.mock.calls).toEqual([
         [`Bump version to ${config.tag}`, '.']
       ]);

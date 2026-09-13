@@ -9,6 +9,7 @@ export type GitServiceMock = GitService & {
   commit: jest.Mock;
   branch: jest.Mock;
   addBranch: jest.Mock;
+  checkoutNewBranch: jest.Mock;
   addTag: jest.Mock;
   reset: jest.Mock;
 };

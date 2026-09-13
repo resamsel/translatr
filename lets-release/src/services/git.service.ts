@@ -35,6 +35,13 @@ export class GitService {
     return this.git.branch([ref]);
   }
 
+  /**
+   * Creates a Git branch for the current commit and switches to it.
+   */
+  checkoutNewBranch(ref: string): Promise<unknown> {
+    return this.git.checkoutLocalBranch(ref);
+  }
+
   status(): Promise<StatusResult> {
     return this.git.status();
   }
