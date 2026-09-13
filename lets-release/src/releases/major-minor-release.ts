@@ -12,14 +12,16 @@ import { ReleaseError } from './release.error';
  * A major or minor release involves:
  *
  * 1) Validating HEAD is develop branch
- * 2) Updating version
- * 3) Generating change log
- * 4) Committing changes
- * 5) // Rebasing develop onto main
- * 6) // Fast forwarding main to develop (main === develop)
- * 7) Creating release branch
- * 8) // Switching back to develop
- * 9) Tagging commit
+ * 2) Creating a work branch off develop, since develop/main is protected
+ *    and cannot be committed to directly
+ * 3) Updating version
+ * 4) Generating change log
+ * 5) Committing changes on the work branch
+ * 6) Creating release branch
+ * 7) // Rebasing develop onto main
+ * 8) // Fast forwarding main to develop (main === develop)
+ * 9) // Switching back to the work branch
+ * 10) Tagging commit
  */
 export class MajorMinorRelease extends AbstractRelease {
   constructor(
@@ -58,7 +60,12 @@ export class MajorMinorRelease extends AbstractRelease {
 
   async release(version: SemVer): Promise<unknown> {
     const { mainBranch, productionBranch, releaseBranch, tag } = this.config;
-    const branchesToPush = [mainBranch, tag];
+    const workBranch = this.workBranch();
+    const branchesToPush = [workBranch, tag];
+
+    await run(`Creating branch ${workBranch}`, () =>
+      this.gitService.checkoutNewBranch(workBranch)
+    );
 
     await run('Generating changelog', () => this.changelogService.updateChangelog(this.config));
 
@@ -77,8 +84,8 @@ export class MajorMinorRelease extends AbstractRelease {
       await run(`Resetting branch ${productionBranch} to ${releaseBranch}`, () =>
         this.gitService.reset(releaseBranch, ResetMode.HARD)
       );
-      await run(`Switching back to branch ${mainBranch}`, () =>
-        this.gitService.checkout(mainBranch)
+      await run(`Switching back to branch ${workBranch}`, () =>
+        this.gitService.checkout(workBranch)
       );
       branchesToPush.push(productionBranch);
     }
@@ -91,8 +98,13 @@ export class MajorMinorRelease extends AbstractRelease {
 
     console.log('These steps are missing:');
     console.log(`[ ] push changes: git push origin ${branchesToPush.join(' ')}`);
+    console.log(`[ ] open a pull request to merge ${workBranch} into ${mainBranch}`);
 
     return version;
+  }
+
+  protected workBranch(): string {
+    return `release/${this.config.tag}`;
   }
 
   protected async createReleaseBranch(releaseBranch: string): Promise<unknown> {

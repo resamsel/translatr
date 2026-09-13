@@ -28,6 +28,7 @@ export const setupTestBed = <T>(
       branch: jest.fn(),
       commit: jest.fn(),
       addBranch: jest.fn(),
+      checkoutNewBranch: jest.fn(),
       addTag: jest.fn(),
       reset: jest.fn()
     } as GitServiceMock,

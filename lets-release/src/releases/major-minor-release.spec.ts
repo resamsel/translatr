@@ -144,14 +144,17 @@ describe('major-minor-release', () => {
       await target.release(version);
 
       // then
+      const workBranch = `release/${config.tag}`;
+
       expect(testBed.changelogService.updateChangelog.mock.calls).toHaveLength(1);
+      expect(testBed.gitService.checkoutNewBranch.mock.calls).toEqual([[workBranch]]);
       expect(testBed.gitService.commit.mock.calls).toEqual([
         [`Bump version to ${config.tag}`, '.']
       ]);
       expect(testBed.gitService.addBranch.mock.calls).toEqual([[config.releaseBranch]]);
       expect(testBed.gitService.checkout.mock.calls).toEqual([
         [config.productionBranch],
-        [config.mainBranch]
+        [workBranch]
       ]);
       expect(testBed.gitService.reset.mock.calls).toEqual([[config.releaseBranch, ResetMode.HARD]]);
       expect(testBed.gitService.addTag.mock.calls).toEqual([[config.tag]]);
