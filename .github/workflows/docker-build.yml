@@ -22,3 +22,26 @@ jobs:
 
     - name: Build the release Docker image
       run: docker build --target build -t translatr-build-check .
+
+  build-loadgenerator:
+    name: Build load generator image (Docker)
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24.x
+
+    - name: Install dependencies
+      working-directory: ui
+      run: npm ci
+
+    - name: Build load generator
+      working-directory: ui
+      run: npm run build:lets-generate:prod
+
+    - name: Build the load generator Docker image
+      run: docker build -t translatr-loadgenerator-build-check ui

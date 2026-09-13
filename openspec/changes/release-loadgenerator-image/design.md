@@ -1,0 +1,44 @@
+## Context
+
+`.github/workflows/release.yml` currently has one `docker` job that, on a `v*` tag push, derives `VERSION` from the tag, logs into Docker Hub, and builds/pushes `resamsel/translatr:${VERSION}` and `:latest` from the root `Dockerfile` (repo root as build context). A `release` job then `needs: docker` and creates the GitHub release/changelog.
+
+The load generator already has a working local build path in `ui/package.json`:
+- `build:lets-generate:prod` → `nx build lets-generate --configuration production`, output at `ui/dist/lets-generate` (via the `postbuild` command-wrapper step)
+- `ui/Dockerfile` copies `package*.json`, `tsconfig.json`, `apps/lets-generate`, `libs`, and `dist/lets-generate` — all relative to `ui/` as the build context — and runs `node lets-generate`
+- The existing (manual-only) scripts `build:lets-generate:docker` / `publish:lets-generate:docker` build/push `resamsel/translatr-loadgenerator:$npm_package_version` with `ui/` as context, no `-f` needed since the Dockerfile already lives at `ui/Dockerfile`.
+
+`release.json` already rewrites the version tag in `k8s/loadgenerator.yaml`, so the manifest and the actually-published image must stay in lock-step; see proposal.md - Why.
+
+Separately, `.github/workflows/docker-build.yml` runs on every push/PR to `main`, `feature/*`, and `release/*` and builds the translatr image (`docker build --target build -t translatr-build-check .`) without pushing, as a fast correctness check well before a release tag exists. It has no equivalent for the loadgenerator image today, so a broken `ui/Dockerfile` or a broken `build:lets-generate:prod` step is only discovered at actual release time (in the new `docker-loadgenerator` job), which is too late for cheap iteration.
+
+## Goals / Non-Goals
+
+**Goals:**
+- CI publishes `resamsel/translatr-loadgenerator:<version>` and `:latest` on the same tag push that publishes `resamsel/translatr`, using the same derived version.
+- Reuse the existing local build/run scripts (`build:lets-generate:prod`, `ui/Dockerfile`) rather than inventing a new build path.
+- Keep the two image publishes independent enough that a change to one Dockerfile/context doesn't require touching the other, but both gate the `release` job the same way.
+- Every PR/push to `main`/`feature/*`/`release/*` builds the loadgenerator image (no push) alongside the existing translatr build check, so a broken loadgenerator build fails the PR instead of surfacing only at release time.
+
+**Non-Goals:**
+- Changing how versions are computed, or the `release.json` manifest-rewriting behavior — both already assume this image exists.
+- Moving `ui/Dockerfile` to a more descriptive path (e.g. `ui/apps/lets-generate/Dockerfile`) — out of scope for this change, can be a later cleanup.
+- Adding loadgenerator-specific tests, health checks, or a separate versioning scheme for the loadgenerator image.
+
+## Decisions
+
+- **Second job vs. extra steps in the existing `docker` job**: add a second job (`docker-loadgenerator`) parallel to `docker`, both required by `release`. Rationale: keeps the translatr build (native Quarkus, slow) and the Node-based loadgenerator build isolated with independent caches/logs, lets them run concurrently instead of serially, and avoids one Dockerfile's failure being mis-attributed to the other in the log. Alternative considered: append steps to the existing `docker` job — rejected because it means Node tooling (`npm ci`, `nx build`) has to be installed in the same job as the Quarkus/Mandrel native build, and a failure in either now blocks both artifacts from any diagnostic separation.
+- **Version derivation**: duplicate the same one-line `echo "value=${GITHUB_REF#refs/tags/v}"` step in the new job rather than sharing an output across jobs. Rationale: `GITHUB_REF` is available identically in every job triggered by the same tag push; introducing a `needs`/`outputs` chain just to share a string adds coupling for no benefit and keeps each job independently rerunnable.
+- **Build steps**: run `npm ci` and `npm run build:lets-generate:prod` inside `ui/` before `docker build`, mirroring exactly what `prebuild:lets-generate:docker` already does locally, then `docker build -t resamsel/translatr-loadgenerator:${VERSION} -t resamsel/translatr-loadgenerator:latest ui` (context `ui/`, using `ui/Dockerfile` implicitly). Rationale: matches the already-documented/used local flow so CI behavior matches what a developer would run by hand.
+- **Release gating**: `release` job's `needs` becomes `[docker, docker-loadgenerator]`. Rationale: satisfies the spec requirement that the GitHub release only happens once every image for that tag has published; a partial release (translatr published, loadgenerator missing) would leave `k8s/loadgenerator.yaml`'s version-bumped reference dangling.
+- **PR/push build check**: add a second job to the existing `docker-build.yml` (rather than a new workflow file) that runs `npm ci` + `npm run build:lets-generate:prod` in `ui/` then `docker build -t translatr-loadgenerator-build-check ui`, no push step. Rationale: mirrors the existing `build` job's pattern (build-only, tag-and-discard, same trigger branches) and keeps all "does this repo's Docker images still build" checks in one workflow file rather than spreading them across two.
+
+## Risks / Trade-offs
+
+- [Docker Hub push access] `secrets.DOCKER_PASSWORD` must already have push rights to `resamsel/translatr-loadgenerator`, not just `resamsel/translatr` → Mitigation: same Docker Hub account/credential already used for manual publishes per `ui/package.json`; verify access once when this workflow first runs, no code change needed if the account already owns both repos.
+- [Longer total CI time] Two image builds instead of one on every release → Mitigation: run as parallel jobs (see Decisions) so wall-clock time is roughly `max(translatr build, loadgenerator build)` instead of their sum.
+- [Divergent versioning going forward] Nothing enforces that a future change to `nx build lets-generate` output path or `ui/Dockerfile` keeps working with this CI step → Mitigation: the new job builds from the exact same scripts a developer already runs locally, so a break here would also break local manual publishing, making it visible outside CI too.
+
+## Migration Plan
+
+- Additive change to `.github/workflows/release.yml` only; no state to migrate. Takes effect on the next `v*` tag push after merge.
+- Rollback: revert the workflow file change; manual `npm run build:lets-generate:docker` / `publish:lets-generate:docker` remain available as before.
