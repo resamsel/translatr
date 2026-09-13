@@ -20,7 +20,7 @@
     "@types/jest": "26.0.16",
     "@types/node": "10.17.48",
     "@typescript-eslint/eslint-plugin": "^5.37.0",
-    "coveralls": "3.1.0",
+    "coveralls-next": "^6.0.2",
     "eslint": "7.32.0",
     "eslint-config-oclif": "3.1.0",
     "eslint-config-oclif-typescript": "0.1.0",
@@ -40,7 +40,12 @@
     "micromatch": "^4.0.8",
     "flatted": "^3.3.4",
     "tmp": "^0.2.6",
-    "form-data": "^2.5.6"
+    "form-data": "^2.5.6",
+    "coveralls-next": {
+      "js-yaml": "^5.4.2"
+    },
+    "uuid": "^11.1.1",
+    "@tootallnate/once": "^2.0.1"
   },
   "files": [
     "/bin",
