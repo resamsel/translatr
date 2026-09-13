@@ -30,8 +30,45 @@ jobs:
           docker push "resamsel/translatr:${VERSION}"
           docker push "resamsel/translatr:latest"
 
+  docker-loadgenerator:
+    name: Publish Load Generator to Docker
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Derive version from tag
+        id: version
+        run: echo "value=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Install dependencies
+        working-directory: ui
+        run: npm ci
+
+      - name: Build load generator
+        working-directory: ui
+        run: npm run build:lets-generate:prod
+
+      - name: Log into registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push image
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          docker build -t "resamsel/translatr-loadgenerator:${VERSION}" -t "resamsel/translatr-loadgenerator:latest" ui
+          docker push "resamsel/translatr-loadgenerator:${VERSION}"
+          docker push "resamsel/translatr-loadgenerator:latest"
+
   release:
     name: Create Release
+    needs: [docker, docker-loadgenerator]
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
