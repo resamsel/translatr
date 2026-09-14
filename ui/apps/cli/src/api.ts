@@ -65,11 +65,16 @@ export class Api {
   private async request(
     method: string,
     path: string,
-    opts: { params?: Record<string, string | undefined>; body?: BodyInit; json?: unknown } = {},
+    opts: {
+      params?: Record<string, string | undefined>;
+      body?: BodyInit;
+      json?: unknown;
+      headers?: Record<string, string>;
+    } = {},
   ): Promise<Response> {
     const url = this.buildUrl(path, opts.params);
     let body = opts.body;
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = { ...opts.headers };
     if (opts.json !== undefined) {
       body = JSON.stringify(opts.json);
       headers["Content-Type"] = "application/json";
@@ -122,11 +127,11 @@ export class Api {
     return (await res.json()) as Locale;
   }
 
-  async localeImport(localeId: string, fileType: string, fileContent: Buffer, fileName: string): Promise<void> {
-    const form = new FormData();
-    form.set("fileType", fileType);
-    form.set("messages", new Blob([new Uint8Array(fileContent)]), fileName);
-    await this.request("POST", `locale/${localeId}/import`, { body: form });
+  async localeImport(localeId: string, fileType: string, fileContent: Buffer): Promise<void> {
+    await this.request("POST", `locale/${localeId}/import/${fileType}`, {
+      body: new Uint8Array(fileContent),
+      headers: { "Content-Type": "application/octet-stream" },
+    });
   }
 
   async localeExportToFile(localeId: string, fileType: string, target: string): Promise<void> {

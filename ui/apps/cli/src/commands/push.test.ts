@@ -52,13 +52,13 @@ describe("`push` uploads matching local files, creating locales as needed", () =
         if (method === "POST" && url.includes("/api/locale?")) {
           return { json: { id: "loc-fr", name: "fr" } };
         }
-        if (method === "POST" && url.includes("/import")) {
+        if (method === "POST" && url.includes("/import/json")) {
           return { json: {} };
         }
         throw new Error(`Unexpected request: ${method} ${url}`);
       });
 
-      expect(calls.some((c) => c.method === "POST" && c.url.includes("/import"))).toBe(true);
+      expect(calls.some((c) => c.method === "POST" && c.url.includes("/import/json"))).toBe(true);
       expect(logs.join("\n")).toContain("Uploaded conf/messages.fr to fr (new)");
     });
   });
@@ -82,7 +82,7 @@ describe("`push` uploads matching local files, creating locales as needed", () =
             },
           };
         }
-        if (method === "POST" && url.includes("/import")) {
+        if (method === "POST" && url.includes("/import/json")) {
           importCalls += 1;
           if (url.includes("loc-de")) {
             return { status: 400, json: { error: { message: "rejected" } } };
@@ -118,13 +118,13 @@ describe("`push` uploads matching local files, creating locales as needed", () =
         if (method === "GET" && url.includes("/api/project/proj-1/locales")) {
           return { json: { list: [{ id: "loc-en", name: "en" }] } };
         }
-        if (method === "POST" && url.includes("/import")) {
+        if (method === "POST" && url.includes("/import/json")) {
           return { json: {} };
         }
         throw new Error(`Unexpected request: ${method} ${url}`);
       });
 
-      expect(calls.some((c) => c.method === "POST" && c.url.includes("/import"))).toBe(true);
+      expect(calls.some((c) => c.method === "POST" && c.url.includes("/import/json"))).toBe(true);
       expect(logs.join("\n")).toContain("Uploaded i18n/en.json to en");
     });
   });
