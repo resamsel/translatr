@@ -33,6 +33,13 @@ jobs:
         cache: npm
         cache-dependency-path: ui/package-lock.json
 
+    - name: Set up Bun
+      uses: oven-sh/setup-bun@v2
+
+    - name: Install CLI dependencies
+      working-directory: ui/apps/cli
+      run: bun install
+
     - name: Lint, test and build translatr-ui
       working-directory: ui
       run: |
