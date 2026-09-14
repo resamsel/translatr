@@ -46,7 +46,7 @@ describe("`push` uploads matching local files, creating locales as needed", () =
       writeFileSync(".translatr.yml", CONFIG);
 
       const { calls, logs } = await runPush(({ url, method }) => {
-        if (method === "GET" && url.includes("/api/locales/proj-1")) {
+        if (method === "GET" && url.includes("/api/project/proj-1/locales")) {
           return { json: { list: [] } };
         }
         if (method === "POST" && url.includes("/api/locale?")) {
@@ -72,7 +72,7 @@ describe("`push` uploads matching local files, creating locales as needed", () =
 
       let importCalls = 0;
       const { logs, errors } = await runPush(({ url, method }) => {
-        if (method === "GET" && url.includes("/api/locales/proj-1")) {
+        if (method === "GET" && url.includes("/api/project/proj-1/locales")) {
           return {
             json: {
               list: [
@@ -115,7 +115,7 @@ describe("`push` uploads matching local files, creating locales as needed", () =
       writeFileSync(".translatr.yml", config);
 
       const { calls, logs } = await runPush(({ url, method }) => {
-        if (method === "GET" && url.includes("/api/locales/proj-1")) {
+        if (method === "GET" && url.includes("/api/project/proj-1/locales")) {
           return { json: { list: [{ id: "loc-en", name: "en" }] } };
         }
         if (method === "POST" && url.includes("/import")) {

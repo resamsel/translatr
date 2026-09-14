@@ -17,7 +17,7 @@ const CONFIG = [
 
 async function runPull(locales: { id: string; name: string }[], exportBody: string) {
   const { fetchFn } = mockFetch(({ url, method }) => {
-    if (method === "GET" && url.includes("/api/locales/proj-1")) {
+    if (method === "GET" && url.includes("/api/project/proj-1/locales")) {
       return { json: { list: locales } };
     }
     if (method === "GET" && url.includes("/export/")) {

@@ -17,7 +17,7 @@ describe("Removing a locale by name", () => {
       writeFileSync(".translatr.yml", CONFIG);
 
       const { fetchFn, calls } = mockFetch(({ url, method }) => {
-        if (method === "GET" && url.includes("/api/locales/proj-1")) {
+        if (method === "GET" && url.includes("/api/project/proj-1/locales")) {
           expect(url).toContain("search=de");
           return { json: { list: [{ id: "loc-de", name: "de" }] } };
         }
@@ -53,7 +53,7 @@ describe("Removing a locale by name", () => {
       writeFileSync(".translatr.yml", CONFIG);
 
       const { fetchFn } = mockFetch(({ url, method }) => {
-        if (method === "GET" && url.includes("/api/locales/proj-1")) {
+        if (method === "GET" && url.includes("/api/project/proj-1/locales")) {
           return { json: { list: [] } };
         }
         throw new Error(`Unexpected request: ${method} ${url}`);
