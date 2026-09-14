@@ -1,7 +1,9 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import yaml from "js-yaml";
+import { parse as parseDotenv } from "dotenv";
 
 export const CONFIG_FILE = ".translatr.yml";
+const DOTENV_FILE = ".env";
 
 export interface FileSpec {
   file_type: string;
@@ -15,7 +17,24 @@ export interface TranslatrConfig {
   default_locale: string;
   pull: FileSpec;
   push: FileSpec;
+  /**
+   * When true, load `.env` from the current directory (if present) before
+   * `${VAR}`/`${?VAR}` substitution, filling in any variables not already
+   * set in the process environment. Defaults to false/absent (no `.env`
+   * file is read).
+   */
+  load_dotenv?: boolean;
   [key: string]: unknown;
+}
+
+function loadDotenvIfEnabled(raw: { load_dotenv?: unknown }): void {
+  if (raw.load_dotenv !== true) return;
+  if (!existsSync(DOTENV_FILE)) return;
+
+  const parsed = parseDotenv(readFileSync(DOTENV_FILE, "utf8"));
+  for (const [key, value] of Object.entries(parsed)) {
+    if (process.env[key] === undefined) process.env[key] = value;
+  }
 }
 
 // Mirrors the Python CLI's ${VAR} / ${?VAR} substitution: ${VAR} requires the
@@ -55,11 +74,12 @@ export function readConfig(): TranslatrConfig {
     );
   }
   const raw = yaml.load(readFileSync(CONFIG_FILE, "utf8")) as
-    | { translatr?: unknown }
+    | { translatr?: { load_dotenv?: unknown; [key: string]: unknown } }
     | undefined;
   if (!raw || raw.translatr === undefined) {
     throw new ConfigError(`Error in ${CONFIG_FILE}: could not find key "translatr"`);
   }
+  loadDotenvIfEnabled(raw.translatr);
   return substitute(raw.translatr) as TranslatrConfig;
 }
 
