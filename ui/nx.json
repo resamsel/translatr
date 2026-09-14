@@ -21,7 +21,8 @@
       "cache": true,
       "outputs": [
         "{projectRoot}/src/lib/generated"
-      ]
+      ],
+      "parallelism": false
     },
     "build": {
       "dependsOn": [
