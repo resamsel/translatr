@@ -33,6 +33,7 @@ export function mockFetch(
     return {
       ok: status >= 200 && status < 300,
       status,
+      url,
       json: async () => result.json,
       text: async () => result.text ?? JSON.stringify(result.json ?? {}),
       arrayBuffer: async () => new TextEncoder().encode(result.text ?? "").buffer,

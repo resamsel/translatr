@@ -109,11 +109,11 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Install CLI dependencies
-        working-directory: cli
+        working-directory: ui/apps/cli
         run: bun install
 
       - name: Build native binaries for all platforms
-        working-directory: cli
+        working-directory: ui/apps/cli
         run: bun run compile:all
 
       - name: Upload CLI binaries
@@ -122,8 +122,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            cli/dist/bin/translatr-linux-x64
-            cli/dist/bin/translatr-linux-arm64
-            cli/dist/bin/translatr-macos-x64
-            cli/dist/bin/translatr-macos-arm64
-            cli/dist/bin/translatr-windows-x64.exe
+            ui/apps/cli/dist/bin/translatr-linux-x64
+            ui/apps/cli/dist/bin/translatr-linux-arm64
+            ui/apps/cli/dist/bin/translatr-macos-x64
+            ui/apps/cli/dist/bin/translatr-macos-arm64
+            ui/apps/cli/dist/bin/translatr-windows-x64.exe
