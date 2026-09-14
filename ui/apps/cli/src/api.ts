@@ -2,32 +2,17 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { TranslatrConfig } from "./config.js";
 import { assertExists } from "./config.js";
+import type { ProjectDto, LocaleDto, KeyDto, UserDto } from "./sdk-types.js";
 
-export interface Project {
-  id: string;
-  name: string;
-  ownerName: string;
-  [key: string]: unknown;
-}
-
-export interface Locale {
-  id: string;
-  name: string;
-  [key: string]: unknown;
-}
-
-export interface Key {
-  id: string;
-  name: string;
-  [key: string]: unknown;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  username: string;
-  [key: string]: unknown;
-}
+// The generated DTOs mark every field optional (they double as request
+// bodies), but the CLI only ever sees these as *response* data, where the
+// server always populates id/name/(owner)name. Narrowing those to required
+// keeps the DTO as the source of truth while avoiding undefined-checks at
+// every call site.
+export type Project = ProjectDto & Required<Pick<ProjectDto, "id" | "name" | "ownerName">>;
+export type Locale = LocaleDto & Required<Pick<LocaleDto, "id" | "name">>;
+export type Key = KeyDto & Required<Pick<KeyDto, "id" | "name">>;
+export type User = UserDto & Required<Pick<UserDto, "id" | "name" | "username">>;
 
 export class ApiError extends Error {}
 
@@ -38,21 +23,30 @@ interface ApiErrorBody {
   };
 }
 
-async function handleHttpError(response: Response): Promise<never> {
+async function handleHttpError(method: string, response: Response): Promise<never> {
   const text = await response.text();
+  let json: ApiErrorBody | undefined;
   try {
-    const json = JSON.parse(text) as ApiErrorBody;
-    if (response.status === 400 && json.error?.violations) {
+    json = JSON.parse(text) as ApiErrorBody;
+  } catch {
+    json = undefined;
+  }
+
+  if (json?.error?.message !== undefined) {
+    if (response.status === 400 && json.error.violations) {
       const violations = json.error.violations
         .map((v) => `${v.message} (${v.field})`)
         .join(", ");
       throw new ApiError(`${json.error.message}: ${violations}`);
     }
-    throw new ApiError(json.error?.message ?? text);
-  } catch (e) {
-    if (e instanceof ApiError) throw e;
-    throw new ApiError(`An undefined error occurred while talking to the API:\n\n${text}`);
+    throw new ApiError(json.error.message);
   }
+
+  let message = `${method} ${response.url} failed with ${response.status}`;
+  if (response.status === 404) {
+    message += `\nCheck the "endpoint" and "project_id" values in .translatr.yml - a 404 usually means the request wasn't routed to the Translatr API.`;
+  }
+  throw new ApiError(message);
 }
 
 export class Api {
@@ -89,7 +83,7 @@ export class Api {
         `Connection to ${this.config.endpoint} could not be established, please check your .translatr.yml config (translatr.endpoint)`,
       );
     }
-    if (!response.ok) await handleHttpError(response);
+    if (!response.ok) await handleHttpError(method, response);
     return response;
   }
 
