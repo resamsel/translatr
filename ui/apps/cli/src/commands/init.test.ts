@@ -49,3 +49,62 @@ describe("`init` scaffolds the config file", () => {
     });
   });
 });
+
+describe("`init` seeds one or more targets", () => {
+  it("Single target via init: writes a `targets` map with exactly that one entry", async () => {
+    await withTempCwd(async () => {
+      const program = new Command();
+      program.exitOverride();
+      registerInit(program);
+      await program.parseAsync(
+        [
+          "init",
+          "https://translatr.example",
+          "abc123",
+          "my-project-id",
+          "--target",
+          "conf/messages.?{locale.name}:play_messages",
+        ],
+        { from: "user" },
+      );
+
+      const written = yaml.load(readFileSync(".translatr.yml", "utf8")) as {
+        translatr: { targets: Record<string, { file_type: string }> };
+      };
+
+      expect(written.translatr.targets).toEqual({
+        "conf/messages.?{locale.name}": { file_type: "play_messages" },
+      });
+    });
+  });
+
+  it("Repeated --target flags: writes a `targets` map with every entry", async () => {
+    await withTempCwd(async () => {
+      const program = new Command();
+      program.exitOverride();
+      registerInit(program);
+      await program.parseAsync(
+        [
+          "init",
+          "https://translatr.example",
+          "abc123",
+          "my-project-id",
+          "--target",
+          "app1/{locale.name}.json:json",
+          "--target",
+          "app2/{locale.name}.json:json",
+        ],
+        { from: "user" },
+      );
+
+      const written = yaml.load(readFileSync(".translatr.yml", "utf8")) as {
+        translatr: { targets: Record<string, { file_type: string }> };
+      };
+
+      expect(written.translatr.targets).toEqual({
+        "app1/{locale.name}.json": { file_type: "json" },
+        "app2/{locale.name}.json": { file_type: "json" },
+      });
+    });
+  });
+});

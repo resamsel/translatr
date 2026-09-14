@@ -59,3 +59,57 @@ describe("`pull` downloads every locale to its configured target", () => {
     });
   });
 });
+
+const CONFIG_MULTI_TARGET = [
+  "translatr:",
+  "  endpoint: http://localhost:9000",
+  "  access_token: tok",
+  "  project_id: proj-1",
+  "  default_locale: default",
+  "  targets:",
+  "    app1/messages.?{locale.name}:",
+  "      file_type: json",
+  "    app2/messages.?{locale.name}:",
+  "      file_type: json",
+].join("\n");
+
+const LEGACY_CONFIG = [
+  "translatr:",
+  "  endpoint: http://localhost:9000",
+  "  access_token: tok",
+  "  project_id: proj-1",
+  "  default_locale: default",
+  "  pull:",
+  "    file_type: json",
+  "    target: conf/messages.?{locale.name}",
+].join("\n");
+
+describe("Config declares a `targets` map instead of single `pull`/`push` targets", () => {
+  it("Multiple targets: pull writes every configured target for every locale", async () => {
+    await withTempCwd(async () => {
+      writeFileSync(".translatr.yml", CONFIG_MULTI_TARGET);
+      await runPull(
+        [
+          { id: "loc-default", name: "default" },
+          { id: "loc-de", name: "de" },
+        ],
+        "CONTENT",
+      );
+
+      expect(existsSync("app1/messages")).toBe(true);
+      expect(existsSync("app1/messages.de")).toBe(true);
+      expect(existsSync("app2/messages")).toBe(true);
+      expect(existsSync("app2/messages.de")).toBe(true);
+    });
+  });
+
+  it("Legacy `pull`/`push` keys are rejected: pull fails naming the missing `targets` key", async () => {
+    await withTempCwd(async () => {
+      writeFileSync(".translatr.yml", LEGACY_CONFIG);
+
+      await expect(runPull([{ id: "loc-default", name: "default" }], "CONTENT")).rejects.toThrow(
+        /targets/,
+      );
+    });
+  });
+});
