@@ -65,7 +65,7 @@ export function registerPush(program: Command, getGlobal: () => GlobalOptions): 
         const locale = localesByName.get(localeName);
         if (locale) {
           try {
-            await api.localeImport(locale.id, config.push.file_type, readFileSync(filename), filename);
+            await api.localeImport(locale.id, config.push.file_type, readFileSync(filename));
             console.log(`Uploaded ${filename} to ${localeName}${created ? " (new)" : ""}`);
           } catch (e) {
             eprint(String(e instanceof Error ? e.message : e));
