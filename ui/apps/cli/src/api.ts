@@ -104,7 +104,7 @@ export class Api {
 
   async locales(search?: string): Promise<Locale[]> {
     assertExists(this.config as unknown as Record<string, unknown>, "project_id");
-    const res = await this.request("GET", `locales/${this.config.project_id}`, {
+    const res = await this.request("GET", `project/${this.config.project_id}/locales`, {
       params: { search },
     });
     return ((await res.json()) as { list: Locale[] }).list;
@@ -138,7 +138,7 @@ export class Api {
 
   async keys(search?: string): Promise<Key[]> {
     assertExists(this.config as unknown as Record<string, unknown>, "project_id");
-    const res = await this.request("GET", `keys/${this.config.project_id}`, {
+    const res = await this.request("GET", `project/${this.config.project_id}/keys`, {
       params: { search },
     });
     return ((await res.json()) as { list: Key[] }).list;
