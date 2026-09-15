@@ -29,12 +29,12 @@ export class PreRelease extends AbstractRelease {
     super(config, gitService, fileService);
   }
 
-  validate(version?: SemVer): Promise<unknown> {
-    if (version && version.patch > 0) {
-      return this.patchRelease.validate();
+  validate(version: SemVer): Promise<unknown> {
+    if (version.patch > 0) {
+      return this.patchRelease.validate(version);
     }
 
-    return this.majorMinorRelease.validate();
+    return this.majorMinorRelease.validate(version);
   }
 
   async release(version: SemVer): Promise<unknown> {
