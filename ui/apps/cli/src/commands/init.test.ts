@@ -29,21 +29,15 @@ describe("`init` scaffolds the config file", () => {
           endpoint: string;
           access_token: string;
           project_id: string;
-          push: { file_type: string; target: string };
-          pull: { file_type: string; target: string };
+          targets: Record<string, { file_type: string }>;
         };
       };
 
       expect(written.translatr.endpoint).toBe("https://translatr.example");
       expect(written.translatr.access_token).toBe("abc123");
       expect(written.translatr.project_id).toBe("my-project-id");
-      expect(written.translatr.push).toEqual({
-        file_type: "play_messages",
-        target: "conf/messages.?{locale.name}",
-      });
-      expect(written.translatr.pull).toEqual({
-        file_type: "play_messages",
-        target: "conf/messages.?{locale.name}",
+      expect(written.translatr.targets).toEqual({
+        "conf/messages.?{locale.name}": { file_type: "play_messages" },
       });
       expect(logs.some((l) => l.toLowerCase().includes("initialised"))).toBe(true);
     });
@@ -105,6 +99,21 @@ describe("`init` seeds one or more targets", () => {
         "app1/{locale.name}.json": { file_type: "json" },
         "app2/{locale.name}.json": { file_type: "json" },
       });
+    });
+  });
+
+  it("Malformed --target token: rejects with a clear error instead of writing a bad config", async () => {
+    await withTempCwd(async () => {
+      const program = new Command();
+      program.exitOverride();
+      registerInit(program);
+
+      await expect(
+        program.parseAsync(
+          ["init", "https://translatr.example", "abc123", "my-project-id", "--target", "no-colon-here"],
+          { from: "user" },
+        ),
+      ).rejects.toThrow(/--target/);
     });
   });
 });

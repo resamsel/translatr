@@ -10,9 +10,9 @@ const CONFIG = [
   "  access_token: tok",
   "  project_id: proj-1",
   "  default_locale: default",
-  "  push:",
-  "    file_type: json",
-  "    target: conf/messages.?{locale.name}",
+  "  targets:",
+  "    conf/messages.?{locale.name}:",
+  "      file_type: json",
 ].join("\n");
 
 async function runPush(handler: Parameters<typeof mockFetch>[0]) {
@@ -106,9 +106,9 @@ describe("`push` uploads matching local files, creating locales as needed", () =
         "  access_token: tok",
         "  project_id: proj-1",
         "  default_locale: default",
-        "  push:",
-        "    file_type: json",
-        "    target: i18n/{locale.name}.json",
+        "  targets:",
+        "    i18n/{locale.name}.json:",
+        "      file_type: json",
       ].join("\n");
       mkdirSync("i18n", { recursive: true });
       writeFileSync("i18n/en.json", "EN_CONTENT");

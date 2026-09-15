@@ -1,5 +1,22 @@
 import type { Command } from "commander";
-import { writeInitConfig } from "../config.js";
+import { writeInitConfig, type InitTarget } from "../config.js";
+
+const DEFAULT_TARGET: InitTarget = {
+  target: "conf/messages.?{locale.name}",
+  fileType: "play_messages",
+};
+
+function parseTarget(value: string, previous: InitTarget[]): InitTarget[] {
+  const idx = value.lastIndexOf(":");
+  if (idx <= 0 || idx === value.length - 1) {
+    throw new Error(
+      `Invalid --target "${value}": expected "<path>:<file_type>" (e.g. "i18n/{locale.name}.json:json")`,
+    );
+  }
+  const target = value.slice(0, idx);
+  const fileType = value.slice(idx + 1);
+  return [...previous, { target, fileType }];
+}
 
 export function registerInit(program: Command): void {
   program
@@ -8,20 +25,15 @@ export function registerInit(program: Command): void {
     .argument("<endpoint>", "the URL to the Translatr endpoint")
     .argument("<access_token>", "the access token for API calls")
     .argument("<project_id>", "the ID of the Translatr project")
-    .option("--pull-file-type <type>", "format of files to be downloaded", "play_messages")
-    .option("--pull-target <target>", "location format of downloaded files", "conf/messages.?{locale.name}")
-    .option("--push-file-type <type>", "format of files to be uploaded", "play_messages")
-    .option("--push-target <target>", "location format of uploaded files", "conf/messages.?{locale.name}")
+    .option(
+      "--target <path>:<file_type>",
+      "a target location and its file format; repeat for multiple targets",
+      parseTarget,
+      [] as InitTarget[],
+    )
     .action((endpoint: string, accessToken: string, projectId: string, opts) => {
-      writeInitConfig({
-        endpoint,
-        accessToken,
-        projectId,
-        pullFileType: opts.pullFileType,
-        pullTarget: opts.pullTarget,
-        pushFileType: opts.pushFileType,
-        pushTarget: opts.pushTarget,
-      });
+      const targets: InitTarget[] = opts.target.length > 0 ? opts.target : [DEFAULT_TARGET];
+      writeInitConfig({ endpoint, accessToken, projectId, targets });
       console.log("Config initialised into .translatr.yml");
     });
 }

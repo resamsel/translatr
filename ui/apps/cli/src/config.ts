@@ -5,9 +5,8 @@ import { parse as parseDotenv } from "dotenv";
 export const CONFIG_FILE = ".translatr.yml";
 const DOTENV_FILE = ".env";
 
-export interface FileSpec {
+export interface TargetSpec {
   file_type: string;
-  target: string;
 }
 
 export interface TranslatrConfig {
@@ -15,8 +14,7 @@ export interface TranslatrConfig {
   access_token: string;
   project_id: string;
   default_locale: string;
-  pull: FileSpec;
-  push: FileSpec;
+  targets: Record<string, TargetSpec>;
   /**
    * When true, load `.env` from the current directory (if present) before
    * `${VAR}`/`${?VAR}` substitution, filling in any variables not already
@@ -100,6 +98,12 @@ export function assertExists(config: Record<string, unknown>, ...keys: string[])
   }
 }
 
+export function assertTargetsNonEmpty(config: TranslatrConfig): void {
+  if (Object.keys(config.targets ?? {}).length === 0) {
+    throw new ConfigError(`Error in ${CONFIG_FILE}: key "translatr.targets" is empty`);
+  }
+}
+
 export interface GlobalOptions {
   endpoint?: string;
   accessToken?: string;
@@ -120,28 +124,30 @@ export function readConfigMerge(overrides: GlobalOptions): TranslatrConfig {
   return config;
 }
 
+export interface InitTarget {
+  target: string;
+  fileType: string;
+}
+
 export interface InitOptions {
   endpoint: string;
   accessToken: string;
   projectId: string;
-  pullFileType: string;
-  pullTarget: string;
-  pushFileType: string;
-  pushTarget: string;
+  targets: InitTarget[];
 }
 
 export function writeInitConfig(opts: InitOptions): void {
-  const content = `translatr:
-  endpoint: ${opts.endpoint}
-  access_token: ${opts.accessToken}
-  project_id: ${opts.projectId}
-  default_locale: default
-  push:
-    file_type: ${opts.pushFileType}
-    target: ${opts.pushTarget}
-  pull:
-    file_type: ${opts.pullFileType}
-    target: ${opts.pullTarget}
-`;
+  const targets: Record<string, TargetSpec> = {};
+  for (const t of opts.targets) targets[t.target] = { file_type: t.fileType };
+
+  const content = yaml.dump({
+    translatr: {
+      endpoint: opts.endpoint,
+      access_token: opts.accessToken,
+      project_id: opts.projectId,
+      default_locale: "default",
+      targets,
+    },
+  });
   writeFileSync(CONFIG_FILE, content);
 }

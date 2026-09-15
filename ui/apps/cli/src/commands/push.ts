@@ -2,7 +2,7 @@ import type { Command } from "commander";
 import { readFileSync } from "node:fs";
 import { glob } from "glob";
 import { Api, type Locale } from "../api.js";
-import { assertExists, readConfigMerge, type TranslatrConfig } from "../config.js";
+import { assertExists, assertTargetsNonEmpty, readConfigMerge } from "../config.js";
 import type { GlobalOptions } from "../config.js";
 import { eprint } from "../print.js";
 
@@ -29,49 +29,46 @@ export function registerPush(program: Command, getGlobal: () => GlobalOptions): 
     )
     .action(async () => {
       const config = readConfigMerge(getGlobal());
-      assertExists(
-        config as unknown as Record<string, unknown>,
-        "push.target",
-        "push.file_type",
-        "default_locale",
-      );
+      assertExists(config as unknown as Record<string, unknown>, "targets", "default_locale");
+      assertTargetsNonEmpty(config);
 
       const api = new Api(config);
       const localesByName = new Map<string, Locale>((await api.locales()).map((l) => [l.name, l]));
 
-      const target = config.push.target;
-      const filter = targetFilter(target);
-      const pattern = targetPattern(target);
+      for (const [target, spec] of Object.entries(config.targets)) {
+        const filter = targetFilter(target);
+        const pattern = targetPattern(target);
 
-      const filenames = await glob(filter);
-      for (const filename of filenames) {
-        const match = pattern.exec(filename);
-        if (!match) {
-          console.log(`Filename ${filename} does not match target: ${target}`);
-          continue;
-        }
-        const localeName = match.groups?.locale_name || config.default_locale;
-
-        let created = false;
-        if (!localesByName.has(localeName)) {
-          try {
-            localesByName.set(localeName, await api.localeCreate(localeName));
-            created = true;
-          } catch (e) {
-            eprint(String(e instanceof Error ? e.message : e));
+        const filenames = await glob(filter);
+        for (const filename of filenames) {
+          const match = pattern.exec(filename);
+          if (!match) {
+            console.log(`Filename ${filename} does not match target: ${target}`);
+            continue;
           }
-        }
+          const localeName = match.groups?.locale_name || config.default_locale;
 
-        const locale = localesByName.get(localeName);
-        if (locale) {
-          try {
-            await api.localeImport(locale.id, config.push.file_type, readFileSync(filename));
-            console.log(`Uploaded ${filename} to ${localeName}${created ? " (new)" : ""}`);
-          } catch (e) {
-            eprint(String(e instanceof Error ? e.message : e));
+          let created = false;
+          if (!localesByName.has(localeName)) {
+            try {
+              localesByName.set(localeName, await api.localeCreate(localeName));
+              created = true;
+            } catch (e) {
+              eprint(String(e instanceof Error ? e.message : e));
+            }
           }
-        } else {
-          console.log(`Could neither find nor create locale ${localeName}`);
+
+          const locale = localesByName.get(localeName);
+          if (locale) {
+            try {
+              await api.localeImport(locale.id, spec.file_type, readFileSync(filename));
+              console.log(`Uploaded ${filename} to ${localeName}${created ? " (new)" : ""}`);
+            } catch (e) {
+              eprint(String(e instanceof Error ? e.message : e));
+            }
+          } else {
+            console.log(`Could neither find nor create locale ${localeName}`);
+          }
         }
       }
     });
