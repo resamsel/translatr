@@ -1,0 +1,9 @@
+load_dotenv: true
+endpoint: http://localhost:9000
+project_id: 96533fad-3b46-44c4-95db-1f6f3de54904
+access_token: ${TRANSLATR_ACCESS_TOKEN}
+targets:
+  ui/apps/translatr/src/assets/i18n/{locale.name}.json:
+    file_type: json
+  ui/apps/translatr-admin/src/assets/i18n/{locale.name}.json:
+    file_type: json
