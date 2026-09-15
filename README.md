@@ -8,7 +8,8 @@ Translatr
 A modern and intuitive i18n tool. Translatr simplifies i18n for developers and translators. It uses
 the [Play Framework](http://www.playframework.com) to translate other projects. Importing
 `conf/messages.locale` (Play Framework), `src/main/resources/messages_locale.properties` (Java
-properties), and `i18n/locale/main.po` (Gettext) files allows easy locale management.
+properties), `locale/locale/LC_MESSAGES/message.po` (Gettext), and `i18n/locale.json` (JSON)
+files allows easy locale management.
 
 [Demo](https://translatr.repanzar.com/)
 
@@ -71,7 +72,7 @@ This will overwrite all existing messages, if any. No existing keys/locales will
 
 ### Pulling
 
-By pulling you download all locales into separate files into the configured files (translatr.pull.target key).
+By pulling you download all locales into the files configured in `.translatr.yml`'s `targets` map - each entry writes one file per locale.
 
 ```
 translatr pull

@@ -2,8 +2,6 @@
 
 Cross-platform (Windows, Linux, macOS) command-line client for a Translatr
 server: manage projects, locales and keys, and push/pull translation files.
-It's a TypeScript rewrite of the old [`src/python/translatr.py`](../src/python/translatr.py)
-script, with the same `.translatr.yml` config format and commands.
 
 ## Install
 
@@ -34,6 +32,20 @@ translatr pull
 ```
 
 Run `translatr --help` or `translatr <command> --help` for details.
+
+`translatr init` writes a `.translatr.yml` config file with the given values;
+every setting is a top-level key, and `targets` maps each translation file's
+location to its file type:
+
+```yaml
+endpoint: https://translatr.example
+access_token: ${TRANSLATR_ACCESS_TOKEN}
+project_id: my-project-id
+default_locale: default
+targets:
+  conf/messages.?{locale.name}:
+    file_type: play_messages
+```
 
 ## Development
 
