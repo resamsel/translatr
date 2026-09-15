@@ -46,3 +46,31 @@ describe("`config` command reflects the `targets` map", () => {
     });
   });
 });
+
+describe("`config` command prints the flat shape", () => {
+  it("Config dump has no wrapper: top-level keys, not a single `translatr:` key", async () => {
+    await withTempCwd(async () => {
+      writeFileSync(".translatr.yml", CONFIG_MULTI_TARGET);
+
+      const logs: string[] = [];
+      const originalLog = console.log;
+      console.log = (...args: unknown[]) => logs.push(args.join(" "));
+      try {
+        const program = new Command();
+        program.exitOverride();
+        registerConfigInfo(program);
+        await program.parseAsync(["config"], { from: "user" });
+      } finally {
+        console.log = originalLog;
+      }
+
+      const printed = yaml.load(logs.join("\n")) as Record<string, unknown>;
+
+      expect(printed.translatr).toBeUndefined();
+      expect(printed.targets).toEqual({
+        "app1/messages.?{locale.name}": { file_type: "json" },
+        "app2/messages.?{locale.name}": { file_type: "json" },
+      });
+    });
+  });
+});

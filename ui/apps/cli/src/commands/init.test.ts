@@ -117,3 +117,32 @@ describe("`init` seeds one or more targets", () => {
     });
   });
 });
+
+describe("`init` writes the flat shape", () => {
+  it("Init output has no wrapper: endpoint/targets etc are top-level keys", async () => {
+    await withTempCwd(async () => {
+      const program = new Command();
+      program.exitOverride();
+      registerInit(program);
+      await program.parseAsync(
+        [
+          "init",
+          "https://translatr.example",
+          "abc123",
+          "my-project-id",
+          "--target",
+          "conf/messages.?{locale.name}:play_messages",
+        ],
+        { from: "user" },
+      );
+
+      const written = yaml.load(readFileSync(".translatr.yml", "utf8")) as Record<string, unknown>;
+
+      expect(written.translatr).toBeUndefined();
+      expect(written.endpoint).toBe("https://translatr.example");
+      expect(written.targets).toEqual({
+        "conf/messages.?{locale.name}": { file_type: "play_messages" },
+      });
+    });
+  });
+});
