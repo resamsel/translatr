@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: resamsel/translatr:4.0.0-4
+          image: resamsel/translatr:4.0.0-5
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 9000
