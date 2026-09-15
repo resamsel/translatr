@@ -1,19 +1,134 @@
 # Changelog
 
-## [Unreleased]
+## [v4.0.0](https://github.com/resamsel/translatr/tree/4.0.0) (2026-09-15)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.3.3...v4.0.0)
 
 **Implemented enhancements:**
 
-- OpenTelemetry instrumentation (dormant by default) + a local SigNoz observability stack and "Translatr — Load Test" dashboard for load-test verification [\#239](https://github.com/resamsel/translatr/issues/239)
-- Support any Quarkus OIDC provider (Google, GitHub, Facebook, Twitter/X, Microsoft, Apple, …) for SSO, selected by configuration [\#255](https://github.com/resamsel/translatr/issues/255)
+- Migrate backend from Play Framework to Quarkus [\#225](https://github.com/resamsel/translatr/pull/225) ([resamsel](https://github.com/resamsel))
+- Translatr CLI: Allow for multiple targets within one .translatr.yml config [\#336](https://github.com/resamsel/translatr/issues/336)
+- Adopt contract-first OpenAPI: single openapi.yaml as source of truth, generate DTOs/interfaces [\#256](https://github.com/resamsel/translatr/issues/256)
+- Show admin sidebar by default on large screens [\#243](https://github.com/resamsel/translatr/issues/243)
+- Admin: manage feature flags for any user \(user filter on the Feature Flags page\) [\#240](https://github.com/resamsel/translatr/issues/240)
+- Add OpenTelemetry + SigNoz observability to verify load-test performance [\#239](https://github.com/resamsel/translatr/issues/239)
+- Allow feature flags to be enabled globally [\#227](https://github.com/resamsel/translatr/issues/227)
+- Migrate E2E tests to Playwright [\#226](https://github.com/resamsel/translatr/issues/226)
+- Re-introduce Swagger API Documentation [\#214](https://github.com/resamsel/translatr/issues/214)
 
 **Fixed bugs:**
 
-- App no longer fails to boot when an auth provider in `AUTH_PROVIDERS` is unconfigured [\#255](https://github.com/resamsel/translatr/issues/255)
+- Translatr CLI: the API paths are wrong [\#331](https://github.com/resamsel/translatr/issues/331)
+- CLI: unhelpful raw error printed on API 404 \(e.g. `translatr push`\) [\#329](https://github.com/resamsel/translatr/issues/329)
+- Login page: identity provider labels hard to read and not vertically centered [\#310](https://github.com/resamsel/translatr/issues/310)
+- Flaky test: ActivityResourceAggregatedCriteriaTest.findAggregatedActivity\_projectIdAndUserId\_areNotSwapped [\#304](https://github.com/resamsel/translatr/issues/304)
+- Visual review problems [\#302](https://github.com/resamsel/translatr/issues/302)
+- generator: updateRandomProject crashes on a project with no description [\#297](https://github.com/resamsel/translatr/issues/297)
+- UserService.create\(\) has no generated endpoint — user registration is broken [\#296](https://github.com/resamsel/translatr/issues/296)
+- Admin UI must only be reachable by admins [\#289](https://github.com/resamsel/translatr/issues/289)
+- Restore logout under multi-tenant OIDC [\#258](https://github.com/resamsel/translatr/issues/258)
+- Only Keycloak can be used as auth provider [\#255](https://github.com/resamsel/translatr/issues/255)
+- Fix failing deployment on Heroku [\#247](https://github.com/resamsel/translatr/issues/247)
+- After re-login always gets redirected to main page [\#245](https://github.com/resamsel/translatr/issues/245)
+- Tab texts are too dark on the darkened background [\#233](https://github.com/resamsel/translatr/issues/233)
+- UI: further Material 22 \(MDC\) migration regressions [\#230](https://github.com/resamsel/translatr/issues/230)
+- Saving with shortkey doesn't work any longer [\#229](https://github.com/resamsel/translatr/issues/229)
+- Fix UI issues after Angular upgrades [\#228](https://github.com/resamsel/translatr/issues/228)
 
-**Breaking changes:**
+**Closed issues:**
 
-- Keycloak env vars renamed: `KEYCLOAK_CLIENT_ID` → `OIDC_KEYCLOAK_CLIENT_ID`, `KEYCLOAK_CLIENT_SECRET` → `OIDC_KEYCLOAK_CLIENT_SECRET`, `KEYCLOAK_HOST`+`KEYCLOAK_REALM` → `OIDC_KEYCLOAK_AUTH_SERVER_URL` (full issuer URL)
+- CLI: support loading .env into .translatr.yml substitution [\#333](https://github.com/resamsel/translatr/issues/333)
+- Admin UI: access tokens table never shows the User column [\#317](https://github.com/resamsel/translatr/issues/317)
+- Use constructor injection in Quarkus components [\#286](https://github.com/resamsel/translatr/issues/286)
+- Route AbstractService's consumers through generated TypeScript API clients [\#282](https://github.com/resamsel/translatr/issues/282)
+- Upgrade Gradle to latest version [\#250](https://github.com/resamsel/translatr/issues/250)
+- Replace TestBed.get with TestBed.inject in tests [\#167](https://github.com/resamsel/translatr/issues/167)
+- Rewrite activity component [\#123](https://github.com/resamsel/translatr/issues/123)
+- Make timeouts and limits configurable [\#35](https://github.com/resamsel/translatr/issues/35)
+
+**Merged pull requests:**
+
+- lets-release: drop Github token requirement for non-prerelease releases [\#341](https://github.com/resamsel/translatr/pull/341) ([resamsel](https://github.com/resamsel))
+- Bump version to v4.0.0-5 [\#340](https://github.com/resamsel/translatr/pull/340) ([resamsel](https://github.com/resamsel))
+- docs: fix stale .translatr.yml wording and CLI screenshot [\#339](https://github.com/resamsel/translatr/pull/339) ([resamsel](https://github.com/resamsel))
+- cli: drop .translatr.yml's top-level translatr: wrapper [\#338](https://github.com/resamsel/translatr/pull/338) ([resamsel](https://github.com/resamsel))
+- cli: allow multiple targets in .translatr.yml [\#337](https://github.com/resamsel/translatr/pull/337) ([resamsel](https://github.com/resamsel))
+- fix\(cli\): correct locales/keys API paths [\#335](https://github.com/resamsel/translatr/pull/335) ([resamsel](https://github.com/resamsel))
+- Archive completed CLI changes and sync translatr-cli main spec [\#334](https://github.com/resamsel/translatr/pull/334) ([resamsel](https://github.com/resamsel))
+- Support loading .env into .translatr.yml substitution [\#332](https://github.com/resamsel/translatr/pull/332) ([resamsel](https://github.com/resamsel))
+- Move cli/ to ui/apps/cli/ and share generated DTO types [\#330](https://github.com/resamsel/translatr/pull/330) ([resamsel](https://github.com/resamsel))
+- fix\(deps\): resolve Dependabot vulnerability alerts [\#328](https://github.com/resamsel/translatr/pull/328) ([resamsel](https://github.com/resamsel))
+- chore\(release\): bump version to v4.0.0-4 [\#327](https://github.com/resamsel/translatr/pull/327) ([resamsel](https://github.com/resamsel))
+- fix\(ci\): replace unmaintained release actions, bump checkout/setup-node [\#326](https://github.com/resamsel/translatr/pull/326) ([resamsel](https://github.com/resamsel))
+- Bump version to v4.0.0-3 [\#325](https://github.com/resamsel/translatr/pull/325) ([resamsel](https://github.com/resamsel))
+- fix\(release\): commit version bumps on a work branch, not main [\#324](https://github.com/resamsel/translatr/pull/324) ([resamsel](https://github.com/resamsel))
+- chore\(openspec\): archive release-loadgenerator-image change [\#323](https://github.com/resamsel/translatr/pull/323) ([resamsel](https://github.com/resamsel))
+- fix\(release\): keep docker-compose-loadtest.yml image tags in sync [\#322](https://github.com/resamsel/translatr/pull/322) ([resamsel](https://github.com/resamsel))
+- fix\(loadgenerator\): fix Dockerfile build \(lockfile, npmrc, scripts\) [\#321](https://github.com/resamsel/translatr/pull/321) ([resamsel](https://github.com/resamsel))
+- ci\(release\): publish loadgenerator image alongside translatr [\#320](https://github.com/resamsel/translatr/pull/320) ([resamsel](https://github.com/resamsel))
+- fix\(ui\): show token owner's username in admin access-tokens table [\#318](https://github.com/resamsel/translatr/pull/318) ([resamsel](https://github.com/resamsel))
+- docs\(openspec\): close out sunset-python-cli's last task [\#316](https://github.com/resamsel/translatr/pull/316) ([resamsel](https://github.com/resamsel))
+- ci\(docker\): build the release image on every push/PR [\#315](https://github.com/resamsel/translatr/pull/315) ([resamsel](https://github.com/resamsel))
+- fix\(docker\): don't spawn a nested container for the native image build [\#314](https://github.com/resamsel/translatr/pull/314) ([resamsel](https://github.com/resamsel))
+- fix\(docker\): skip tests during image build [\#313](https://github.com/resamsel/translatr/pull/313) ([resamsel](https://github.com/resamsel))
+- Sunset the Python CLI, adopt the Bun/TypeScript CLI [\#312](https://github.com/resamsel/translatr/pull/312) ([resamsel](https://github.com/resamsel))
+- fix\(ui,admin\): login page contrast/centering, admin health check, finish \#302 [\#311](https://github.com/resamsel/translatr/pull/311) ([resamsel](https://github.com/resamsel))
+- Fix admin visual review issues: Users table overflow and inconsistent input appearance [\#309](https://github.com/resamsel/translatr/pull/309) ([resamsel](https://github.com/resamsel))
+- Show admin health status; fix broken user registration \(\#296\) [\#308](https://github.com/resamsel/translatr/pull/308) ([resamsel](https://github.com/resamsel))
+- feat\(admin\): show overall health status with collapsible provider details [\#306](https://github.com/resamsel/translatr/pull/306) ([resamsel](https://github.com/resamsel))
+- fix\(test\): poll every assertion in the async activity-aggregation test [\#305](https://github.com/resamsel/translatr/pull/305) ([resamsel](https://github.com/resamsel))
+- refactor\(admin\): give every admin page its own dev-admin-page shell [\#303](https://github.com/resamsel/translatr/pull/303) ([resamsel](https://github.com/resamsel))
+- fix\(generator\): guard suffix-toggle mutations against null fields [\#300](https://github.com/resamsel/translatr/pull/300) ([resamsel](https://github.com/resamsel))
+- Route AbstractService's consumers through generated TypeScript API clients [\#298](https://github.com/resamsel/translatr/pull/298) ([resamsel](https://github.com/resamsel))
+- test\(e2e\): migrate Cypress suites to Playwright [\#293](https://github.com/resamsel/translatr/pull/293) ([resamsel](https://github.com/resamsel))
+- feat\(admin\): activity graph on Info, tidy Health page [\#292](https://github.com/resamsel/translatr/pull/292) ([resamsel](https://github.com/resamsel))
+- fix\(admin\): guard every admin UI page against non-admins [\#291](https://github.com/resamsel/translatr/pull/291) ([resamsel](https://github.com/resamsel))
+- feat\(admin\): let admins manage feature flags for any user [\#290](https://github.com/resamsel/translatr/pull/290) ([resamsel](https://github.com/resamsel))
+- refactor\(di\): use constructor injection in Quarkus components [\#288](https://github.com/resamsel/translatr/pull/288) ([resamsel](https://github.com/resamsel))
+- feat\(observability\): OpenTelemetry + SigNoz for load-test verification \(\#239\) [\#287](https://github.com/resamsel/translatr/pull/287) ([resamsel](https://github.com/resamsel))
+- build\(openapi\): make frontend codegen an Nx target that observes the contract \(\#256\) [\#285](https://github.com/resamsel/translatr/pull/285) ([resamsel](https://github.com/resamsel))
+- test\(openapi\): fill in the missing toCriteria mapping tests for FeatureFlag/User \(\#256\) [\#280](https://github.com/resamsel/translatr/pull/280) ([resamsel](https://github.com/resamsel))
+- Migrate UserResource to contract-first OpenAPI \(\#256\) [\#279](https://github.com/resamsel/translatr/pull/279) ([resamsel](https://github.com/resamsel))
+- Migrate FeatureFlagResource to contract-first OpenAPI \(\#256\) [\#277](https://github.com/resamsel/translatr/pull/277) ([resamsel](https://github.com/resamsel))
+- Migrate GlobalFeatureFlagResource to contract-first OpenAPI \(\#256\) [\#276](https://github.com/resamsel/translatr/pull/276) ([resamsel](https://github.com/resamsel))
+- Migrate ActivityResource to contract-first OpenAPI \(\#256\) [\#275](https://github.com/resamsel/translatr/pull/275) ([resamsel](https://github.com/resamsel))
+- Migrate NotificationResource to contract-first OpenAPI \(\#256\) [\#274](https://github.com/resamsel/translatr/pull/274) ([resamsel](https://github.com/resamsel))
+- Migrate AuthClientsResource to contract-first OpenAPI \(\#256\) [\#273](https://github.com/resamsel/translatr/pull/273) ([resamsel](https://github.com/resamsel))
+- Migrate StatisticsResource to contract-first OpenAPI \(\#256\) [\#272](https://github.com/resamsel/translatr/pull/272) ([resamsel](https://github.com/resamsel))
+- Migrate HealthResource to contract-first OpenAPI \(\#256\) [\#271](https://github.com/resamsel/translatr/pull/271) ([resamsel](https://github.com/resamsel))
+- Migrate MemberResource to contract-first OpenAPI \(\#256\) [\#270](https://github.com/resamsel/translatr/pull/270) ([resamsel](https://github.com/resamsel))
+- Migrate KeyResource to contract-first OpenAPI \(\#256\) [\#269](https://github.com/resamsel/translatr/pull/269) ([resamsel](https://github.com/resamsel))
+- Migrate LocaleResource to contract-first OpenAPI \(\#256\) [\#268](https://github.com/resamsel/translatr/pull/268) ([resamsel](https://github.com/resamsel))
+- fix\(message\): restore localeDisplayName on MessageDto read paths [\#267](https://github.com/resamsel/translatr/pull/267) ([resamsel](https://github.com/resamsel))
+- Migrate MessageResource to contract-first OpenAPI \(\#256\) [\#266](https://github.com/resamsel/translatr/pull/266) ([resamsel](https://github.com/resamsel))
+- feat\(openapi\): migrate ProjectResource to the generated contract \(\#256\) [\#265](https://github.com/resamsel/translatr/pull/265) ([resamsel](https://github.com/resamsel))
+- feat\(openapi\): migrate AccessTokenResource to the generated contract \(\#256\) [\#264](https://github.com/resamsel/translatr/pull/264) ([resamsel](https://github.com/resamsel))
+- feat\(openapi\): contract-first OpenAPI toolchain + pilot resource migration \(\#256\) [\#263](https://github.com/resamsel/translatr/pull/263) ([resamsel](https://github.com/resamsel))
+- chore\(build\): upgrade Gradle wrapper to 9.7.1 [\#262](https://github.com/resamsel/translatr/pull/262) ([resamsel](https://github.com/resamsel))
+- Admin Health page + logout Javadoc fix [\#261](https://github.com/resamsel/translatr/pull/261) ([resamsel](https://github.com/resamsel))
+- feat\(admin\): Health page for OIDC provider diagnostics + dashboard page rename [\#260](https://github.com/resamsel/translatr/pull/260) ([resamsel](https://github.com/resamsel))
+- feat\(auth\): multi-provider OIDC SSO \(\#255\) [\#259](https://github.com/resamsel/translatr/pull/259) ([resamsel](https://github.com/resamsel))
+- fix\(ui\): generate build-info.ts before build:ui:prod [\#254](https://github.com/resamsel/translatr/pull/254) ([resamsel](https://github.com/resamsel))
+- fix\(quinoa\): keep devDependencies for the npm ci build path [\#253](https://github.com/resamsel/translatr/pull/253) ([resamsel](https://github.com/resamsel))
+- fix\(quinoa\): install devDependencies for the SPA build on Heroku [\#252](https://github.com/resamsel/translatr/pull/252) ([resamsel](https://github.com/resamsel))
+- fix\(quinoa\): produce a deployable SPA bundle on the Heroku build [\#251](https://github.com/resamsel/translatr/pull/251) ([resamsel](https://github.com/resamsel))
+- fix: unblock Heroku deployment \(lockfile sync + Play→Quarkus buildpacks\) [\#249](https://github.com/resamsel/translatr/pull/249) ([resamsel](https://github.com/resamsel))
+- fix\(auth\): return to the current route after re-login \(\#245\) [\#248](https://github.com/resamsel/translatr/pull/248) ([resamsel](https://github.com/resamsel))
+- feat\(admin\): dock the sidebar by default on large screens \(\#243\) [\#246](https://github.com/resamsel/translatr/pull/246) ([resamsel](https://github.com/resamsel))
+- feat\(admin\): move feature-flag tabs into the page header [\#244](https://github.com/resamsel/translatr/pull/244) ([resamsel](https://github.com/resamsel))
+- Activate sending analytics to NX by default [\#242](https://github.com/resamsel/translatr/pull/242) ([resamsel](https://github.com/resamsel))
+- chore\(admin\): remove orphaned per-user featureFlags NgRx slice \(\#227\) [\#241](https://github.com/resamsel/translatr/pull/241) ([resamsel](https://github.com/resamsel))
+- feat: allow feature flags to be enabled globally \(\#227\) [\#238](https://github.com/resamsel/translatr/pull/238) ([resamsel](https://github.com/resamsel))
+- fix\(ui\): whiten header tab labels on the darkened strip \(\#233\) [\#237](https://github.com/resamsel/translatr/pull/237) ([resamsel](https://github.com/resamsel))
+- fix\(editor\): restore Cmd/Ctrl+Enter save shortcut \(\#229\) [\#236](https://github.com/resamsel/translatr/pull/236) ([resamsel](https://github.com/resamsel))
+- chore\(lets-release\): bump simple-git to ^3.36.0 \(fixes critical RCE alert\) [\#235](https://github.com/resamsel/translatr/pull/235) ([resamsel](https://github.com/resamsel))
+- chore: fix Dependabot alerts \(safe dependency updates\) [\#234](https://github.com/resamsel/translatr/pull/234) ([resamsel](https://github.com/resamsel))
+- fix\(ui\): resolve UI regressions after the Angular/Material 22 upgrade \(\#228\) [\#232](https://github.com/resamsel/translatr/pull/232) ([resamsel](https://github.com/resamsel))
+- fix\(ui\): Material 22 \(MDC\) migration regressions \(\#230\) [\#231](https://github.com/resamsel/translatr/pull/231) ([resamsel](https://github.com/resamsel))
+
+## [v3.3.3](https://github.com/resamsel/translatr/tree/v3.3.3) (2022-04-16)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.3.2...v3.3.3)
 
 ## [v3.3.2](https://github.com/resamsel/translatr/tree/v3.3.2) (2022-04-16)
 
@@ -35,8 +150,13 @@
 
 - Add route for creating an access token [\#155](https://github.com/resamsel/translatr/issues/155)
 
+**Fixed bugs:**
+
+- Dashboard page scrolls horizontally on mobile [\#163](https://github.com/resamsel/translatr/issues/163)
+
 **Closed issues:**
 
+- Migrate to ESLint from Codelyzer and TSLint [\#224](https://github.com/resamsel/translatr/issues/224)
 - Upgrade to Angular 11 [\#223](https://github.com/resamsel/translatr/issues/223)
 - Upgrade to Angular 10 [\#222](https://github.com/resamsel/translatr/issues/222)
 - Re-write activity graph template style [\#220](https://github.com/resamsel/translatr/issues/220)
@@ -64,10 +184,6 @@
 ## [v3.1.6-1](https://github.com/resamsel/translatr/tree/v3.1.6-1) (2020-11-28)
 
 [Full Changelog](https://github.com/resamsel/translatr/compare/v3.1.5...v3.1.6-1)
-
-**Closed issues:**
-
-- Re-write activity graph template style [\#220](https://github.com/resamsel/translatr/issues/220)
 
 ## [v3.1.5](https://github.com/resamsel/translatr/tree/v3.1.5) (2020-11-13)
 
