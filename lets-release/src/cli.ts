@@ -41,7 +41,8 @@ class LetsReleaseCommand extends Command {
 
     'github-token': flags.string({
       char: 't',
-      description: 'The Github token to use when generating the changelog'
+      description: 'The Github token to use when generating the changelog',
+      env: 'CHANGELOG_GITHUB_TOKEN'
     }),
 
     'tag-pre-release': flags.boolean({
