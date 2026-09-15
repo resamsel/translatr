@@ -125,7 +125,6 @@ fabric.properties
 ##############
 
 .recommenders
-.translatr.yml
 /public/ui
 /public/admin
 
