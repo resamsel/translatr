@@ -25,7 +25,7 @@ services:
     volumes:
       - ./docker/keycloak-realm.json:/tmp/keycloak-realm.json
   translatr:
-    image: resamsel/translatr:4.0.0-4
+    image: resamsel/translatr:4.0.0-5
     ports:
       - "9000:9000"
     environment:
@@ -39,7 +39,7 @@ services:
       OIDC_KEYCLOAK_CLIENT_SECRET: 05d9a16b-5999-49f7-b26d-996bd414c849
       LOGLEVEL_ROOT: DEBUG
   loadgenerator:
-    image: resamsel/translatr-loadgenerator:4.0.0-4
+    image: resamsel/translatr-loadgenerator:4.0.0-5
     environment:
       ENDPOINT: http://translatr:9000
       ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
