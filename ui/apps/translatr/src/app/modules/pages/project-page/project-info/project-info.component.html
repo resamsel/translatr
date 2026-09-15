@@ -248,16 +248,12 @@
               </mat-select>
             </mat-form-field>
             <!-- @formatter:off -->
-            <pre class="language-yml"><code>translatr:
-  endpoint: {{endpointUrl}}
-  project_id: {{project.id}}
-  access_token: {{accessTokenKey}}
-  pull:
-    file_type: {{fileType}}
-    target: {{targets[fileType]}}
-  push:
-    file_type: {{fileType}}
-    target: {{targets[fileType]}}</code></pre>
+            <pre class="language-yml"><code>endpoint: {{endpointUrl}}
+project_id: {{project.id}}
+access_token: {{accessTokenKey}}
+targets:
+  {{targets[fileType]}}:
+    file_type: {{fileType}}</code></pre>
             <!-- @formatter:on -->
           </mat-card-content>
         </mat-card>
