@@ -23,7 +23,6 @@ describe('abstract-release', () => {
 
     it('should not throw error', async () => {
       // given
-      const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
         ...defaultConfig,
         releaseBranch: 'release/v1.0.0',
@@ -35,7 +34,7 @@ describe('abstract-release', () => {
 
       // when
       const actual = await target
-        .validate(version)
+        .validate()
         .then(() => new ReleaseError())
         .catch(error => error);
 
@@ -43,32 +42,8 @@ describe('abstract-release', () => {
       expect(actual.messages).toHaveLength(0);
     });
 
-    it('should throw error when Github token unset', async () => {
-      // given
-      const version = parse('1.0.0') as SemVer;
-      const config: ReleaseConfig = {
-        ...defaultConfig,
-        releaseBranch: 'release/v1.0.0',
-        tag: 'v1.0.0'
-      };
-
-      const target = testBed.createTarget(config);
-
-      // when
-      const actual = await target
-        .validate(version)
-        .then(() => new ReleaseError())
-        .catch(error => error);
-
-      // then
-      expect(actual.messages).toEqual([
-        'Github token is unset, but required for changelog generation'
-      ]);
-    });
-
     it('should throw error when workspace unclean', async () => {
       // given
-      const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
         ...defaultConfig,
         releaseBranch: 'release/v1.0.0',
@@ -81,7 +56,7 @@ describe('abstract-release', () => {
 
       // when
       const actual = await target
-        .validate(version)
+        .validate()
         .then(() => new ReleaseError())
         .catch(error => error);
 
@@ -92,7 +67,6 @@ describe('abstract-release', () => {
 
     it('should throw error when tag already exists', async () => {
       // given
-      const version = parse('1.0.0') as SemVer;
       const config: ReleaseConfig = {
         ...defaultConfig,
         releaseBranch: 'release/v1.0.0',
@@ -110,7 +84,7 @@ describe('abstract-release', () => {
 
       // when
       const actual = await target
-        .validate(version)
+        .validate()
         .then(() => new ReleaseError())
         .catch(error => error);
 
