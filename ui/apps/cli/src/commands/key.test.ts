@@ -5,10 +5,9 @@ import { registerKey } from "./key.js";
 import { withTempCwd, mockFetch } from "../test-utils.js";
 
 const CONFIG = [
-  "translatr:",
-  "  endpoint: http://localhost:9000",
-  "  access_token: tok",
-  "  project_id: proj-1",
+  "endpoint: http://localhost:9000",
+  "access_token: tok",
+  "project_id: proj-1",
 ].join("\n");
 
 describe("Listing keys for the configured project", () => {

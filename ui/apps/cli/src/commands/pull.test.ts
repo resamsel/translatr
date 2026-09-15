@@ -5,14 +5,13 @@ import { registerPull } from "./pull.js";
 import { withTempCwd, mockFetch } from "../test-utils.js";
 
 const CONFIG = [
-  "translatr:",
-  "  endpoint: http://localhost:9000",
-  "  access_token: tok",
-  "  project_id: proj-1",
-  "  default_locale: default",
-  "  targets:",
-  "    conf/messages.?{locale.name}:",
-  "      file_type: json",
+  "endpoint: http://localhost:9000",
+  "access_token: tok",
+  "project_id: proj-1",
+  "default_locale: default",
+  "targets:",
+  "  conf/messages.?{locale.name}:",
+  "    file_type: json",
 ].join("\n");
 
 async function runPull(locales: { id: string; name: string }[], exportBody: string) {
@@ -61,27 +60,25 @@ describe("`pull` downloads every locale to its configured target", () => {
 });
 
 const CONFIG_MULTI_TARGET = [
-  "translatr:",
-  "  endpoint: http://localhost:9000",
-  "  access_token: tok",
-  "  project_id: proj-1",
-  "  default_locale: default",
-  "  targets:",
-  "    app1/messages.?{locale.name}:",
-  "      file_type: json",
-  "    app2/messages.?{locale.name}:",
-  "      file_type: json",
+  "endpoint: http://localhost:9000",
+  "access_token: tok",
+  "project_id: proj-1",
+  "default_locale: default",
+  "targets:",
+  "  app1/messages.?{locale.name}:",
+  "    file_type: json",
+  "  app2/messages.?{locale.name}:",
+  "    file_type: json",
 ].join("\n");
 
 const LEGACY_CONFIG = [
-  "translatr:",
-  "  endpoint: http://localhost:9000",
-  "  access_token: tok",
-  "  project_id: proj-1",
-  "  default_locale: default",
-  "  pull:",
-  "    file_type: json",
-  "    target: conf/messages.?{locale.name}",
+  "endpoint: http://localhost:9000",
+  "access_token: tok",
+  "project_id: proj-1",
+  "default_locale: default",
+  "pull:",
+  "  file_type: json",
+  "  target: conf/messages.?{locale.name}",
 ].join("\n");
 
 describe("Config declares a `targets` map instead of single `pull`/`push` targets", () => {

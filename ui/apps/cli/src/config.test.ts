@@ -22,10 +22,9 @@ describe("Config file drives every command", () => {
       writeFileSync(
         ".translatr.yml",
         [
-          "translatr:",
-          "  endpoint: http://localhost:9000",
-          "  access_token: ${TRANSLATR_CLI_TEST_MISSING_VAR}",
-          "  project_id: proj-1",
+          "endpoint: http://localhost:9000",
+          "access_token: ${TRANSLATR_CLI_TEST_MISSING_VAR}",
+          "project_id: proj-1",
         ].join("\n"),
       );
       delete process.env.TRANSLATR_CLI_TEST_MISSING_VAR;
@@ -37,10 +36,9 @@ describe("Config file drives every command", () => {
   it("CLI flag overrides config value without writing it back to the file", async () => {
     await withTempCwd(() => {
       const original = [
-        "translatr:",
-        "  endpoint: http://config-endpoint.example",
-        "  access_token: tok",
-        "  project_id: proj-1",
+        "endpoint: http://config-endpoint.example",
+        "access_token: tok",
+        "project_id: proj-1",
       ].join("\n");
       writeFileSync(".translatr.yml", original);
 
@@ -60,10 +58,9 @@ describe("`.env` loading is opt-in via `load_dotenv`", () => {
       writeFileSync(
         ".translatr.yml",
         [
-          "translatr:",
-          "  endpoint: http://localhost:9000",
-          "  access_token: ${TRANSLATR_CLI_TEST_DOTENV_ABSENT}",
-          "  project_id: proj-1",
+          "endpoint: http://localhost:9000",
+          "access_token: ${TRANSLATR_CLI_TEST_DOTENV_ABSENT}",
+          "project_id: proj-1",
         ].join("\n"),
       );
 
@@ -78,11 +75,10 @@ describe("`.env` loading is opt-in via `load_dotenv`", () => {
       writeFileSync(
         ".translatr.yml",
         [
-          "translatr:",
-          "  endpoint: http://localhost:9000",
-          "  access_token: ${TRANSLATR_CLI_TEST_DOTENV_DISABLED}",
-          "  project_id: proj-1",
-          "  load_dotenv: false",
+          "endpoint: http://localhost:9000",
+          "access_token: ${TRANSLATR_CLI_TEST_DOTENV_DISABLED}",
+          "project_id: proj-1",
+          "load_dotenv: false",
         ].join("\n"),
       );
 
@@ -100,11 +96,10 @@ describe("Enabled switch loads `.env` before substitution", () => {
         writeFileSync(
           ".translatr.yml",
           [
-            "translatr:",
-            "  endpoint: http://localhost:9000",
-            "  access_token: ${TRANSLATR_CLI_TEST_DOTENV_PRESENT}",
-            "  project_id: proj-1",
-            "  load_dotenv: true",
+            "endpoint: http://localhost:9000",
+            "access_token: ${TRANSLATR_CLI_TEST_DOTENV_PRESENT}",
+            "project_id: proj-1",
+            "load_dotenv: true",
           ].join("\n"),
         );
 
@@ -124,11 +119,10 @@ describe("Enabled switch loads `.env` before substitution", () => {
         writeFileSync(
           ".translatr.yml",
           [
-            "translatr:",
-            "  endpoint: http://localhost:9000",
-            "  access_token: ${TRANSLATR_CLI_TEST_DOTENV_MISSING_FILE}",
-            "  project_id: proj-1",
-            "  load_dotenv: true",
+            "endpoint: http://localhost:9000",
+            "access_token: ${TRANSLATR_CLI_TEST_DOTENV_MISSING_FILE}",
+            "project_id: proj-1",
+            "load_dotenv: true",
           ].join("\n"),
         );
 
@@ -151,11 +145,10 @@ describe("Existing process environment takes precedence", () => {
         writeFileSync(
           ".translatr.yml",
           [
-            "translatr:",
-            "  endpoint: http://localhost:9000",
-            "  access_token: ${TRANSLATR_CLI_TEST_DOTENV_PRECEDENCE}",
-            "  project_id: proj-1",
-            "  load_dotenv: true",
+            "endpoint: http://localhost:9000",
+            "access_token: ${TRANSLATR_CLI_TEST_DOTENV_PRECEDENCE}",
+            "project_id: proj-1",
+            "load_dotenv: true",
           ].join("\n"),
         );
 

@@ -10,10 +10,9 @@ describe("Project, locale, key, and user management", () => {
       writeFileSync(
         ".translatr.yml",
         [
-          "translatr:",
-          "  endpoint: http://localhost:9000",
-          "  access_token: tok",
-          "  project_id: proj-1",
+          "endpoint: http://localhost:9000",
+          "access_token: tok",
+          "project_id: proj-1",
         ].join("\n"),
       );
 

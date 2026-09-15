@@ -7,6 +7,6 @@ export function registerConfigInfo(program: Command): void {
     .command("config")
     .description("show info about configuration")
     .action(() => {
-      console.log(yaml.dump({ translatr: readConfig() }));
+      console.log(yaml.dump(readConfig()));
     });
 }
