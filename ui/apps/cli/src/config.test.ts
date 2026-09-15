@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync, writeFileSync } from "node:fs";
-import { readConfig, readConfigMerge, ConfigError } from "./config.js";
+import { readConfig, readConfigMerge, assertExists, ConfigError } from "./config.js";
 import { withTempCwd } from "./test-utils.js";
 
 describe("Config file drives every command", () => {
@@ -166,5 +166,61 @@ describe("Existing process environment takes precedence", () => {
         delete process.env.TRANSLATR_CLI_TEST_DOTENV_PRECEDENCE;
       }
     });
+  });
+});
+
+describe("`.translatr.yml` has no top-level `translatr` wrapper", () => {
+  it("Flat config loads directly: readConfig reads endpoint/targets etc at the top level", async () => {
+    await withTempCwd(() => {
+      writeFileSync(
+        ".translatr.yml",
+        [
+          "endpoint: http://localhost:9000",
+          "access_token: tok",
+          "project_id: proj-1",
+          "default_locale: default",
+          "targets:",
+          "  conf/messages.?{locale.name}:",
+          "    file_type: json",
+        ].join("\n"),
+      );
+
+      const config = readConfig();
+
+      expect(config.endpoint).toBe("http://localhost:9000");
+      expect(config.targets).toEqual({
+        "conf/messages.?{locale.name}": { file_type: "json" },
+      });
+    });
+  });
+
+  it("A config still using the old `translatr:` wrapper is not specially recognized: `targets` is simply missing", async () => {
+    await withTempCwd(() => {
+      writeFileSync(
+        ".translatr.yml",
+        [
+          "translatr:",
+          "  endpoint: http://localhost:9000",
+          "  access_token: tok",
+          "  project_id: proj-1",
+          "  default_locale: default",
+          "  targets:",
+          "    conf/messages.?{locale.name}:",
+          "      file_type: json",
+        ].join("\n"),
+      );
+
+      const config = readConfig();
+
+      expect(() => assertExists(config as unknown as Record<string, unknown>, "targets")).toThrow(
+        /could not find key "targets"/,
+      );
+    });
+  });
+});
+
+describe("Config error messages name keys without a `translatr.` prefix", () => {
+  it("Missing `targets` key: error names the key as `targets`, not `translatr.targets`", () => {
+    expect(() => assertExists({}, "targets")).toThrow('could not find key "targets"');
   });
 });
