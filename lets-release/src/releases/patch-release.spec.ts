@@ -16,7 +16,6 @@ xdescribe('major-minor-release', () => {
 
     it('should not throw an error when everything okay', async () => {
       // given
-      const version = parse('1.0.1') as SemVer;
       const config: ReleaseConfig = {
         ...defaultConfig,
         releaseBranch: 'release/v1.0.1',
@@ -29,7 +28,7 @@ xdescribe('major-minor-release', () => {
 
       // when
       const actual = await target
-        .validate(version)
+        .validate()
         .then(() => new ReleaseError())
         .catch(error => error);
 
@@ -40,7 +39,6 @@ xdescribe('major-minor-release', () => {
 
     it('should throw error when on wrong branch', async () => {
       // given
-      const version = parse('1.0.1') as SemVer;
       const config: ReleaseConfig = {
         ...defaultConfig,
         releaseBranch: 'release/v1.0.1',
@@ -53,7 +51,7 @@ xdescribe('major-minor-release', () => {
 
       // when
       const actual = await target
-        .validate(version)
+        .validate()
         .then(() => new ReleaseError())
         .catch(error => error);
 
@@ -64,56 +62,6 @@ xdescribe('major-minor-release', () => {
       ]);
     });
 
-    it('should throw error when Github token unset', async () => {
-      // given
-      const version = parse('1.0.1') as SemVer;
-      const config: ReleaseConfig = {
-        ...defaultConfig,
-        releaseBranch: 'release/v1.0.1',
-        tag: 'v1.0.1'
-      };
-      testBed.gitService.branch.mockReturnValue(Promise.resolve(config.mainBranch));
-
-      const target = testBed.createTarget(config);
-
-      // when
-      const actual = await target
-        .validate(version)
-        .then(() => new ReleaseError())
-        .catch(error => error);
-
-      // then
-      expect(actual).toBeInstanceOf(ReleaseError);
-      expect(actual.messages).toEqual([
-        'Github token is unset, but required for changelog generation'
-      ]);
-    });
-
-    it('should throw error when both wrong branch and Github token unset', async () => {
-      // given
-      const version = parse('1.0.1') as SemVer;
-      const config: ReleaseConfig = {
-        ...defaultConfig,
-        releaseBranch: 'release/v1.0.1',
-        tag: 'v1.0.1'
-      };
-      testBed.gitService.branch.mockReturnValue(Promise.resolve('wrong-branch'));
-
-      const target = testBed.createTarget(config);
-
-      // when
-      const actual = await target
-        .validate(version)
-        .then(() => new ReleaseError())
-        .catch(error => error);
-
-      // then
-      expect(actual).toBeInstanceOf(ReleaseError);
-      expect(actual.messages).toEqual([
-        'Github token is unset, but required for changelog generation',
-        `must be on branch ${config.releaseBranch} to create a patch release`
-      ]);
-    });
   });
 
   describe('release', () => {

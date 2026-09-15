@@ -33,9 +33,9 @@ export class MajorMinorRelease extends AbstractRelease {
     super(config, gitService, fileService);
   }
 
-  async validate(version: SemVer): Promise<unknown> {
+  async validate(): Promise<unknown> {
     return super
-      .validate(version)
+      .validate()
       .catch((error: ReleaseError) => {
         return this.validateBranch()
           .catch(err => {

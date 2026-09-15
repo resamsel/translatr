@@ -37,14 +37,10 @@ export abstract class AbstractRelease implements Release {
     );
   }
 
-  validate(version: SemVer): Promise<unknown> {
+  validate(): Promise<unknown> {
     return run('Checking prerequisites', () => {
       const tag = this.config.tag;
       const errors: string[] = [];
-
-      if (version.prerelease.length === 0 && this.config.githubToken === undefined) {
-        errors.push('Github token is unset, but required for changelog generation');
-      }
 
       return this.gitService
         .status()
