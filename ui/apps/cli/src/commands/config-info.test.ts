@@ -6,16 +6,15 @@ import { registerConfigInfo } from "./config-info.js";
 import { withTempCwd } from "../test-utils.js";
 
 const CONFIG_MULTI_TARGET = [
-  "translatr:",
-  "  endpoint: http://localhost:9000",
-  "  access_token: tok",
-  "  project_id: proj-1",
-  "  default_locale: default",
-  "  targets:",
-  "    app1/messages.?{locale.name}:",
-  "      file_type: json",
-  "    app2/messages.?{locale.name}:",
-  "      file_type: json",
+  "endpoint: http://localhost:9000",
+  "access_token: tok",
+  "project_id: proj-1",
+  "default_locale: default",
+  "targets:",
+  "  app1/messages.?{locale.name}:",
+  "    file_type: json",
+  "  app2/messages.?{locale.name}:",
+  "    file_type: json",
 ].join("\n");
 
 describe("`config` command reflects the `targets` map", () => {
@@ -36,10 +35,10 @@ describe("`config` command reflects the `targets` map", () => {
       }
 
       const printed = yaml.load(logs.join("\n")) as {
-        translatr: { targets: Record<string, { file_type: string }> };
+        targets: Record<string, { file_type: string }>;
       };
 
-      expect(printed.translatr.targets).toEqual({
+      expect(printed.targets).toEqual({
         "app1/messages.?{locale.name}": { file_type: "json" },
         "app2/messages.?{locale.name}": { file_type: "json" },
       });

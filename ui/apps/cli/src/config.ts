@@ -71,20 +71,18 @@ export function readConfig(): TranslatrConfig {
       `Could not find ${CONFIG_FILE}: initialise with \`translatr init\``,
     );
   }
-  const raw = yaml.load(readFileSync(CONFIG_FILE, "utf8")) as
-    | { translatr?: { load_dotenv?: unknown; [key: string]: unknown } }
-    | undefined;
-  if (!raw || raw.translatr === undefined) {
-    throw new ConfigError(`Error in ${CONFIG_FILE}: could not find key "translatr"`);
+  const raw = yaml.load(readFileSync(CONFIG_FILE, "utf8")) as Record<string, unknown> | undefined;
+  if (!raw || typeof raw !== "object") {
+    throw new ConfigError(`Error in ${CONFIG_FILE}: could not parse a config object`);
   }
-  loadDotenvIfEnabled(raw.translatr);
-  return substitute(raw.translatr) as TranslatrConfig;
+  loadDotenvIfEnabled(raw);
+  return substitute(raw) as TranslatrConfig;
 }
 
 export function assertExists(config: Record<string, unknown>, ...keys: string[]): void {
   for (const key of keys) {
     let d: any = config;
-    const path = ["translatr"];
+    const path: string[] = [];
     for (const k of key.split(".")) {
       path.push(k);
       if (d == null || !(k in d)) {
@@ -100,7 +98,7 @@ export function assertExists(config: Record<string, unknown>, ...keys: string[])
 
 export function assertTargetsNonEmpty(config: TranslatrConfig): void {
   if (Object.keys(config.targets ?? {}).length === 0) {
-    throw new ConfigError(`Error in ${CONFIG_FILE}: key "translatr.targets" is empty`);
+    throw new ConfigError(`Error in ${CONFIG_FILE}: key "targets" is empty`);
   }
 }
 
@@ -141,13 +139,11 @@ export function writeInitConfig(opts: InitOptions): void {
   for (const t of opts.targets) targets[t.target] = { file_type: t.fileType };
 
   const content = yaml.dump({
-    translatr: {
-      endpoint: opts.endpoint,
-      access_token: opts.accessToken,
-      project_id: opts.projectId,
-      default_locale: "default",
-      targets,
-    },
+    endpoint: opts.endpoint,
+    access_token: opts.accessToken,
+    project_id: opts.projectId,
+    default_locale: "default",
+    targets,
   });
   writeFileSync(CONFIG_FILE, content);
 }

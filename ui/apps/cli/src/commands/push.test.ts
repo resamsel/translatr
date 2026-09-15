@@ -5,14 +5,13 @@ import { registerPush } from "./push.js";
 import { withTempCwd, mockFetch } from "../test-utils.js";
 
 const CONFIG = [
-  "translatr:",
-  "  endpoint: http://localhost:9000",
-  "  access_token: tok",
-  "  project_id: proj-1",
-  "  default_locale: default",
-  "  targets:",
-  "    conf/messages.?{locale.name}:",
-  "      file_type: json",
+  "endpoint: http://localhost:9000",
+  "access_token: tok",
+  "project_id: proj-1",
+  "default_locale: default",
+  "targets:",
+  "  conf/messages.?{locale.name}:",
+  "    file_type: json",
 ].join("\n");
 
 async function runPush(handler: Parameters<typeof mockFetch>[0]) {
@@ -101,14 +100,13 @@ describe("`push` uploads matching local files, creating locales as needed", () =
   it("matches files for a push.target with no literal '?' before {locale.name} (e.g. a path-segment placeholder)", async () => {
     await withTempCwd(async () => {
       const config = [
-        "translatr:",
-        "  endpoint: http://localhost:9000",
-        "  access_token: tok",
-        "  project_id: proj-1",
-        "  default_locale: default",
-        "  targets:",
-        "    i18n/{locale.name}.json:",
-        "      file_type: json",
+        "endpoint: http://localhost:9000",
+        "access_token: tok",
+        "project_id: proj-1",
+        "default_locale: default",
+        "targets:",
+        "  i18n/{locale.name}.json:",
+        "    file_type: json",
       ].join("\n");
       mkdirSync("i18n", { recursive: true });
       writeFileSync("i18n/en.json", "EN_CONTENT");
@@ -131,27 +129,25 @@ describe("`push` uploads matching local files, creating locales as needed", () =
 });
 
 const CONFIG_MULTI_TARGET = [
-  "translatr:",
-  "  endpoint: http://localhost:9000",
-  "  access_token: tok",
-  "  project_id: proj-1",
-  "  default_locale: default",
-  "  targets:",
-  "    app1/messages.?{locale.name}:",
-  "      file_type: json",
-  "    app2/messages.?{locale.name}:",
-  "      file_type: json",
+  "endpoint: http://localhost:9000",
+  "access_token: tok",
+  "project_id: proj-1",
+  "default_locale: default",
+  "targets:",
+  "  app1/messages.?{locale.name}:",
+  "    file_type: json",
+  "  app2/messages.?{locale.name}:",
+  "    file_type: json",
 ].join("\n");
 
 const LEGACY_CONFIG = [
-  "translatr:",
-  "  endpoint: http://localhost:9000",
-  "  access_token: tok",
-  "  project_id: proj-1",
-  "  default_locale: default",
-  "  push:",
-  "    file_type: json",
-  "    target: conf/messages.?{locale.name}",
+  "endpoint: http://localhost:9000",
+  "access_token: tok",
+  "project_id: proj-1",
+  "default_locale: default",
+  "push:",
+  "  file_type: json",
+  "  target: conf/messages.?{locale.name}",
 ].join("\n");
 
 describe("Config declares a `targets` map instead of single `pull`/`push` targets", () => {

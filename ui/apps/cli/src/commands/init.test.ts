@@ -25,18 +25,16 @@ describe("`init` scaffolds the config file", () => {
       }
 
       const written = yaml.load(readFileSync(".translatr.yml", "utf8")) as {
-        translatr: {
-          endpoint: string;
-          access_token: string;
-          project_id: string;
-          targets: Record<string, { file_type: string }>;
-        };
+        endpoint: string;
+        access_token: string;
+        project_id: string;
+        targets: Record<string, { file_type: string }>;
       };
 
-      expect(written.translatr.endpoint).toBe("https://translatr.example");
-      expect(written.translatr.access_token).toBe("abc123");
-      expect(written.translatr.project_id).toBe("my-project-id");
-      expect(written.translatr.targets).toEqual({
+      expect(written.endpoint).toBe("https://translatr.example");
+      expect(written.access_token).toBe("abc123");
+      expect(written.project_id).toBe("my-project-id");
+      expect(written.targets).toEqual({
         "conf/messages.?{locale.name}": { file_type: "play_messages" },
       });
       expect(logs.some((l) => l.toLowerCase().includes("initialised"))).toBe(true);
@@ -63,10 +61,10 @@ describe("`init` seeds one or more targets", () => {
       );
 
       const written = yaml.load(readFileSync(".translatr.yml", "utf8")) as {
-        translatr: { targets: Record<string, { file_type: string }> };
+        targets: Record<string, { file_type: string }>;
       };
 
-      expect(written.translatr.targets).toEqual({
+      expect(written.targets).toEqual({
         "conf/messages.?{locale.name}": { file_type: "play_messages" },
       });
     });
@@ -92,10 +90,10 @@ describe("`init` seeds one or more targets", () => {
       );
 
       const written = yaml.load(readFileSync(".translatr.yml", "utf8")) as {
-        translatr: { targets: Record<string, { file_type: string }> };
+        targets: Record<string, { file_type: string }>;
       };
 
-      expect(written.translatr.targets).toEqual({
+      expect(written.targets).toEqual({
         "app1/{locale.name}.json": { file_type: "json" },
         "app2/{locale.name}.json": { file_type: "json" },
       });

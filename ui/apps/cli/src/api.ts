@@ -85,7 +85,7 @@ export class Api {
       response = await fetch(url, { method, body, headers });
     } catch (e) {
       throw new ApiError(
-        `Connection to ${this.config.endpoint} could not be established, please check your .translatr.yml config (translatr.endpoint)`,
+        `Connection to ${this.config.endpoint} could not be established, please check your .translatr.yml config (endpoint)`,
       );
     }
     if (!response.ok) await handleHttpError(method, response);
