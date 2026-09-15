@@ -10,9 +10,9 @@ const CONFIG = [
   "  access_token: tok",
   "  project_id: proj-1",
   "  default_locale: default",
-  "  pull:",
-  "    file_type: json",
-  "    target: conf/messages.?{locale.name}",
+  "  targets:",
+  "    conf/messages.?{locale.name}:",
+  "      file_type: json",
 ].join("\n");
 
 async function runPull(locales: { id: string; name: string }[], exportBody: string) {

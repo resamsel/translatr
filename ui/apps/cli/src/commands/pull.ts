@@ -1,19 +1,17 @@
 import type { Command } from "commander";
 import { Api, type Locale } from "../api.js";
-import { assertExists, readConfigMerge, type TranslatrConfig } from "../config.js";
+import { assertExists, assertTargetsNonEmpty, readConfigMerge } from "../config.js";
 import type { GlobalOptions } from "../config.js";
 
-function pullTargetFromLocale(config: TranslatrConfig, locale: Locale): string {
-  const defaultLocaleName = config.default_locale;
-  const pullTarget = config.pull.target;
+function pullTargetFromLocale(targetPattern: string, defaultLocaleName: string, locale: Locale): string {
   const isDefaultLocale = locale.name === defaultLocaleName;
 
   let name = locale.name;
-  if (isDefaultLocale && !/\.\?/.test(pullTarget)) {
+  if (isDefaultLocale && !/\.\?/.test(targetPattern)) {
     name = defaultLocaleName;
   }
 
-  let target = pullTarget;
+  let target = targetPattern;
   if (isDefaultLocale) {
     // the .?{locale.name} part of the target isn't needed for the default locale
     target = target.replace(/.\?\{locale\.name\}/, "");
@@ -29,18 +27,17 @@ export function registerPull(program: Command, getGlobal: () => GlobalOptions): 
     .description("pulling downloads all locales into configured locations")
     .action(async () => {
       const config = readConfigMerge(getGlobal());
-      assertExists(
-        config as unknown as Record<string, unknown>,
-        "pull.target",
-        "pull.file_type",
-        "default_locale",
-      );
+      assertExists(config as unknown as Record<string, unknown>, "targets", "default_locale");
+      assertTargetsNonEmpty(config);
 
       const api = new Api(config);
-      for (const locale of await api.locales()) {
-        const target = pullTargetFromLocale(config, locale);
-        await api.localeExportToFile(locale.id, config.pull.file_type, target);
-        console.log(`Downloaded ${locale.name} to ${target}`);
+      const locales = await api.locales();
+      for (const [targetPattern, spec] of Object.entries(config.targets)) {
+        for (const locale of locales) {
+          const target = pullTargetFromLocale(targetPattern, config.default_locale, locale);
+          await api.localeExportToFile(locale.id, spec.file_type, target);
+          console.log(`Downloaded ${locale.name} to ${target}`);
+        }
       }
     });
 }

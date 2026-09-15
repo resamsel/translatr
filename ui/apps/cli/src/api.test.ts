@@ -30,8 +30,7 @@ function makeApi(handler: Parameters<typeof mockFetch>[0]): Api {
     access_token: "tok",
     project_id: "proj-1",
     default_locale: "default",
-    pull: { file_type: "json", target: "i18n/{locale.name}.json" },
-    push: { file_type: "json", target: "i18n/{locale.name}.json" },
+    targets: { "i18n/{locale.name}.json": { file_type: "json" } },
   };
   const api = new Api(config);
   const { fetchFn } = mockFetch(handler);
