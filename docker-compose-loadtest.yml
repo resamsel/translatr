@@ -1,47 +1,95 @@
-version: "2"
 volumes:
   pg-data:
 services:
   database:
-    image: postgres
+    image: postgres:16
     command: postgres -c 'max_connections=200'
+    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-translatr}
+      POSTGRES_DB: translatr
     volumes:
       - pg-data:/var/lib/postgresql/data
       - ./docker/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   sso:
     image: quay.io/keycloak/keycloak:latest
+    command: start-dev --import-realm
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
     ports:
       - "8080:8080"
       - "8443:8443"
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: translatr123
-      DB_VENDOR: h2
-      KEYCLOAK_IMPORT: /tmp/keycloak-realm.json
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: translatr123
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://database:5432/keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER:-postgres}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-translatr}
+      # Split-horizon DNS: the browser reaches Keycloak as localhost:8080, but
+      # translatr (in-network) reaches it as sso:8080. Without KC_HOSTNAME set,
+      # Keycloak's dynamic hostname provider derives + CACHES its issuer/endpoint
+      # URLs from the first request it receives after boot — if that request
+      # happened to come in over "localhost:8080" (e.g. a health check from the
+      # host), every subsequent discovery response, including translatr's own,
+      # keeps claiming "localhost:8080", so translatr tries to reach Keycloak at
+      # localhost:8080 from inside its own container and gets connection refused
+      # (surfaces as GET /login/keycloak returning 401 instead of redirecting).
+      # Pinning KC_HOSTNAME to the browser-facing URL and opting in to
+      # KC_HOSTNAME_BACKCHANNEL_DYNAMIC lets backchannel callers (translatr) keep
+      # resolving endpoints from whatever Host header they actually connect with.
+      KC_HOSTNAME: http://localhost:8080
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     volumes:
-      - ./docker/keycloak-realm.json:/tmp/keycloak-realm.json
+      - ./docker/Translatr-realm.json:/opt/keycloak/data/import/Translatr-realm.json
   translatr:
     image: resamsel/translatr:4.0.0
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
     ports:
       - "9000:9000"
     environment:
       APPLICATION_SECRET: 094c8762-4689-45c7-830d-f752f82e6ac5
       BASE_URL: "http://localhost:9000"
       ADMIN_ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
-      DATABASE_DRIVER: org.postgresql.Driver
-      DATABASE_URL: "postgres://translatr:translatr@database:5432/translatr"
+      # The app is Quarkus (quarkus.datasource.jdbc.url in application.properties),
+      # not the Play-era stack — it reads JDBC_DATABASE_URL / DATABASE_USER /
+      # DATABASE_PASSWORD, not DATABASE_URL / DATABASE_DRIVER (those are ignored
+      # and it silently falls back to jdbc:postgresql://localhost:5432/translatr).
+      JDBC_DATABASE_URL: jdbc:postgresql://database:5432/translatr
+      DATABASE_USER: translatr
+      DATABASE_PASSWORD: translatr
       OIDC_KEYCLOAK_AUTH_SERVER_URL: http://sso:8080/realms/Translatr
       OIDC_KEYCLOAK_CLIENT_ID: translatr-localhost
       OIDC_KEYCLOAK_CLIENT_SECRET: 05d9a16b-5999-49f7-b26d-996bd414c849
       LOGLEVEL_ROOT: DEBUG
+    healthcheck:
+      # No curl/wget in resamsel/translatr's RHEL-UBI base image; use bash's
+      # /dev/tcp pseudo-device to check the HTTP port is accepting connections.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/9000' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
   loadgenerator:
     image: resamsel/translatr-loadgenerator:4.0.0
+    depends_on:
+      translatr:
+        condition: service_healthy
     environment:
       ENDPOINT: http://translatr:9000
       ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
-      USERS: "100"
+      USERS: "200"
       MAX_RETRY_ATTEMPTS: "3"
