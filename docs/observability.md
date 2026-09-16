@@ -9,14 +9,14 @@ and two runs compared to decide whether a change improved or regressed performan
 `quarkusDev`, the base `docker-compose.yml`, or any production / Heroku behaviour — the
 OpenTelemetry SDK is compiled in but **dormant by default** everywhere.
 
-> ⚠️ **Status — this is the intended procedure, not a verified run.** The full
-> `docker compose … up` for this overlay has **not** been stood up end-to-end on any
-> machine yet. What *has* been checked is `monitoring/validate.sh` (collector-config lint
-> + `docker compose … config` merge) and a compose `--dry-run`. Treat the stand-up steps
-> below as the design; expect to debug first-boot ordering. Likewise the committed
-> dashboard (`monitoring/dashboards/translatr-load-test.json`) is a **seed** — hand-authored
-> against the metric names the code emits, not exported from a live SigNoz. Import it, drive
-> one run, refine it in the UI, then re-export over the file and re-commit.
+> ✅ **Status — verified end-to-end on 2026-09-15.** The full stand-up (§2) was run
+> against current `main`, including the org-signup gotcha called out in step 3 and the
+> `docker-compose-loadtest.yml` / `docker/entrypoint-initdb.d/init-translatr.sh` fixes
+> described inline below. The committed dashboard
+> (`monitoring/dashboards/translatr-load-test.json`) is still a **seed** — hand-authored
+> against the metric names the code emits, not exported from a live SigNoz — but it does
+> render real data once imported. Refine it in the UI, then re-export over the file and
+> re-commit if panels need tuning.
 
 ## 1. Architecture
 
@@ -58,15 +58,13 @@ Traces and logs travel by OTLP.
 
 ## 2. Stand it up
 
-> The commands below are the **intended** procedure. See the status warning above — the
-> overlay has not yet been run end-to-end, so treat first-boot hiccups as expected.
-
 ### Prerequisites
 
-- **A `.env` file at the repo root** (or an exported `POSTGRES_PASSWORD`). `docker-compose-loadtest.yml`
-  sets `POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}` with **no default**, so `docker compose … up`
-  aborts with a "variable is not set" warning and an unusable Postgres if it is missing. A
-  one-line `POSTGRES_PASSWORD=translatr` is enough. Quarkus also reads this `.env` at startup.
+- **A `.env` file at the repo root** is optional. `docker-compose-loadtest.yml` now defaults
+  `POSTGRES_USER`/`POSTGRES_PASSWORD` (`postgres` / `translatr`, matching the base
+  `docker-compose.yml`), so `docker compose … up` no longer aborts if it's missing. Set
+  `POSTGRES_PASSWORD` in `.env` (or export it) only to override the default. Quarkus also
+  reads this `.env` at startup.
 - **Internet on the first `up`.** Two reasons:
   1. `Dockerfile.jvm` resolves build dependencies.
   2. `init-clickhouse` downloads a `histogram-quantile` binary from GitHub
