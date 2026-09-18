@@ -24,7 +24,7 @@ Current code path: `FeatureFlagResource.createUserFeatureFlag()` → `FeatureFla
 - Change the database schema or unique constraint
 - Modify the update endpoint behavior
 - Add new feature flag capabilities beyond create/update idempotency
-- Change HTTP status codes for successful creates (keep 201 for new, 200 for updated)
+- Differentiate HTTP status codes between new-create and update-via-create (see Decision below — blocked by codegen config, tracked separately)
 
 ## Decisions
 
@@ -55,17 +55,22 @@ Current code path: `FeatureFlagResource.createUserFeatureFlag()` → `FeatureFla
 1. **Catch the ConstraintViolationException**: Let the insert fail and catch the database exception. Rejected because exception handling for flow control is anti-pattern and error messages are database-specific.
 2. **Check via existing by-ID lookups**: Not applicable here since we're creating a new flag without an ID yet.
 
-### Decision: HTTP 200 for updated, 201 for created
-**Chosen approach:** Return 201 Created when a new flag is inserted; return 200 OK when an existing flag is updated.
+### Decision: Create always returns HTTP 200, no 201/200 split
+**Chosen approach:** `POST /api/featureflag` returns HTTP 200 in both the new-flag and updated-flag cases, matching the current `openapi.yaml` contract and generated interface exactly.
 
 **Rationale:**
-- Follows REST conventions (201 for resource creation, 200 for successful mutation)
-- Allows clients to distinguish new vs. updated if needed
-- Idempotent POST can return different codes on each call (spec-compliant)
+- The generated `UserFeatureFlagsApi.createUserFeatureFlag()` returns a plain `FeatureFlagDto`, not `Response`/`RestResponse<FeatureFlagDto>`, because `build.gradle.kts`'s `openApiGenerate` block sets `returnResponse` to `"false"` for the `jaxrs-spec` generator. That option is project-wide: flipping it to `true` would change the return type of every generated resource interface method across the app (not just this one), forcing a signature change in every `*Resource` class that implements one — a large, unplanned migration that collides with the in-flight contract-first rollout (see reference to issue #256 tracking that work)
+- A non-standard workaround (e.g. a response filter reading a side-channel signal to override status after the fact) was considered and rejected as unnecessary complexity/risk for a status-code nicety
+- The actual bug being fixed is the crash (duplicate key constraint violation), not the status code returned on success — collapsing to a single 200 fixes the crash with zero contract or codegen changes
+- Enabling a real 201/200 split is tracked as [resamsel/translatr#353](https://github.com/resamsel/translatr/issues/353), to be scoped and executed independently with its full blast radius across all resources understood upfront
+
+**Alternatives considered:**
+1. **201 for new / 200 for updated** (original decision): Rejected for this change because it's blocked by the `returnResponse=false` codegen setting; doing it properly requires a project-wide generator config change out of scope here.
+2. **Flip `returnResponse=true` now**: Rejected — touches every generated resource interface and every implementing `*Resource` class, far exceeding the scope of a duplicate-key bug fix.
 
 ## Risks / Trade-offs
 
-**Risk: Clients may not expect 200 from create endpoint** → Mitigated by returning success code and updated resource in both cases; clients should check response code or just validate the result. Document in API changelog.
+**Risk: Clients can't distinguish new vs. updated from status code alone** → Accepted; both cases return 200 with the flag resource in the body. Clients that need to know can compare `whenCreated`/`whenUpdated`, or this can be revisited once the separate `returnResponse=true` migration lands.
 
 **Risk: Race condition between check and insert** → Mitigated by database-level unique constraint, which still catches any race condition and causes rollback; the application then treats as update on retry. Not a problem in practice due to transaction isolation.
 
@@ -76,13 +81,14 @@ Current code path: `FeatureFlagResource.createUserFeatureFlag()` → `FeatureFla
 ## Migration Plan
 
 **Deployment steps:**
-1. Add repository method `findByUserIdAndFeature(UUID userId, String feature)` to `UserFeatureFlagRepository`
+1. Use the existing repository method `findByUserAndFeature(UUID userId, String feature)` on `UserFeatureFlagRepository` (already present — no new method needed)
 2. Update `FeatureFlagService.create()` to:
    - Call the repository query for existing flag
-   - If found, call `update()` logic to refresh the flag's enabled state
+   - If found, refresh its enabled state (update in place) instead of persisting a new entity
    - If not found, proceed with current persist logic
 3. No database migrations needed (constraint already exists)
-4. Deploy backend service; no client changes required
+4. No `openapi.yaml` or codegen changes needed — response shape and status code (200) are unchanged
+5. Deploy backend service; no client changes required
 
 **Rollback:**
 - Revert code changes; create will fail again if duplicate is attempted, but no data loss
@@ -90,5 +96,5 @@ Current code path: `FeatureFlagResource.createUserFeatureFlag()` → `FeatureFla
 
 ## Open Questions
 
-- Should the HTTP response when updating an existing flag via create include a Location header or any client-facing indicator that it was an update vs. a create? (Deferrable: can decide during implementation review)
+None — the original open question about a Location header / update-vs-create indicator is moot now that both cases return 200 with no status differentiation.
 

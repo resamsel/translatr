@@ -228,7 +228,7 @@ class FeatureFlagResourceTest {
         @Claim(key = "name",  value = "Test Idempotent User"),
         @Claim(key = "email", value = "testidem@example.com")
     })
-    void createUserFeatureFlag_newFlag_returns201AndCreatesFlag() {
+    void createUserFeatureFlag_newFlag_returns200AndCreatesFlag() {
         UUID currentUserId = resolveCurrentUserId("testidem@example.com");
         String feature = "theme-switcher";
         String requestBody = "{\"userId\":\"" + currentUserId + "\",\"feature\":\"" + feature + "\",\"enabled\":true}";
@@ -238,7 +238,7 @@ class FeatureFlagResourceTest {
             .body(requestBody)
             .when().post("/api/featureflag")
             .then()
-            .statusCode(201)
+            .statusCode(200)
             .body("feature", is(feature))
             .body("enabled", is(true))
             .body("id", notNullValue())
@@ -263,7 +263,7 @@ class FeatureFlagResourceTest {
             .body(requestBody)
             .when().post("/api/featureflag")
             .then()
-            .statusCode(201)
+            .statusCode(200)
             .extract().asString();
 
         // Extract the flagId from the first response
@@ -289,7 +289,7 @@ class FeatureFlagResourceTest {
         @Claim(key = "name",  value = "Test Safe Retry User"),
         @Claim(key = "email", value = "testsaferetry@example.com")
     })
-    void createUserFeatureFlag_repeatedCreatesSamePOST_firstReturns201SecondReturns200() {
+    void createUserFeatureFlag_repeatedCreatesSamePOST_bothReturn200() {
         UUID currentUserId = resolveCurrentUserId("testsaferetry@example.com");
         String feature = "advanced-search";
         String requestBody = "{\"userId\":\"" + currentUserId + "\",\"feature\":\"" + feature + "\",\"enabled\":true}";
@@ -300,12 +300,12 @@ class FeatureFlagResourceTest {
             .body(requestBody)
             .when().post("/api/featureflag")
             .then()
-            .statusCode(201)
+            .statusCode(200)
             .extract().asString();
 
         UUID flagId = JsonPath.from(response1).getUUID("id");
 
-        // Second identical POST — should return 200 and preserve ID
+        // Second identical POST — should return 200 and preserve ID, no constraint violation
         given()
             .contentType("application/json")
             .body(requestBody)
@@ -315,6 +315,37 @@ class FeatureFlagResourceTest {
             .body("feature", is(feature))
             .body("enabled", is(true))
             .body("id", is(flagId.toString()));
+    }
+
+    @Test
+    @TestSecurity(user = "testuser", roles = "User")
+    @JwtSecurity(claims = {
+        @Claim(key = "sub",   value = "test-theme-regr-sub"),
+        @Claim(key = "name",  value = "Test Theme Regression User"),
+        @Claim(key = "email", value = "testthemeregr@example.com")
+    })
+    void createUserFeatureFlag_themeSwitcherRecreated_noConstraintViolation() {
+        // Regression test for the original bug: POSTing the theme-switcher flag twice used to
+        // throw a duplicate key constraint violation on ix_user_feature_flag_user_id_name.
+        UUID currentUserId = resolveCurrentUserId("testthemeregr@example.com");
+        String requestBody = "{\"userId\":\"" + currentUserId + "\",\"feature\":\"theme-switcher\",\"enabled\":true}";
+
+        given()
+            .contentType("application/json")
+            .body(requestBody)
+            .when().post("/api/featureflag")
+            .then()
+            .statusCode(200);
+
+        // Recreating (changing) the same flag must not throw a constraint violation.
+        given()
+            .contentType("application/json")
+            .body("{\"userId\":\"" + currentUserId + "\",\"feature\":\"theme-switcher\",\"enabled\":false}")
+            .when().post("/api/featureflag")
+            .then()
+            .statusCode(200)
+            .body("feature", is("theme-switcher"))
+            .body("enabled", is(false));
     }
 
     @Test
@@ -333,7 +364,7 @@ class FeatureFlagResourceTest {
             .body(createBody)
             .when().post("/api/featureflag")
             .then()
-            .statusCode(201)
+            .statusCode(200)
             .extract().asString();
 
         UUID flagId = JsonPath.from(createResponse).getUUID("id");

@@ -7,11 +7,11 @@ Allows authenticated users to manage per-user feature flag overrides, enabling g
 ## ADDED Requirements
 
 ### Requirement: Create user feature flag is idempotent
-The create operation for user feature flags SHALL treat an attempt to create a flag that already exists for a user as a successful update instead of a failure. When a client POSTs to create a flag with (user_id, feature) that already exists, the system SHALL update the existing flag's enabled state to match the request and return HTTP 200 with the updated flag resource. This makes the create endpoint safe to retry and robust against duplicate requests.
+The create operation for user feature flags SHALL treat an attempt to create a flag that already exists for a user as a successful update instead of a failure. When a client POSTs to create a flag with (user_id, feature) that already exists, the system SHALL update the existing flag's enabled state to match the request and return HTTP 200 with the updated flag resource. This makes the create endpoint safe to retry and robust against duplicate requests. The response status is HTTP 200 whether a new flag was created or an existing one was updated — the `openapi.yaml` contract documents a single 200 response for this operation and the generated server interface returns a plain DTO, not a status-carrying `Response` wrapper, so a 201/200 split is not implemented by this requirement (tracked separately).
 
 #### Scenario: Create flag when none exists
 - **WHEN** a client POSTs to create a user feature flag for a (user_id, feature) pair that does not yet exist
-- **THEN** the system creates a new flag record and returns HTTP 201 with the created flag
+- **THEN** the system creates a new flag record and returns HTTP 200 with the created flag
 
 #### Scenario: Create flag when it already exists
 - **WHEN** a client POSTs to create a user feature flag for a (user_id, feature) pair that already exists
@@ -21,7 +21,7 @@ The create operation for user feature flags SHALL treat an attempt to create a f
 
 #### Scenario: Repeated creates with same data are safe
 - **WHEN** a client POSTs the same create request twice in succession for the same (user_id, feature)
-- **THEN** the first request creates the flag and the second updates it without error
+- **THEN** both requests succeed with HTTP 200 and no constraint violation
 - **AND** the flag's state after both requests matches the requested state
 
 ### Requirement: User can update existing feature flag
