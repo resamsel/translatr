@@ -16,7 +16,7 @@ import { ActivityMemberLinkComponent } from './activity-member-link/activity-mem
 import { ActivityMessageLinkComponent } from './activity-message-link/activity-message-link.component';
 import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { TagModule } from '@dev/translatr-components';
+import { TagComponent } from '@dev/translatr-components';
 
 describe('ActivityListComponent', () => {
   let component: ActivityListComponent;
@@ -41,7 +41,7 @@ describe('ActivityListComponent', () => {
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
           EmptyViewTestingModule,
 
-          TagModule,
+          TagComponent,
 
           MatListModule,
           MatIconModule,

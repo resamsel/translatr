@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureFlagDirective, FeatureFlagClassDirective, UserEditFormModule } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective, UserEditFormComponent } from '@dev/translatr-components';
 import { LanguageProvider } from '@dev/translatr-sdk';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TranslocoTestingModule } from '@jsverse/transloco';
@@ -30,7 +30,7 @@ describe('RegistrationPageComponent', () => {
           SidenavModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
           FeatureFlagDirective, FeatureFlagClassDirective,
-          UserEditFormModule,
+          UserEditFormComponent,
           MatCardModule,
           MatButtonModule,
           FontAwesomeModule

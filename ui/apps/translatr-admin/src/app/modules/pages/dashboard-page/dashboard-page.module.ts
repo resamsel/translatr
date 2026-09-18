@@ -25,11 +25,11 @@ import {
   EntityTableModule,
   FeatureFlagDirective, FeatureFlagClassDirective,
   MetricComponent,
-  ProjectEditDialogModule,
+  ProjectEditDialogComponent,
   ShortNumberPipe,
   TimeAgoModule,
   UserCardModule,
-  UserEditDialogModule,
+  UserEditDialogComponent,
 } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
@@ -60,8 +60,8 @@ import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/ex
     CommonModule,
     DashboardPageRoutingModule,
     AdminPageModule,
-    UserEditDialogModule,
-    ProjectEditDialogModule,
+    UserEditDialogComponent,
+    ProjectEditDialogComponent,
     AccessTokenEditDialogComponent,
     ConfirmButtonComponent,
     UserCardModule,

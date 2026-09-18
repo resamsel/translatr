@@ -15,8 +15,8 @@ describe('UserEditFormComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [UserEditFormComponent],
         imports: [
+          UserEditFormComponent,
           ReactiveFormsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
           NoopAnimationsModule,
