@@ -36,8 +36,8 @@ import { ListHeaderComponent } from '../../shared/list-header/list-header.compon
 import { LocaleEditDialogComponent } from '../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { NavListComponent } from '../../shared/nav-list/nav-list.component';
 import { ProjectDeleteDialogComponent } from '../../shared/project-delete-dialog/project-delete-dialog.component';
-import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
-import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
+import { ProjectMemberEditDialogComponent } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.component';
+import { ProjectOwnerEditDialogComponent } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.component';
 import { ProjectStateModule } from '../../shared/project-state';
 import { ProjectAccessGuard } from './project-access.guard';
 import { ProjectActivityComponent } from './project-activity/project-activity.component';
@@ -74,9 +74,9 @@ import { ProjectGuard } from './project.guard';
     NavListComponent,
     LocaleEditDialogComponent,
     KeyEditDialogComponent,
-    ProjectMemberEditDialogModule,
+    ProjectMemberEditDialogComponent,
     ProjectDeleteDialogComponent,
-    ProjectOwnerEditDialogModule,
+    ProjectOwnerEditDialogComponent,
     FeatureFlagDirective, FeatureFlagClassDirective,
     UserCardComponent, UserCardLinkComponent,
     ListHeaderComponent,
