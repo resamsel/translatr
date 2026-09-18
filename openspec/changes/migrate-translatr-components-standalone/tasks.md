@@ -16,13 +16,13 @@
 - [x] 2.5 Convert `MetricComponent` to `standalone: true` with explicit `imports`, update `metric/index.ts`, delete `metric.module.ts`; verify `nx test translatr-components` succeeds
 - [x] 2.6 Convert `FooterComponent` to `standalone: true` with explicit `imports`, update `nav/footer/index.ts`, delete `footer.module.ts`; verify `nx test translatr-components` succeeds
 - [x] 2.7 Convert `LoginPageComponent` to `standalone: true` with explicit `imports`, update `pages/login-page/index.ts`, delete `login-page.module.ts`; verify `nx test translatr-components` succeeds (required fixing `apps/translatr`'s `app-routing.module.ts` loadChildren->loadComponent and its local re-export shim, removing the module-constructor FontAwesome icon registration in favor of direct IconDefinition references, and deleting the now-orphaned `login-page-routing.module.ts` - user confirmed the route fix inline rather than deferring it to a later change)
-- [ ] 2.8 Convert `ProjectEditDialogComponent` to `standalone: true` with explicit `imports`, update `project/project-edit-dialog/index.ts`, delete `project-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds
-- [ ] 2.9 Convert `ProjectInfographicComponent` to `standalone: true` with explicit `imports`, update `project/project-infographic/index.ts`, delete `project-infographic.module.ts`; verify `nx test translatr-components` succeeds
-- [ ] 2.10 Convert `TagComponent` to `standalone: true` with explicit `imports`, update `tag/index.ts`, delete `tag.module.ts`; verify `nx test translatr-components` succeeds
-- [ ] 2.11 Convert `UserEditDialogComponent` to `standalone: true` with explicit `imports`, update `user/user-edit-dialog/index.ts`, delete `user-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds
-- [ ] 2.12 Convert `UserEditFormComponent` to `standalone: true` with explicit `imports`, update `user/user-edit-form/index.ts`, delete `user-edit-form.module.ts`; verify `nx test translatr-components` succeeds
-- [ ] 2.13 Confirm each feature folder's `index.ts` from 2.1-2.12 exports the component class and no longer exports a deleted module; verify `nx test translatr-components` succeeds
-- [ ] 2.14 Grep `apps/translatr` and `apps/translatr-admin` for imports of the 12 removed module classes above and update each to import the component class directly; verify `nx build translatr` and `nx build translatr-admin` succeed
+- [x] 2.8 Convert `ProjectEditDialogComponent` to `standalone: true` with explicit `imports`, update `project/project-edit-dialog/index.ts`, delete `project-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds (note: `apps/translatr` has its own unrelated, same-named `ProjectEditDialogModule` in `shared/project-edit-dialog` - left untouched, confirmed by import path)
+- [x] 2.9 Convert `ProjectInfographicComponent` to `standalone: true` with explicit `imports`, update `project/project-infographic/index.ts`, delete `project-infographic.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.10 Convert `TagComponent` to `standalone: true` with explicit `imports`, update `tag/index.ts`, delete `tag.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.11 Convert `UserEditDialogComponent` to `standalone: true` with explicit `imports`, update `user/user-edit-dialog/index.ts`, delete `user-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.12 Convert `UserEditFormComponent` to `standalone: true` with explicit `imports`, update `user/user-edit-form/index.ts`, delete `user-edit-form.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.13 Confirm each feature folder's `index.ts` from 2.1-2.12 exports the component class and no longer exports a deleted module; verify `nx test translatr-components` succeeds
+- [x] 2.14 Grep `apps/translatr` and `apps/translatr-admin` for imports of the 12 removed module classes above and update each to import the component class directly; verify `nx build translatr` and `nx build translatr-admin` succeed
 
 ## 3. Multi-declaration modules (manual)
 

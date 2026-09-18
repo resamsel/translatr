@@ -21,7 +21,7 @@ import {
   EmptyViewModule,
   FeatureFlagDirective, FeatureFlagClassDirective,
   MetricComponent,
-  ProjectInfographicModule,
+  ProjectInfographicComponent,
   ShortNumberPipe,
   UserCardModule
 } from '@dev/translatr-components';
@@ -86,7 +86,7 @@ import { ProjectGuard } from './project.guard';
     ShortNumberPipe,
     ActivityGraphComponent,
     TranslocoModule,
-    ProjectInfographicModule,
+    ProjectInfographicComponent,
 
     CommonModule,
     FormsModule,

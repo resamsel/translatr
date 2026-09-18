@@ -1,8 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { ErrorAction, User, UserRole } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
+import { UserEditFormComponent } from '../user-edit-form';
 
 export interface UserEditDialogConfig {
   type: 'create' | 'update';
@@ -18,11 +26,22 @@ const defaultUser: Partial<User> = {
 };
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-user-edit-dialog',
   templateUrl: './user-edit-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./user-edit-dialog.component.css']
+  styleUrls: ['./user-edit-dialog.component.css'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    UserEditFormComponent
+  ]
 })
 export class UserEditDialogComponent {
   readonly errors$ = this.data.error$.pipe(

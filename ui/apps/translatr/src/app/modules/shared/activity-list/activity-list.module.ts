@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { EmptyViewModule, TagModule } from '@dev/translatr-components';
+import { EmptyViewModule, TagComponent } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoModule } from '@dev/translatr-components';
@@ -32,7 +32,7 @@ import { ActivityProjectLinkComponent } from './activity-project-link/activity-p
     CommonModule,
     RouterModule,
 
-    TagModule,
+    TagComponent,
     NavListModule,
     EmptyViewModule,
 

@@ -1,18 +1,24 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import {
   ConstraintViolation,
   ConstraintViolationErrorInfo,
   User,
   UserRole
 } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-user-edit-form',
   templateUrl: './user-edit-form.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./user-edit-form.component.css']
+  styleUrls: ['./user-edit-form.component.css'],
+  imports: [CommonModule, ReactiveFormsModule, TranslocoModule, MatFormFieldModule, MatInputModule, MatSelectModule]
 })
 export class UserEditFormComponent {
   @Input()

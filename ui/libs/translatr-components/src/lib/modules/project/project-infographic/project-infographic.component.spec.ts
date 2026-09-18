@@ -9,7 +9,7 @@ describe('ProjectInfographicComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ProjectInfographicComponent]
+        imports: [ProjectInfographicComponent]
       }).compileComponents();
     })
   );
