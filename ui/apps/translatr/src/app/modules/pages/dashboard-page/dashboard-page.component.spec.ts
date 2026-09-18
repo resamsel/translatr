@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShortNumberModule } from '@dev/translatr-components';
+import { ShortNumberPipe } from '@dev/translatr-components';
 import { FeatureFlagTestingModule, MetricTestingModule } from '@translatr/components/testing';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
@@ -23,7 +23,7 @@ describe('DashboardPageComponent', () => {
       declarations: [DashboardPageComponent],
       imports: [
         FeatureFlagTestingModule,
-        ShortNumberModule,
+        ShortNumberPipe,
         RouterTestingModule,
         ActivityListTestingModule,
         ProjectCardListTestingModule,

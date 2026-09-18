@@ -7,7 +7,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FeatureFlagModule } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { NotificationService, TranslatrSdkModule } from '@dev/translatr-sdk';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -37,7 +37,7 @@ import { MatNotificationService } from './services/mat-notification-service';
     AppRoutingModule,
     TranslatrSdkModule,
     LayoutModule,
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
 
     MatToolbarModule,
     MatButtonModule,

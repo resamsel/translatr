@@ -10,7 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureFlagModule, ThemeService } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective, ThemeService } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { AppFacade } from '../../+state/app.facade';
@@ -45,7 +45,7 @@ describe('AdminPageComponent', () => {
       declarations: [HostComponent, AdminPageComponent],
       imports: [
         SidenavTestingModule,
-        FeatureFlagModule,
+        FeatureFlagDirective, FeatureFlagClassDirective,
 
         RouterTestingModule,
         NoopAnimationsModule,

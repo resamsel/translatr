@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { FeatureFlagModule, UserEditFormModule } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective, UserEditFormModule } from '@dev/translatr-components';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFacebook, faGithub, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -19,7 +19,7 @@ import { RegistrationPageComponent } from './registration-page.component';
     RegistrationPageRoutingModule,
     SidenavModule,
     TranslocoModule,
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
     UserEditFormModule,
     MatCardModule,
     MatButtonModule,

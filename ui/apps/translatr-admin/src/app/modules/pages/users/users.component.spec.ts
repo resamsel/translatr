@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
-import { EllipsisModule } from '@dev/translatr-components';
+import { EllipsisPipe } from '@dev/translatr-components';
 import {
   ButtonTestingModule,
   EntityTableTestingModule,
@@ -32,7 +32,7 @@ describe('UsersComponent', () => {
           FeatureFlagTestingModule,
           EntityTableTestingModule,
           ButtonTestingModule,
-          EllipsisModule,
+          EllipsisPipe,
 
           RouterTestingModule,
           TimeAgoModule,

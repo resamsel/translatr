@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslocoModule } from '@jsverse/transloco';
-import { DisableControlModule } from '../disable-control';
+import { DisableControlDirective } from '../disable-control';
 import { FilterFieldComponent } from './filter-field.component';
 
 @NgModule({
@@ -22,7 +22,7 @@ import { FilterFieldComponent } from './filter-field.component';
     ReactiveFormsModule,
     TranslocoModule,
 
-    DisableControlModule,
+    DisableControlDirective,
 
     MatIconModule,
     MatFormFieldModule,

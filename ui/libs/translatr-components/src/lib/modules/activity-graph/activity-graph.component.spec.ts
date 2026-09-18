@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { ActivityGraphComponent, ShortNumberModule } from '@dev/translatr-components';
+import { ActivityGraphComponent, ShortNumberPipe } from '@dev/translatr-components';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('ActivityGraphComponent', () => {
@@ -12,7 +12,7 @@ describe('ActivityGraphComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ActivityGraphComponent],
-        imports: [TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }), ShortNumberModule, MatTooltipModule]
+        imports: [TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }), ShortNumberPipe, MatTooltipModule]
       }).compileComponents();
     })
   );

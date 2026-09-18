@@ -6,7 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { FeatureFlagModule } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective } from '@dev/translatr-components';
 import { SidenavModule } from '../nav/sidenav/sidenav.module';
 import { AdminPageComponent } from './admin-page.component';
 import { MatIconButton } from '@angular/material/button';
@@ -17,7 +17,7 @@ import { MatIconButton } from '@angular/material/button';
     CommonModule,
     RouterModule,
     SidenavModule,
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
 
     MatSidenavModule,
     MatToolbarModule,

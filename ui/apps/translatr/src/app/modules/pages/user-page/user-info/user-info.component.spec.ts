@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShortNumberModule } from '@dev/translatr-components';
+import { ShortNumberPipe } from '@dev/translatr-components';
 import { MetricTestingModule, UserCardTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { TimeAgoModule } from '@dev/translatr-components';
@@ -26,7 +26,7 @@ describe('UserInfoComponent', () => {
         imports: [
           UserCardTestingModule,
           MetricTestingModule,
-          ShortNumberModule,
+          ShortNumberPipe,
           ProjectCardListTestingModule,
           ActivityListTestingModule,
 

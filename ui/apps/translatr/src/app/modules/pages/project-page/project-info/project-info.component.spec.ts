@@ -21,7 +21,7 @@ import {
 } from '@translatr/components/testing';
 import { NavListTestingModule } from '../../../shared/nav-list/testing';
 import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
-import { ShortNumberModule } from '@dev/translatr-components';
+import { ShortNumberPipe } from '@dev/translatr-components';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../../+state/app.facade';
 
@@ -37,7 +37,7 @@ describe('ProjectInfoComponent', () => {
           MetricTestingModule,
           NavListTestingModule,
           ActivityListTestingModule,
-          ShortNumberModule,
+          ShortNumberPipe,
           FeatureFlagTestingModule,
           EmptyViewTestingModule,
           ProjectInfographicTestingModule,

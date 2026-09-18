@@ -8,7 +8,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { FeatureFlagModule, FooterModule, NavbarModule } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective, FooterModule, NavbarModule } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavComponent } from './sidenav.component';
@@ -20,7 +20,7 @@ import { SidenavComponent } from './sidenav.component';
     RouterModule,
     FooterModule,
     NavbarModule.forRoot(AppFacade),
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
 
     MatSidenavModule,
     MatToolbarModule,

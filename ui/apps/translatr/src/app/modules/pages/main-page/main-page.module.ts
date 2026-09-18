@@ -10,11 +10,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ActivityGraphModule,
-  FeatureFlagModule,
+  FeatureFlagDirective, FeatureFlagClassDirective,
   FooterModule,
   MetricModule,
   NavbarModule,
-  ShortNumberModule
+  ShortNumberPipe
 } from '@dev/translatr-components';
 import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -48,9 +48,9 @@ import { MainPageComponent } from './main-page.component';
     FooterModule,
     ActivityGraphModule,
     TranslocoModule,
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
     MetricModule,
-    ShortNumberModule,
+    ShortNumberPipe,
     SvgIconComponent
   ],
   providers: [

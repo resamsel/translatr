@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShortNumberModule } from '@dev/translatr-components';
+import { ShortNumberPipe } from '@dev/translatr-components';
 import {
   FeatureFlagTestingModule,
   MetricTestingModule,
@@ -28,7 +28,7 @@ describe('UserComponent', () => {
           FeatureFlagTestingModule,
           UserCardTestingModule,
           MetricTestingModule,
-          ShortNumberModule,
+          ShortNumberPipe,
 
           RouterTestingModule,
           GravatarModule,

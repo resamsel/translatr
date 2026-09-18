@@ -19,10 +19,10 @@ import {
   ActivityGraphModule,
   ButtonModule,
   EmptyViewModule,
-  FeatureFlagModule,
+  FeatureFlagDirective, FeatureFlagClassDirective,
   MetricModule,
   ProjectInfographicModule,
-  ShortNumberModule,
+  ShortNumberPipe,
   UserCardModule
 } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -77,13 +77,13 @@ import { ProjectGuard } from './project.guard';
     ProjectMemberEditDialogModule,
     ProjectDeleteDialogModule,
     ProjectOwnerEditDialogModule,
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
     UserCardModule,
     ListHeaderModule,
     MetricModule,
     EmptyViewModule,
     ButtonModule,
-    ShortNumberModule,
+    ShortNumberPipe,
     ActivityGraphModule,
     TranslocoModule,
     ProjectInfographicModule,

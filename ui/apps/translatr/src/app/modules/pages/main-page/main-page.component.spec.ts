@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { ShortNumberModule } from '@dev/translatr-components';
+import { ShortNumberPipe } from '@dev/translatr-components';
 import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
 
 import { MainPageComponent } from './main-page.component';
@@ -39,7 +39,7 @@ describe('MainPageComponent', () => {
           ActivityGraphTestingModule,
           FeatureFlagTestingModule,
           MetricTestingModule,
-          ShortNumberModule,
+          ShortNumberPipe,
 
           NoopAnimationsModule,
           RouterTestingModule,

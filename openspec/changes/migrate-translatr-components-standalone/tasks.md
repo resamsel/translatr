@@ -2,10 +2,10 @@
 
 ## 1. Pipes and directives
 
-- [ ] 1.1 Convert `EllipsisPipe` and `ShortNumberPipe` to `standalone: true`, update `pipes/index.ts` to export the pipe classes, delete `ellipsis.module.ts` and `short-number.module.ts`; verify `nx build translatr-components` succeeds
-- [ ] 1.2 Convert `DisableControlDirective` to `standalone: true`, update `disable-control/index.ts`, delete `disable-control.module.ts`; verify `nx build translatr-components` succeeds
-- [ ] 1.3 Convert `FeatureFlagDirective` and `FeatureFlagClassDirective` to `standalone: true` (each with its own `imports`), update `feature-flag/index.ts`, delete `feature-flag.module.ts`; verify `nx build translatr-components` succeeds
-- [ ] 1.4 Grep `apps/translatr` and `apps/translatr-admin` for `EllipsisPipeModule|ShortNumberModule|DisableControlModule|FeatureFlagModule` imports and update each to import the class directly; verify `nx build translatr` and `nx build translatr-admin` succeed
+- [x] 1.1 Convert `EllipsisPipe` and `ShortNumberPipe` to `standalone: true`, update `pipes/index.ts` to export the pipe classes, delete `ellipsis.module.ts` and `short-number.module.ts`; verify `nx build translatr-components` succeeds
+- [x] 1.2 Convert `DisableControlDirective` to `standalone: true`, update `disable-control/index.ts`, delete `disable-control.module.ts`; verify `nx build translatr-components` succeeds
+- [x] 1.3 Convert `FeatureFlagDirective` and `FeatureFlagClassDirective` to `standalone: true` (each with its own `imports`), update `feature-flag/index.ts`, delete `feature-flag.module.ts`; verify `nx build translatr-components` succeeds
+- [x] 1.4 Grep `apps/translatr` and `apps/translatr-admin` for `EllipsisPipeModule|ShortNumberModule|DisableControlModule|FeatureFlagModule` imports and update each to import the class directly; verify `nx build translatr` and `nx build translatr-admin` succeed
 
 ## 2. Single-declaration components (generator-assisted)
 
