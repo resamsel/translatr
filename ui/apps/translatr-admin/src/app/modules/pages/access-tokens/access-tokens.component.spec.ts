@@ -47,8 +47,9 @@ describe('AccessTokensComponent', () => {
       dialog = { open: jest.fn() };
 
       TestBed.configureTestingModule({
-        declarations: [AccessTokensComponent, EntityTableComponent],
+        declarations: [AccessTokensComponent],
         imports: [
+          EntityTableComponent,
           AdminPageTestingModule,
           FeatureFlagTestingModule,
           FilterFieldTestingModule,
