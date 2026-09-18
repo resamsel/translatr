@@ -18,9 +18,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-  AccessTokenEditDialogModule,
-  ActivityGraphModule,
-  ButtonModule,
+  AccessTokenEditDialogComponent,
+  ActivityGraphComponent,
+  ConfirmButtonComponent,
   EllipsisPipe,
   EntityTableModule,
   FeatureFlagDirective, FeatureFlagClassDirective,
@@ -62,8 +62,8 @@ import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/ex
     AdminPageModule,
     UserEditDialogModule,
     ProjectEditDialogModule,
-    AccessTokenEditDialogModule,
-    ButtonModule,
+    AccessTokenEditDialogComponent,
+    ConfirmButtonComponent,
     UserCardModule,
     EllipsisPipe,
     FeatureFlagDirective, FeatureFlagClassDirective,
@@ -91,7 +91,7 @@ import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/ex
     MatTooltipModule,
     ShortNumberPipe,
     TranslocoModule,
-    ActivityGraphModule,
+    ActivityGraphComponent,
     MatExpansionPanel,
     MatExpansionPanelHeader,
   ],

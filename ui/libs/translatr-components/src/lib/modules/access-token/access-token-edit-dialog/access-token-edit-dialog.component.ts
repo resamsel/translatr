@@ -1,6 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { TranslocoModule } from '@jsverse/transloco';
 import {
   AccessToken,
   ConstraintViolation,
@@ -21,11 +27,21 @@ export interface AccessTokenEditDialogConfig {
 }
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-access-token-edit-dialog',
   templateUrl: './access-token-edit-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./access-token-edit-dialog.component.css']
+  styleUrls: ['./access-token-edit-dialog.component.css'],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatSelectModule,
+    TranslocoModule
+  ]
 })
 export class AccessTokenEditDialogComponent {
   readonly scopes = scopes;

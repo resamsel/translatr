@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { TranslocoModule } from '@jsverse/transloco';
-import { ButtonModule } from '../../button';
+import { ConfirmButtonComponent } from '../../button';
 import { FilterFieldModule } from '../../filter-field';
 import { EntityTableComponent } from './entity-table.component';
 import { SelectionActionsComponent } from './selection-actions.component';
@@ -19,7 +19,7 @@ import { SelectionActionsComponent } from './selection-actions.component';
   exports: [EntityTableComponent, SelectionActionsComponent],
   imports: [
     CommonModule,
-    ButtonModule,
+    ConfirmButtonComponent,
     MatTableModule,
     MatButtonModule,
     MatIconModule,

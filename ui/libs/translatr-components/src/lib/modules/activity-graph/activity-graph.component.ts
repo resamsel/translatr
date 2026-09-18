@@ -1,10 +1,12 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Aggregate } from '@dev/translatr-model';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import * as d3 from 'd3';
 import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
-import { shortenNumber } from '../pipes/short-number';
+import { shortenNumber, ShortNumberPipe } from '../pipes/short-number';
 
 const dayOfWeek = (d: Date) => (d.getDay() + 6) % 7;
 const numberOfColors = 4;
@@ -143,11 +145,12 @@ interface DataRect extends SvgRect {
 }
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-activity-graph',
   templateUrl: './activity-graph.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./activity-graph.component.scss']
+  styleUrls: ['./activity-graph.component.scss'],
+  imports: [CommonModule, TranslocoModule, MatTooltipModule, ShortNumberPipe]
 })
 export class ActivityGraphComponent implements OnChanges, OnDestroy {
   @Input() data: Aggregate[];
