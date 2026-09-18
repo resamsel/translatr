@@ -5,7 +5,7 @@ import { environment } from '../environments/environment';
 const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('./modules/pages/login-page').then(m => m.LoginPageModule)
+    loadComponent: () => import('./modules/pages/login-page').then(m => m.LoginPageComponent)
   },
   {
     path: 'register',

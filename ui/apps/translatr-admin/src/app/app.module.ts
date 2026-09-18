@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FeatureFlagDirective, FeatureFlagClassDirective } from '@dev/translatr-components';
-import { LoginPageModule } from '@dev/translatr-components';
+import { LoginPageComponent } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { TranslatrSdkModule } from '@dev/translatr-sdk';
 import { EffectsModule } from '@ngrx/effects';
@@ -30,7 +30,7 @@ import { TranslocoRootModule } from './modules/transloco';
     SidenavModule,
     AppRoutingModule,
     DashboardPageModule,
-    LoginPageModule,
+    LoginPageComponent,
     FeatureFlagDirective, FeatureFlagClassDirective,
     StoreModule.forRoot(
       { app: appReducer, router: routerReducer },
