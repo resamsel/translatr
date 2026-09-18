@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ProjectListTestingModule } from '../../../shared/project-list/testing';
+import { MockProjectListComponent } from '../../../shared/project-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('UserProjectsComponent', () => {
@@ -19,7 +19,7 @@ describe('UserProjectsComponent', () => {
       TestBed.configureTestingModule({
         declarations: [UserProjectsComponent],
         imports: [
-          ProjectListTestingModule,
+          MockProjectListComponent,
 
           RouterTestingModule,
 

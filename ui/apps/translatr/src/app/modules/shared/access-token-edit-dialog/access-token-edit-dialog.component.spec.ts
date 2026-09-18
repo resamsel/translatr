@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AccessTokenEditDialogComponent } from './access-token-edit-dialog.component';
 import { AccessTokenEditFormComponent } from '../access-token-edit-form/access-token-edit-form.component';
-import { AccessTokenEditFormTestingModule } from '../access-token-edit-form/testing';
+import { MockAccessTokenEditFormComponent } from '../access-token-edit-form/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TranslocoTestingModule } from '@jsverse/transloco';
@@ -15,7 +15,7 @@ describe('ProjectCreationDialogComponent', () => {
     waitForAsync(() => {
       TestBed.overrideComponent(AccessTokenEditDialogComponent, {
         remove: { imports: [AccessTokenEditFormComponent] },
-        add: { imports: [AccessTokenEditFormTestingModule] }
+        add: { imports: [MockAccessTokenEditFormComponent] }
       }).configureTestingModule({
         imports: [
           AccessTokenEditDialogComponent,

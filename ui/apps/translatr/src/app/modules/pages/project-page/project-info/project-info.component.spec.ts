@@ -19,8 +19,8 @@ import {
   MockMetricComponent,
   MockProjectInfographicComponent
 } from '@translatr/components/testing';
-import { NavListTestingModule } from '../../../shared/nav-list/testing';
-import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
+import { MockNavListComponent } from '../../../shared/nav-list/testing';
+import { MockActivityListComponent } from '../../../shared/activity-list/testing';
 import { ShortNumberPipe } from '@dev/translatr-components';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../../+state/app.facade';
@@ -35,8 +35,8 @@ describe('ProjectInfoComponent', () => {
         declarations: [ProjectInfoComponent],
         imports: [
           MockMetricComponent,
-          NavListTestingModule,
-          ActivityListTestingModule,
+          MockNavListComponent,
+          MockActivityListComponent,
           ShortNumberPipe,
           MockFeatureFlagDirective, MockFeatureFlagClassDirective,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,

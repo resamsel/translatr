@@ -7,7 +7,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { UsersModule } from '../../pages/users-page/+state/users.module';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { ProjectMemberEditFormComponent } from '../project-member-edit-form/project-member-edit-form.component';
-import { ProjectMemberEditFormTestingModule } from '../testing';
+import { MockProjectMemberEditFormComponent } from '../testing';
 
 import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.component';
 
@@ -19,7 +19,7 @@ describe('ProjectMemberEditDialogComponent', () => {
     waitForAsync(() => {
       TestBed.overrideComponent(ProjectMemberEditDialogComponent, {
         remove: { imports: [ProjectMemberEditFormComponent, UsersModule] },
-        add: { imports: [ProjectMemberEditFormTestingModule] }
+        add: { imports: [MockProjectMemberEditFormComponent] }
       }).configureTestingModule({
         imports: [
           ProjectMemberEditDialogComponent,

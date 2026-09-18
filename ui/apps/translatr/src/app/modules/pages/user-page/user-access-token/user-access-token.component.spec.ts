@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { mockObservable } from '@translatr/utils/testing';
 import { UserFacade } from '../+state/user.facade';
-import { AccessTokenEditFormTestingModule } from '../../../shared/access-token-edit-form/testing';
+import { MockAccessTokenEditFormComponent } from '../../../shared/access-token-edit-form/testing';
 
 import { UserAccessTokenComponent } from './user-access-token.component';
 
@@ -18,7 +18,7 @@ describe('UserAccessTokenComponent', () => {
       TestBed.configureTestingModule({
         declarations: [UserAccessTokenComponent],
         imports: [
-          AccessTokenEditFormTestingModule,
+          MockAccessTokenEditFormComponent,
 
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

@@ -9,8 +9,8 @@ import { MockMetricComponent, MockUserCardComponent } from '@translatr/component
 import { mockObservable } from '@translatr/utils/testing';
 import { TimeAgoPipe } from '@dev/translatr-components';
 import { UserFacade } from '../+state/user.facade';
-import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
-import { ProjectCardListTestingModule } from '../../../shared/project-card-list/testing';
+import { MockActivityListComponent } from '../../../shared/activity-list/testing';
+import { MockProjectCardListComponent } from '../../../shared/project-card-list/testing';
 import { USER_ROUTES } from '../user-page.token';
 
 import { UserInfoComponent } from './user-info.component';
@@ -27,8 +27,8 @@ describe('UserInfoComponent', () => {
           MockUserCardComponent,
           MockMetricComponent,
           ShortNumberPipe,
-          ProjectCardListTestingModule,
-          ActivityListTestingModule,
+          MockProjectCardListComponent,
+          MockActivityListComponent,
 
           RouterTestingModule,
           TimeAgoPipe,

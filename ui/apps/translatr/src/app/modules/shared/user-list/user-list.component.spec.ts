@@ -18,7 +18,7 @@ import {
 
 import { UserListComponent } from './user-list.component';
 import { NavListComponent } from '../nav-list/nav-list.component';
-import { NavListTestingModule } from '../nav-list/testing';
+import { MockNavListComponent } from '../nav-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -47,7 +47,7 @@ describe('UserListComponent', () => {
         },
         add: {
           imports: [
-            NavListTestingModule,
+            MockNavListComponent,
             MockUserCardComponent,
             MockUserCardLinkComponent,
             MockEmptyViewComponent,

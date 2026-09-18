@@ -12,7 +12,7 @@ import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewCon
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { NavListTestingModule } from '../../testing';
+import { MockNavListComponent } from '../../testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { mockObservable } from '@translatr/utils/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
@@ -29,7 +29,7 @@ describe('KeyEditorPageComponent', () => {
           RouterTestingModule,
           EditorTestingModule,
           MockFilterFieldComponent,
-          NavListTestingModule,
+          MockNavListComponent,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 
           NoopAnimationsModule,

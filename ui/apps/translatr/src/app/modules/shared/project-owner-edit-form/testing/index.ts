@@ -1,1 +1,1 @@
-export * from './project-owner-edit-form-testing.module';
+export * from './mock-project-owner-edit-form.component';

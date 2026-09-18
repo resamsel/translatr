@@ -6,8 +6,8 @@ import { MockFeatureFlagDirective, MockFeatureFlagClassDirective, MockMetricComp
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
 import {
-  ActivityListTestingModule,
-  ProjectCardListTestingModule,
+  MockActivityListComponent,
+  MockProjectCardListComponent,
   SidenavTestingModule
 } from '../../testing';
 import { ProjectsFacade } from '../projects-page/+state/projects.facade';
@@ -25,8 +25,8 @@ describe('DashboardPageComponent', () => {
         MockFeatureFlagDirective, MockFeatureFlagClassDirective,
         ShortNumberPipe,
         RouterTestingModule,
-        ActivityListTestingModule,
-        ProjectCardListTestingModule,
+        MockActivityListComponent,
+        MockProjectCardListComponent,
         MockMetricComponent,
         SidenavTestingModule
       ],

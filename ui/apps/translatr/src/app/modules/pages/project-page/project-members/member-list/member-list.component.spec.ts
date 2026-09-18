@@ -11,7 +11,7 @@ import { MockConfirmButtonComponent, MockEmptyViewComponent, MockEmptyViewAction
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../../../+state/app.facade';
-import { NavListTestingModule } from '../../../../shared/nav-list/testing';
+import { MockNavListComponent } from '../../../../shared/nav-list/testing';
 
 import { MemberListComponent } from './member-list.component';
 
@@ -24,7 +24,7 @@ describe('MemberListComponent', () => {
       TestBed.configureTestingModule({
         declarations: [MemberListComponent],
         imports: [
-          NavListTestingModule,
+          MockNavListComponent,
           MockConfirmButtonComponent,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 

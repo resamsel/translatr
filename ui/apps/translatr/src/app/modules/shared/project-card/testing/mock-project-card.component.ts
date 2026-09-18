@@ -1,8 +1,8 @@
-import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Project } from '@dev/translatr-model';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-card',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
@@ -12,7 +12,7 @@ export class MockProjectCardComponent {
 }
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-card-link',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
@@ -20,9 +20,3 @@ export class MockProjectCardComponent {
 export class MockProjectCardLinkComponent {
   @Input() project: Project;
 }
-
-@NgModule({
-  declarations: [MockProjectCardComponent, MockProjectCardLinkComponent],
-  exports: [MockProjectCardComponent, MockProjectCardLinkComponent]
-})
-export class ProjectCardTestingModule {}

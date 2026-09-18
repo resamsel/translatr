@@ -12,7 +12,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MockFilterFieldComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
-import { NavListTestingModule } from '../../shared/nav-list/testing';
+import { MockNavListComponent } from '../../shared/nav-list/testing';
 import { ProjectFacade } from '../../shared/project-state/+state';
 import { EditorFacade } from './+state/editor.facade';
 import { EditorTestingModule } from './editor/testing';
@@ -30,7 +30,7 @@ describe('LocaleEditorPageComponent', () => {
           RouterTestingModule,
           EditorTestingModule,
           MockFilterFieldComponent,
-          NavListTestingModule,
+          MockNavListComponent,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 
           NoopAnimationsModule,

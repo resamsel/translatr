@@ -32,9 +32,9 @@
 
 ## 5. Testing doubles
 
-- [ ] 5.1 Convert the 11 `Mock*` classes across `access-token-edit-form`, `activity-list`, `list-header`, `nav-list`, `project-card-list`, `project-card`, `project-empty-view`, `project-list`, `project-member-edit-form`, `project-owner-edit-form`, `user-list` testing modules to `standalone: true`, carrying over each original testing module's `imports` array onto the corresponding mock class
-- [ ] 5.2 Update every spec file's `TestBed.configureTestingModule({ imports: [...] })` (and any `TestBed.overrideComponent` add/remove pairs from group 3) that referenced a `*TestingModule` to import the `Mock*` class(es) directly instead; delete the 11 `*-testing.module.ts` files
-- [ ] 5.3 Run `nx test translatr` and verify all specs pass
+- [x] 5.1 Convert the 11 `Mock*` classes across `access-token-edit-form`, `activity-list`, `list-header`, `nav-list`, `project-card-list`, `project-card`, `project-empty-view`, `project-list`, `project-member-edit-form`, `project-owner-edit-form`, `user-list` testing modules to `standalone: true`; renamed each file to `mock-*.component.ts` since it no longer defines an `NgModule`
+- [x] 5.2 Updated every spec file's `TestBed.configureTestingModule({ imports: [...] })` (and every `TestBed.overrideComponent` add/remove pair from groups 2-4) that referenced a `*TestingModule` to import the `Mock*` class(es) directly instead; deleted all 11 `*-testing.module.ts` files (as renamed `mock-*.component.ts` files, content removed)
+- [x] 5.3 Run `nx test translatr` and verify all specs pass (159/159 passed) - also ran `nx build translatr` and `tsc -p apps/translatr/tsconfig.app.json --noEmit`, both clean
 
 ## 6. Cleanup and verification
 
