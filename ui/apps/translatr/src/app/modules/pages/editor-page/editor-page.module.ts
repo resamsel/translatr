@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-import { EmptyViewModule, FilterFieldComponent, NavbarModule } from '@dev/translatr-components';
+import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent, FilterFieldComponent, NavbarModule } from '@dev/translatr-components';
 import { HotkeysDirective } from '@ngneat/hotkeys';
 import { TranslocoModule } from '@jsverse/transloco';
 import { EffectsModule } from '@ngrx/effects';
@@ -50,7 +50,7 @@ import { LocaleEditorPageComponent } from './locale-editor-page.component';
     FormsModule,
     NavListModule,
     FilterFieldComponent,
-    EmptyViewModule,
+    EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
     ProjectStateModule,
 
     MatFormFieldModule,
