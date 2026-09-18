@@ -9,6 +9,11 @@
 @include mat.all-component-typographies();
 @include mat.elevation-classes();
 @include mat.app-background();
+// MDC components (e.g. mat-button-toggle's hover/focus state-layer overlay) read
+// --mat-sys-*-state-layer-opacity custom properties. Without this, those `var()`
+// references are invalid and `opacity` falls back to its initial value of 1,
+// rendering the overlay fully opaque instead of a subtle tint.
+@include mat.system-level-state();
 
 @include meta.load-css('codemirror/lib/codemirror');
 @include meta.load-css('codemirror/theme/idea');
@@ -21,5 +26,30 @@
 }
 
 .dark-theme {
-  @include mat.all-component-colors(dark.$dark-theme);
+  // Full theme (not just all-component-colors): dark mode is applied interactively
+  // now (see theme-switching), so it needs the same structural output (shape,
+  // elevation) as .light-theme, not just color tokens - color-only left every
+  // dark-mode button/input square and shadow-less.
+  @include mat.all-component-themes(dark.$dark-theme);
+
+  // White text on the default green-700/deep-orange-500 button backgrounds
+  // is only ~4.1:1 / ~3.2:1 (WCAG AAA needs 7:1 for normal text). Scoped to
+  // the button's own background token only, placed after all-component-themes
+  // above so it wins the cascade (same-specificity, later source order) -
+  // unlike darkening the whole primary/warn palette, this doesn't touch the
+  // same color's use as text elsewhere (tabs, sliders, spinners, focus
+  // rings, ...), which broke when tried at the palette level.
+  .mat-mdc-unelevated-button.mat-primary,
+  .mat-mdc-raised-button.mat-primary,
+  .mat-mdc-outlined-button.mat-primary,
+  .mat-tonal-button.mat-primary {
+    --mat-button-filled-container-color: #1b5e20;
+  }
+
+  .mat-mdc-unelevated-button.mat-warn,
+  .mat-mdc-raised-button.mat-warn,
+  .mat-mdc-outlined-button.mat-warn,
+  .mat-tonal-button.mat-warn {
+    --mat-button-filled-container-color: #a62800;
+  }
 }
