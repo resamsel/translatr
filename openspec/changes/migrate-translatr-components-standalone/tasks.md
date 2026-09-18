@@ -12,9 +12,9 @@
 - [x] 2.1 Convert `AccessTokenEditDialogComponent` to `standalone: true` with explicit `imports`, update `access-token/access-token-edit-dialog/index.ts`, delete `access-token-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds
 - [x] 2.2 Convert `ActivityGraphComponent` to `standalone: true` with explicit `imports`, update `activity-graph/index.ts`, delete `activity-graph.module.ts`; verify `nx test translatr-components` succeeds
 - [x] 2.3 Convert `ConfirmButtonComponent` to `standalone: true` with explicit `imports`, update `button/index.ts`, delete `button.module.ts`; verify `nx test translatr-components` succeeds
-- [ ] 2.4 Convert `FilterFieldComponent` to `standalone: true` with explicit `imports`, update `filter-field/index.ts`, delete `filter-field.module.ts`; verify `nx test translatr-components` succeeds
-- [ ] 2.5 Convert `MetricComponent` to `standalone: true` with explicit `imports`, update `metric/index.ts`, delete `metric.module.ts`; verify `nx test translatr-components` succeeds
-- [ ] 2.6 Convert `FooterComponent` to `standalone: true` with explicit `imports`, update `nav/footer/index.ts`, delete `footer.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.4 Convert `FilterFieldComponent` to `standalone: true` with explicit `imports`, update `filter-field/index.ts`, delete `filter-field.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.5 Convert `MetricComponent` to `standalone: true` with explicit `imports`, update `metric/index.ts`, delete `metric.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.6 Convert `FooterComponent` to `standalone: true` with explicit `imports`, update `nav/footer/index.ts`, delete `footer.module.ts`; verify `nx test translatr-components` succeeds
 - [ ] 2.7 Convert `LoginPageComponent` to `standalone: true` with explicit `imports`, update `pages/login-page/index.ts`, delete `login-page.module.ts` (leave `login-page-routing.module.ts` untouched); verify `nx test translatr-components` succeeds
 - [ ] 2.8 Convert `ProjectEditDialogComponent` to `standalone: true` with explicit `imports`, update `project/project-edit-dialog/index.ts`, delete `project-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds
 - [ ] 2.9 Convert `ProjectInfographicComponent` to `standalone: true` with explicit `imports`, update `project/project-infographic/index.ts`, delete `project-infographic.module.ts`; verify `nx test translatr-components` succeeds

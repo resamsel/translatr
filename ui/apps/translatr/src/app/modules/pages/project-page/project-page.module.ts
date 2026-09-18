@@ -20,7 +20,7 @@ import {
   ConfirmButtonComponent,
   EmptyViewModule,
   FeatureFlagDirective, FeatureFlagClassDirective,
-  MetricModule,
+  MetricComponent,
   ProjectInfographicModule,
   ShortNumberPipe,
   UserCardModule
@@ -80,7 +80,7 @@ import { ProjectGuard } from './project.guard';
     FeatureFlagDirective, FeatureFlagClassDirective,
     UserCardModule,
     ListHeaderModule,
-    MetricModule,
+    MetricComponent,
     EmptyViewModule,
     ConfirmButtonComponent,
     ShortNumberPipe,

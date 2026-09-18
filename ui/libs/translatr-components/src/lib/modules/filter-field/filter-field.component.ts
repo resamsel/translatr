@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,11 +11,19 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatOptionSelectionChange, ThemePalette } from '@angular/material/core';
-import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoModule } from '@jsverse/transloco';
+import { DisableControlDirective } from '../disable-control';
 import { FilterFieldFilter } from './filter-field-filter';
 
 const lowerCaseIncludes = (s: string, search: string): boolean =>
@@ -45,11 +54,26 @@ const filterOption = (option: FilterFieldFilter, definition: FilterFieldFilter):
 };
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-filter-field',
   templateUrl: './filter-field.component.html',
-  styleUrls: ['./filter-field.component.scss']
+  styleUrls: ['./filter-field.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+    DisableControlDirective,
+    MatIconModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatInputModule,
+    MatTooltipModule,
+    MatMenuModule,
+    MatCheckboxModule
+  ]
 })
 export class FilterFieldComponent implements OnInit {
   @Input() enabled = true;
