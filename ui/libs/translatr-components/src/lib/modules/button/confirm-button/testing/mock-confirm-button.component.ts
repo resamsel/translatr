@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'confirm-button',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''

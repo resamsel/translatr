@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { EmptyViewTestingModule } from '@translatr/components/testing';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { ActivityListComponent } from './activity-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -39,7 +39,7 @@ describe('ActivityListComponent', () => {
 
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
-          EmptyViewTestingModule,
+          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 
           TagComponent,
 

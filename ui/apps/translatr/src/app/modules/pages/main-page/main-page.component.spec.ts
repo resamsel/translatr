@@ -11,11 +11,11 @@ import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
 
 import { MainPageComponent } from './main-page.component';
 import {
-  ActivityGraphTestingModule,
+  MockActivityGraphComponent,
   FeatureFlagTestingModule,
   FooterTestingModule,
   MetricTestingModule,
-  NavbarTestingModule
+  MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent
 } from '@translatr/components/testing';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -34,9 +34,9 @@ describe('MainPageComponent', () => {
       TestBed.configureTestingModule({
         declarations: [MainPageComponent],
         imports: [
-          NavbarTestingModule,
+          MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent,
           FooterTestingModule,
-          ActivityGraphTestingModule,
+          MockActivityGraphComponent,
           FeatureFlagTestingModule,
           MetricTestingModule,
           ShortNumberPipe,

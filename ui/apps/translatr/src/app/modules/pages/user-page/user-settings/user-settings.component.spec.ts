@@ -13,7 +13,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureFlagDirective, FeatureFlagClassDirective, ThemeService } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { EmptyViewTestingModule } from '@translatr/components/testing';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { of } from 'rxjs';
 import { UserFacade } from '../+state/user.facade';
@@ -29,7 +29,7 @@ describe('UserSettingsComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [UserSettingsComponent],
       imports: [
-        EmptyViewTestingModule,
+        MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
         FeatureFlagDirective, FeatureFlagClassDirective,
         TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 

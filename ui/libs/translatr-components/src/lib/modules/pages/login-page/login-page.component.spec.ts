@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { NavbarTestingModule } from '@translatr/components/testing';
+import { MockNavbarComponent, MockAuthBarLanguageSwitcherComponent } from '@translatr/components/testing';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { mockObservable } from '@translatr/utils/testing';
 import { of } from 'rxjs';
@@ -40,7 +40,7 @@ describe('LoginPageComponent', () => {
     waitForAsync(() => {
       TestBed.overrideComponent(LoginPageComponent, {
         remove: { imports: [NavbarComponent, AuthBarLanguageSwitcherComponent] },
-        add: { imports: [NavbarTestingModule] }
+        add: { imports: [MockNavbarComponent, MockAuthBarLanguageSwitcherComponent] }
       }).configureTestingModule({
         imports: [
           LoginPageComponent,

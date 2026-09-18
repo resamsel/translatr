@@ -12,7 +12,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { EmptyViewTestingModule } from '@translatr/components/testing';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { EditorFacade } from '../+state/editor.facade';
 import { SidenavTestingModule } from '../../../nav/sidenav/testing';
 import { EMPTY, Subject } from 'rxjs';
@@ -25,7 +25,7 @@ const editorTestImports = [
   FormsModule,
   NoopAnimationsModule,
   TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
-  EmptyViewTestingModule,
+  MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 
   MatButtonModule,
   MatDividerModule,

@@ -7,7 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
+import { MockConfirmButtonComponent, MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../../../+state/app.facade';
@@ -25,8 +25,8 @@ describe('MemberListComponent', () => {
         declarations: [MemberListComponent],
         imports: [
           NavListTestingModule,
-          ButtonTestingModule,
-          EmptyViewTestingModule,
+          MockConfirmButtonComponent,
+          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

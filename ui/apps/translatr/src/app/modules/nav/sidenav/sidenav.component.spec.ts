@@ -12,7 +12,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import {
   FeatureFlagTestingModule,
   FooterTestingModule,
-  NavbarTestingModule
+  MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent
 } from '@translatr/components/testing';
 import { SidenavComponent } from './sidenav.component';
 
@@ -28,7 +28,7 @@ describe('SidenavComponent', () => {
         RouterTestingModule,
         TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
-        NavbarTestingModule,
+        MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent,
         FooterTestingModule,
         FeatureFlagTestingModule,
 

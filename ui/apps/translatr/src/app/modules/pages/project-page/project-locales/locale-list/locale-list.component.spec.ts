@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LocaleListComponent } from './locale-list.component';
 import { NavListTestingModule } from '../../../../shared/nav-list/testing';
-import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
+import { MockConfirmButtonComponent, MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -22,8 +22,8 @@ describe('LocaleListComponent', () => {
         declarations: [LocaleListComponent],
         imports: [
           NavListTestingModule,
-          ButtonTestingModule,
-          EmptyViewTestingModule,
+          MockConfirmButtonComponent,
+          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 
           RouterTestingModule,
 

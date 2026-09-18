@@ -1,1 +1,1 @@
-export * from './activity-graph-testing.module';
+export * from './mock-activity-graph.component';
