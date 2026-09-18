@@ -2,7 +2,7 @@ import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/com
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FeatureFlagModule } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective } from '@dev/translatr-components';
 import { LoginPageModule } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { TranslatrSdkModule } from '@dev/translatr-sdk';
@@ -31,7 +31,7 @@ import { TranslocoRootModule } from './modules/transloco';
     AppRoutingModule,
     DashboardPageModule,
     LoginPageModule,
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
     StoreModule.forRoot(
       { app: appReducer, router: routerReducer },
       {

@@ -16,9 +16,9 @@ import {
   ActivityGraphModule,
   ButtonModule,
   EmptyViewModule,
-  FeatureFlagModule,
+  FeatureFlagDirective, FeatureFlagClassDirective,
   MetricModule,
-  ShortNumberModule,
+  ShortNumberPipe,
   UserCardModule
 } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -92,14 +92,14 @@ import { UserGuard } from './user.guard';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
 
     StoreModule.forFeature(USER_FEATURE_KEY, userReducer, {
       initialState: userInitialState
     }),
     EffectsModule.forFeature([UserEffects]),
     MetricModule,
-    ShortNumberModule,
+    ShortNumberPipe,
     ActivityGraphModule,
     TranslocoModule
   ],

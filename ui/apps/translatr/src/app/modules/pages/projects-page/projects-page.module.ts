@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FeatureFlagModule } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -45,7 +45,7 @@ import { ProjectsPageComponent } from './projects-page.component';
     EffectsModule.forFeature([ProjectsEffects]),
     MatTooltipModule,
     ProjectCardListModule,
-    FeatureFlagModule,
+    FeatureFlagDirective, FeatureFlagClassDirective,
     TranslocoModule
   ],
   providers: [ProjectsFacade]

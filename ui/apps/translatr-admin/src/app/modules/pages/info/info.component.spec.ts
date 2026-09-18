@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShortNumberModule } from '@dev/translatr-components';
+import { ShortNumberPipe } from '@dev/translatr-components';
 import { ActivityService } from '@dev/translatr-sdk';
 import {
   ActivityGraphTestingModule,
@@ -25,7 +25,7 @@ describe('InfoComponent', () => {
           AdminPageTestingModule,
           FeatureFlagTestingModule,
           MetricTestingModule,
-          ShortNumberModule,
+          ShortNumberPipe,
 
           RouterTestingModule
         ],

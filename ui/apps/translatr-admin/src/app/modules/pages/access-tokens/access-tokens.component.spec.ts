@@ -10,7 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { EllipsisModule, EntityTableComponent } from '@dev/translatr-components';
+import { EllipsisPipe, EntityTableComponent } from '@dev/translatr-components';
 import {
   ButtonTestingModule,
   FeatureFlagTestingModule,
@@ -53,7 +53,7 @@ describe('AccessTokensComponent', () => {
           FeatureFlagTestingModule,
           FilterFieldTestingModule,
           ButtonTestingModule,
-          EllipsisModule,
+          EllipsisPipe,
 
           RouterTestingModule,
           TimeAgoModule,

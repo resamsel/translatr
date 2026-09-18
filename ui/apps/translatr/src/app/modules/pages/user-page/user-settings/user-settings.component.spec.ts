@@ -10,7 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureFlagModule, ThemeService } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective, ThemeService } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { EmptyViewTestingModule } from '@translatr/components/testing';
@@ -30,7 +30,7 @@ describe('UserSettingsComponent', () => {
       declarations: [UserSettingsComponent],
       imports: [
         EmptyViewTestingModule,
-        FeatureFlagModule,
+        FeatureFlagDirective, FeatureFlagClassDirective,
         TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
         FormsModule,
