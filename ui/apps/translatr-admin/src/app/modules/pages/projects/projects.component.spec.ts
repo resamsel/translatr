@@ -13,7 +13,7 @@ import {
   FeatureFlagTestingModule
 } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
 import { AdminPageTestingModule } from '../../admin-page/testing';
 
@@ -35,7 +35,7 @@ describe('ProjectsComponent', () => {
           EllipsisPipe,
 
           RouterTestingModule,
-          TimeAgoModule,
+          TimeAgoPipe,
 
           MatTableModule,
           MatButtonModule,

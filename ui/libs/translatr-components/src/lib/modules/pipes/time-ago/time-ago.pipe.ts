@@ -1,8 +1,7 @@
-import { Pipe, PipeTransform, OnDestroy, ChangeDetectorRef, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Pipe, PipeTransform, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
 @Pipe({
-  standalone: false,
+  standalone: true,
   name: 'amTimeAgo',
   pure: false,
 })
@@ -66,11 +65,4 @@ export class TimeAgoPipe implements PipeTransform, OnDestroy {
     }
   }
 }
-
-@NgModule({
-  declarations: [TimeAgoPipe],
-  exports: [TimeAgoPipe],
-  imports: [CommonModule],
-})
-export class TimeAgoModule {}
 

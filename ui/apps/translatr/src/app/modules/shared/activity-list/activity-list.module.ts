@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent, TagComponent } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
 import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.component';
@@ -41,7 +41,7 @@ import { ActivityProjectLinkComponent } from './activity-project-link/activity-p
     MatChipsModule,
     MatTooltipModule,
 
-    TimeAgoModule,
+    TimeAgoPipe,
     GravatarModule,
     TranslocoModule
   ],

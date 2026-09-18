@@ -19,13 +19,13 @@ import {
   FeatureFlagDirective, FeatureFlagClassDirective,
   MetricComponent,
   ShortNumberPipe,
-  UserCardModule
+  UserCardComponent, UserCardLinkComponent
 } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { AccessTokenEditDialogModule } from '../../shared/access-token-edit-dialog/access-token-edit-dialog.module';
 import { AccessTokenEditFormModule } from '../../shared/access-token-edit-form/access-token-edit-form.module';
@@ -68,7 +68,7 @@ import { UserGuard } from './user.guard';
     SidenavModule,
     ProjectListModule,
     ActivityListModule,
-    UserCardModule,
+    UserCardComponent, UserCardLinkComponent,
     ProjectCardModule,
     ProjectEditDialogModule,
     AccessTokenEditDialogModule,
@@ -84,7 +84,7 @@ import { UserGuard } from './user.guard';
     MatCardModule,
     MatButtonModule,
     MatButtonToggleModule,
-    TimeAgoModule,
+    TimeAgoPipe,
     GravatarModule,
     MatDialogModule,
     MatListModule,

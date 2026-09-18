@@ -6,7 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { GravatarModule } from 'ngx-gravatar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivityProjectLinkComponent } from './activity-project-link/activity-project-link.component';
@@ -48,7 +48,7 @@ describe('ActivityListComponent', () => {
           MatChipsModule,
           MatTooltipModule,
 
-          TimeAgoModule,
+          TimeAgoPipe,
           GravatarModule
         ]
       }).compileComponents();

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { FeatureFlagDirective, FeatureFlagClassDirective, UserCardModule } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective, UserCardComponent, UserCardLinkComponent } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { UserListModule } from '../../shared/user-list/user-list.module';
@@ -16,7 +16,7 @@ import { UsersPageComponent } from './users-page.component';
     UsersPageRoutingModule,
     SidenavModule,
     UserListModule,
-    UserCardModule,
+    UserCardComponent, UserCardLinkComponent,
     UsersModule,
     MatIconModule,
     FeatureFlagDirective, FeatureFlagClassDirective,

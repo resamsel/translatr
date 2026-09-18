@@ -11,8 +11,7 @@ describe('UserCardComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [UserCardComponent],
-        imports: [GravatarModule, MatCardModule]
+        imports: [UserCardComponent, GravatarModule, MatCardModule]
       }).compileComponents();
     })
   );

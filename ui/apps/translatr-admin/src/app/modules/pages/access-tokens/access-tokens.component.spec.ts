@@ -19,7 +19,7 @@ import {
 import { AccessToken } from '@dev/translatr-model';
 import { mockObservable } from '@translatr/utils/testing';
 import { of } from 'rxjs';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
 import { AdminPageTestingModule } from '../../admin-page/testing';
 
@@ -57,7 +57,7 @@ describe('AccessTokensComponent', () => {
           EllipsisPipe,
 
           RouterTestingModule,
-          TimeAgoModule,
+          TimeAgoPipe,
           TranslocoTestingModule.forRoot({
             langs: {},
             translocoConfig: { availableLangs: ['en'] }

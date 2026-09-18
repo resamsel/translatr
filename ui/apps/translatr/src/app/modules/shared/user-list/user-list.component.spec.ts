@@ -8,7 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('UserListComponent', () => {
@@ -25,7 +25,7 @@ describe('UserListComponent', () => {
 
           RouterTestingModule,
           GravatarModule,
-          TimeAgoModule,
+          TimeAgoPipe,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatListModule,
