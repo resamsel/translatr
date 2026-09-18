@@ -2,7 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from '@dev/translatr-model';
+import { ThemePreference, ThemeService } from '@dev/translatr-components';
+import { Feature, User } from '@dev/translatr-model';
 import { findParam } from '@translatr/utils';
 import { merge, throwError } from 'rxjs';
 import { filter, skip, switchMap } from 'rxjs/operators';
@@ -34,12 +35,16 @@ export class UserSettingsComponent extends AbstractEditFormComponent<UserSetting
   readonly nameFormControl = this.form.get('name');
   readonly usernameFormControl = this.form.get('username');
 
+  readonly Feature = Feature;
+  readonly themePreference$ = this.themeService.preference$;
+
   constructor(
     readonly fb: FormBuilder,
     readonly snackBar: MatSnackBar,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly facade: UserFacade
+    private readonly facade: UserFacade,
+    private readonly themeService: ThemeService
   ) {
     super(
       snackBar,
@@ -71,5 +76,9 @@ export class UserSettingsComponent extends AbstractEditFormComponent<UserSetting
     if (user.username !== findParam(this.route.snapshot, 'username')) {
       this.router.navigate(['/', user.username, 'settings']);
     }
+  }
+
+  onThemeChange(preference: ThemePreference): void {
+    this.themeService.setPreference(preference);
   }
 }

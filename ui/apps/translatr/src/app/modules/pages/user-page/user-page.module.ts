@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -82,6 +83,7 @@ import { UserGuard } from './user.guard';
     MatChipsModule,
     MatCardModule,
     MatButtonModule,
+    MatButtonToggleModule,
     TimeAgoModule,
     GravatarModule,
     MatDialogModule,
