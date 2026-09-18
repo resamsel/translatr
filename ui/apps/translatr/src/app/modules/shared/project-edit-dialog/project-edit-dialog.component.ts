@@ -1,17 +1,35 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Project } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { AppFacade } from '../../../+state/app.facade';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
+import { ProjectFacade } from '../project-state/+state';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-protect-creation-dialog',
   templateUrl: './project-edit-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./project-edit-dialog.component.scss']
+  styleUrls: ['./project-edit-dialog.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSnackBarModule,
+    MatButtonModule,
+    MatInputModule,
+    TranslocoModule
+  ],
+  providers: [ProjectFacade]
 })
 export class ProjectEditDialogComponent extends BaseEditFormComponent<
   ProjectEditDialogComponent,

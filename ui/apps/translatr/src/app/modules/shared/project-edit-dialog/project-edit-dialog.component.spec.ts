@@ -18,8 +18,8 @@ describe('ProjectEditDialogComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ProjectEditDialogComponent],
         imports: [
+          ProjectEditDialogComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

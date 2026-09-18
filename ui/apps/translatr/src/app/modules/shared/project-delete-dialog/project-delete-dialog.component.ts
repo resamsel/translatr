@@ -1,9 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConstraintViolation, Error, Project } from '@dev/translatr-model';
 import { ProjectService } from '@dev/translatr-sdk';
+import { TranslocoModule } from '@jsverse/transloco';
 import { take } from 'rxjs/operators';
 
 export const equalValidator = (
@@ -15,11 +26,20 @@ export const equalValidator = (
 };
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-delete-dialog',
   templateUrl: './project-delete-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./project-delete-dialog.component.scss']
+  styleUrls: ['./project-delete-dialog.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDialogModule,
+    TranslocoModule
+  ]
 })
 export class ProjectDeleteDialogComponent {
   form = new FormGroup({

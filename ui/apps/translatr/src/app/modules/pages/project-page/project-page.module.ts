@@ -31,11 +31,11 @@ import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
-import { KeyEditDialogModule } from '../../shared/key-edit-dialog/key-edit-dialog.module';
-import { ListHeaderModule } from '../../shared/list-header/list-header.module';
-import { LocaleEditDialogModule } from '../../shared/locale-edit-dialog/locale-edit-dialog.module';
+import { KeyEditDialogComponent } from '../../shared/key-edit-dialog/key-edit-dialog.component';
+import { ListHeaderComponent } from '../../shared/list-header/list-header.component';
+import { LocaleEditDialogComponent } from '../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
-import { ProjectDeleteDialogModule } from '../../shared/project-delete-dialog/project-delete-dialog.module';
+import { ProjectDeleteDialogComponent } from '../../shared/project-delete-dialog/project-delete-dialog.component';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
 import { ProjectStateModule } from '../../shared/project-state';
@@ -72,14 +72,14 @@ import { ProjectGuard } from './project.guard';
     SidenavModule,
     ActivityListModule,
     NavListModule,
-    LocaleEditDialogModule,
-    KeyEditDialogModule,
+    LocaleEditDialogComponent,
+    KeyEditDialogComponent,
     ProjectMemberEditDialogModule,
-    ProjectDeleteDialogModule,
+    ProjectDeleteDialogComponent,
     ProjectOwnerEditDialogModule,
     FeatureFlagDirective, FeatureFlagClassDirective,
     UserCardComponent, UserCardLinkComponent,
-    ListHeaderModule,
+    ListHeaderComponent,
     MetricComponent,
     EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
     ConfirmButtonComponent,
