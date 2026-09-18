@@ -9,7 +9,7 @@ import {
   UserCardTestingModule
 } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
 import { AdminPageTestingModule } from '../../admin-page/testing';
 
@@ -32,7 +32,7 @@ describe('UserComponent', () => {
 
           RouterTestingModule,
           GravatarModule,
-          TimeAgoModule,
+          TimeAgoPipe,
 
           MatTooltipModule,
           MatIconModule

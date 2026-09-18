@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ShortNumberPipe } from '@dev/translatr-components';
 import { MetricTestingModule, UserCardTestingModule } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { UserFacade } from '../+state/user.facade';
 import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
 import { ProjectCardListTestingModule } from '../../../shared/project-card-list/testing';
@@ -31,7 +31,7 @@ describe('UserInfoComponent', () => {
           ActivityListTestingModule,
 
           RouterTestingModule,
-          TimeAgoModule,
+          TimeAgoPipe,
 
           MatIconModule,
           MatTooltipModule

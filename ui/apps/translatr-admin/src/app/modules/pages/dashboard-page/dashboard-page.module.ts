@@ -27,8 +27,8 @@ import {
   MetricComponent,
   ProjectEditDialogComponent,
   ShortNumberPipe,
-  TimeAgoModule,
-  UserCardModule,
+  TimeAgoPipe,
+  UserCardComponent, UserCardLinkComponent,
   UserEditDialogComponent,
 } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -64,7 +64,7 @@ import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/ex
     ProjectEditDialogComponent,
     AccessTokenEditDialogComponent,
     ConfirmButtonComponent,
-    UserCardModule,
+    UserCardComponent, UserCardLinkComponent,
     EllipsisPipe,
     FeatureFlagDirective, FeatureFlagClassDirective,
 
@@ -77,7 +77,7 @@ import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/ex
     MatProgressSpinnerModule,
     MatTableModule,
     MatDialogModule,
-    TimeAgoModule,
+    TimeAgoPipe,
     MatMenuModule,
     MatSelectModule,
     MatInputModule,

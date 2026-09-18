@@ -23,11 +23,11 @@ import {
   MetricComponent,
   ProjectInfographicComponent,
   ShortNumberPipe,
-  UserCardModule
+  UserCardComponent, UserCardLinkComponent
 } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
@@ -78,7 +78,7 @@ import { ProjectGuard } from './project.guard';
     ProjectDeleteDialogModule,
     ProjectOwnerEditDialogModule,
     FeatureFlagDirective, FeatureFlagClassDirective,
-    UserCardModule,
+    UserCardComponent, UserCardLinkComponent,
     ListHeaderModule,
     MetricComponent,
     EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
@@ -110,7 +110,7 @@ import { ProjectGuard } from './project.guard';
     MatProgressBarModule,
     MatSelectModule,
 
-    TimeAgoModule,
+    TimeAgoPipe,
     GravatarModule
   ],
   providers: [AppFacade, ProjectGuard, ProjectAccessGuard, ProjectEditGuard]

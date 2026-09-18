@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { NavListModule } from '../nav-list/nav-list.module';
 import { ProjectEmptyViewModule } from '../project-empty-view/project-empty-view.module';
 import { ProjectListComponent } from './project-list.component';
@@ -24,7 +24,7 @@ import { ProjectListComponent } from './project-list.component';
     MatIconModule,
     MatToolbarModule,
     MatListModule,
-    TimeAgoModule,
+    TimeAgoPipe,
     MatTooltipModule,
     EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
     ProjectEmptyViewModule,

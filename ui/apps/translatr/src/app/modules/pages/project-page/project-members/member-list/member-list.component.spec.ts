@@ -9,7 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../../../+state/app.facade';
 import { NavListTestingModule } from '../../../../shared/nav-list/testing';
 
@@ -39,7 +39,7 @@ describe('MemberListComponent', () => {
           MatButtonModule,
 
           GravatarModule,
-          TimeAgoModule
+          TimeAgoPipe
         ],
         providers: [{ provide: AppFacade, useFactory: () => ({}) }]
       }).compileComponents();
