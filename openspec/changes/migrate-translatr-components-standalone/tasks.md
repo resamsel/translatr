@@ -42,7 +42,7 @@
 
 ## 5. Cleanup and verification
 
-- [ ] 5.1 Grep the whole workspace for any remaining `from '@dev/translatr-components'` import of a class ending in `Module` (excluding `TranslatrComponentsModule`/root barrels not covered by this change, if any) and confirm zero matches
-- [ ] 5.2 Run `nx build translatr`, `nx build translatr-admin`, and `nx build translatr-components` and verify all succeed with no TypeScript errors
-- [ ] 5.3 Run `nx test translatr-components`, `nx test translatr`, and `nx test translatr-admin` and verify all suites pass
-- [ ] 5.4 Manually smoke-test both apps (`nx serve translatr`, `nx serve translatr-admin`) covering at least one screen that uses each converted component category (dialog, nav, entity table, error page) and verify no console errors and correct rendering
+- [x] 5.1 Grep the whole workspace for any remaining `from '@dev/translatr-components'` import of a class ending in `Module` and confirm zero matches (used a script handling multi-line import blocks; zero matches)
+- [x] 5.2 Run `nx build translatr`, `nx build translatr-admin`, and (`translatr-components` has no `build` target - only `lint`/`test`, confirmed at session start) `nx test translatr-components` and verify all succeed with no TypeScript errors
+- [x] 5.3 Run `nx test translatr-components`, `nx test translatr`, and `nx test translatr-admin` and verify all suites pass (50/50, 159/159, 88/88)
+- [x] 5.4 Manually smoke-tested both apps via the browser preview (no backend available locally, so only unauthenticated screens were reachable): translatr home page (NavbarComponent, AuthBarLanguageSwitcherComponent dropdown), /login (LoginPageComponent via translatr's lazy loadComponent route), translatr-admin redirecting to the same shared login page (its own eager LoginPageComponent import in app.module, a different code path), and /forbidden (ErrorPageComponent + header/message). Zero Angular/DI/template console errors; only expected backend-unavailable 500s. Dialogs and entity-table (behind auth) are covered by unit tests and successful builds instead
