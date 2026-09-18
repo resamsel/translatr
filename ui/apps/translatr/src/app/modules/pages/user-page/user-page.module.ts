@@ -17,7 +17,7 @@ import {
   ConfirmButtonComponent,
   EmptyViewModule,
   FeatureFlagDirective, FeatureFlagClassDirective,
-  MetricModule,
+  MetricComponent,
   ShortNumberPipe,
   UserCardModule
 } from '@dev/translatr-components';
@@ -98,7 +98,7 @@ import { UserGuard } from './user.guard';
       initialState: userInitialState
     }),
     EffectsModule.forFeature([UserEffects]),
-    MetricModule,
+    MetricComponent,
     ShortNumberPipe,
     ActivityGraphComponent,
     TranslocoModule

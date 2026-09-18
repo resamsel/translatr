@@ -13,8 +13,7 @@ describe('TileComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [MetricComponent],
-        imports: [RouterTestingModule, MatCardModule, MatIconModule, MatTooltipModule]
+        imports: [MetricComponent, RouterTestingModule, MatCardModule, MatIconModule, MatTooltipModule]
       }).compileComponents();
     })
   );

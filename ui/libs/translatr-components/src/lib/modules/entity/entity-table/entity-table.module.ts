@@ -10,7 +10,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ConfirmButtonComponent } from '../../button';
-import { FilterFieldModule } from '../../filter-field';
+import { FilterFieldComponent } from '../../filter-field';
 import { EntityTableComponent } from './entity-table.component';
 import { SelectionActionsComponent } from './selection-actions.component';
 
@@ -28,7 +28,7 @@ import { SelectionActionsComponent } from './selection-actions.component';
     MatFormFieldModule,
     MatPaginatorModule,
     MatDividerModule,
-    FilterFieldModule,
+    FilterFieldComponent,
     TranslocoModule
   ]
 })

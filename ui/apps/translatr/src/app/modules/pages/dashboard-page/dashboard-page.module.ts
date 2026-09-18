@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { FeatureFlagDirective, FeatureFlagClassDirective, MetricModule, ShortNumberPipe } from '@dev/translatr-components';
+import { FeatureFlagDirective, FeatureFlagClassDirective, MetricComponent, ShortNumberPipe } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -33,7 +33,7 @@ import { DashboardPageComponent } from './dashboard-page.component';
     ProjectEditDialogModule,
     ActivityListModule,
     ProjectCardListModule,
-    MetricModule,
+    MetricComponent,
     FeatureFlagDirective, FeatureFlagClassDirective,
     ShortNumberPipe,
 

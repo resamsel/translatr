@@ -11,8 +11,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ActivityGraphComponent,
   FeatureFlagDirective, FeatureFlagClassDirective,
-  FooterModule,
-  MetricModule,
+  FooterComponent,
+  MetricComponent,
   NavbarModule,
   ShortNumberPipe
 } from '@dev/translatr-components';
@@ -45,11 +45,11 @@ import { MainPageComponent } from './main-page.component';
     LayoutModule,
     MatDividerModule,
     MatTooltipModule,
-    FooterModule,
+    FooterComponent,
     ActivityGraphComponent,
     TranslocoModule,
     FeatureFlagDirective, FeatureFlagClassDirective,
-    MetricModule,
+    MetricComponent,
     ShortNumberPipe,
     SvgIconComponent
   ],

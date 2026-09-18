@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FilterFieldModule } from '@dev/translatr-components';
+import { FilterFieldComponent } from '@dev/translatr-components';
 import { ListHeaderComponent } from './list-header.component';
 
 @NgModule({
@@ -18,7 +18,7 @@ import { ListHeaderComponent } from './list-header.component';
     MatFormFieldModule,
     MatInputModule,
     MatTooltipModule,
-    FilterFieldModule
+    FilterFieldComponent
   ]
 })
 export class ListHeaderModule {}
