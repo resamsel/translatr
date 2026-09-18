@@ -27,7 +27,7 @@ import { StoreModule } from '@ngrx/store';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoPipe } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { AccessTokenEditDialogModule } from '../../shared/access-token-edit-dialog/access-token-edit-dialog.module';
+import { AccessTokenEditDialogComponent } from '../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { AccessTokenEditFormComponent } from '../../shared/access-token-edit-form/access-token-edit-form.component';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { NavListComponent } from '../../shared/nav-list/nav-list.component';
@@ -72,7 +72,7 @@ import { UserGuard } from './user.guard';
     UserCardComponent, UserCardLinkComponent,
     ProjectCardComponent, ProjectCardLinkComponent,
     ProjectEditDialogComponent,
-    AccessTokenEditDialogModule,
+    AccessTokenEditDialogComponent,
     NavListComponent,
     AccessTokenEditFormComponent,
     ProjectCardListModule,

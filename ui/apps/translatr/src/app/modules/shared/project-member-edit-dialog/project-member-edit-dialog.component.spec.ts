@@ -4,7 +4,9 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
+import { UsersModule } from '../../pages/users-page/+state/users.module';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
+import { ProjectMemberEditFormComponent } from '../project-member-edit-form/project-member-edit-form.component';
 import { ProjectMemberEditFormTestingModule } from '../testing';
 
 import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.component';
@@ -15,10 +17,12 @@ describe('ProjectMemberEditDialogComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectMemberEditDialogComponent],
+      TestBed.overrideComponent(ProjectMemberEditDialogComponent, {
+        remove: { imports: [ProjectMemberEditFormComponent, UsersModule] },
+        add: { imports: [ProjectMemberEditFormTestingModule] }
+      }).configureTestingModule({
         imports: [
-          ProjectMemberEditFormTestingModule,
+          ProjectMemberEditDialogComponent,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatDialogModule,
