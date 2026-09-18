@@ -1,7 +1,23 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent,
+  UserCardComponent,
+  UserCardLinkComponent
+} from '@dev/translatr-components';
+import {
+  MockEmptyViewComponent,
+  MockEmptyViewActionsComponent,
+  MockEmptyViewContentComponent,
+  MockEmptyViewHeaderComponent,
+  MockUserCardComponent,
+  MockUserCardLinkComponent
+} from '@translatr/components/testing';
 
 import { UserListComponent } from './user-list.component';
+import { NavListComponent } from '../nav-list/nav-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatListModule } from '@angular/material/list';
@@ -17,11 +33,32 @@ describe('UserListComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserListComponent],
+      TestBed.overrideComponent(UserListComponent, {
+        remove: {
+          imports: [
+            NavListComponent,
+            UserCardComponent,
+            UserCardLinkComponent,
+            EmptyViewComponent,
+            EmptyViewHeaderComponent,
+            EmptyViewContentComponent,
+            EmptyViewActionsComponent
+          ]
+        },
+        add: {
+          imports: [
+            NavListTestingModule,
+            MockUserCardComponent,
+            MockUserCardLinkComponent,
+            MockEmptyViewComponent,
+            MockEmptyViewActionsComponent,
+            MockEmptyViewContentComponent,
+            MockEmptyViewHeaderComponent
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          NavListTestingModule,
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
+          UserListComponent,
 
           RouterTestingModule,
           GravatarModule,

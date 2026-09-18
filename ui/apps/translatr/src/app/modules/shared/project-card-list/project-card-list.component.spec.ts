@@ -1,4 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { NavListComponent } from '../nav-list/nav-list.component';
+import { ProjectCardComponent } from '../project-card/project-card.component';
+import { ProjectCardLinkComponent } from '../project-card/project-card-link.component';
+import { ProjectEmptyViewComponent } from '../project-empty-view/project-empty-view.component';
 import {
   NavListTestingModule,
   ProjectCardTestingModule,
@@ -12,9 +16,15 @@ describe('ProjectCardListComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectCardListComponent],
-        imports: [NavListTestingModule, ProjectCardTestingModule, ProjectEmptyViewTestingModule]
+      TestBed.overrideComponent(ProjectCardListComponent, {
+        remove: {
+          imports: [NavListComponent, ProjectCardComponent, ProjectCardLinkComponent, ProjectEmptyViewComponent]
+        },
+        add: {
+          imports: [NavListTestingModule, ProjectCardTestingModule, ProjectEmptyViewTestingModule]
+        }
+      }).configureTestingModule({
+        imports: [ProjectCardListComponent]
       }).compileComponents();
     })
   );

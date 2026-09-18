@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { Message } from '@dev/translatr-model';
+import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-message-link',
   templateUrl: './activity-message-link.component.html',
-  styleUrls: ['./activity-message-link.component.scss']
+  styleUrls: ['./activity-message-link.component.scss'],
+  imports: [RouterModule, TranslocoModule]
 })
 export class ActivityMessageLinkComponent {
   messageLink: string[] | undefined;

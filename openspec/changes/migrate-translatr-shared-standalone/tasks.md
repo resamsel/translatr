@@ -25,10 +25,10 @@
 
 ## 4. List components composing nav-list
 
-- [ ] 4.1 Convert `ProjectCardListComponent` to `standalone: true` with explicit `imports` (including the now-standalone `NavListComponent`, `ProjectCardComponent`, `ProjectEmptyViewComponent`), delete `project-card-list.module.ts`, update consumers; verify `nx test translatr` succeeds
-- [ ] 4.2 Convert `ProjectListComponent` to `standalone: true` with explicit `imports` (including the now-standalone `NavListComponent`, `ProjectEmptyViewComponent`), delete `project-list.module.ts`, update consumers; verify `nx test translatr` succeeds
-- [ ] 4.3 Convert `UserListComponent` to `standalone: true` with explicit `imports` (including the now-standalone `NavListComponent`), delete `user-list.module.ts`, update consumers; verify `nx test translatr` succeeds
-- [ ] 4.4 Convert `ActivityListComponent` and its 6 `Activity*LinkComponent` siblings to `standalone: true` with explicit `imports` (including the now-standalone `NavListComponent`), delete `activity-list.module.ts`, update consumers; verify `nx test translatr` succeeds
+- [x] 4.1 Convert `ProjectCardListComponent` to `standalone: true` with explicit `imports` (including the now-standalone `NavListComponent`, `ProjectCardComponent`, `ProjectEmptyViewComponent`), delete `project-card-list.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (dropped the pooled-but-unused direct `EmptyView*` imports inherited from the old NgModule - its template only uses `app-project-empty-view`, not the `dev-empty-view*` tags directly)
+- [x] 4.2 Convert `ProjectListComponent` to `standalone: true` with explicit `imports` (including the now-standalone `NavListComponent`, `ProjectEmptyViewComponent`), delete `project-list.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (its template does use `dev-empty-view*` tags directly, so all four EmptyView imports were kept; spec needed `TranslocoTestingModule` for the same real-activation reason as project-empty-view)
+- [x] 4.3 Convert `UserListComponent` to `standalone: true` with explicit `imports` (including the now-standalone `NavListComponent`), delete `user-list.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
+- [x] 4.4 Convert `ActivityListComponent` and its 6 `Activity*LinkComponent` siblings to `standalone: true` with explicit `imports` (including the now-standalone `NavListComponent`), delete `activity-list.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (dropped `TagComponent`, `GravatarModule`, and `MatChipsModule` from `ActivityListComponent`'s imports and `EmptyViewContentComponent`/`EmptyViewActionsComponent` - none used directly in its template, all pooled-but-unused leftovers from the old NgModule)
 
 ## 5. Testing doubles
 

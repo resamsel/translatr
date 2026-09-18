@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { Locale } from '@dev/translatr-model';
+import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-locale-link',
   templateUrl: './activity-locale-link.component.html',
-  styleUrls: ['./activity-locale-link.component.scss']
+  styleUrls: ['./activity-locale-link.component.scss'],
+  imports: [RouterModule, TranslocoModule]
 })
 export class ActivityLocaleLinkComponent {
   localeLink: string[] | undefined;

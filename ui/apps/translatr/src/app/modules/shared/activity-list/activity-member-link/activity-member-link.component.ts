@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { Member } from '@dev/translatr-model';
+import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-member-link',
   templateUrl: './activity-member-link.component.html',
-  styleUrls: ['./activity-member-link.component.scss']
+  styleUrls: ['./activity-member-link.component.scss'],
+  imports: [RouterModule, TranslocoModule]
 })
 export class ActivityMemberLinkComponent {
   memberLink: string[] | undefined;

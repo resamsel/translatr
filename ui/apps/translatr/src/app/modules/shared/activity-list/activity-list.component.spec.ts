@@ -1,22 +1,15 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
+import { EmptyViewComponent, EmptyViewHeaderComponent } from '@dev/translatr-components';
+import { MockEmptyViewComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { ActivityListComponent } from './activity-list.component';
+import { NavListComponent } from '../nav-list/nav-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
 import { TimeAgoPipe } from '@dev/translatr-components';
-import { GravatarModule } from 'ngx-gravatar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ActivityProjectLinkComponent } from './activity-project-link/activity-project-link.component';
-import { ActivityLocaleLinkComponent } from './activity-locale-link/activity-locale-link.component';
-import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.component';
-import { ActivityMemberLinkComponent } from './activity-member-link/activity-member-link.component';
-import { ActivityMessageLinkComponent } from './activity-message-link/activity-message-link.component';
-import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { TagComponent } from '@dev/translatr-components';
 
 describe('ActivityListComponent', () => {
   let component: ActivityListComponent;
@@ -24,32 +17,21 @@ describe('ActivityListComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [
-          ActivityListComponent,
-          ActivityProjectLinkComponent,
-          ActivityLocaleLinkComponent,
-          ActivityKeyLinkComponent,
-          ActivityMemberLinkComponent,
-          ActivityMessageLinkComponent,
-          ActivityAccessTokenLinkComponent
-        ],
+      TestBed.overrideComponent(ActivityListComponent, {
+        remove: { imports: [NavListComponent, EmptyViewComponent, EmptyViewHeaderComponent] },
+        add: { imports: [NavListTestingModule, MockEmptyViewComponent, MockEmptyViewHeaderComponent] }
+      }).configureTestingModule({
         imports: [
-          NavListTestingModule,
+          ActivityListComponent,
 
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
-
-          TagComponent,
 
           MatListModule,
           MatIconModule,
-          MatChipsModule,
           MatTooltipModule,
 
-          TimeAgoPipe,
-          GravatarModule
+          TimeAgoPipe
         ]
       }).compileComponents();
     })

@@ -29,13 +29,13 @@ import { TimeAgoPipe } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { AccessTokenEditDialogComponent } from '../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { AccessTokenEditFormComponent } from '../../shared/access-token-edit-form/access-token-edit-form.component';
-import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
+import { ActivityListComponent } from '../../shared/activity-list/activity-list.component';
 import { NavListComponent } from '../../shared/nav-list/nav-list.component';
-import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
+import { ProjectCardListComponent } from '../../shared/project-card-list/project-card-list.component';
 import { ProjectCardComponent } from '../../shared/project-card/project-card.component';
 import { ProjectCardLinkComponent } from '../../shared/project-card/project-card-link.component';
 import { ProjectEditDialogComponent } from '../../shared/project-edit-dialog/project-edit-dialog.component';
-import { ProjectListModule } from '../../shared/project-list/project-list.module';
+import { ProjectListComponent } from '../../shared/project-list/project-list.component';
 import { UserEffects } from './+state/user.effects';
 import { UserFacade } from './+state/user.facade';
 import {
@@ -67,15 +67,15 @@ import { UserGuard } from './user.guard';
     CommonModule,
     UserPageRoutingModule,
     SidenavModule,
-    ProjectListModule,
-    ActivityListModule,
+    ProjectListComponent,
+    ActivityListComponent,
     UserCardComponent, UserCardLinkComponent,
     ProjectCardComponent, ProjectCardLinkComponent,
     ProjectEditDialogComponent,
     AccessTokenEditDialogComponent,
     NavListComponent,
     AccessTokenEditFormComponent,
-    ProjectCardListModule,
+    ProjectCardListComponent,
     EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
     ConfirmButtonComponent,
 

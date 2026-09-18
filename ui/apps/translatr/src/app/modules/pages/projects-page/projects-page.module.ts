@@ -10,11 +10,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { GravatarModule } from 'ngx-gravatar';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
+import { ProjectCardListComponent } from '../../shared/project-card-list/project-card-list.component';
 import { ProjectCardComponent } from '../../shared/project-card/project-card.component';
 import { ProjectCardLinkComponent } from '../../shared/project-card/project-card-link.component';
 import { ProjectEditDialogComponent } from '../../shared/project-edit-dialog/project-edit-dialog.component';
-import { ProjectListModule } from '../../shared/project-list/project-list.module';
+import { ProjectListComponent } from '../../shared/project-list/project-list.component';
 import { ProjectsEffects } from './+state/projects.effects';
 import { ProjectsFacade } from './+state/projects.facade';
 import {
@@ -31,7 +31,7 @@ import { ProjectsPageComponent } from './projects-page.component';
     CommonModule,
     ProjectsPageRoutingModule,
     SidenavModule,
-    ProjectListModule,
+    ProjectListComponent,
     ProjectCardComponent, ProjectCardLinkComponent,
     ProjectEditDialogComponent,
 
@@ -45,7 +45,7 @@ import { ProjectsPageComponent } from './projects-page.component';
     }),
     EffectsModule.forFeature([ProjectsEffects]),
     MatTooltipModule,
-    ProjectCardListModule,
+    ProjectCardListComponent,
     FeatureFlagDirective, FeatureFlagClassDirective,
     TranslocoModule
   ],
