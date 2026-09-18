@@ -15,7 +15,7 @@
 
 ## 2. nav-list
 
-- [ ] 2.1 Convert `NavListComponent` to `standalone: true` with explicit `imports` (including the now-standalone `ListHeaderComponent`), delete `nav-list.module.ts`, update consumers; verify `nx test translatr` succeeds
+- [x] 2.1 Convert `NavListComponent` to `standalone: true` with explicit `imports` (including the now-standalone `ListHeaderComponent`), delete `nav-list.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (its spec needed `TestBed.overrideComponent` to swap the real `ListHeaderComponent` for `ListHeaderTestingModule`, the whole module rather than a bare mock class since that testing module isn't converted until group 5)
 
 ## 3. Dialogs composing a form
 

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavListComponent } from './nav-list.component';
+import { ListHeaderComponent } from '../list-header/list-header.component';
 import { ListHeaderTestingModule } from '../list-header/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -14,10 +15,12 @@ describe('NavListComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [NavListComponent],
+      TestBed.overrideComponent(NavListComponent, {
+        remove: { imports: [ListHeaderComponent] },
+        add: { imports: [ListHeaderTestingModule] }
+      }).configureTestingModule({
         imports: [
-          ListHeaderTestingModule,
+          NavListComponent,
 
           RouterTestingModule,
 

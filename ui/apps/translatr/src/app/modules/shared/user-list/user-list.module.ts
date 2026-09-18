@@ -7,13 +7,13 @@ import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent
 import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoPipe } from '@dev/translatr-components';
-import { NavListModule } from '../nav-list/nav-list.module';
+import { NavListComponent } from '../nav-list/nav-list.component';
 import { UserListComponent } from './user-list.component';
 
 @NgModule({
   declarations: [UserListComponent],
   imports: [
-    NavListModule,
+    NavListComponent,
     UserCardComponent, UserCardLinkComponent,
     EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
 

@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent } from '@dev/translatr-components';
 import { TimeAgoPipe } from '@dev/translatr-components';
-import { NavListModule } from '../nav-list/nav-list.module';
+import { NavListComponent } from '../nav-list/nav-list.component';
 import { ProjectCardComponent } from '../project-card/project-card.component';
 import { ProjectCardLinkComponent } from '../project-card/project-card-link.component';
 import { ProjectEmptyViewComponent } from '../project-empty-view/project-empty-view.component';
@@ -19,7 +19,7 @@ import { ProjectCardListComponent } from './project-card-list.component';
     RouterModule,
 
     MatIconModule,
-    NavListModule,
+    NavListComponent,
     MatButtonModule,
 
     TimeAgoPipe,
