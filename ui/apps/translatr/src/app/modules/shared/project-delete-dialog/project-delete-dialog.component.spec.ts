@@ -17,8 +17,8 @@ describe('ProjectDeleteDialogComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ProjectDeleteDialogComponent],
         imports: [
+          ProjectDeleteDialogComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

@@ -10,7 +10,7 @@ import { StoreModule } from '@ngrx/store';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
-import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
+import { ProjectEditDialogComponent } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { ProjectListModule } from '../../shared/project-list/project-list.module';
 import { ProjectsPageModule } from '../projects-page/projects-page.module';
 import { DashboardEffects } from './+state/dashboard.effects';
@@ -30,7 +30,7 @@ import { DashboardPageComponent } from './dashboard-page.component';
     ProjectsPageModule,
     SidenavModule,
     ProjectListModule,
-    ProjectEditDialogModule,
+    ProjectEditDialogComponent,
     ActivityListModule,
     ProjectCardListModule,
     MetricComponent,

@@ -34,7 +34,7 @@ import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
 import { ProjectCardComponent } from '../../shared/project-card/project-card.component';
 import { ProjectCardLinkComponent } from '../../shared/project-card/project-card-link.component';
-import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
+import { ProjectEditDialogComponent } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { ProjectListModule } from '../../shared/project-list/project-list.module';
 import { UserEffects } from './+state/user.effects';
 import { UserFacade } from './+state/user.facade';
@@ -71,7 +71,7 @@ import { UserGuard } from './user.guard';
     ActivityListModule,
     UserCardComponent, UserCardLinkComponent,
     ProjectCardComponent, ProjectCardLinkComponent,
-    ProjectEditDialogModule,
+    ProjectEditDialogComponent,
     AccessTokenEditDialogModule,
     NavListModule,
     AccessTokenEditFormComponent,

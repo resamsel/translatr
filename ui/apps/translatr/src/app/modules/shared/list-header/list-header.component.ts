@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,7 +7,12 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { FilterFieldFilter } from '@dev/translatr-components';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { FilterFieldComponent, FilterFieldFilter } from '@dev/translatr-components';
 import { RequestCriteria } from '@dev/translatr-model';
 
 export const defaultFilters: FilterFieldFilter[] = [
@@ -22,11 +28,12 @@ export type FilterCriteria = RequestCriteria &
   Record<string, string | number | boolean | undefined>;
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-list-header',
   templateUrl: './list-header.component.html',
-  styleUrls: ['./list-header.component.scss']
+  styleUrls: ['./list-header.component.scss'],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatTooltipModule, FilterFieldComponent]
 })
 export class ListHeaderComponent implements OnInit {
   selection: FilterFieldFilter[] = [];
