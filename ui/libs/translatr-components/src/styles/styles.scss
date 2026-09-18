@@ -35,6 +35,19 @@ a.link:visited {
   color: #039be5;
 }
 
+// #039be5 is ~6.1:1 against the dark theme's #121212 page background, and
+// worse still against the lighter surfaces this link color also renders on:
+// ~4.9:1 on the #303030 mat-sidenav-container surface (admin app), ~3.9:1 on
+// the #424242 mat-mdc-card/table-row surface (e.g. admin Users table links).
+// Short of WCAG AAA's 7:1 for normal text on all three. Lighter shade, same
+// hue family, tuned to clear 7:1 against the lightest (hardest) of them -
+// which then also clears it against the two darker surfaces.
+.dark-theme a.link,
+.dark-theme a.link:active,
+.dark-theme a.link:visited {
+  color: #ade3fe;
+}
+
 a.link:hover {
   text-decoration: underline;
 }
@@ -248,6 +261,48 @@ a .mat-mdc-card {
     &.mat-mdc-unelevated-button {
       color: #fff;
     }
+  }
+}
+
+// The entity accent colors above (`.project`, `.owner`/`.user`, `.member`,
+// `.locale`, `.key`, `.access-token`, `.message`, `.activity`) are tuned for
+// text on a light/white card and fall well short of WCAG AAA's 7:1 (normal
+// text) against the dark theme's card surface (as low as 1.2:1). Lighter,
+// same-hue variants for text only - icon-circle backgrounds (white icon on
+// the original saturated color) and the decorative list-item accent bars
+// are untouched, since those aren't judged against the AAA text criterion.
+.translatr.dark-theme {
+  .project .mat-mdc-card {
+    color: #ffd082;
+  }
+
+  .owner .mat-mdc-card,
+  .user .mat-mdc-card {
+    color: #bedbf7;
+  }
+
+  .member .mat-mdc-card {
+    color: #ffccbc;
+  }
+
+  .locale .mat-mdc-card {
+    color: #39ecff;
+  }
+
+  .key .mat-mdc-card {
+    color: #c3e1a9;
+  }
+
+  .access-token .mat-mdc-card {
+    color: #eacef6;
+  }
+
+  .message .mat-mdc-card {
+    color: #facccc;
+  }
+
+  .activity .mat-mdc-card {
+    color: #b7e2b9;
   }
 }
 

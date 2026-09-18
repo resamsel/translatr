@@ -1,7 +1,18 @@
+@use 'sass:map';
 @use '@angular/material' as mat;
 @use 'mixins' as *;
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
+//
+// Kept at the standard default hues (green-700 / deep-orange-500). An
+// earlier attempt darkened these palette-wide to fix white-on-primary
+// button contrast, but "primary"/"warn" are also used as *text* elsewhere
+// (mat-tab active label, mat-slider, mat-progress-spinner, focus rings,
+// datepicker toggle...) - darkening the whole palette made that text
+// color even darker and barely visible against the dark surfaces it sits
+// on. The button-only fix lives below, scoped to just the button
+// background so it doesn't leak into every other primary/warn-colored
+// text/indicator.
 $dark-primary: mat.m2-define-palette(mat.$m2-green-palette, 700, 500, 900);
 $dark-accent: mat.m2-define-palette(mat.$m2-amber-palette, 200);
 
@@ -19,6 +30,10 @@ $dark-theme: mat.m2-define-dark-theme((
 
 .dark-theme {
   background-color: #121212;
+  // Base text color for plain content (not wrapped in a themed Material
+  // typography element, e.g. dev-empty-view-header) - without this it
+  // inherits the browser default (black), unreadable on the dark background.
+  color: white;
 
   @include header-tab-nav-on-dark;
 
