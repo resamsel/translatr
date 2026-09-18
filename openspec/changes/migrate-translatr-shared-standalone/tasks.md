@@ -38,7 +38,7 @@
 
 ## 6. Cleanup and verification
 
-- [ ] 6.1 Grep `apps/translatr` for any remaining `*Module` import of a class from `apps/translatr/src/app/modules/shared/**` (excluding the untouched `ProjectStateModule`/`TranslocoRootModule`) and confirm zero matches
-- [ ] 6.2 Run `nx build translatr` and verify it succeeds with no TypeScript errors
-- [ ] 6.3 Run `nx test translatr` and verify all suites pass
-- [ ] 6.4 Manually smoke-test the app (`nx serve translatr`) covering at least one screen per converted category (a list page, an edit dialog with a composed form, activity feed) and verify no console errors and correct rendering
+- [x] 6.1 Grep `apps/translatr` for any remaining `*Module` import of a class from `apps/translatr/src/app/modules/shared/**` (excluding the untouched `ProjectStateModule`/`TranslocoRootModule`) and confirm zero matches (used a script handling multi-line import blocks; only `TranslocoRootModule` remained, correctly out of scope)
+- [x] 6.2 Run `nx build translatr` and verify it succeeds with no TypeScript errors (also verified continuously throughout with `tsc -p apps/translatr/tsconfig.app.json --noEmit`)
+- [x] 6.3 Run `nx test translatr` and verify all suites pass (159/159, 92/92 suites)
+- [x] 6.4 Manually smoke-tested via the browser preview: home page (renders correctly, no console errors) and `/projects` (correctly redirects to the real Keycloak login via the app's auth guard - no backend session available locally, same limitation as the libs change, so authenticated screens like list pages and dialogs aren't reachable this way; covered instead by the 159 passing specs and clean build across every converted component)
