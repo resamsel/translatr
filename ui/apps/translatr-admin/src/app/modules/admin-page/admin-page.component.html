@@ -10,6 +10,19 @@
         <mat-icon>arrow_back</mat-icon>
       </button>
       <span>Translatr Admin</span>
+      <button
+        class="theme-toggle-button"
+        [matMenuTriggerFor]="themeMenu"
+        *featureFlag="Feature.ThemeSwitcher"
+        mat-icon-button
+      >
+        <mat-icon>brightness_6</mat-icon>
+      </button>
+      <mat-menu #themeMenu="matMenu">
+        <button (click)="onThemeChange('light')" mat-menu-item>Light</button>
+        <button (click)="onThemeChange('dark')" mat-menu-item>Dark</button>
+        <button (click)="onThemeChange('system')" mat-menu-item>System</button>
+      </mat-menu>
     </mat-toolbar>
     <mat-nav-list routerLinkActive>
       @for (child of children; track child) {
