@@ -20,7 +20,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { combineLatest } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
-import { NavbarModule } from '../../nav/navbar/navbar.module';
+import { AuthBarLanguageSwitcherComponent } from '../../nav/navbar/auth-bar-language-switcher/auth-bar-language-switcher.component';
+import { NavbarComponent } from '../../nav/navbar/navbar.component';
 
 @Component({
   standalone: true,
@@ -30,7 +31,8 @@ import { NavbarModule } from '../../nav/navbar/navbar.module';
   styleUrls: ['./login-page.component.scss'],
   imports: [
     CommonModule,
-    NavbarModule,
+    NavbarComponent,
+    AuthBarLanguageSwitcherComponent,
     MatIconModule,
     MatButtonModule,
     FontAwesomeModule,

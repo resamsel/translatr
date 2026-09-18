@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent, FilterFieldComponent, NavbarModule } from '@dev/translatr-components';
+import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent, FilterFieldComponent, LanguageSwicher } from '@dev/translatr-components';
 import { HotkeysDirective } from '@ngneat/hotkeys';
 import { TranslocoModule } from '@jsverse/transloco';
 import { EffectsModule } from '@ngrx/effects';
@@ -46,7 +46,6 @@ import { LocaleEditorPageComponent } from './locale-editor-page.component';
     CommonModule,
     EditorPageRoutingModule,
     SidenavModule,
-    NavbarModule.forRoot(AppFacade),
     FormsModule,
     NavListModule,
     FilterFieldComponent,
@@ -75,6 +74,6 @@ import { LocaleEditorPageComponent } from './locale-editor-page.component';
 
     HotkeysDirective
   ],
-  providers: [EditorFacade]
+  providers: [EditorFacade, { provide: LanguageSwicher, useClass: AppFacade }]
 })
 export class EditorPageModule {}

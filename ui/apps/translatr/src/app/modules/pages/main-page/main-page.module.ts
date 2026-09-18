@@ -10,10 +10,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ActivityGraphComponent,
+  AuthBarLanguageSwitcherComponent,
   FeatureFlagDirective, FeatureFlagClassDirective,
   FooterComponent,
+  LanguageSwicher,
   MetricComponent,
-  NavbarModule,
+  NavbarComponent,
   ShortNumberPipe
 } from '@dev/translatr-components';
 import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
@@ -36,7 +38,8 @@ import { MainPageComponent } from './main-page.component';
   imports: [
     MainPageRoutingModule,
     CommonModule,
-    NavbarModule.forRoot(AppFacade),
+    NavbarComponent,
+    AuthBarLanguageSwitcherComponent,
     MatGridListModule,
     MatCardModule,
     MatIconModule,
@@ -62,7 +65,8 @@ import { MainPageComponent } from './main-page.component';
       appChat,
       appWrite,
       appDocument
-    ])
+    ]),
+    { provide: LanguageSwicher, useClass: AppFacade }
   ]
 })
 export class MainPageModule {}
