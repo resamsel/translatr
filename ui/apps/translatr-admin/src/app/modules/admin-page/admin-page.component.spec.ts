@@ -4,11 +4,14 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenav, MatSidenavContainer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureFlagModule, ThemeService } from '@dev/translatr-components';
+import { FeatureFlagFacade } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { AppFacade } from '../../+state/app.facade';
 import { DASHBOARD_ROUTES } from '../pages/dashboard-page/dashboard-page.token';
@@ -28,7 +31,11 @@ class HostComponent {}
 describe('AdminPageComponent', () => {
   let fixture: ComponentFixture<HostComponent>;
 
-  const createComponent = (largeScreen: boolean) => {
+  const createComponent = (
+    largeScreen: boolean,
+    themeFlagEnabled = false,
+    preference = 'system'
+  ) => {
     const breakpointObserver: Partial<BreakpointObserver> = {
       isMatched: () => largeScreen,
       observe: () => of({ matches: largeScreen, breakpoints: {} })
@@ -38,6 +45,7 @@ describe('AdminPageComponent', () => {
       declarations: [HostComponent, AdminPageComponent],
       imports: [
         SidenavTestingModule,
+        FeatureFlagModule,
 
         RouterTestingModule,
         NoopAnimationsModule,
@@ -46,10 +54,23 @@ describe('AdminPageComponent', () => {
         MatToolbarModule,
         MatButtonModule,
         MatIconModule,
-        MatListModule
+        MatListModule,
+        MatMenuModule
       ],
       providers: [
         { provide: AppFacade, useFactory: () => ({}) },
+        {
+          provide: FeatureFlagFacade,
+          useFactory: () => ({ hasFeatures$: () => of(themeFlagEnabled) })
+        },
+        {
+          provide: ThemeService,
+          useFactory: () => ({
+            preference$: of(preference),
+            effectiveTheme$: of(preference === 'dark' ? 'dark' : 'light'),
+            setPreference: jest.fn()
+          })
+        },
         { provide: BreakpointObserver, useValue: breakpointObserver },
         { provide: DASHBOARD_ROUTES, useValue: [] }
       ]
@@ -110,4 +131,30 @@ describe('AdminPageComponent', () => {
       'content'
     );
   }));
+
+  describe('theme toggle', () => {
+    it('hides the theme toggle button when the ThemeSwitcher feature flag is disabled', waitForAsync(() => {
+      createComponent(true, false);
+
+      expect(fixture.debugElement.query(By.css('.theme-toggle-button'))).toBeFalsy();
+    }));
+
+    it('shows the theme toggle button in the toolbar when the flag is enabled', waitForAsync(() => {
+      createComponent(true, true);
+
+      expect(fixture.debugElement.query(By.css('.theme-toggle-button'))).toBeTruthy();
+    }));
+
+    it('applies the selection via ThemeService when an admin picks "Dark" from the menu', waitForAsync(() => {
+      createComponent(true, true);
+      const themeService = TestBed.inject(ThemeService);
+
+      const adminPage = fixture.debugElement.query(
+        By.directive(AdminPageComponent)
+      ).componentInstance as AdminPageComponent;
+      adminPage.onThemeChange('dark' as never);
+
+      expect(themeService.setPreference).toHaveBeenCalledWith('dark');
+    }));
+  });
 });

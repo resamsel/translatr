@@ -1,6 +1,8 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
 import { Route, Router } from '@angular/router';
+import { ThemePreference, ThemeService } from '@dev/translatr-components';
+import { Feature } from '@dev/translatr-model';
 import { NameIconRoute } from '@translatr/utils';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -27,6 +29,8 @@ export class AdminPageComponent {
   @Input() page: string | undefined;
   @Input() headerColor: string | undefined;
 
+  readonly Feature = Feature;
+
   me$ = this.facade.me$;
   children: NameIconRoute[] = this.navItems;
 
@@ -45,7 +49,8 @@ export class AdminPageComponent {
     private readonly facade: AppFacade,
     private readonly router: Router,
     private readonly breakpointObserver: BreakpointObserver,
-    @Inject(DASHBOARD_ROUTES) private readonly navItems: NameIconRoute[]
+    @Inject(DASHBOARD_ROUTES) private readonly navItems: NameIconRoute[],
+    private readonly themeService: ThemeService
   ) {}
 
   routerLink(route: Route) {
@@ -69,5 +74,9 @@ export class AdminPageComponent {
     }
 
     return activeRoutes[0].data.name;
+  }
+
+  onThemeChange(preference: ThemePreference): void {
+    this.themeService.setPreference(preference);
   }
 }

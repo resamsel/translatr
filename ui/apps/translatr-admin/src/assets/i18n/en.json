@@ -155,6 +155,7 @@
   "feature.name.language-switcher": "Language switcher",
   "feature.name.project-cli-card": "Project CLI integration card",
   "feature.name.project-infographic": "Project infographic",
+  "feature.name.theme-switcher": "Theme switcher",
   "feedback.title": "Feedback",
   "filetype.choose": "Choose file type",
   "filetype.gettext": "Gettext ('{locale.name}'/LC_MESSAGES/message.po)",
