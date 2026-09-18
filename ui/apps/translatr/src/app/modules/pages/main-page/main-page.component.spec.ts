@@ -12,9 +12,9 @@ import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
 import { MainPageComponent } from './main-page.component';
 import {
   MockActivityGraphComponent,
-  FeatureFlagTestingModule,
-  FooterTestingModule,
-  MetricTestingModule,
+  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  MockFooterComponent,
+  MockMetricComponent,
   MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent
 } from '@translatr/components/testing';
 import { MatDividerModule } from '@angular/material/divider';
@@ -35,10 +35,10 @@ describe('MainPageComponent', () => {
         declarations: [MainPageComponent],
         imports: [
           MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent,
-          FooterTestingModule,
+          MockFooterComponent,
           MockActivityGraphComponent,
-          FeatureFlagTestingModule,
-          MetricTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+          MockMetricComponent,
           ShortNumberPipe,
 
           NoopAnimationsModule,

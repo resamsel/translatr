@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ConstraintViolationErrorInfo, User } from '@dev/translatr-model';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-user-edit-form',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
@@ -19,9 +19,3 @@ export class MockUserEditFormComponent {
 
   onSubmit() {}
 }
-
-@NgModule({
-  declarations: [MockUserEditFormComponent],
-  exports: [MockUserEditFormComponent]
-})
-export class UserEditFormTestingModule {}

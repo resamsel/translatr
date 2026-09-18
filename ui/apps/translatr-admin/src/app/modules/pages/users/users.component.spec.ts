@@ -9,8 +9,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { EllipsisPipe } from '@dev/translatr-components';
 import {
   MockConfirmButtonComponent,
-  EntityTableTestingModule,
-  FeatureFlagTestingModule
+  MockEntityTableComponent, MockSelectionActionsComponent,
+  MockFeatureFlagDirective, MockFeatureFlagClassDirective
 } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { TimeAgoPipe } from '@dev/translatr-components';
@@ -29,8 +29,8 @@ describe('UsersComponent', () => {
         declarations: [UsersComponent],
         imports: [
           AdminPageTestingModule,
-          FeatureFlagTestingModule,
-          EntityTableTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+          MockEntityTableComponent, MockSelectionActionsComponent,
           MockConfirmButtonComponent,
           EllipsisPipe,
 

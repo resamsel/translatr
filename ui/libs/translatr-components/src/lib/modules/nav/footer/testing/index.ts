@@ -1,1 +1,1 @@
-export * from './footer-testing.module';
+export * from './mock-footer.component';

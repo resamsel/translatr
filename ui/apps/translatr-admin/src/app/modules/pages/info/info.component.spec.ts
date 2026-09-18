@@ -4,8 +4,8 @@ import { ShortNumberPipe } from '@dev/translatr-components';
 import { ActivityService } from '@dev/translatr-sdk';
 import {
   MockActivityGraphComponent,
-  FeatureFlagTestingModule,
-  MetricTestingModule
+  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  MockMetricComponent
 } from '@translatr/components/testing';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
@@ -23,8 +23,8 @@ describe('InfoComponent', () => {
         imports: [
           MockActivityGraphComponent,
           AdminPageTestingModule,
-          FeatureFlagTestingModule,
-          MetricTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+          MockMetricComponent,
           ShortNumberPipe,
 
           RouterTestingModule

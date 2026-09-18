@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { FilterFieldFilter } from '@dev/translatr-components';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-filter-field',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockFilterFieldComponent {
+export class MockFilterFieldComponent {
   @Input() enabled: boolean;
   @Input() filters: ReadonlyArray<FilterFieldFilter>;
   @Input() appearance: MatFormFieldAppearance | 'elevate' = 'fill';
@@ -18,9 +18,3 @@ class MockFilterFieldComponent {
 
   @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldFilter>>();
 }
-
-@NgModule({
-  declarations: [MockFilterFieldComponent],
-  exports: [MockFilterFieldComponent]
-})
-export class FilterFieldTestingModule {}

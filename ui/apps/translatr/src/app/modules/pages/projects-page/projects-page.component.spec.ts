@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { mockObservable } from '@translatr/utils/testing';
-import { FeatureFlagTestingModule } from '@translatr/components/testing';
+import { MockFeatureFlagDirective, MockFeatureFlagClassDirective } from '@translatr/components/testing';
 import { ProjectListTestingModule, SidenavTestingModule } from '../../testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslocoTestingModule } from '@jsverse/transloco';
@@ -22,7 +22,7 @@ describe('UsersPageComponent', () => {
         declarations: [ProjectsPageComponent],
         imports: [
           SidenavTestingModule,
-          FeatureFlagTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
           ProjectListTestingModule,
 
           RouterTestingModule,

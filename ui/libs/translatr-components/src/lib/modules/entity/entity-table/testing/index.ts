@@ -1,1 +1,1 @@
-export * from './entity-table-testing.module';
+export * from './mock-entity-table.component';

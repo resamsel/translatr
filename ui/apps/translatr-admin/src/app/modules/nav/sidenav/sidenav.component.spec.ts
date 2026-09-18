@@ -6,8 +6,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import {
-  FeatureFlagTestingModule,
-  FooterTestingModule,
+  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  MockFooterComponent,
   MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent
 } from '@translatr/components/testing';
 
@@ -23,8 +23,8 @@ describe('SidenavComponent', () => {
         declarations: [SidenavComponent],
         imports: [
           MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent,
-          FooterTestingModule,
-          FeatureFlagTestingModule,
+          MockFooterComponent,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
 
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FilterFieldTestingModule } from '@translatr/components/testing';
+import { MockFilterFieldComponent } from '@translatr/components/testing';
 
 import { ListHeaderComponent } from './list-header.component';
 
@@ -15,7 +15,7 @@ describe('ListHeaderComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ListHeaderComponent],
-        imports: [FilterFieldTestingModule, MatIconModule, MatButtonModule, MatTooltipModule]
+        imports: [MockFilterFieldComponent, MatIconModule, MatButtonModule, MatTooltipModule]
       }).compileComponents();
     })
   );

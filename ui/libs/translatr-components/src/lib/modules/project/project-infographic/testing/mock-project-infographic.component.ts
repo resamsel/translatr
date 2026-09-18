@@ -1,7 +1,7 @@
-import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-project-infographic',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
@@ -12,9 +12,3 @@ export class MockProjectInfographicComponent {
   @Input() keyCount: number;
   @Input() messageCount: number;
 }
-
-@NgModule({
-  declarations: [MockProjectInfographicComponent],
-  exports: [MockProjectInfographicComponent]
-})
-export class ProjectInfographicTestingModule {}

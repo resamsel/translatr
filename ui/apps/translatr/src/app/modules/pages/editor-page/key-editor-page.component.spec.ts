@@ -8,7 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { EditorFacade } from './+state/editor.facade';
 import { EditorTestingModule } from './editor/testing';
-import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, FilterFieldTestingModule } from '@translatr/components/testing';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MockFilterFieldComponent } from '@translatr/components/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -28,7 +28,7 @@ describe('KeyEditorPageComponent', () => {
         imports: [
           RouterTestingModule,
           EditorTestingModule,
-          FilterFieldTestingModule,
+          MockFilterFieldComponent,
           NavListTestingModule,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 

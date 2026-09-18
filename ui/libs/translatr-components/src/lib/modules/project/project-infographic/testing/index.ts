@@ -1,1 +1,1 @@
-export * from './project-infographic-testing.module';
+export * from './mock-project-infographic.component';
