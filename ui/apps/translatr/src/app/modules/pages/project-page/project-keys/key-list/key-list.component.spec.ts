@@ -8,7 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NavListTestingModule } from '../../../../shared/nav-list/testing';
-import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
+import { MockConfirmButtonComponent, MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 
 describe('KeyListComponent', () => {
   let component: KeyListComponent;
@@ -20,8 +20,8 @@ describe('KeyListComponent', () => {
         declarations: [KeyListComponent],
         imports: [
           NavListTestingModule,
-          ButtonTestingModule,
-          EmptyViewTestingModule,
+          MockConfirmButtonComponent,
+          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 
           RouterTestingModule,
 

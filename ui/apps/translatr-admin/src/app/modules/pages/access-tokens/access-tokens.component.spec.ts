@@ -12,7 +12,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { EllipsisPipe, EntityTableComponent } from '@dev/translatr-components';
 import {
-  ButtonTestingModule,
+  MockConfirmButtonComponent,
   FeatureFlagTestingModule,
   FilterFieldTestingModule
 } from '@translatr/components/testing';
@@ -53,7 +53,7 @@ describe('AccessTokensComponent', () => {
           AdminPageTestingModule,
           FeatureFlagTestingModule,
           FilterFieldTestingModule,
-          ButtonTestingModule,
+          MockConfirmButtonComponent,
           EllipsisPipe,
 
           RouterTestingModule,

@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ShortNumberPipe } from '@dev/translatr-components';
 import { ActivityService } from '@dev/translatr-sdk';
 import {
-  ActivityGraphTestingModule,
+  MockActivityGraphComponent,
   FeatureFlagTestingModule,
   MetricTestingModule
 } from '@translatr/components/testing';
@@ -21,7 +21,7 @@ describe('InfoComponent', () => {
       TestBed.configureTestingModule({
         declarations: [InfoComponent],
         imports: [
-          ActivityGraphTestingModule,
+          MockActivityGraphComponent,
           AdminPageTestingModule,
           FeatureFlagTestingModule,
           MetricTestingModule,

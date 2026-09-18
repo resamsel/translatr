@@ -1,16 +1,14 @@
-import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Link } from '@dev/translatr-components';
-import { MockAuthBarItemComponent } from '../auth-bar-item/testing';
-import { MockAuthBarLanguageSwitcherComponent } from '../auth-bar-language-switcher/testing';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-navbar',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockNavbarComponent {
+export class MockNavbarComponent {
   @Input() title = 'Translatr';
   @Input() page: string;
   @Input() backLink: Link;
@@ -19,13 +17,3 @@ class MockNavbarComponent {
   @Input() showLogo = true;
   @Input() overlay = false;
 }
-
-@NgModule({
-  declarations: [
-    MockNavbarComponent,
-    MockAuthBarItemComponent,
-    MockAuthBarLanguageSwitcherComponent
-  ],
-  exports: [MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent]
-})
-export class NavbarTestingModule {}

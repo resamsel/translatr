@@ -14,7 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { WINDOW } from '@translatr/utils';
 import {
-  EmptyViewTestingModule,
+  MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
   FeatureFlagTestingModule,
   MetricTestingModule,
   ProjectInfographicTestingModule
@@ -39,7 +39,7 @@ describe('ProjectInfoComponent', () => {
           ActivityListTestingModule,
           ShortNumberPipe,
           FeatureFlagTestingModule,
-          EmptyViewTestingModule,
+          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
           ProjectInfographicTestingModule,
 
           RouterTestingModule,

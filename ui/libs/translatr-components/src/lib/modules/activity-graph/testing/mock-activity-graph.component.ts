@@ -1,13 +1,13 @@
-import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Aggregate } from '@dev/translatr-model';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-activity-graph',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockActivityGraphComponent {
+export class MockActivityGraphComponent {
   @Input() data: Aggregate[];
   @Input() cellInnerSize = 16;
   @Input() cellPadding = 1;
@@ -21,9 +21,3 @@ class MockActivityGraphComponent {
     ['Sat', 6]
   ];
 }
-
-@NgModule({
-  declarations: [MockActivityGraphComponent],
-  exports: [MockActivityGraphComponent]
-})
-export class ActivityGraphTestingModule {}

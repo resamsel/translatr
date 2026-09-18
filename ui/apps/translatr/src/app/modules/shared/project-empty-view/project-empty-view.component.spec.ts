@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { EmptyViewTestingModule } from '@translatr/components/testing';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 
 import { ProjectEmptyViewComponent } from './project-empty-view.component';
 
@@ -12,7 +12,7 @@ describe('ProjectEmptyViewComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ProjectEmptyViewComponent],
-        imports: [EmptyViewTestingModule, MatButtonModule]
+        imports: [MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MatButtonModule]
       }).compileComponents();
     })
   );

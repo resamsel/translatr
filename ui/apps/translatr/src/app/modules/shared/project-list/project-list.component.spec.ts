@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { EmptyViewTestingModule } from '@translatr/components/testing';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 
 import { ProjectListComponent } from './project-list.component';
 import { NavListTestingModule } from '../nav-list/testing';
@@ -20,7 +20,7 @@ describe('ProjectListComponent', () => {
         imports: [
           NavListTestingModule,
           ProjectEmptyViewTestingModule,
-          EmptyViewTestingModule,
+          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 
           RouterTestingModule,
 

@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EllipsisPipe } from '@dev/translatr-components';
 import {
-  ButtonTestingModule,
+  MockConfirmButtonComponent,
   EntityTableTestingModule,
   FeatureFlagTestingModule
 } from '@translatr/components/testing';
@@ -31,7 +31,7 @@ describe('UsersComponent', () => {
           AdminPageTestingModule,
           FeatureFlagTestingModule,
           EntityTableTestingModule,
-          ButtonTestingModule,
+          MockConfirmButtonComponent,
           EllipsisPipe,
 
           RouterTestingModule,
