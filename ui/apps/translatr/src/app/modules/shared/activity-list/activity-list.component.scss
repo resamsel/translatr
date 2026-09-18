@@ -56,6 +56,11 @@
     @include medium {
       left: 151px;
     }
+
+    // rgba(0,0,0,.2) is invisible against the dark theme's background.
+    :host-context(.dark-theme) & {
+      border-left-color: rgba(255, 255, 255, 0.2);
+    }
   }
 
   .activity-content {
