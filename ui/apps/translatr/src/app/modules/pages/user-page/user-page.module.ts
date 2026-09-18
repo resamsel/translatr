@@ -13,8 +13,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-  ActivityGraphModule,
-  ButtonModule,
+  ActivityGraphComponent,
+  ConfirmButtonComponent,
   EmptyViewModule,
   FeatureFlagDirective, FeatureFlagClassDirective,
   MetricModule,
@@ -76,7 +76,7 @@ import { UserGuard } from './user.guard';
     AccessTokenEditFormModule,
     ProjectCardListModule,
     EmptyViewModule,
-    ButtonModule,
+    ConfirmButtonComponent,
 
     MatIconModule,
     MatTabsModule,
@@ -100,7 +100,7 @@ import { UserGuard } from './user.guard';
     EffectsModule.forFeature([UserEffects]),
     MetricModule,
     ShortNumberPipe,
-    ActivityGraphModule,
+    ActivityGraphComponent,
     TranslocoModule
   ],
   providers: [UserFacade, UserGuard]

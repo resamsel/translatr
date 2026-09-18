@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-  ActivityGraphModule,
+  ActivityGraphComponent,
   FeatureFlagDirective, FeatureFlagClassDirective,
   FooterModule,
   MetricModule,
@@ -46,7 +46,7 @@ import { MainPageComponent } from './main-page.component';
     MatDividerModule,
     MatTooltipModule,
     FooterModule,
-    ActivityGraphModule,
+    ActivityGraphComponent,
     TranslocoModule,
     FeatureFlagDirective, FeatureFlagClassDirective,
     MetricModule,

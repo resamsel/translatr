@@ -20,8 +20,8 @@ describe('AccessTokenEditDialogComponent', () => {
     waitForAsync(() => {
       onSubmit = jest.fn();
       TestBed.configureTestingModule({
-        declarations: [AccessTokenEditDialogComponent],
         imports: [
+          AccessTokenEditDialogComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

@@ -11,8 +11,12 @@ describe('ActivityGraphComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ActivityGraphComponent],
-        imports: [TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }), ShortNumberPipe, MatTooltipModule]
+        imports: [
+          ActivityGraphComponent,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
+          ShortNumberPipe,
+          MatTooltipModule
+        ]
       }).compileComponents();
     })
   );

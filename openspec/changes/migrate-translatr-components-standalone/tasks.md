@@ -7,21 +7,21 @@
 - [x] 1.3 Convert `FeatureFlagDirective` and `FeatureFlagClassDirective` to `standalone: true` (each with its own `imports`), update `feature-flag/index.ts`, delete `feature-flag.module.ts`; verify `nx build translatr-components` succeeds
 - [x] 1.4 Grep `apps/translatr` and `apps/translatr-admin` for `EllipsisPipeModule|ShortNumberModule|DisableControlModule|FeatureFlagModule` imports and update each to import the class directly; verify `nx build translatr` and `nx build translatr-admin` succeed
 
-## 2. Single-declaration components (generator-assisted)
+## 2. Single-declaration components (manual - generator does not apply, see design.md Decisions)
 
-- [ ] 2.1 Run `nx g @nx/angular:scam-to-standalone --component=access-token-edit-dialog/access-token-edit-dialog.component.ts --project=translatr-components`; verify `nx build translatr-components` succeeds and `access-token-edit-dialog.module.ts` is gone
-- [ ] 2.2 Run the generator for `activity-graph.component.ts`; verify build succeeds and `activity-graph.module.ts` is gone
-- [ ] 2.3 Run the generator for `confirm-button/confirm-button.component.ts`; verify build succeeds and `button.module.ts` is gone
-- [ ] 2.4 Run the generator for `filter-field.component.ts`; verify build succeeds and `filter-field.module.ts` is gone
-- [ ] 2.5 Run the generator for `metric.component.ts`; verify build succeeds and `metric.module.ts` is gone
-- [ ] 2.6 Run the generator for `footer.component.ts`; verify build succeeds and `footer.module.ts` is gone
-- [ ] 2.7 Run the generator for `login-page.component.ts`; verify build succeeds and `login-page.module.ts` is gone (leave `login-page-routing.module.ts` untouched)
-- [ ] 2.8 Run the generator for `project-edit-dialog.component.ts`; verify build succeeds and `project-edit-dialog.module.ts` is gone
-- [ ] 2.9 Run the generator for `project-infographic.component.ts`; verify build succeeds and `project-infographic.module.ts` is gone
-- [ ] 2.10 Run the generator for `tag.component.ts`; verify build succeeds and `tag.module.ts` is gone
-- [ ] 2.11 Run the generator for `user-edit-dialog.component.ts`; verify build succeeds and `user-edit-dialog.module.ts` is gone
-- [ ] 2.12 Run the generator for `user-edit-form.component.ts`; verify build succeeds and `user-edit-form.module.ts` is gone
-- [ ] 2.13 Confirm each generator run updated its feature folder's `index.ts` to export the component class (fix by hand where the generator didn't); verify `nx build translatr-components` succeeds
+- [x] 2.1 Convert `AccessTokenEditDialogComponent` to `standalone: true` with explicit `imports`, update `access-token/access-token-edit-dialog/index.ts`, delete `access-token-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.2 Convert `ActivityGraphComponent` to `standalone: true` with explicit `imports`, update `activity-graph/index.ts`, delete `activity-graph.module.ts`; verify `nx test translatr-components` succeeds
+- [x] 2.3 Convert `ConfirmButtonComponent` to `standalone: true` with explicit `imports`, update `button/index.ts`, delete `button.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.4 Convert `FilterFieldComponent` to `standalone: true` with explicit `imports`, update `filter-field/index.ts`, delete `filter-field.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.5 Convert `MetricComponent` to `standalone: true` with explicit `imports`, update `metric/index.ts`, delete `metric.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.6 Convert `FooterComponent` to `standalone: true` with explicit `imports`, update `nav/footer/index.ts`, delete `footer.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.7 Convert `LoginPageComponent` to `standalone: true` with explicit `imports`, update `pages/login-page/index.ts`, delete `login-page.module.ts` (leave `login-page-routing.module.ts` untouched); verify `nx test translatr-components` succeeds
+- [ ] 2.8 Convert `ProjectEditDialogComponent` to `standalone: true` with explicit `imports`, update `project/project-edit-dialog/index.ts`, delete `project-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.9 Convert `ProjectInfographicComponent` to `standalone: true` with explicit `imports`, update `project/project-infographic/index.ts`, delete `project-infographic.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.10 Convert `TagComponent` to `standalone: true` with explicit `imports`, update `tag/index.ts`, delete `tag.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.11 Convert `UserEditDialogComponent` to `standalone: true` with explicit `imports`, update `user/user-edit-dialog/index.ts`, delete `user-edit-dialog.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.12 Convert `UserEditFormComponent` to `standalone: true` with explicit `imports`, update `user/user-edit-form/index.ts`, delete `user-edit-form.module.ts`; verify `nx test translatr-components` succeeds
+- [ ] 2.13 Confirm each feature folder's `index.ts` from 2.1-2.12 exports the component class and no longer exports a deleted module; verify `nx test translatr-components` succeeds
 - [ ] 2.14 Grep `apps/translatr` and `apps/translatr-admin` for imports of the 12 removed module classes above and update each to import the component class directly; verify `nx build translatr` and `nx build translatr-admin` succeed
 
 ## 3. Multi-declaration modules (manual)

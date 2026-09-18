@@ -16,8 +16,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-  ActivityGraphModule,
-  ButtonModule,
+  ActivityGraphComponent,
+  ConfirmButtonComponent,
   EmptyViewModule,
   FeatureFlagDirective, FeatureFlagClassDirective,
   MetricModule,
@@ -82,9 +82,9 @@ import { ProjectGuard } from './project.guard';
     ListHeaderModule,
     MetricModule,
     EmptyViewModule,
-    ButtonModule,
+    ConfirmButtonComponent,
     ShortNumberPipe,
-    ActivityGraphModule,
+    ActivityGraphComponent,
     TranslocoModule,
     ProjectInfographicModule,
 
