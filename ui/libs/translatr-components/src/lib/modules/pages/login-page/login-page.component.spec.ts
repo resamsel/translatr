@@ -10,7 +10,8 @@ import { mockObservable } from '@translatr/utils/testing';
 import { of } from 'rxjs';
 
 import { LoginPageComponent } from './login-page.component';
-import { NavbarModule } from '../../nav/navbar/navbar.module';
+import { AuthBarLanguageSwitcherComponent } from '../../nav/navbar/auth-bar-language-switcher/auth-bar-language-switcher.component';
+import { NavbarComponent } from '../../nav/navbar/navbar.component';
 import { AuthClientService } from '@dev/translatr-sdk';
 import { AuthClient } from '@dev/translatr-model';
 
@@ -38,7 +39,7 @@ describe('LoginPageComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.overrideComponent(LoginPageComponent, {
-        remove: { imports: [NavbarModule] },
+        remove: { imports: [NavbarComponent, AuthBarLanguageSwitcherComponent] },
         add: { imports: [NavbarTestingModule] }
       }).configureTestingModule({
         imports: [

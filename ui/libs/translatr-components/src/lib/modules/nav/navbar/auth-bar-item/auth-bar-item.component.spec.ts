@@ -5,6 +5,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { AuthBarItemComponent } from './auth-bar-item.component';
@@ -16,8 +17,9 @@ describe('AuthBarItemComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [AuthBarItemComponent],
         imports: [
+          AuthBarItemComponent,
+          RouterTestingModule,
           GravatarModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 

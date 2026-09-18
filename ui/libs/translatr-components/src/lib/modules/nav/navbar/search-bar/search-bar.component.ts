@@ -8,10 +8,16 @@ import {
   ViewChild,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatOptionSelectionChange } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { RequestCriteria } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 
 type OptionType = keyof RequestCriteria | 'missing';
 
@@ -27,11 +33,21 @@ const defaultAutocompleteOptions: Option[] = [
 ];
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./search-bar.component.scss']
+  styleUrls: ['./search-bar.component.scss'],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatIconModule,
+    MatButtonModule,
+    TranslocoModule
+  ]
 })
 export class SearchBarComponent implements OnInit {
   searchControl = new FormControl('');
