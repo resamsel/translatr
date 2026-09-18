@@ -30,7 +30,7 @@ import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
+import { ActivityListComponent } from '../../shared/activity-list/activity-list.component';
 import { KeyEditDialogComponent } from '../../shared/key-edit-dialog/key-edit-dialog.component';
 import { ListHeaderComponent } from '../../shared/list-header/list-header.component';
 import { LocaleEditDialogComponent } from '../../shared/locale-edit-dialog/locale-edit-dialog.component';
@@ -70,7 +70,7 @@ import { ProjectGuard } from './project.guard';
   imports: [
     ProjectPageRoutingModule,
     SidenavModule,
-    ActivityListModule,
+    ActivityListComponent,
     NavListComponent,
     LocaleEditDialogComponent,
     KeyEditDialogComponent,

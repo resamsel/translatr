@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { AccessToken } from '@dev/translatr-model';
+import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-access-token-link',
   templateUrl: './activity-access-token-link.component.html',
-  styleUrls: ['./activity-access-token-link.component.scss']
+  styleUrls: ['./activity-access-token-link.component.scss'],
+  imports: [RouterModule, TranslocoModule]
 })
 export class ActivityAccessTokenLinkComponent {
   accessTokenLink: string[] | undefined;
