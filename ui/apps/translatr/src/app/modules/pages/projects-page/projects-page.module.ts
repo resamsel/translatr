@@ -11,7 +11,8 @@ import { StoreModule } from '@ngrx/store';
 import { GravatarModule } from 'ngx-gravatar';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
-import { ProjectCardModule } from '../../shared/project-card/project-card.module';
+import { ProjectCardComponent } from '../../shared/project-card/project-card.component';
+import { ProjectCardLinkComponent } from '../../shared/project-card/project-card-link.component';
 import { ProjectEditDialogModule } from '../../shared/project-edit-dialog/project-edit-dialog.module';
 import { ProjectListModule } from '../../shared/project-list/project-list.module';
 import { ProjectsEffects } from './+state/projects.effects';
@@ -31,7 +32,7 @@ import { ProjectsPageComponent } from './projects-page.component';
     ProjectsPageRoutingModule,
     SidenavModule,
     ProjectListModule,
-    ProjectCardModule,
+    ProjectCardComponent, ProjectCardLinkComponent,
     ProjectEditDialogModule,
 
     MatIconModule,

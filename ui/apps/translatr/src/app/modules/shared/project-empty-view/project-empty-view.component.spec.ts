@@ -1,6 +1,13 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
+import {
+  EmptyViewComponent,
+  EmptyViewActionsComponent,
+  EmptyViewContentComponent,
+  EmptyViewHeaderComponent
+} from '@dev/translatr-components';
 import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { ProjectEmptyViewComponent } from './project-empty-view.component';
 
@@ -10,9 +17,19 @@ describe('ProjectEmptyViewComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectEmptyViewComponent],
-        imports: [MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MatButtonModule]
+      TestBed.overrideComponent(ProjectEmptyViewComponent, {
+        remove: {
+          imports: [EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent]
+        },
+        add: {
+          imports: [MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent]
+        }
+      }).configureTestingModule({
+        imports: [
+          ProjectEmptyViewComponent,
+          MatButtonModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
+        ]
       }).compileComponents();
     })
   );
