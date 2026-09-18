@@ -1,9 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RouterModule } from '@angular/router';
 import { AccessToken, Scope, scopes } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { UserFacade } from '../../pages/user-page/+state/user.facade';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
 
@@ -13,11 +19,21 @@ const scopeType = scope => scope.split(':')[1];
 const scopePermission = scope => scope.split(':')[0];
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-access-token-edit-form',
   templateUrl: './access-token-edit-form.component.html',
-  styleUrls: ['./access-token-edit-form.component.scss']
+  styleUrls: ['./access-token-edit-form.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    TranslocoModule
+  ]
 })
 export class AccessTokenEditFormComponent extends BaseEditFormComponent<
   AccessTokenEditFormComponent,

@@ -2,9 +2,9 @@
 
 ## 1. Leaf single-declaration modules
 
-- [ ] 1.1 Convert `AccessTokenEditFormComponent` to `standalone: true` with explicit `imports`, delete `access-token-edit-form.module.ts`, update consumers; verify `nx test translatr` succeeds
-- [ ] 1.2 Convert `ProjectMemberEditFormComponent` to `standalone: true` with explicit `imports`, delete `project-member-edit-form.module.ts`, update consumers; verify `nx test translatr` succeeds
-- [ ] 1.3 Convert `ProjectOwnerEditFormComponent` to `standalone: true` with explicit `imports`, delete `project-owner-edit-form.module.ts`, update consumers; verify `nx test translatr` succeeds
+- [x] 1.1 Convert `AccessTokenEditFormComponent` to `standalone: true` with explicit `imports`, delete `access-token-edit-form.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
+- [x] 1.2 Convert `ProjectMemberEditFormComponent` to `standalone: true` with explicit `imports`, delete `project-member-edit-form.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
+- [x] 1.3 Convert `ProjectOwnerEditFormComponent` to `standalone: true` with explicit `imports`, delete `project-owner-edit-form.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (note: `nx test` alone missed the stale import-path bug below since no spec transitively imports the page modules that referenced the deleted `.module.ts` files by path - `nx build` is required after every task from here on)
 - [ ] 1.4 Convert `ProjectEmptyViewComponent` to `standalone: true` with explicit `imports`, delete `project-empty-view.module.ts`, update consumers; verify `nx test translatr` succeeds
 - [ ] 1.5 Convert `ProjectCardComponent` and `ProjectCardLinkComponent` to `standalone: true` with explicit `imports`, delete `project-card.module.ts`, update consumers; verify `nx test translatr` succeeds
 - [ ] 1.6 Convert `ProjectDeleteDialogComponent` to `standalone: true` with explicit `imports`, delete `project-delete-dialog.module.ts`, update consumers; verify `nx test translatr` succeeds

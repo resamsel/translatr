@@ -8,8 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule } from '@jsverse/transloco';
 import { UsersModule } from '../../pages/users-page/+state/users.module';
-import { ProjectMemberEditFormModule } from '../project-member-edit-form/project-member-edit-form.module';
-import { ProjectOwnerEditFormModule } from '../project-owner-edit-form/project-owner-edit-form.module';
+import { ProjectMemberEditFormComponent } from '../project-member-edit-form/project-member-edit-form.component';
+import { ProjectOwnerEditFormComponent } from '../project-owner-edit-form/project-owner-edit-form.component';
 import { ProjectOwnerEditDialogComponent } from './project-owner-edit-dialog.component';
 
 @NgModule({
@@ -23,9 +23,9 @@ import { ProjectOwnerEditDialogComponent } from './project-owner-edit-dialog.com
     MatInputModule,
     MatDialogModule,
 
-    ProjectMemberEditFormModule,
+    ProjectMemberEditFormComponent,
     UsersModule,
-    ProjectOwnerEditFormModule,
+    ProjectOwnerEditFormComponent,
     TranslocoModule
   ],
 })

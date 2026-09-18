@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule } from '@jsverse/transloco';
 import { UsersModule } from '../../pages/users-page/+state/users.module';
-import { ProjectMemberEditFormModule } from '../project-member-edit-form/project-member-edit-form.module';
+import { ProjectMemberEditFormComponent } from '../project-member-edit-form/project-member-edit-form.component';
 import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.component';
 
 @NgModule({
@@ -22,7 +22,7 @@ import { ProjectMemberEditDialogComponent } from './project-member-edit-dialog.c
     MatInputModule,
     MatDialogModule,
 
-    ProjectMemberEditFormModule,
+    ProjectMemberEditFormComponent,
     UsersModule,
     TranslocoModule
   ],

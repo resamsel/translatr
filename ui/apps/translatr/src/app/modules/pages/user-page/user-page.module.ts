@@ -28,7 +28,7 @@ import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoPipe } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { AccessTokenEditDialogModule } from '../../shared/access-token-edit-dialog/access-token-edit-dialog.module';
-import { AccessTokenEditFormModule } from '../../shared/access-token-edit-form/access-token-edit-form.module';
+import { AccessTokenEditFormComponent } from '../../shared/access-token-edit-form/access-token-edit-form.component';
 import { ActivityListModule } from '../../shared/activity-list/activity-list.module';
 import { NavListModule } from '../../shared/nav-list/nav-list.module';
 import { ProjectCardListModule } from '../../shared/project-card-list/project-card-list.module';
@@ -73,7 +73,7 @@ import { UserGuard } from './user.guard';
     ProjectEditDialogModule,
     AccessTokenEditDialogModule,
     NavListModule,
-    AccessTokenEditFormModule,
+    AccessTokenEditFormComponent,
     ProjectCardListModule,
     EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
     ConfirmButtonComponent,

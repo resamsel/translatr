@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -9,11 +10,18 @@ import {
   Output,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Member, MemberRole, Project } from '@dev/translatr-model';
 import { ProjectService } from '@dev/translatr-sdk';
+import { TranslocoModule } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { AbstractEditFormComponent } from '../edit-form/abstract-edit-form-component';
@@ -43,11 +51,22 @@ const formToModel = (form: ProjectForm): Project => ({
 });
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-owner-edit-form',
   templateUrl: './project-owner-edit-form.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./project-owner-edit-form.component.scss']
+  styleUrls: ['./project-owner-edit-form.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    TranslocoModule
+  ]
 })
 export class ProjectOwnerEditFormComponent
   extends AbstractEditFormComponent<ProjectOwnerEditFormComponent, ProjectForm, Project>
