@@ -10,6 +10,7 @@ import { mockObservable } from '@translatr/utils/testing';
 import { of } from 'rxjs';
 
 import { LoginPageComponent } from './login-page.component';
+import { NavbarModule } from '../../nav/navbar/navbar.module';
 import { AuthClientService } from '@dev/translatr-sdk';
 import { AuthClient } from '@dev/translatr-model';
 
@@ -36,12 +37,13 @@ describe('LoginPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [LoginPageComponent],
+      TestBed.overrideComponent(LoginPageComponent, {
+        remove: { imports: [NavbarModule] },
+        add: { imports: [NavbarTestingModule] }
+      }).configureTestingModule({
         imports: [
+          LoginPageComponent,
           RouterTestingModule,
-
-          NavbarTestingModule,
 
           // Without it the whole template stays inside an unrendered `*transloco` ng-template.
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
