@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
-import { EmptyViewModule, UserCardModule } from '@dev/translatr-components';
+import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent, UserCardModule } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoModule } from '@dev/translatr-components';
@@ -15,7 +15,7 @@ import { UserListComponent } from './user-list.component';
   imports: [
     NavListModule,
     UserCardModule,
-    EmptyViewModule,
+    EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
 
     CommonModule,
     RouterModule,

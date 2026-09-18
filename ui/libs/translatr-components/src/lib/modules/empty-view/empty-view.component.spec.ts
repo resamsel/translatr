@@ -10,8 +10,7 @@ describe('EmptyViewComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [EmptyViewComponent],
-        imports: [MatIconModule]
+        imports: [EmptyViewComponent, MatIconModule]
       }).compileComponents();
     })
   );

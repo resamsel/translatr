@@ -15,7 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ActivityGraphComponent,
   ConfirmButtonComponent,
-  EmptyViewModule,
+  EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
   FeatureFlagDirective, FeatureFlagClassDirective,
   MetricComponent,
   ShortNumberPipe,
@@ -75,7 +75,7 @@ import { UserGuard } from './user.guard';
     NavListModule,
     AccessTokenEditFormModule,
     ProjectCardListModule,
-    EmptyViewModule,
+    EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
     ConfirmButtonComponent,
 
     MatIconModule,

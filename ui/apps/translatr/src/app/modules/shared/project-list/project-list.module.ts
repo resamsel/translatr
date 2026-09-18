@@ -7,7 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { EmptyViewModule } from '@dev/translatr-components';
+import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TimeAgoModule } from '@dev/translatr-components';
 import { NavListModule } from '../nav-list/nav-list.module';
@@ -26,7 +26,7 @@ import { ProjectListComponent } from './project-list.component';
     MatListModule,
     TimeAgoModule,
     MatTooltipModule,
-    EmptyViewModule,
+    EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
     ProjectEmptyViewModule,
     MatProgressBarModule,
     TranslocoModule
