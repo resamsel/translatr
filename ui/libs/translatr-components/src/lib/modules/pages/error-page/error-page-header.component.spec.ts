@@ -9,7 +9,7 @@ describe('ErrorPageHeaderComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ErrorPageHeaderComponent]
+        imports: [ErrorPageHeaderComponent]
       }).compileComponents();
     })
   );

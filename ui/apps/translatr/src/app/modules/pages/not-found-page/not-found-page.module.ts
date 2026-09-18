@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
-import { ErrorPageModule } from '@dev/translatr-components';
+import { ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { NotFoundPageRoutingModule } from './not-found-page-routing.module';
@@ -19,7 +19,7 @@ import { NotFoundPageComponent } from './not-found-page.component';
     MatDividerModule,
     MatButtonModule,
     TranslocoModule,
-    ErrorPageModule
+    ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent
   ]
 })
 export class NotFoundPageModule {}
