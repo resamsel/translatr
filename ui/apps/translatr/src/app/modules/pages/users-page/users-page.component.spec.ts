@@ -7,7 +7,7 @@ import { UsersFacade } from './+state/users.facade';
 import { mockObservable } from '@translatr/utils/testing';
 import { SidenavTestingModule } from '../../nav/sidenav/testing';
 import { MockFeatureFlagDirective, MockFeatureFlagClassDirective } from '@translatr/components/testing';
-import { UserListTestingModule } from '../../shared/user-list/testing';
+import { MockUserListComponent } from '../../shared/user-list/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('UsersPageComponent', () => {
@@ -21,7 +21,7 @@ describe('UsersPageComponent', () => {
         imports: [
           SidenavTestingModule,
           MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-          UserListTestingModule,
+          MockUserListComponent,
 
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })

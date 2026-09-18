@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PagedList, Project } from '@dev/translatr-model';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-card-list',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockProjectCardListComponent {
+export class MockProjectCardListComponent {
   @Input() projects: PagedList<Project>;
   @Input() canCreate = false;
   @Input() showMore = true;
@@ -15,9 +15,3 @@ class MockProjectCardListComponent {
 
   @Output() readonly create = new EventEmitter<void>();
 }
-
-@NgModule({
-  declarations: [MockProjectCardListComponent],
-  exports: [MockProjectCardListComponent]
-})
-export class ProjectCardListTestingModule {}

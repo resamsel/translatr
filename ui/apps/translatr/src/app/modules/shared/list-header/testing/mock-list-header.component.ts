@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { defaultFilters, FilterCriteria } from '../list-header.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-list-header',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockListHeaderComponent {
+export class MockListHeaderComponent {
   @Input() filters = defaultFilters;
   @Input() searchVisible = true;
   @Input() searchEnabled = true;
@@ -23,9 +23,3 @@ class MockListHeaderComponent {
   @Output() readonly add = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
 }
-
-@NgModule({
-  declarations: [MockListHeaderComponent],
-  exports: [MockListHeaderComponent]
-})
-export class ListHeaderTestingModule {}

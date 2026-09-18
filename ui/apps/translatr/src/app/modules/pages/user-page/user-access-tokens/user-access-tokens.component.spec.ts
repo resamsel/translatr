@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserAccessTokensComponent } from './user-access-tokens.component';
-import { NavListTestingModule } from '../../../shared/nav-list/testing';
+import { MockNavListComponent } from '../../../shared/nav-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +21,7 @@ describe('UserAccessTokensComponent', () => {
       TestBed.configureTestingModule({
         declarations: [UserAccessTokensComponent],
         imports: [
-          NavListTestingModule,
+          MockNavListComponent,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
           MockConfirmButtonComponent,
 

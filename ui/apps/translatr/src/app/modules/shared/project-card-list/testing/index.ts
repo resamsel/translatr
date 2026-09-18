@@ -1,1 +1,1 @@
-export * from './project-card-list-testing.module';
+export * from './mock-project-card-list.component';

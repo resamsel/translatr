@@ -9,13 +9,13 @@ import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewCon
 
 import { ProjectListComponent } from './project-list.component';
 import { NavListComponent } from '../nav-list/nav-list.component';
-import { NavListTestingModule } from '../nav-list/testing';
+import { MockNavListComponent } from '../nav-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProjectEmptyViewComponent } from '../project-empty-view/project-empty-view.component';
-import { ProjectEmptyViewTestingModule } from '../project-empty-view/testing';
+import { MockProjectEmptyViewComponent } from '../project-empty-view/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('ProjectListComponent', () => {
@@ -37,8 +37,8 @@ describe('ProjectListComponent', () => {
         },
         add: {
           imports: [
-            NavListTestingModule,
-            ProjectEmptyViewTestingModule,
+            MockNavListComponent,
+            MockProjectEmptyViewComponent,
             MockEmptyViewComponent,
             MockEmptyViewActionsComponent,
             MockEmptyViewContentComponent,

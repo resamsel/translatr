@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, NgModule, Output, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { PagedList } from '@dev/translatr-model';
 import { defaultFilters, FilterCriteria } from '../../list-header/list-header.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-nav-list',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockNavListComponent {
+export class MockNavListComponent {
   @Input() filters = defaultFilters;
   @Input() direction: 'column' | 'row' = 'column';
   @Input() loadingListLength = 5;
@@ -27,9 +27,3 @@ class MockNavListComponent {
   @Output() readonly filter = new EventEmitter<FilterCriteria>();
   @Output() readonly create = new EventEmitter<void>();
 }
-
-@NgModule({
-  declarations: [MockNavListComponent],
-  exports: [MockNavListComponent]
-})
-export class NavListTestingModule {}

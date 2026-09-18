@@ -3,7 +3,7 @@ import { EmptyViewComponent, EmptyViewHeaderComponent } from '@dev/translatr-com
 import { MockEmptyViewComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { ActivityListComponent } from './activity-list.component';
 import { NavListComponent } from '../nav-list/nav-list.component';
-import { NavListTestingModule } from '../nav-list/testing';
+import { MockNavListComponent } from '../nav-list/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +19,7 @@ describe('ActivityListComponent', () => {
     waitForAsync(() => {
       TestBed.overrideComponent(ActivityListComponent, {
         remove: { imports: [NavListComponent, EmptyViewComponent, EmptyViewHeaderComponent] },
-        add: { imports: [NavListTestingModule, MockEmptyViewComponent, MockEmptyViewHeaderComponent] }
+        add: { imports: [MockNavListComponent, MockEmptyViewComponent, MockEmptyViewHeaderComponent] }
       }).configureTestingModule({
         imports: [
           ActivityListComponent,

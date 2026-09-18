@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NavListTestingModule } from '../../../../shared/nav-list/testing';
+import { MockNavListComponent } from '../../../../shared/nav-list/testing';
 import { MockConfirmButtonComponent, MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 
 describe('KeyListComponent', () => {
@@ -19,7 +19,7 @@ describe('KeyListComponent', () => {
       TestBed.configureTestingModule({
         declarations: [KeyListComponent],
         imports: [
-          NavListTestingModule,
+          MockNavListComponent,
           MockConfirmButtonComponent,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 

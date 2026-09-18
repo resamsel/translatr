@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Member, User } from '@dev/translatr-model';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-member-edit-form',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockProjectMemberEditFormComponent {
+export class MockProjectMemberEditFormComponent {
   @Input() member: Member;
   @Input() users: User[];
   @Input() dialogRef: MatDialogRef<any, Member>;
@@ -21,9 +21,3 @@ class MockProjectMemberEditFormComponent {
 
   onSave() {}
 }
-
-@NgModule({
-  declarations: [MockProjectMemberEditFormComponent],
-  exports: [MockProjectMemberEditFormComponent]
-})
-export class ProjectMemberEditFormTestingModule {}

@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { FilterCriteria } from '../../list-header/list-header.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-list',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockProjectListComponent {
+export class MockProjectListComponent {
   @Input() projects: PagedList<Project>;
   @Input() canCreate = false;
   @Input() showFilter = false;
@@ -18,9 +18,3 @@ class MockProjectListComponent {
   @Output() create = new EventEmitter<void>();
   @Output() filter = new EventEmitter<FilterCriteria>();
 }
-
-@NgModule({
-  declarations: [MockProjectListComponent],
-  exports: [MockProjectListComponent]
-})
-export class ProjectListTestingModule {}
