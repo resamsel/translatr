@@ -12,8 +12,7 @@ describe('ErrorPageComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent],
-        imports: [MatIconModule]
+        imports: [ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent, MatIconModule]
       }).compileComponents();
     })
   );

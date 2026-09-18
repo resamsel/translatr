@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { ErrorPageModule } from '@dev/translatr-components';
+import { ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent } from '@dev/translatr-components';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { ForbiddenPageComponent } from './forbidden-page.component';
 
@@ -19,7 +19,7 @@ import { ForbiddenPageComponent } from './forbidden-page.component';
     MatButtonModule,
     RouterModule,
     MatIconModule,
-    ErrorPageModule
+    ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent
   ]
 })
 export class ForbiddenPageModule {}
