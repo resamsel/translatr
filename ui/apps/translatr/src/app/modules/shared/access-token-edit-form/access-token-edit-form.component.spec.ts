@@ -19,8 +19,8 @@ describe('AccessTokenEditFormComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [AccessTokenEditFormComponent],
         imports: [
+          AccessTokenEditFormComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

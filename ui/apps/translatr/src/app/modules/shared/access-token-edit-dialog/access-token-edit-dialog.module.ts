@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslocoModule } from '@jsverse/transloco';
-import { AccessTokenEditFormModule } from '../access-token-edit-form/access-token-edit-form.module';
+import { AccessTokenEditFormComponent } from '../access-token-edit-form/access-token-edit-form.component';
 import { AccessTokenEditDialogComponent } from './access-token-edit-dialog.component';
 
 @NgModule({
@@ -21,7 +21,7 @@ import { AccessTokenEditDialogComponent } from './access-token-edit-dialog.compo
     MatSnackBarModule,
     MatButtonModule,
     MatInputModule,
-    AccessTokenEditFormModule,
+    AccessTokenEditFormComponent,
     TranslocoModule
   ],
   exports: [AccessTokenEditDialogComponent],
