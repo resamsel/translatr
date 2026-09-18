@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ThemeService } from '@dev/translatr-components';
 import { HotkeysHelpComponent, HotkeysService } from '@ngneat/hotkeys';
 import { TranslocoService } from '@jsverse/transloco';
 import { filter } from 'rxjs/operators';
@@ -16,8 +17,12 @@ export class AppComponent implements AfterViewInit {
     readonly facade: AppFacade,
     readonly translocoService: TranslocoService,
     private readonly hotkeysService: HotkeysService,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    themeService: ThemeService
   ) {
+    // Injecting ThemeService here (providedIn: 'root') forces it to instantiate as early
+    // as possible, applying the stored/system theme before any component needs it.
+    void themeService;
     facade.loadMe();
     facade.me$
       .pipe(filter(x => !!x && !!x.preferredLanguage))
