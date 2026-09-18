@@ -28,6 +28,12 @@ class FeatureTest {
     void keysMatchTheFrontendEnum() {
         assertThat(java.util.Arrays.stream(Feature.values()).map(f -> f.key))
             .containsExactlyInAnyOrder(
-                "project-cli-card", "project-infographic", "header-graphic", "language-switcher");
+                "project-cli-card", "project-infographic", "header-graphic", "language-switcher",
+                "theme-switcher");
+    }
+
+    @Test
+    void of_returnsMatchingValue_forThemeSwitcherKey() {
+        assertThat(Feature.of("theme-switcher")).contains(Feature.ThemeSwitcher);
     }
 }
