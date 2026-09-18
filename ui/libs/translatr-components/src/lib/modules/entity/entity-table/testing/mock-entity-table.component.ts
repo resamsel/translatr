@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Entity, FilterFieldFilter } from '@dev/translatr-components';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'entity-table',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockEntityTableComponent {
+export class MockEntityTableComponent {
   @Input() dataSource: PagedList<Entity>;
   @Input() displayedColumns: string[];
   @Input() load: RequestCriteria;
@@ -26,15 +26,9 @@ class MockEntityTableComponent {
 }
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'selection-actions',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockSelectionActionsComponent {}
-
-@NgModule({
-  declarations: [MockEntityTableComponent, MockSelectionActionsComponent],
-  exports: [MockEntityTableComponent, MockSelectionActionsComponent]
-})
-export class EntityTableTestingModule {}
+export class MockSelectionActionsComponent {}

@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ShortNumberPipe } from '@dev/translatr-components';
-import { MetricTestingModule, UserCardTestingModule } from '@translatr/components/testing';
+import { MockMetricComponent, MockUserCardComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { TimeAgoPipe } from '@dev/translatr-components';
 import { UserFacade } from '../+state/user.facade';
@@ -24,8 +24,8 @@ describe('UserInfoComponent', () => {
       TestBed.configureTestingModule({
         declarations: [UserInfoComponent],
         imports: [
-          UserCardTestingModule,
-          MetricTestingModule,
+          MockUserCardComponent,
+          MockMetricComponent,
           ShortNumberPipe,
           ProjectCardListTestingModule,
           ActivityListTestingModule,

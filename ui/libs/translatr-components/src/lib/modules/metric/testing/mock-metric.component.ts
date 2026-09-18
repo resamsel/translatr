@@ -1,21 +1,15 @@
-import { Component, Input, NgModule, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-metric',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockMetricComponent {
+export class MockMetricComponent {
   @Input() routerLink: any[] | string;
   @Input() queryParams: { [p: string]: any } = {};
   @Input() value: any;
   @Input() name: string;
   @Input() icon: string;
 }
-
-@NgModule({
-  declarations: [MockMetricComponent],
-  exports: [MockMetricComponent]
-})
-export class MetricTestingModule {}

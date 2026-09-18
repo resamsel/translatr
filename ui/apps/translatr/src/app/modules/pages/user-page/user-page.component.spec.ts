@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureFlagTestingModule } from '@translatr/components/testing';
+import { MockFeatureFlagDirective, MockFeatureFlagClassDirective } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavTestingModule } from '../../nav/sidenav/testing';
@@ -22,7 +22,7 @@ describe('UserPageComponent', () => {
         declarations: [UserPageComponent],
         imports: [
           SidenavTestingModule,
-          FeatureFlagTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
 
           RouterTestingModule,
           GravatarModule,

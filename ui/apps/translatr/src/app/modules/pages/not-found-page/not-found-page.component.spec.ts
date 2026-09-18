@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { ErrorPageTestingModule } from '@translatr/components/testing';
+import { MockErrorPageComponent, MockErrorPageHeaderComponent, MockErrorPageMessageComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { NotFoundPageComponent } from './not-found-page.component';
@@ -14,7 +14,7 @@ describe('NotFoundPageComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [NotFoundPageComponent],
-        imports: [ErrorPageTestingModule, RouterTestingModule, TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })],
+        imports: [MockErrorPageComponent, MockErrorPageHeaderComponent, MockErrorPageMessageComponent, RouterTestingModule, TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })],
         providers: [
           {
             provide: AppFacade,

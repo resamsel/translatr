@@ -8,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserEditDialogComponent, UserEditFormComponent } from '@dev/translatr-components';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { UserEditFormTestingModule } from '@translatr/components/testing';
+import { MockUserEditFormComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 
 describe('UserEditDialogComponent', () => {
@@ -19,7 +19,7 @@ describe('UserEditDialogComponent', () => {
     waitForAsync(() => {
       TestBed.overrideComponent(UserEditDialogComponent, {
         remove: { imports: [UserEditFormComponent] },
-        add: { imports: [UserEditFormTestingModule] }
+        add: { imports: [MockUserEditFormComponent] }
       }).configureTestingModule({
         imports: [
           UserEditDialogComponent,

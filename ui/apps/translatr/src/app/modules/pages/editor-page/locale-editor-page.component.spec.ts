@@ -9,7 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, FilterFieldTestingModule } from '@translatr/components/testing';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MockFilterFieldComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { NavListTestingModule } from '../../shared/nav-list/testing';
@@ -29,7 +29,7 @@ describe('LocaleEditorPageComponent', () => {
         imports: [
           RouterTestingModule,
           EditorTestingModule,
-          FilterFieldTestingModule,
+          MockFilterFieldComponent,
           NavListTestingModule,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
 

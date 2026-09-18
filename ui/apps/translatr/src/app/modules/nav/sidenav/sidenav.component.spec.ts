@@ -10,8 +10,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import {
-  FeatureFlagTestingModule,
-  FooterTestingModule,
+  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  MockFooterComponent,
   MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent
 } from '@translatr/components/testing';
 import { SidenavComponent } from './sidenav.component';
@@ -29,8 +29,8 @@ describe('SidenavComponent', () => {
         TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
         MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent,
-        FooterTestingModule,
-        FeatureFlagTestingModule,
+        MockFooterComponent,
+        MockFeatureFlagDirective, MockFeatureFlagClassDirective,
 
         MatToolbarModule,
         MatIconModule,

@@ -35,10 +35,10 @@
 
 ## 4. Testing modules
 
-- [ ] 4.1 Convert the 11 `Mock*` classes across `activity-graph`, `button`, `disable-control`, `empty-view`, `entity-table`, `feature-flag`, `filter-field`, `metric`, `navbar`, `error-page`, `project-infographic`, `user-card`, `user-edit-form` testing modules to `standalone: true`, carrying over each original testing module's `imports` array onto the corresponding mock class
-- [ ] 4.2 Update every spec file's `TestBed.configureTestingModule({ imports: [...] })` that referenced a `*TestingModule` to import the `Mock*` class(es) directly instead; delete the 11 `*-testing.module.ts` files
-- [ ] 4.3 Run `nx test translatr-components` and verify all specs pass
-- [ ] 4.4 Run `nx test translatr` and `nx test translatr-admin` and verify all specs pass (catches any app-level spec still referencing a deleted testing module)
+- [x] 4.1 Convert the `Mock*` classes across `activity-graph`, `button`, `disable-control`, `empty-view`, `entity-table`, `feature-flag`, `filter-field`, `metric`, `footer`, `navbar` (incl. `auth-bar-item`, `auth-bar-language-switcher`), `error-page`, `project-infographic`, `user-card`, `user-edit-form` testing modules to `standalone: true`. Actual count was 14 `*-testing.module.ts` files, not 11 as originally estimated, plus 2 already-separate mock component files (`mock-auth-bar-item.component.ts`, `mock-auth-bar-language-switcher.component.ts`) that were still `standalone: false`. `disable-control-testing.module.ts` was fully unused (its only consumer was removed in task 1.2) and deleted outright rather than converted. `button-testing.module.ts` was a redundant wrapper around the already-separate `mock-confirm-button.component.ts` and was deleted, with `button/testing/index.ts` re-exporting the sibling folder instead
+- [x] 4.2 Updated every spec file's `TestBed.configureTestingModule({ imports: [...] })` (and `TestBed.overrideComponent` add/remove pairs, used where the real component now bakes in the dependency being mocked) that referenced a `*TestingModule` to import the `Mock*` class(es) directly instead; deleted all 14 `*-testing.module.ts` files, renaming the remaining ones to `mock-*.component.ts` for clarity since they no longer define an `NgModule`
+- [x] 4.3 Run `nx test translatr-components` and verify all specs pass (50/50 passed)
+- [x] 4.4 Run `nx test translatr` and `nx test translatr-admin` and verify all specs pass (159/159 and 88/88 passed) - also ran `nx build translatr` and `nx build translatr-admin`, both succeeded
 
 ## 5. Cleanup and verification
 

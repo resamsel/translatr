@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ErrorPageTestingModule } from '@translatr/components/testing';
+import { MockErrorPageComponent, MockErrorPageHeaderComponent, MockErrorPageMessageComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
 
@@ -14,7 +14,7 @@ describe('NotAllowedPageComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ForbiddenPageComponent],
-        imports: [RouterTestingModule, ErrorPageTestingModule],
+        imports: [RouterTestingModule, MockErrorPageComponent, MockErrorPageHeaderComponent, MockErrorPageMessageComponent],
         providers: [
           {
             provide: AppFacade,

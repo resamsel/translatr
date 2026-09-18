@@ -7,7 +7,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { FilterFieldTestingModule } from '@translatr/components/testing';
+import { MockFilterFieldComponent } from '@translatr/components/testing';
 import { EntityTableComponent } from './entity-table.component';
 import { FilterFieldComponent } from '../../filter-field';
 
@@ -19,7 +19,7 @@ describe('EntityTableComponent', () => {
     waitForAsync(() => {
       TestBed.overrideComponent(EntityTableComponent, {
         remove: { imports: [FilterFieldComponent] },
-        add: { imports: [FilterFieldTestingModule] }
+        add: { imports: [MockFilterFieldComponent] }
       }).configureTestingModule({
         imports: [
           EntityTableComponent,

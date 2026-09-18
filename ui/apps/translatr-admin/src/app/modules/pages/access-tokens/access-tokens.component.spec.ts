@@ -13,8 +13,8 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { EllipsisPipe, EntityTableComponent } from '@dev/translatr-components';
 import {
   MockConfirmButtonComponent,
-  FeatureFlagTestingModule,
-  FilterFieldTestingModule
+  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  MockFilterFieldComponent
 } from '@translatr/components/testing';
 import { AccessToken } from '@dev/translatr-model';
 import { mockObservable } from '@translatr/utils/testing';
@@ -51,8 +51,8 @@ describe('AccessTokensComponent', () => {
         imports: [
           EntityTableComponent,
           AdminPageTestingModule,
-          FeatureFlagTestingModule,
-          FilterFieldTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+          MockFilterFieldComponent,
           MockConfirmButtonComponent,
           EllipsisPipe,
 

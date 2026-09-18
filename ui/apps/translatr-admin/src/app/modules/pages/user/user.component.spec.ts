@@ -4,9 +4,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ShortNumberPipe } from '@dev/translatr-components';
 import {
-  FeatureFlagTestingModule,
-  MetricTestingModule,
-  UserCardTestingModule
+  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  MockMetricComponent,
+  MockUserCardComponent
 } from '@translatr/components/testing';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoPipe } from '@dev/translatr-components';
@@ -25,9 +25,9 @@ describe('UserComponent', () => {
         declarations: [UserComponent],
         imports: [
           AdminPageTestingModule,
-          FeatureFlagTestingModule,
-          UserCardTestingModule,
-          MetricTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+          MockUserCardComponent,
+          MockMetricComponent,
           ShortNumberPipe,
 
           RouterTestingModule,

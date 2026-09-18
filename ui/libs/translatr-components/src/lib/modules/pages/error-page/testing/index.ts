@@ -1,1 +1,1 @@
-export * from './error-page-testing.module';
+export * from './mock-error-page.component';

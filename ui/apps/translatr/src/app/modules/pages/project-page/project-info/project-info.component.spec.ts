@@ -15,9 +15,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { WINDOW } from '@translatr/utils';
 import {
   MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
-  FeatureFlagTestingModule,
-  MetricTestingModule,
-  ProjectInfographicTestingModule
+  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  MockMetricComponent,
+  MockProjectInfographicComponent
 } from '@translatr/components/testing';
 import { NavListTestingModule } from '../../../shared/nav-list/testing';
 import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
@@ -34,13 +34,13 @@ describe('ProjectInfoComponent', () => {
       TestBed.configureTestingModule({
         declarations: [ProjectInfoComponent],
         imports: [
-          MetricTestingModule,
+          MockMetricComponent,
           NavListTestingModule,
           ActivityListTestingModule,
           ShortNumberPipe,
-          FeatureFlagTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
           MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
-          ProjectInfographicTestingModule,
+          MockProjectInfographicComponent,
 
           RouterTestingModule,
 

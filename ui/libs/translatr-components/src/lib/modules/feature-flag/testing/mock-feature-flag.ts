@@ -1,8 +1,8 @@
-import { Directive, Input, NgModule } from '@angular/core';
+import { Directive, Input } from '@angular/core';
 import { Feature } from '@dev/translatr-model';
 
 @Directive({
-  standalone: false,
+  standalone: true,
   selector: '[featureFlag]'
 })
 export class MockFeatureFlagDirective {
@@ -10,15 +10,9 @@ export class MockFeatureFlagDirective {
 }
 
 @Directive({
-  standalone: false,
+  standalone: true,
   selector: '[featureFlagClass]'
 })
 export class MockFeatureFlagClassDirective {
   @Input() featureFlagClass: Record<string, Feature>;
 }
-
-@NgModule({
-  declarations: [MockFeatureFlagDirective, MockFeatureFlagClassDirective],
-  exports: [MockFeatureFlagDirective, MockFeatureFlagClassDirective]
-})
-export class FeatureFlagTestingModule {}

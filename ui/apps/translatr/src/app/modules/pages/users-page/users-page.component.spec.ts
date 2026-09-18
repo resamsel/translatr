@@ -6,7 +6,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { UsersFacade } from './+state/users.facade';
 import { mockObservable } from '@translatr/utils/testing';
 import { SidenavTestingModule } from '../../nav/sidenav/testing';
-import { FeatureFlagTestingModule } from '@translatr/components/testing';
+import { MockFeatureFlagDirective, MockFeatureFlagClassDirective } from '@translatr/components/testing';
 import { UserListTestingModule } from '../../shared/user-list/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
@@ -20,7 +20,7 @@ describe('UsersPageComponent', () => {
         declarations: [UsersPageComponent],
         imports: [
           SidenavTestingModule,
-          FeatureFlagTestingModule,
+          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
           UserListTestingModule,
 
           RouterTestingModule,
