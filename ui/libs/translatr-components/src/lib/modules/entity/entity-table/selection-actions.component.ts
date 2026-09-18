@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'selection-actions',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: '<ng-content></ng-content>'

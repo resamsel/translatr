@@ -1,4 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import { CommonModule } from '@angular/common';
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
@@ -11,13 +12,21 @@ import {
   QueryList,
   ViewChild
 } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
-import { MatColumnDef, MatTable } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatColumnDef, MatTable, MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PagedList, RequestCriteria } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
-import { FilterFieldFilter, handleFilterFieldSelection } from '../../filter-field';
+import { ConfirmButtonComponent } from '../../button';
+import { FilterFieldComponent, FilterFieldFilter, handleFilterFieldSelection } from '../../filter-field';
 
 export interface Entity {
   id: string | number;
@@ -37,11 +46,25 @@ const filterParam = (f: FilterFieldFilter, params: Params): boolean => {
 };
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'entity-table',
   templateUrl: './entity-table.component.html',
-  styleUrls: ['./entity-table.component.scss']
+  styleUrls: ['./entity-table.component.scss'],
+  imports: [
+    CommonModule,
+    ConfirmButtonComponent,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatDividerModule,
+    FilterFieldComponent,
+    TranslocoModule
+  ]
 })
 export class EntityTableComponent implements OnInit, AfterContentInit {
   @Input() dataSource: PagedList<Entity>;

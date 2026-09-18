@@ -9,6 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { FilterFieldTestingModule } from '@translatr/components/testing';
 import { EntityTableComponent } from './entity-table.component';
+import { FilterFieldComponent } from '../../filter-field';
 
 describe('EntityTableComponent', () => {
   let component: EntityTableComponent;
@@ -16,10 +17,12 @@ describe('EntityTableComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [EntityTableComponent],
+      TestBed.overrideComponent(EntityTableComponent, {
+        remove: { imports: [FilterFieldComponent] },
+        add: { imports: [FilterFieldTestingModule] }
+      }).configureTestingModule({
         imports: [
-          FilterFieldTestingModule,
+          EntityTableComponent,
 
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
