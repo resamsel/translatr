@@ -13,8 +13,7 @@ describe('ProjectCardComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ProjectCardComponent],
-        imports: [GravatarModule, TimeAgoPipe, MatCardModule, MatTooltipModule]
+        imports: [ProjectCardComponent, GravatarModule, TimeAgoPipe, MatCardModule, MatTooltipModule]
       }).compileComponents();
     })
   );
