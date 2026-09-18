@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,9 +7,15 @@ import {
   Output,
   TemplateRef
 } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { RouterModule } from '@angular/router';
 import { PagedList } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { trackByFn } from '@translatr/utils';
-import { defaultFilters, FilterCriteria } from '../list-header/list-header.component';
+import { defaultFilters, FilterCriteria, ListHeaderComponent } from '../list-header/list-header.component';
 
 const pagingKeys = ['limit', 'offset', 'order'];
 
@@ -25,11 +32,12 @@ const filterActive = (criteria: FilterCriteria): boolean => {
 };
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-nav-list',
   templateUrl: './nav-list.component.html',
-  styleUrls: ['./nav-list.component.scss']
+  styleUrls: ['./nav-list.component.scss'],
+  imports: [CommonModule, ListHeaderComponent, MatListModule, MatIconModule, MatCardModule, RouterModule, MatButtonModule, TranslocoModule]
 })
 export class NavListComponent {
   @Input() filters = defaultFilters;

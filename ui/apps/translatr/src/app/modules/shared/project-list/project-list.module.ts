@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent } from '@dev/translatr-components';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TimeAgoPipe } from '@dev/translatr-components';
-import { NavListModule } from '../nav-list/nav-list.module';
+import { NavListComponent } from '../nav-list/nav-list.component';
 import { ProjectEmptyViewComponent } from '../project-empty-view/project-empty-view.component';
 import { ProjectListComponent } from './project-list.component';
 
@@ -19,7 +19,7 @@ import { ProjectListComponent } from './project-list.component';
   imports: [
     CommonModule,
     RouterModule,
-    NavListModule,
+    NavListComponent,
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,

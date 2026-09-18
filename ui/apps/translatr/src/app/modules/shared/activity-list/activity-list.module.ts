@@ -9,7 +9,7 @@ import { EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent
 import { TranslocoModule } from '@jsverse/transloco';
 import { GravatarModule } from 'ngx-gravatar';
 import { TimeAgoPipe } from '@dev/translatr-components';
-import { NavListModule } from '../nav-list/nav-list.module';
+import { NavListComponent } from '../nav-list/nav-list.component';
 import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
 import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.component';
 import { ActivityListComponent } from './activity-list.component';
@@ -33,7 +33,7 @@ import { ActivityProjectLinkComponent } from './activity-project-link/activity-p
     RouterModule,
 
     TagComponent,
-    NavListModule,
+    NavListComponent,
     EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
 
     MatListModule,

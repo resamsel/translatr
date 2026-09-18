@@ -34,7 +34,7 @@ import { ActivityListModule } from '../../shared/activity-list/activity-list.mod
 import { KeyEditDialogComponent } from '../../shared/key-edit-dialog/key-edit-dialog.component';
 import { ListHeaderComponent } from '../../shared/list-header/list-header.component';
 import { LocaleEditDialogComponent } from '../../shared/locale-edit-dialog/locale-edit-dialog.component';
-import { NavListModule } from '../../shared/nav-list/nav-list.module';
+import { NavListComponent } from '../../shared/nav-list/nav-list.component';
 import { ProjectDeleteDialogComponent } from '../../shared/project-delete-dialog/project-delete-dialog.component';
 import { ProjectMemberEditDialogModule } from '../../shared/project-member-edit-dialog/project-member-edit-dialog.module';
 import { ProjectOwnerEditDialogModule } from '../../shared/project-owner-edit-dialog/project-owner-edit-dialog.module';
@@ -71,7 +71,7 @@ import { ProjectGuard } from './project.guard';
     ProjectPageRoutingModule,
     SidenavModule,
     ActivityListModule,
-    NavListModule,
+    NavListComponent,
     LocaleEditDialogComponent,
     KeyEditDialogComponent,
     ProjectMemberEditDialogModule,

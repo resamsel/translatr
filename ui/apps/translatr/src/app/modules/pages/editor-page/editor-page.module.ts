@@ -20,7 +20,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { AppFacade } from '../../../+state/app.facade';
 import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { NavListModule } from '../../shared/nav-list/nav-list.module';
+import { NavListComponent } from '../../shared/nav-list/nav-list.component';
 import { ProjectStateModule } from '../../shared/project-state';
 import { EditorEffects } from './+state/editor.effects';
 import { EditorFacade } from './+state/editor.facade';
@@ -47,7 +47,7 @@ import { LocaleEditorPageComponent } from './locale-editor-page.component';
     EditorPageRoutingModule,
     SidenavModule,
     FormsModule,
-    NavListModule,
+    NavListComponent,
     FilterFieldComponent,
     EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent,
     ProjectStateModule,
