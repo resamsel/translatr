@@ -12,7 +12,8 @@ import {
   EmptyViewComponent,
   EmptyViewHeaderComponent,
   EmptyViewContentComponent,
-  EmptyViewActionsComponent
+  EmptyViewActionsComponent,
+  TimeAgoPipe
 } from '@dev/translatr-components';
 import { AccessToken } from '@dev/translatr-model';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -42,7 +43,8 @@ import { FilterCriteria } from '../../../shared/list-header/list-header.componen
     MatListModule,
     MatIconModule,
     MatTooltipModule,
-    MatButtonModule
+    MatButtonModule,
+    TimeAgoPipe
   ]
 })
 export class UserAccessTokensComponent implements OnInit {

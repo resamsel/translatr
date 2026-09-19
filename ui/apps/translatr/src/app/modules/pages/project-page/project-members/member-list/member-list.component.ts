@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
-import { ConfirmButtonComponent } from '@dev/translatr-components';
+import { ConfirmButtonComponent, TimeAgoPipe } from '@dev/translatr-components';
 import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { TranslocoModule } from '@jsverse/transloco';
 import { filter, switchMapTo, take } from 'rxjs/operators';
@@ -36,7 +36,8 @@ import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edi
     MatListModule,
     MatIconModule,
     MatTooltipModule,
-    MatButtonModule
+    MatButtonModule,
+    TimeAgoPipe
   ]
 })
 export class MemberListComponent {

@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
-import { Params, Router } from '@angular/router';
+import { Params, Router, RouterModule } from '@angular/router';
 import {
   EmptyViewComponent,
   EmptyViewHeaderComponent,
@@ -41,6 +43,7 @@ const filterComparator = (a: Params, b: Params): boolean =>
   styleUrls: ['./locale-editor-page.component.scss'],
   imports: [
     CommonModule,
+    RouterModule,
     TranslocoModule,
     EditorComponent,
     EditorSelectorComponent,
@@ -51,7 +54,9 @@ const filterComparator = (a: Params, b: Params): boolean =>
     EmptyViewActionsComponent,
     FilterFieldComponent,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatButtonModule,
+    MatListModule
   ]
 })
 export class LocaleEditorPageComponent implements OnInit, OnDestroy {

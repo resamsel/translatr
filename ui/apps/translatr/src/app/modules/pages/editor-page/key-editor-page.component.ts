@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { MatListModule } from '@angular/material/list';
+import { ActivatedRoute, Params, Router, RouterModule } from '@angular/router';
 import {
   EmptyViewComponent,
   EmptyViewHeaderComponent,
@@ -43,6 +45,7 @@ const filterComparator = (a: Params, b: Params): boolean =>
   styleUrls: ['./key-editor-page.component.scss'],
   imports: [
     CommonModule,
+    RouterModule,
     TranslocoModule,
     EditorComponent,
     EditorSelectorComponent,
@@ -54,7 +57,9 @@ const filterComparator = (a: Params, b: Params): boolean =>
     FilterFieldComponent,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule,
+    MatListModule
   ]
 })
 export class KeyEditorPageComponent implements OnInit, OnDestroy {

@@ -8,6 +8,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
 import {
   ActivityGraphComponent,
   AuthBarLanguageSwitcherComponent,
@@ -34,6 +35,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./main-page.component.scss'],
   imports: [
     CommonModule,
+    RouterModule,
     NavbarComponent,
     AuthBarLanguageSwitcherComponent,
     MatGridListModule,

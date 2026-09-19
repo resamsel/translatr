@@ -3,7 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { AuthGuard } from '../../../guards/auth.guard';
-import { ProjectsPageRoutingModule } from '../projects-page/projects-page-routing.module';
+import { ProjectsEffects } from '../projects-page/+state/projects.effects';
+import { ProjectsFacade } from '../projects-page/+state/projects.facade';
+import {
+  initialState as projectsInitialState,
+  PROJECTS_FEATURE_KEY,
+  projectsReducer
+} from '../projects-page/+state/projects.reducer';
 import { DashboardEffects } from './+state/dashboard.effects';
 import { DashboardFacade } from './+state/dashboard.facade';
 import {
@@ -24,13 +30,16 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forChild(routes),
-    ProjectsPageRoutingModule,
     StoreModule.forFeature(DASHBOARD_FEATURE_KEY, dashboardReducer, {
       initialState: dashboardInitialState
     }),
-    EffectsModule.forFeature([DashboardEffects])
+    EffectsModule.forFeature([DashboardEffects]),
+    StoreModule.forFeature(PROJECTS_FEATURE_KEY, projectsReducer, {
+      initialState: projectsInitialState
+    }),
+    EffectsModule.forFeature([ProjectsEffects])
   ],
   exports: [RouterModule],
-  providers: [DashboardFacade]
+  providers: [DashboardFacade, ProjectsFacade]
 })
 export class DashboardPageRoutingModule {}
