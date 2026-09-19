@@ -7,7 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { mockObservable } from '@translatr/utils/testing';
+import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { MockFeatureFlagDirective, MockFeatureFlagClassDirective } from '@translatr/components/testing';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { ProjectListComponent } from '../../shared/project-list/project-list.component';
 import { MockProjectListComponent, SidenavTestingModule } from '../../testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslocoTestingModule } from '@jsverse/transloco';
@@ -18,12 +21,14 @@ describe('UsersPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectsPageComponent],
+      TestBed.overrideComponent(ProjectsPageComponent, {
+        remove: { imports: [SidenavModule, ProjectListComponent, FeatureFlagClassDirective] },
+        add: { imports: [SidenavTestingModule, MockProjectListComponent, MockFeatureFlagClassDirective] }
+      }).configureTestingModule({
         imports: [
-          SidenavTestingModule,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-          MockProjectListComponent,
+          ProjectsPageComponent,
+
+          MockFeatureFlagDirective,
 
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
