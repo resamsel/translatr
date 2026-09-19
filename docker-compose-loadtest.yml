@@ -53,7 +53,7 @@ services:
     volumes:
       - ./docker/Translatr-realm.json:/opt/keycloak/data/import/Translatr-realm.json
   translatr:
-    image: resamsel/translatr:4.0.0
+    image: resamsel/translatr:4.0.1-0
     restart: unless-stopped
     depends_on:
       database:
@@ -84,7 +84,7 @@ services:
       retries: 10
       start_period: 30s
   loadgenerator:
-    image: resamsel/translatr-loadgenerator:4.0.0
+    image: resamsel/translatr-loadgenerator:4.0.1-0
     depends_on:
       translatr:
         condition: service_healthy
