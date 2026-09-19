@@ -52,7 +52,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/user-page/user-page.module').then(m => m.UserPageModule)
+      import('./modules/pages/user-page/user-page-routing.module').then(m => m.UserPageRoutingModule)
   },
   {
     path: '',

@@ -10,10 +10,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureFlagDirective, FeatureFlagClassDirective, ThemeService } from '@dev/translatr-components';
+import { ThemeService } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { of } from 'rxjs';
 import { UserFacade } from '../+state/user.facade';
@@ -27,10 +26,8 @@ describe('UserSettingsComponent', () => {
   const createComponent = async (flagEnabled = false, preference = 'system') => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      declarations: [UserSettingsComponent],
       imports: [
-        MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
-        FeatureFlagDirective, FeatureFlagClassDirective,
+        UserSettingsComponent,
         TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
         FormsModule,

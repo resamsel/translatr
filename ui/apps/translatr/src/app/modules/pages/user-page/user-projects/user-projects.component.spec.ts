@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ProjectListComponent } from '../../../shared/project-list/project-list.component';
 import { MockProjectListComponent } from '../../../shared/project-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -16,10 +17,12 @@ describe('UserProjectsComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserProjectsComponent],
+      TestBed.overrideComponent(UserProjectsComponent, {
+        remove: { imports: [ProjectListComponent] },
+        add: { imports: [MockProjectListComponent] }
+      }).configureTestingModule({
         imports: [
-          MockProjectListComponent,
+          UserProjectsComponent,
 
           RouterTestingModule,
 

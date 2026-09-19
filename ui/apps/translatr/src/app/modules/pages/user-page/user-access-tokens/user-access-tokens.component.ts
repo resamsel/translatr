@@ -1,20 +1,49 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  ConfirmButtonComponent,
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent
+} from '@dev/translatr-components';
 import { AccessToken } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { navigate, trackByFn } from '@translatr/utils';
 import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
+import { NavListComponent } from '../../../shared/nav-list/nav-list.component';
 import { openAccessTokenEditDialog } from '../../../shared/access-token-edit-dialog/access-token-edit-dialog.component';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-user-access-tokens',
   templateUrl: './user-access-tokens.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./user-access-tokens.component.scss']
+  styleUrls: ['./user-access-tokens.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslocoModule,
+    NavListComponent,
+    ConfirmButtonComponent,
+    EmptyViewComponent,
+    EmptyViewHeaderComponent,
+    EmptyViewContentComponent,
+    EmptyViewActionsComponent,
+    MatListModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatButtonModule
+  ]
 })
 export class UserAccessTokensComponent implements OnInit {
   readonly user$ = this.facade.user$;

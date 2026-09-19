@@ -1,18 +1,25 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject, Injector, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, CanActivate, Route } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ActivatedRoute, CanActivate, Route, RouterModule } from '@angular/router';
+import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { Feature, User } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { Observable } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { UserFacade } from './+state/user.facade';
 import { USER_ROUTES } from './user-page.token';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./user-page.component.scss']
+  styleUrls: ['./user-page.component.scss'],
+  imports: [CommonModule, RouterModule, TranslocoModule, SidenavModule, MatIconModule, MatTabsModule, FeatureFlagClassDirective]
 })
 export class UserPageComponent implements OnDestroy {
   readonly me$ = this.appFacade.me$;

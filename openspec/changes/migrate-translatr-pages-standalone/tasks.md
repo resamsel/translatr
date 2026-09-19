@@ -18,9 +18,9 @@
 
 ## 3. user-page
 
-- [ ] 3.1 Convert `UserInfoComponent`, `UserProjectsComponent`, `UserAccessTokensComponent`, `UserAccessTokenComponent`, `UserActivityComponent`, `UserSettingsComponent` to `standalone: true` with explicit `imports`
-- [ ] 3.2 Convert `UserPageComponent` to `standalone: true` with explicit `imports` (router-outlet only); delete `user-page.module.ts`; move `StoreModule.forFeature(USER_FEATURE_KEY, ...)`, `EffectsModule.forFeature([UserEffects])`, and `providers: [UserFacade, UserGuard]` from the deleted module into `user-page-routing.module.ts`; update consumers
-- [ ] 3.3 Verify `nx test translatr` and `nx build translatr` succeed
+- [x] 3.1 Convert `UserInfoComponent`, `UserProjectsComponent`, `UserAccessTokensComponent`, `UserAccessTokenComponent`, `UserActivityComponent`, `UserSettingsComponent` to `standalone: true` with explicit `imports` (`user-info`/`user-access-tokens` specs needed `TranslocoTestingModule` for the same real-Transloco-activation reason seen throughout; `user-settings` needed no `overrideComponent` swap despite its spec importing now-vestigial Mock `EmptyView*` classes - it doesn't actually use `dev-empty-view` in its template)
+- [x] 3.2 Convert `UserPageComponent` to `standalone: true` with explicit `imports` (router-outlet only, same shape as `ProjectPageComponent` - `[featureFlagClass]` caught via the systematic tag-extraction scan); delete `user-page.module.ts`; moved `StoreModule.forFeature(USER_FEATURE_KEY, ...)`, `EffectsModule.forFeature([UserEffects])`, and `providers: [UserFacade, UserGuard]` from the deleted module into `user-page-routing.module.ts`; update consumers; repointed `app-routing.module.ts`'s user-page `loadChildren` to `UserPageRoutingModule`
+- [x] 3.3 Verify `nx test translatr` and `nx build translatr` succeed (159/159, clean build, `tsc --noEmit` clean)
 
 ## 4. editor-page
 

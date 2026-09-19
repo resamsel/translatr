@@ -1,14 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivityGraphComponent } from '@dev/translatr-components';
 import { User, UserCriteria } from '@dev/translatr-model';
 import { filter, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
+import { ActivityListComponent } from '../../../shared/activity-list/activity-list.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-user-activity',
   templateUrl: './user-activity.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./user-activity.component.scss']
+  styleUrls: ['./user-activity.component.scss'],
+  imports: [CommonModule, ActivityGraphComponent, ActivityListComponent]
 })
 export class UserActivityComponent implements OnInit {
   readonly criteria$ = this.facade.criteria$;

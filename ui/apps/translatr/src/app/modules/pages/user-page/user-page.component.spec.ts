@@ -3,9 +3,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockFeatureFlagDirective, MockFeatureFlagClassDirective } from '@translatr/components/testing';
-import { GravatarModule } from 'ngx-gravatar';
+import { TranslocoTestingModule } from '@jsverse/transloco';
+import { FeatureFlagClassDirective } from '@dev/translatr-components';
+import { MockFeatureFlagClassDirective } from '@translatr/components/testing';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { SidenavTestingModule } from '../../nav/sidenav/testing';
 import { UserFacade } from './+state/user.facade';
 
@@ -18,14 +20,15 @@ describe('UserPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserPageComponent],
+      TestBed.overrideComponent(UserPageComponent, {
+        remove: { imports: [SidenavModule, FeatureFlagClassDirective] },
+        add: { imports: [SidenavTestingModule, MockFeatureFlagClassDirective] }
+      }).configureTestingModule({
         imports: [
-          SidenavTestingModule,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+          UserPageComponent,
 
           RouterTestingModule,
-          GravatarModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatTabsModule,
           MatIconModule
