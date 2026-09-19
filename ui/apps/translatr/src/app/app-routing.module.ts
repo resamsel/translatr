@@ -24,7 +24,9 @@ const routes: Routes = [
   {
     path: 'users',
     loadChildren: () =>
-      import('./modules/pages/users-page/users-page.module').then(m => m.UsersPageModule)
+      import('./modules/pages/users-page/users-page-routing.module').then(
+        m => m.UsersPageRoutingModule
+      )
   },
   {
     path: 'projects',

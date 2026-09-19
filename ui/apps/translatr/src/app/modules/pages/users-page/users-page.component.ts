@@ -1,18 +1,24 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Params, Router } from '@angular/router';
+import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { Feature, UserCriteria } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { navigate } from '@translatr/utils';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { FilterCriteria } from '../../shared/list-header/list-header.component';
+import { UserListComponent } from '../../shared/user-list/user-list.component';
 import { UsersFacade } from './+state/users.facade';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-projects-page',
   templateUrl: './users-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./users-page.component.scss']
+  styleUrls: ['./users-page.component.scss'],
+  imports: [CommonModule, TranslocoModule, SidenavModule, UserListComponent, FeatureFlagClassDirective]
 })
 export class UsersPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
