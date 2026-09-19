@@ -6,16 +6,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
-import { EllipsisPipe } from '@dev/translatr-components';
+import { ConfirmButtonComponent, EntityTableComponent, SelectionActionsComponent } from '@dev/translatr-components';
 import {
   MockConfirmButtonComponent,
-  MockEntityTableComponent, MockSelectionActionsComponent,
-  MockFeatureFlagDirective, MockFeatureFlagClassDirective
+  MockEntityTableComponent, MockSelectionActionsComponent
 } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
-import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
-import { AdminPageTestingModule } from '../../admin-page/testing';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
+import { MockAdminPageComponent } from '../../admin-page/testing';
 
 import { ProjectsComponent } from './projects.component';
 
@@ -25,17 +24,18 @@ describe('ProjectsComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectsComponent],
+      TestBed.overrideComponent(ProjectsComponent, {
+        remove: {
+          imports: [AdminPageComponent, EntityTableComponent, ConfirmButtonComponent, SelectionActionsComponent]
+        },
+        add: {
+          imports: [MockAdminPageComponent, MockEntityTableComponent, MockConfirmButtonComponent, MockSelectionActionsComponent]
+        }
+      }).configureTestingModule({
         imports: [
-          AdminPageTestingModule,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-          MockEntityTableComponent, MockSelectionActionsComponent,
-          MockConfirmButtonComponent,
-          EllipsisPipe,
+          ProjectsComponent,
 
           RouterTestingModule,
-          TimeAgoPipe,
 
           MatTableModule,
           MatButtonModule,

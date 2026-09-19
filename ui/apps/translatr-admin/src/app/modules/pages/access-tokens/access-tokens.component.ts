@@ -1,7 +1,22 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AccessTokenEditDialogComponent, Entity, notifyEvent } from '@dev/translatr-components';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import {
+  AccessTokenEditDialogComponent,
+  ConfirmButtonComponent,
+  EllipsisPipe,
+  Entity,
+  EntityTableComponent,
+  notifyEvent,
+  SelectionActionsComponent,
+  TimeAgoPipe
+} from '@dev/translatr-components';
 import { AccessToken, Feature, RequestCriteria } from '@dev/translatr-model';
 import {
   errorMessage,
@@ -21,13 +36,28 @@ import {
 } from '../../../+state/app.actions';
 import { AppFacade } from '../../../+state/app.facade';
 import { environment } from '../../../../environments/environment';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-access-tokens',
   templateUrl: './access-tokens.component.html',
-  styleUrls: ['./access-tokens.component.scss']
+  styleUrls: ['./access-tokens.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    AdminPageComponent,
+    EntityTableComponent,
+    ConfirmButtonComponent,
+    SelectionActionsComponent,
+    TimeAgoPipe,
+    EllipsisPipe,
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule
+  ]
 })
 export class AccessTokensComponent implements OnDestroy {
   displayedColumns = ['name', 'user', 'scopes', 'when_created', 'actions'];
