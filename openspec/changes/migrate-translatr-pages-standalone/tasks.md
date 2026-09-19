@@ -37,8 +37,8 @@
 
 ## 6. users-page
 
-- [ ] 6.1 Convert `UsersPageComponent` to `standalone: true` with explicit `imports` (including `UserCardComponent`, `UserCardLinkComponent`, `UserListComponent`); delete `users-page.module.ts`; update consumers (`users-page/+state/users.module.ts` stays untouched - already zero-component)
-- [ ] 6.2 Verify `nx test translatr` and `nx build translatr` succeed
+- [x] 6.1 Convert `UsersPageComponent` to `standalone: true` with explicit `imports` (`SidenavModule`, `UserListComponent`, `FeatureFlagClassDirective`, `TranslocoModule` - `UserCardComponent`/`UserCardLinkComponent` are used inside `UserListComponent`, not directly in this component's own template); delete `users-page.module.ts`; moved `UsersModule` (the zero-component `+state/users.module.ts`, previously imported by the deleted declarations module) into `users-page-routing.module.ts`; update consumers; repointed `app-routing.module.ts`'s users-page `loadChildren` to `UsersPageRoutingModule`
+- [x] 6.2 Verify `nx test translatr` and `nx build translatr` succeed (159/159, clean build, `tsc --noEmit` clean)
 
 ## 7. Routing repoint
 
