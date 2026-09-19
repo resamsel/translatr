@@ -1,0 +1,58 @@
+# Tasks
+
+## 1. No-state, minimal-composition pages
+
+- [ ] 1.1 Convert `ForbiddenPageComponent` to `standalone: true` with explicit `imports`, delete `forbidden-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
+- [ ] 1.2 Convert `NotFoundPageComponent` to `standalone: true` with explicit `imports`, delete `not-found-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
+- [ ] 1.3 Convert `MainPageComponent` to `standalone: true` with explicit `imports`, delete `main-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
+- [ ] 1.4 Convert `RegistrationPageComponent` to `standalone: true` with explicit `imports`, delete `registration-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
+
+## 2. project-page
+
+- [ ] 2.1 Convert `KeyListComponent` to `standalone: true` with explicit `imports`, update consumers
+- [ ] 2.2 Convert `LocaleListComponent` to `standalone: true` with explicit `imports`, update consumers
+- [ ] 2.3 Convert `MemberListComponent` to `standalone: true` with explicit `imports`, update consumers
+- [ ] 2.4 Convert `ProjectInfoComponent`, `ProjectKeysComponent` (imports `KeyListComponent`), `ProjectLocalesComponent` (imports `LocaleListComponent`), `ProjectMembersComponent` (imports `MemberListComponent`), `ProjectActivityComponent`, `ProjectSettingsComponent` to `standalone: true` with explicit `imports`
+- [ ] 2.5 Convert `ProjectPageComponent` to `standalone: true` with explicit `imports` (router-outlet only - no tab-component imports needed); delete `project-page.module.ts`; move the `ProjectStateModule` import from the deleted module into `project-page-routing.module.ts`; update consumers
+- [ ] 2.6 Verify `nx test translatr` and `nx build translatr` succeed
+
+## 3. user-page
+
+- [ ] 3.1 Convert `UserInfoComponent`, `UserProjectsComponent`, `UserAccessTokensComponent`, `UserAccessTokenComponent`, `UserActivityComponent`, `UserSettingsComponent` to `standalone: true` with explicit `imports`
+- [ ] 3.2 Convert `UserPageComponent` to `standalone: true` with explicit `imports` (router-outlet only); delete `user-page.module.ts`; move `StoreModule.forFeature(USER_FEATURE_KEY, ...)`, `EffectsModule.forFeature([UserEffects])`, and `providers: [UserFacade, UserGuard]` from the deleted module into `user-page-routing.module.ts`; update consumers
+- [ ] 3.3 Verify `nx test translatr` and `nx build translatr` succeed
+
+## 4. editor-page
+
+- [ ] 4.1 Convert `EditorSelectorComponent` to `standalone: true` with explicit `imports`
+- [ ] 4.2 Convert `EditorComponent` to `standalone: true` with explicit `imports`
+- [ ] 4.3 Convert `KeyEditorPageComponent` and `LocaleEditorPageComponent` to `standalone: true` with explicit `imports` (including `EditorComponent` and `EditorSelectorComponent`); delete `editor-page.module.ts`; move `StoreModule.forFeature(EDITOR_FEATURE_KEY, ...)`, `EffectsModule.forFeature([EditorEffects])`, and `providers: [EditorFacade, { provide: LanguageSwicher, useClass: AppFacade }]` from the deleted module into `editor-page-routing.module.ts`; update consumers
+- [ ] 4.4 Verify `nx test translatr` and `nx build translatr` succeed
+
+## 5. dashboard-page and projects-page
+
+- [ ] 5.1 Convert `DashboardPageComponent` to `standalone: true` with explicit `imports` (including `ActivityListComponent`, `MetricComponent`, `ProjectCardListComponent`, `ProjectEditDialogComponent`, `ProjectListComponent`); delete `dashboard-page.module.ts`; move `StoreModule.forFeature(DASHBOARD_FEATURE_KEY, ...)`, `EffectsModule.forFeature([DashboardEffects])`, and `providers: [DashboardFacade]` into `dashboard-page-routing.module.ts`; update consumers
+- [ ] 5.2 Convert `ProjectsPageComponent` to `standalone: true` with explicit `imports` (including `ProjectCardComponent`, `ProjectCardLinkComponent`, `ProjectEditDialogComponent`, `ProjectListComponent`); delete `projects-page.module.ts`; move `StoreModule.forFeature(PROJECTS_FEATURE_KEY, ...)`, `EffectsModule.forFeature([ProjectsEffects])`, and `providers: [ProjectsFacade]` into `projects-page-routing.module.ts`; update consumers
+- [ ] 5.3 Verify `nx test translatr` and `nx build translatr` succeed
+
+## 6. users-page
+
+- [ ] 6.1 Convert `UsersPageComponent` to `standalone: true` with explicit `imports` (including `UserCardComponent`, `UserCardLinkComponent`, `UserListComponent`); delete `users-page.module.ts`; update consumers (`users-page/+state/users.module.ts` stays untouched - already zero-component)
+- [ ] 6.2 Verify `nx test translatr` and `nx build translatr` succeed
+
+## 7. Routing repoint
+
+- [ ] 7.1 In `app-routing.module.ts`, change all 9 remaining `loadChildren` entries (`register`, `dashboard`, `users`, `projects`, `not-found`, `forbidden`, `''` main, `''` user-page, `''` project-page, `''` editor-page) from `.then(m => m.XxxPageModule)` to `.then(m => m.XxxPageRoutingModule)`
+- [ ] 7.2 Verify `nx build translatr` succeeds with no TypeScript errors
+
+## 8. Testing modules
+
+- [ ] 8.1 Convert the `Mock*` classes in `editor/testing/editor-testing.module.ts`, `project-keys/key-list/testing/key-list-testing.module.ts`, `project-locales/locale-list/testing/locale-list-testing.module.ts`, `project-members/member-list/testing/member-list-testing.module.ts` to `standalone: true`; rename each file to `mock-*.component.ts`; update every consumer spec; delete the 4 `*-testing.module.ts` files
+- [ ] 8.2 Run `nx test translatr` and verify all specs pass
+
+## 9. Cleanup and verification
+
+- [ ] 9.1 Grep `apps/translatr` for any remaining `*Module` import of a class from `apps/translatr/src/app/modules/pages/**` (excluding the untouched `*RoutingModule`s and `users-page/+state/users.module.ts`) and confirm zero matches
+- [ ] 9.2 Run `nx build translatr` and verify it succeeds with no TypeScript errors
+- [ ] 9.3 Run `nx test translatr` and verify all suites pass
+- [ ] 9.4 Manually smoke-test the app (`nx serve translatr`) covering a direct-composition page (dashboard or projects), a router-outlet page's nested tab route (e.g. a project's locales tab), and the login/main-page flow; verify no console errors and correct rendering
