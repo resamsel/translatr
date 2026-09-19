@@ -8,9 +8,9 @@ import { FeatureFlagFacade } from '@dev/translatr-model';
 import { NotificationService, TranslatrSdkModule } from '@dev/translatr-sdk';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { provideSvgIcons } from '@ngneat/svg-icon';
-import { provideEffects } from '@ngrx/effects';
+import { EffectsModule } from '@ngrx/effects';
 import { provideRouterStore, routerReducer, RouterState } from '@ngrx/router-store';
-import { provideStore } from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { ENDPOINT_URL, LOGIN_URL, WINDOW } from '@translatr/utils';
 import { AppEffects } from './app/+state/app.effects';
@@ -33,20 +33,28 @@ bootstrapApplication(AppComponent, {
     provideAnimations(),
     provideRouter(routes, ...(environment.routerTracing ? [withDebugTracing()] : [])),
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
-    provideStore(
-      {
-        app: appReducer,
-        router: routerReducer
-      },
-      {
-        metaReducers: [],
-        runtimeChecks: {
-          strictStateImmutability: true,
-          strictActionImmutability: true
+    // NgRx's forFeature() (StoreModule.forFeature/EffectsModule.forFeature) - used throughout
+    // every lazy page module - requires the root store/effects to be registered via the NgModule
+    // forms (StoreModule.forRoot/EffectsModule.forRoot); their functional equivalents
+    // (provideStore/provideEffects) don't provide the StoreRootModule/EffectsRootModule marker
+    // that StoreFeatureModule/EffectsFeatureModule's factories inject, so mixing them breaks
+    // every lazy-loaded feature with NG0201.
+    importProvidersFrom(
+      StoreModule.forRoot(
+        {
+          app: appReducer,
+          router: routerReducer
+        },
+        {
+          metaReducers: [],
+          runtimeChecks: {
+            strictStateImmutability: true,
+            strictActionImmutability: true
+          }
         }
-      }
+      )
     ),
-    provideEffects([AppEffects]),
+    importProvidersFrom(EffectsModule.forRoot([AppEffects])),
     provideRouterStore({ routerState: RouterState.Minimal }),
     ...(!environment.production ? [provideStoreDevtools()] : []),
     importProvidersFrom(TranslocoRootModule),
