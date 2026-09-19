@@ -1,16 +1,30 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { Params, Router } from '@angular/router';
-import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent,
+  FilterFieldComponent,
+  FilterFieldFilter,
+  handleFilterFieldSelection
+} from '@dev/translatr-components';
 import { Key, Message } from '@dev/translatr-model';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { trackByFn } from '@translatr/utils';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { NavListComponent } from '../../shared/nav-list/nav-list.component';
 import { openKeyEditDialog } from '../../shared/key-edit-dialog/key-edit-dialog.component';
 import { ProjectFacade } from '../../shared/project-state/+state';
 import { EditorFacade } from './+state/editor.facade';
+import { EditorSelectorComponent } from './editor/editor-selector.component';
+import { EditorComponent } from './editor/editor.component';
 import { navigateItems } from './navigate-utils';
 
 const localeComparator = (a: Params, b: Params): boolean =>
@@ -20,11 +34,25 @@ const filterComparator = (a: Params, b: Params): boolean =>
   a.search === b.search && a.missing === b.missing;
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-locale-editor-page',
   templateUrl: './locale-editor-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./locale-editor-page.component.scss']
+  styleUrls: ['./locale-editor-page.component.scss'],
+  imports: [
+    CommonModule,
+    TranslocoModule,
+    EditorComponent,
+    EditorSelectorComponent,
+    NavListComponent,
+    EmptyViewComponent,
+    EmptyViewHeaderComponent,
+    EmptyViewContentComponent,
+    EmptyViewActionsComponent,
+    FilterFieldComponent,
+    MatIconModule,
+    MatMenuModule
+  ]
 })
 export class LocaleEditorPageComponent implements OnInit, OnDestroy {
   readonly me$ = this.appFacade.me$;

@@ -2,16 +2,26 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { MatDialogModule } from '@angular/material/dialog';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent,
+  FilterFieldComponent
+} from '@dev/translatr-components';
 import { ProjectFacade } from '../../shared/project-state/+state';
 import { KeyEditorPageComponent } from './key-editor-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { EditorFacade } from './+state/editor.facade';
+import { EditorSelectorComponent } from './editor/editor-selector.component';
+import { EditorComponent } from './editor/editor.component';
 import { EditorTestingModule } from './editor/testing';
 import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MockFilterFieldComponent } from '@translatr/components/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { NavListComponent } from '../../shared/nav-list/nav-list.component';
 import { MockNavListComponent } from '../../testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { mockObservable } from '@translatr/utils/testing';
@@ -23,15 +33,35 @@ describe('KeyEditorPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [KeyEditorPageComponent],
+      TestBed.overrideComponent(KeyEditorPageComponent, {
+        remove: {
+          imports: [
+            EditorComponent,
+            EditorSelectorComponent,
+            NavListComponent,
+            EmptyViewComponent,
+            EmptyViewHeaderComponent,
+            EmptyViewContentComponent,
+            EmptyViewActionsComponent,
+            FilterFieldComponent
+          ]
+        },
+        add: {
+          imports: [
+            EditorTestingModule,
+            MockNavListComponent,
+            MockEmptyViewComponent,
+            MockEmptyViewActionsComponent,
+            MockEmptyViewContentComponent,
+            MockEmptyViewHeaderComponent,
+            MockFilterFieldComponent
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          RouterTestingModule,
-          EditorTestingModule,
-          MockFilterFieldComponent,
-          MockNavListComponent,
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
+          KeyEditorPageComponent,
 
+          RouterTestingModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 

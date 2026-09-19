@@ -9,12 +9,22 @@ import { MatMenuModule } from '@angular/material/menu';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent,
+  FilterFieldComponent
+} from '@dev/translatr-components';
 import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MockFilterFieldComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
+import { NavListComponent } from '../../shared/nav-list/nav-list.component';
 import { MockNavListComponent } from '../../shared/nav-list/testing';
 import { ProjectFacade } from '../../shared/project-state/+state';
 import { EditorFacade } from './+state/editor.facade';
+import { EditorSelectorComponent } from './editor/editor-selector.component';
+import { EditorComponent } from './editor/editor.component';
 import { EditorTestingModule } from './editor/testing';
 import { LocaleEditorPageComponent } from './locale-editor-page.component';
 
@@ -24,15 +34,35 @@ describe('LocaleEditorPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [LocaleEditorPageComponent],
+      TestBed.overrideComponent(LocaleEditorPageComponent, {
+        remove: {
+          imports: [
+            EditorComponent,
+            EditorSelectorComponent,
+            NavListComponent,
+            EmptyViewComponent,
+            EmptyViewHeaderComponent,
+            EmptyViewContentComponent,
+            EmptyViewActionsComponent,
+            FilterFieldComponent
+          ]
+        },
+        add: {
+          imports: [
+            EditorTestingModule,
+            MockNavListComponent,
+            MockEmptyViewComponent,
+            MockEmptyViewActionsComponent,
+            MockEmptyViewContentComponent,
+            MockEmptyViewHeaderComponent,
+            MockFilterFieldComponent
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          RouterTestingModule,
-          EditorTestingModule,
-          MockFilterFieldComponent,
-          MockNavListComponent,
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
+          LocaleEditorPageComponent,
 
+          RouterTestingModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 

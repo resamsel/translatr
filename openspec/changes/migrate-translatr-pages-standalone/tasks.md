@@ -24,10 +24,10 @@
 
 ## 4. editor-page
 
-- [ ] 4.1 Convert `EditorSelectorComponent` to `standalone: true` with explicit `imports`
-- [ ] 4.2 Convert `EditorComponent` to `standalone: true` with explicit `imports`
-- [ ] 4.3 Convert `KeyEditorPageComponent` and `LocaleEditorPageComponent` to `standalone: true` with explicit `imports` (including `EditorComponent` and `EditorSelectorComponent`); delete `editor-page.module.ts`; move `StoreModule.forFeature(EDITOR_FEATURE_KEY, ...)`, `EffectsModule.forFeature([EditorEffects])`, and `providers: [EditorFacade, { provide: LanguageSwicher, useClass: AppFacade }]` from the deleted module into `editor-page-routing.module.ts`; update consumers
-- [ ] 4.4 Verify `nx test translatr` and `nx build translatr` succeed
+- [x] 4.1 Convert `EditorSelectorComponent` to `standalone: true` with explicit `imports` (trivial inline-template, ng-content-only component - no imports needed)
+- [x] 4.2 Convert `EditorComponent` to `standalone: true` with explicit `imports`
+- [x] 4.3 Convert `KeyEditorPageComponent` and `LocaleEditorPageComponent` to `standalone: true` with explicit `imports` (including `EditorComponent` and `EditorSelectorComponent`); delete `editor-page.module.ts`; moved `ProjectStateModule`, `StoreModule.forFeature(EDITOR_FEATURE_KEY, ...)`, `EffectsModule.forFeature([EditorEffects])`, and `providers: [EditorFacade, { provide: LanguageSwicher, useClass: AppFacade }]` from the deleted module into `editor-page-routing.module.ts`; update consumers; repointed `app-routing.module.ts`'s editor-page `loadChildren` to `EditorPageRoutingModule` (caught a real bug: `KeyEditorPageComponent`'s own standalone `imports` was missing `MatInputModule` - its `matInput`-directive input only worked in tests because the TestBed's ambient imports covered it, masking that a standalone component's template only resolves directives from its own `imports` array, not the surrounding TestBed module; fixed by adding `MatInputModule` to the component itself)
+- [x] 4.4 Verify `nx test translatr` and `nx build translatr` succeed (159/159, clean build, `tsc --noEmit` clean)
 
 ## 5. dashboard-page and projects-page
 
