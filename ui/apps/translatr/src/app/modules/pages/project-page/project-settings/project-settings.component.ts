@@ -1,9 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { EmptyViewComponent } from '@dev/translatr-components';
 import { Project } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
 import { BaseEditFormComponent } from '../../../shared/edit-form/base-edit-form.component';
@@ -11,11 +18,21 @@ import { openProjectDeleteDialog } from '../../../shared/project-delete-dialog/p
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-settings',
   templateUrl: './project-settings.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./project-settings.component.scss']
+  styleUrls: ['./project-settings.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+    EmptyViewComponent,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+  ]
 })
 export class ProjectSettingsComponent
   extends BaseEditFormComponent<ProjectSettingsComponent, Project>

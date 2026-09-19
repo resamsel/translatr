@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -6,15 +7,17 @@ import { navigate } from '@translatr/utils';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map,  take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
+import { MemberListComponent } from './member-list/member-list.component';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-members',
   templateUrl: './project-members.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./project-members.component.scss']
+  styleUrls: ['./project-members.component.scss'],
+  imports: [CommonModule, MemberListComponent]
 })
 export class ProjectMembersComponent {
   project$ = this.facade.project$;

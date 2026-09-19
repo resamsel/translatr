@@ -1,6 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewActionsComponent,
+  FeatureFlagDirective,
+  MetricComponent,
+  ProjectInfographicComponent,
+  ShortNumberPipe
+} from '@dev/translatr-components';
 import {
   AccessToken,
   Activity,
@@ -14,10 +31,13 @@ import {
   PagedList,
   Project
 } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { slicePagedList, WINDOW } from '@translatr/utils';
 import { Observable } from 'rxjs';
 import { filter, map,  take } from 'rxjs/operators';
 import { AppFacade } from '../../../../+state/app.facade';
+import { ActivityListComponent } from '../../../shared/activity-list/activity-list.component';
+import { NavListComponent } from '../../../shared/nav-list/nav-list.component';
 import { openKeyEditDialog } from '../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { openLocaleEditDialog } from '../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { ProjectFacade } from '../../../shared/project-state';
@@ -27,11 +47,32 @@ function endpointFromLocation(location: Location) {
 }
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-info',
   templateUrl: './project-info.component.html',
-  styleUrls: ['./project-info.component.scss']
+  styleUrls: ['./project-info.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslocoModule,
+    NavListComponent,
+    ActivityListComponent,
+    EmptyViewComponent,
+    EmptyViewHeaderComponent,
+    EmptyViewActionsComponent,
+    FeatureFlagDirective,
+    MetricComponent,
+    ProjectInfographicComponent,
+    ShortNumberPipe,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatSelectModule,
+    MatTooltipModule
+  ]
 })
 export class ProjectInfoComponent {
   project$ = this.facade.project$.pipe(filter(x => !!x));

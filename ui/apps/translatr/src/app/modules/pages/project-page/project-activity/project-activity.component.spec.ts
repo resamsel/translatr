@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivityGraphComponent } from '@dev/translatr-components';
 import { MockActivityGraphComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { ProjectFacade } from '../../../shared/project-state';
+import { ActivityListComponent } from '../../../shared/activity-list/activity-list.component';
 import { MockActivityListComponent } from '../../../shared/activity-list/testing';
 import { ProjectActivityComponent } from './project-activity.component';
 
@@ -11,9 +13,11 @@ describe('ProjectActivityComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectActivityComponent],
-        imports: [MockActivityListComponent, MockActivityGraphComponent],
+      TestBed.overrideComponent(ProjectActivityComponent, {
+        remove: { imports: [ActivityListComponent, ActivityGraphComponent] },
+        add: { imports: [MockActivityListComponent, MockActivityGraphComponent] }
+      }).configureTestingModule({
+        imports: [ProjectActivityComponent],
         providers: [
           {
             provide: ProjectFacade,

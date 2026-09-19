@@ -1,9 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router, RouterModule } from '@angular/router';
+import { ConfirmButtonComponent } from '@dev/translatr-components';
 import { Member, MemberRole, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { filter, switchMapTo, take } from 'rxjs/operators';
+import { GravatarModule } from 'ngx-gravatar';
 import { AppFacade } from '../../../../../+state/app.facade';
+import { NavListComponent } from '../../../../shared/nav-list/nav-list.component';
 import {
   defaultFilters,
   FilterCriteria
@@ -12,11 +21,23 @@ import { openProjectMemberEditDialog } from '../../../../shared/project-member-e
 import { openProjectOwnerEditDialog } from '../../../../shared/project-owner-edit-dialog/project-owner-edit-dialog.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-member-list',
   templateUrl: './member-list.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./member-list.component.scss']
+  styleUrls: ['./member-list.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslocoModule,
+    NavListComponent,
+    ConfirmButtonComponent,
+    GravatarModule,
+    MatListModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatButtonModule
+  ]
 })
 export class MemberListComponent {
   ownerCount: number;

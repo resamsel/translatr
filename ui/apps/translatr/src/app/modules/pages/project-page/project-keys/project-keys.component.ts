@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -5,14 +6,16 @@ import { Key, KeyCriteria, Project } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { combineLatest } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
+import { KeyListComponent } from './key-list/key-list.component';
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-keys',
   templateUrl: './project-keys.component.html',
-  styleUrls: ['./project-keys.component.scss']
+  styleUrls: ['./project-keys.component.scss'],
+  imports: [CommonModule, KeyListComponent]
 })
 export class ProjectKeysComponent {
   readonly project$ = this.facade.project$.pipe(filter(x => !!x));

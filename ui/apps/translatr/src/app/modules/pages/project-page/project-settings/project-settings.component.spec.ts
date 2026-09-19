@@ -9,7 +9,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ProjectService } from '@dev/translatr-sdk';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
+import { EmptyViewComponent } from '@dev/translatr-components';
+import { MockEmptyViewComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { ProjectFacade } from '../../../shared/project-state';
 import { AppFacade } from '../../../../+state/app.facade';
@@ -22,10 +23,12 @@ describe('ProjectSettingsComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectSettingsComponent],
+      TestBed.overrideComponent(ProjectSettingsComponent, {
+        remove: { imports: [EmptyViewComponent] },
+        add: { imports: [MockEmptyViewComponent] }
+      }).configureTestingModule({
         imports: [
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
+          ProjectSettingsComponent,
 
           FormsModule,
           ReactiveFormsModule,

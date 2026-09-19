@@ -57,7 +57,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/project-page/project-page.module').then(m => m.ProjectPageModule)
+      import('./modules/pages/project-page/project-page-routing.module').then(m => m.ProjectPageRoutingModule)
   },
   {
     path: '',

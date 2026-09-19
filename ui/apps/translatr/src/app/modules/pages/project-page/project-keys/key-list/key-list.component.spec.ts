@@ -1,12 +1,16 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { KeyListComponent } from './key-list.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoTestingModule } from '@jsverse/transloco';
+import {
+  ConfirmButtonComponent,
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent
+} from '@dev/translatr-components';
+import { NavListComponent } from '../../../../shared/nav-list/nav-list.component';
 import { MockNavListComponent } from '../../../../shared/nav-list/testing';
 import { MockConfirmButtonComponent, MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 
@@ -16,21 +20,30 @@ describe('KeyListComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [KeyListComponent],
+      TestBed.overrideComponent(KeyListComponent, {
+        remove: {
+          imports: [
+            NavListComponent,
+            ConfirmButtonComponent,
+            EmptyViewComponent,
+            EmptyViewHeaderComponent,
+            EmptyViewContentComponent,
+            EmptyViewActionsComponent
+          ]
+        },
+        add: {
+          imports: [
+            MockNavListComponent,
+            MockConfirmButtonComponent,
+            MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          MockNavListComponent,
-          MockConfirmButtonComponent,
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
-
+          KeyListComponent,
           RouterTestingModule,
-
           MatDialogModule,
-          MatListModule,
-          MatIconModule,
-          MatProgressBarModule,
-          MatTooltipModule,
-          MatButtonModule
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
         ]
       }).compileComponents();
     })

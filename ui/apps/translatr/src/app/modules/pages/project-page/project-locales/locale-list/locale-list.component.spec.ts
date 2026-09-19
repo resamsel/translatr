@@ -1,16 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LocaleListComponent } from './locale-list.component';
+import {
+  ConfirmButtonComponent,
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent
+} from '@dev/translatr-components';
+import { NavListComponent } from '../../../../shared/nav-list/nav-list.component';
 import { MockNavListComponent } from '../../../../shared/nav-list/testing';
 import { MockConfirmButtonComponent, MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('LocaleListComponent', () => {
   let component: LocaleListComponent;
@@ -18,22 +21,30 @@ describe('LocaleListComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [LocaleListComponent],
+      TestBed.overrideComponent(LocaleListComponent, {
+        remove: {
+          imports: [
+            NavListComponent,
+            ConfirmButtonComponent,
+            EmptyViewComponent,
+            EmptyViewHeaderComponent,
+            EmptyViewContentComponent,
+            EmptyViewActionsComponent
+          ]
+        },
+        add: {
+          imports: [
+            MockNavListComponent,
+            MockConfirmButtonComponent,
+            MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          MockNavListComponent,
-          MockConfirmButtonComponent,
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
-
+          LocaleListComponent,
           RouterTestingModule,
-
           MatDialogModule,
-          MatListModule,
-          MatIconModule,
-          MatProgressBarModule,
-          MatTooltipModule,
-          MatButtonModule,
-          MatMenuModule
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
         ]
       }).compileComponents();
     })

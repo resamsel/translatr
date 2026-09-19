@@ -4,9 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { MockFeatureFlagDirective, MockFeatureFlagClassDirective } from '@translatr/components/testing';
+import { FeatureFlagClassDirective } from '@dev/translatr-components';
+import { MockFeatureFlagClassDirective } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { SidenavTestingModule } from '../../nav/sidenav/testing';
 import { ProjectFacade } from '../../shared/project-state';
 
@@ -19,11 +21,12 @@ describe('ProjectPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectPageComponent],
+      TestBed.overrideComponent(ProjectPageComponent, {
+        remove: { imports: [SidenavModule, FeatureFlagClassDirective] },
+        add: { imports: [SidenavTestingModule, MockFeatureFlagClassDirective] }
+      }).configureTestingModule({
         imports: [
-          SidenavTestingModule,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+          ProjectPageComponent,
 
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
