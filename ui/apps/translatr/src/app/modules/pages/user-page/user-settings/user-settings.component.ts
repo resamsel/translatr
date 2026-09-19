@@ -1,9 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ThemePreference, ThemeService } from '@dev/translatr-components';
+import { FeatureFlagDirective, ThemePreference, ThemeService } from '@dev/translatr-components';
 import { Feature, User } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { findParam } from '@translatr/utils';
 import { merge, throwError } from 'rxjs';
 import { filter, skip, switchMap } from 'rxjs/operators';
@@ -11,11 +18,22 @@ import { UserFacade } from '../+state/user.facade';
 import { AbstractEditFormComponent } from '../../../shared/edit-form/abstract-edit-form-component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-user-settings',
   templateUrl: './user-settings.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./user-settings.component.scss']
+  styleUrls: ['./user-settings.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+    FeatureFlagDirective,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+  ]
 })
 export class UserSettingsComponent extends AbstractEditFormComponent<UserSettingsComponent, User>
   implements OnInit {

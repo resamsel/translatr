@@ -1,20 +1,38 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject, Injector, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, CanActivate, Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, CanActivate, Router, RouterModule } from '@angular/router';
+import { MetricComponent, UserCardComponent } from '@dev/translatr-components';
 import { PagedList, Project, User } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { canActivate$, NameIconRoute, slicePagedList } from '@translatr/utils';
 import { Observable, of } from 'rxjs';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
+import { ActivityListComponent } from '../../../shared/activity-list/activity-list.component';
+import { ProjectCardListComponent } from '../../../shared/project-card-list/project-card-list.component';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 import { USER_ROUTES } from '../user-page.token';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-user-info',
   templateUrl: './user-info.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./user-info.component.scss']
+  styleUrls: ['./user-info.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslocoModule,
+    ActivityListComponent,
+    ProjectCardListComponent,
+    MetricComponent,
+    UserCardComponent,
+    MatIconModule,
+    MatTooltipModule
+  ]
 })
 export class UserInfoComponent implements OnInit {
   readonly user$ = this.facade.user$;

@@ -1,19 +1,24 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { ProjectCriteria, User } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { UserFacade } from '../+state/user.facade';
+import { ProjectListComponent } from '../../../shared/project-list/project-list.component';
 import { FilterCriteria } from '../../../shared/list-header/list-header.component';
 import { openProjectEditDialog } from '../../../shared/project-edit-dialog/project-edit-dialog.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-user-projects',
   templateUrl: './user-projects.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./user-projects.component.scss']
+  styleUrls: ['./user-projects.component.scss'],
+  imports: [CommonModule, ProjectListComponent, MatIconModule, MatTooltipModule]
 })
 export class UserProjectsComponent implements OnInit {
   projects$ = this.facade.projects$;

@@ -1,10 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserAccessTokensComponent } from './user-access-tokens.component';
+import {
+  ConfirmButtonComponent,
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent
+} from '@dev/translatr-components';
+import { NavListComponent } from '../../../shared/nav-list/nav-list.component';
 import { MockNavListComponent } from '../../../shared/nav-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TimeAgoPipe } from '@dev/translatr-components';
@@ -18,19 +27,24 @@ describe('UserAccessTokensComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserAccessTokensComponent],
+      TestBed.overrideComponent(UserAccessTokensComponent, {
+        remove: {
+          imports: [NavListComponent, ConfirmButtonComponent, EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent, EmptyViewActionsComponent]
+        },
+        add: {
+          imports: [MockNavListComponent, MockConfirmButtonComponent, MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent]
+        }
+      }).configureTestingModule({
         imports: [
-          MockNavListComponent,
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
-          MockConfirmButtonComponent,
+          UserAccessTokensComponent,
 
           RouterTestingModule,
           TimeAgoPipe,
 
           MatListModule,
           MatIconModule,
-          MatTooltipModule
+          MatTooltipModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
         ],
         providers: [
           {

@@ -1,7 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { AuthGuard } from '../../../guards/auth.guard';
 import { MyselfGuard } from '../../../guards/myself.guard';
+import { UserEffects } from './+state/user.effects';
+import { UserFacade } from './+state/user.facade';
+import {
+  initialState as userInitialState,
+  USER_FEATURE_KEY,
+  userReducer
+} from './+state/user.reducer';
 import { UserAccessTokenComponent } from './user-access-token/user-access-token.component';
 import { UserAccessTokensComponent } from './user-access-tokens/user-access-tokens.component';
 import { UserActivityComponent } from './user-activity/user-activity.component';
@@ -84,8 +93,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [
+    RouterModule.forChild(routes),
+    StoreModule.forFeature(USER_FEATURE_KEY, userReducer, {
+      initialState: userInitialState
+    }),
+    EffectsModule.forFeature([UserEffects])
+  ],
   exports: [RouterModule],
-  providers: [{ provide: USER_ROUTES, useValue: routes }]
+  providers: [{ provide: USER_ROUTES, useValue: routes }, UserFacade, UserGuard]
 })
 export class UserPageRoutingModule {}

@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivityGraphComponent } from '@dev/translatr-components';
 import { MockActivityGraphComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { UserFacade } from '../+state/user.facade';
+import { ActivityListComponent } from '../../../shared/activity-list/activity-list.component';
 import { MockActivityListComponent } from '../../../shared/activity-list/testing';
 import { UserActivityComponent } from './user-activity.component';
 
@@ -11,9 +13,11 @@ describe('UserActivityComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserActivityComponent],
-        imports: [MockActivityListComponent, MockActivityGraphComponent],
+      TestBed.overrideComponent(UserActivityComponent, {
+        remove: { imports: [ActivityListComponent, ActivityGraphComponent] },
+        add: { imports: [MockActivityListComponent, MockActivityGraphComponent] }
+      }).configureTestingModule({
+        imports: [UserActivityComponent],
         providers: [
           {
             provide: UserFacade,
