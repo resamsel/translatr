@@ -1,1 +1,1 @@
-export * from './sidenav-testing.module';
+export * from './mock-sidenav.component';

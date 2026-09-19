@@ -10,21 +10,23 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureFlagDirective, FeatureFlagClassDirective, ThemeService } from '@dev/translatr-components';
+import { ThemeService } from '@dev/translatr-components';
 import { FeatureFlagFacade } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { AppFacade } from '../../+state/app.facade';
 import { DASHBOARD_ROUTES } from '../pages/dashboard-page/dashboard-page.token';
-import { SidenavTestingModule } from '../nav/testing';
+import { SidenavComponent } from '../nav/sidenav/sidenav.component';
+import { MockSidenavComponent } from '../nav/sidenav/testing';
 import { AdminPageComponent } from './admin-page.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   template: `
     <dev-admin-page [headerColor]="'#e83a5f'">
       <p>content</p>
     </dev-admin-page>
-  `
+  `,
+  imports: [AdminPageComponent]
 })
 class HostComponent {}
 
@@ -41,11 +43,12 @@ describe('AdminPageComponent', () => {
       observe: () => of({ matches: largeScreen, breakpoints: {} })
     };
 
-    TestBed.configureTestingModule({
-      declarations: [HostComponent, AdminPageComponent],
+    TestBed.overrideComponent(AdminPageComponent, {
+      remove: { imports: [SidenavComponent] },
+      add: { imports: [MockSidenavComponent] }
+    }).configureTestingModule({
       imports: [
-        SidenavTestingModule,
-        FeatureFlagDirective, FeatureFlagClassDirective,
+        HostComponent,
 
         RouterTestingModule,
         NoopAnimationsModule,

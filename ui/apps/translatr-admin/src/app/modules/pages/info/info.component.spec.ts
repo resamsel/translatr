@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShortNumberPipe } from '@dev/translatr-components';
+import { ActivityGraphComponent, MetricComponent } from '@dev/translatr-components';
 import { ActivityService } from '@dev/translatr-sdk';
 import {
   MockActivityGraphComponent,
-  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
   MockMetricComponent
 } from '@translatr/components/testing';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
-import { AdminPageTestingModule } from '../../admin-page/testing';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
+import { MockAdminPageComponent } from '../../admin-page/testing';
 import { InfoComponent } from './info.component';
 
 describe('InfoComponent', () => {
@@ -18,14 +18,12 @@ describe('InfoComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [InfoComponent],
+      TestBed.overrideComponent(InfoComponent, {
+        remove: { imports: [AdminPageComponent, ActivityGraphComponent, MetricComponent] },
+        add: { imports: [MockAdminPageComponent, MockActivityGraphComponent, MockMetricComponent] }
+      }).configureTestingModule({
         imports: [
-          MockActivityGraphComponent,
-          AdminPageTestingModule,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-          MockMetricComponent,
-          ShortNumberPipe,
+          InfoComponent,
 
           RouterTestingModule
         ],

@@ -1,14 +1,16 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { ThemeService } from '@dev/translatr-components';
 import { TranslocoService } from '@jsverse/transloco';
 import { filter } from 'rxjs/operators';
 import { AppFacade } from './+state/app.facade';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-root',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>',
+  imports: [RouterModule]
 })
 export class AppComponent {
   constructor(

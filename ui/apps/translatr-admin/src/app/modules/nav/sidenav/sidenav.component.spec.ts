@@ -6,7 +6,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import {
-  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  AuthBarItemComponent,
+  AuthBarLanguageSwitcherComponent,
+  FeatureFlagDirective,
+  FooterComponent,
+  NavbarComponent
+} from '@dev/translatr-components';
+import {
+  MockFeatureFlagDirective,
   MockFooterComponent,
   MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent
 } from '@translatr/components/testing';
@@ -19,12 +26,28 @@ describe('SidenavComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [SidenavComponent],
+      TestBed.overrideComponent(SidenavComponent, {
+        remove: {
+          imports: [
+            NavbarComponent,
+            AuthBarItemComponent,
+            AuthBarLanguageSwitcherComponent,
+            FooterComponent,
+            FeatureFlagDirective
+          ]
+        },
+        add: {
+          imports: [
+            MockNavbarComponent,
+            MockAuthBarItemComponent,
+            MockAuthBarLanguageSwitcherComponent,
+            MockFooterComponent,
+            MockFeatureFlagDirective
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent,
-          MockFooterComponent,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+          SidenavComponent,
 
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

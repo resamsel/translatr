@@ -1,7 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Entity, UserEditDialogComponent, UserEditDialogConfig } from '@dev/translatr-components';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import {
+  ConfirmButtonComponent,
+  Entity,
+  EntityTableComponent,
+  SelectionActionsComponent,
+  UserEditDialogComponent,
+  UserEditDialogConfig
+} from '@dev/translatr-components';
 import { Feature, RequestCriteria, User, UserRole } from '@dev/translatr-model';
 import {
   hasCreateUserPermission,
@@ -19,16 +32,29 @@ import {
   UsersDeleteError
 } from '../../../+state/app.actions';
 import { AppFacade } from '../../../+state/app.facade';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
 
 export const mapToAllowedRoles = () =>
   map((me?: User): UserRole[] => [UserRole.User, ...(isAdmin(me) ? [UserRole.Admin] : [])]);
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-users',
   templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+  styleUrls: ['./users.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    AdminPageComponent,
+    EntityTableComponent,
+    ConfirmButtonComponent,
+    SelectionActionsComponent,
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule
+  ]
 })
 export class UsersComponent implements OnDestroy {
   readonly displayedColumns = ['name', 'username', 'role', 'actions'];

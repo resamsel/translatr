@@ -2,16 +2,17 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShortNumberPipe } from '@dev/translatr-components';
+import { MetricComponent, UserCardComponent } from '@dev/translatr-components';
 import {
-  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
   MockMetricComponent,
   MockUserCardComponent
 } from '@translatr/components/testing';
+import { FeatureFlagFacade } from '@dev/translatr-model';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoPipe } from '@dev/translatr-components';
+import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
-import { AdminPageTestingModule } from '../../admin-page/testing';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
+import { MockAdminPageComponent } from '../../admin-page/testing';
 
 import { UserComponent } from './user.component';
 
@@ -21,23 +22,23 @@ describe('UserComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserComponent],
+      TestBed.overrideComponent(UserComponent, {
+        remove: { imports: [AdminPageComponent, MetricComponent, UserCardComponent] },
+        add: { imports: [MockAdminPageComponent, MockMetricComponent, MockUserCardComponent] }
+      }).configureTestingModule({
         imports: [
-          AdminPageTestingModule,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-          MockUserCardComponent,
-          MockMetricComponent,
-          ShortNumberPipe,
+          UserComponent,
 
           RouterTestingModule,
           GravatarModule,
-          TimeAgoPipe,
 
           MatTooltipModule,
           MatIconModule
         ],
-        providers: [{ provide: AppFacade, useFactory: () => ({}) }]
+        providers: [
+          { provide: AppFacade, useFactory: () => ({}) },
+          { provide: FeatureFlagFacade, useFactory: () => ({ hasFeatures$: () => of(false) }) }
+        ]
       }).compileComponents();
     })
   );

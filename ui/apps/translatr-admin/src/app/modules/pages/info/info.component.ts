@@ -1,15 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { ActivityGraphComponent, MetricComponent, ShortNumberPipe } from '@dev/translatr-components';
 import { Aggregate, Feature, PagedList, User } from '@dev/translatr-model';
 import { AppFacade } from '../../../+state/app.facade';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 import { ActivityService } from '@dev/translatr-sdk';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-info',
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.scss'],
+  imports: [CommonModule, RouterModule, AdminPageComponent, ActivityGraphComponent, MetricComponent, ShortNumberPipe]
 })
 export class InfoComponent {
   users$ = this.facade.users$;

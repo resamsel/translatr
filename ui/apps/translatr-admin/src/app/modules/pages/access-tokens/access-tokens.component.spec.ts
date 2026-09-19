@@ -10,18 +10,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { EllipsisPipe, EntityTableComponent } from '@dev/translatr-components';
-import {
-  MockConfirmButtonComponent,
-  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-  MockFilterFieldComponent
-} from '@translatr/components/testing';
 import { AccessToken } from '@dev/translatr-model';
 import { mockObservable } from '@translatr/utils/testing';
 import { of } from 'rxjs';
-import { TimeAgoPipe } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
-import { AdminPageTestingModule } from '../../admin-page/testing';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
+import { MockAdminPageComponent } from '../../admin-page/testing';
 
 import { AccessTokensComponent } from './access-tokens.component';
 
@@ -46,18 +40,14 @@ describe('AccessTokensComponent', () => {
       };
       dialog = { open: jest.fn() };
 
-      TestBed.configureTestingModule({
-        declarations: [AccessTokensComponent],
+      TestBed.overrideComponent(AccessTokensComponent, {
+        remove: { imports: [AdminPageComponent] },
+        add: { imports: [MockAdminPageComponent] }
+      }).configureTestingModule({
         imports: [
-          EntityTableComponent,
-          AdminPageTestingModule,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-          MockFilterFieldComponent,
-          MockConfirmButtonComponent,
-          EllipsisPipe,
+          AccessTokensComponent,
 
           RouterTestingModule,
-          TimeAgoPipe,
           TranslocoTestingModule.forRoot({
             langs: {},
             translocoConfig: { availableLangs: ['en'] }
