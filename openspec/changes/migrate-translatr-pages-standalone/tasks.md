@@ -52,7 +52,7 @@
 
 ## 9. Cleanup and verification
 
-- [ ] 9.1 Grep `apps/translatr` for any remaining `*Module` import of a class from `apps/translatr/src/app/modules/pages/**` (excluding the untouched `*RoutingModule`s and `users-page/+state/users.module.ts`) and confirm zero matches
-- [ ] 9.2 Run `nx build translatr` and verify it succeeds with no TypeScript errors
-- [ ] 9.3 Run `nx test translatr` and verify all suites pass
-- [ ] 9.4 Manually smoke-test the app (`nx serve translatr`) covering a direct-composition page (dashboard or projects), a router-outlet page's nested tab route (e.g. a project's locales tab), and the login/main-page flow; verify no console errors and correct rendering
+- [x] 9.1 Grep `apps/translatr` for any remaining `*Module` import of a class from `apps/translatr/src/app/modules/pages/**` (excluding the untouched `*RoutingModule`s and `users-page/+state/users.module.ts`) and confirm zero matches (confirmed: only `users.module.ts`'s own empty `declarations: []` state module remains, exactly as intended)
+- [x] 9.2 Run `nx build translatr` and verify it succeeds with no TypeScript errors (clean, `--skip-nx-cache`)
+- [x] 9.3 Run `nx test translatr` and verify all suites pass (159/159, `--skip-nx-cache`)
+- [x] 9.4 Manually smoke-test the app (using the user's already-running `nx serve translatr` on port 4210) covering the login/main-page flow and the guarded lazy routes (dashboard, users, projects, editor, user-page, project-page); verified via the browser pane: main page (already-standalone, unaffected) renders with zero console errors beyond the expected unauthenticated `401`s; every guarded route (dashboard/users/projects/etc.) correctly redirects to login with no DI or router errors, which confirms their lazy-loaded `*RoutingModule`s - now carrying the relocated NgRx `forFeature` wiring, facades, and guards - resolve cleanly; full interactive smoke test of authenticated nested-tab routes (e.g. a project's locales tab) wasn't possible without the user's own credentials, so this is a partial substitute for that deeper manual check
