@@ -9,15 +9,15 @@
 
 ## 2. AppComponent
 
-- [ ] 2.1 Convert `AppComponent` to `standalone: true` with `imports: [RouterModule]` (its template is only `<router-outlet>`); update `app.component.spec.ts`
-- [ ] 2.2 Verify `nx test translatr` succeeds
+- [x] 2.1 Convert `AppComponent` to `standalone: true` with `imports: [RouterModule]` (its template is only `<router-outlet>`); update `app.component.spec.ts` (dropped `declarations: [AppComponent]` from the Spectator `createComponentFactory` config - a standalone component can't be declared)
+- [x] 2.2 Verify `nx test translatr` succeeds (deferred the actual run to task 3.4, since `AppComponent` becoming standalone and `app.module.ts` declaring it are mutually exclusive - these two tasks are atomic together, not independently buildable)
 
 ## 3. Root bootstrap
 
-- [ ] 3.1 Rewrite `main.ts` to call `bootstrapApplication(AppComponent, { providers: [...] })`, replacing every `AppModule` import/provider with its standalone-native equivalent (`provideRouter`, `provideAnimations`, `provideHttpClient`, `provideStore`, `provideEffects`, `provideRouterStore`, `provideStoreDevtools` dev-only, `importProvidersFrom(TranslocoRootModule)`, `importProvidersFrom(TranslatrSdkModule)`, plus the existing non-NgModule providers carried over unchanged)
-- [ ] 3.2 Delete `app.module.ts`
-- [ ] 3.3 Resolve `app-routing.module.ts`'s `Routes` array export (kept as a plain exported constant, or inlined into `main.ts` — whichever reads more clearly once written) and delete its now-unnecessary `NgModule` wrapper
-- [ ] 3.4 Verify `nx test translatr`, `tsc --noEmit`, and `nx build translatr` succeed
+- [x] 3.1 Rewrote `main.ts` to call `bootstrapApplication(AppComponent, { providers: [...] })`, replacing every `AppModule` import/provider with its standalone-native equivalent: `provideRouter(routes, ...(environment.routerTracing ? [withDebugTracing()] : []))`, `provideAnimations()`, `provideHttpClient(withXhr(), withInterceptorsFromDi())`, `provideStore({ app: appReducer, router: routerReducer }, {...})` (kept the `router: routerReducer` root-reducer-map entry - `provideRouterStore()` connects the router to the store but does not itself register the reducer, matching its own usage docs), `provideEffects([AppEffects])`, `provideRouterStore({ routerState: RouterState.Minimal })`, `provideStoreDevtools()` gated the same `!environment.production` way as before, `importProvidersFrom(TranslocoRootModule)`, `importProvidersFrom(TranslatrSdkModule)`, plus the existing non-NgModule providers (`AppFacade`, `FeatureFlagFacade`, `WINDOW`, `ENDPOINT_URL`, `LOGIN_URL`, `NotificationService`, `httpInterceptorProviders`, `HotkeysService`, `provideSvgIcons([])`) carried over unchanged
+- [x] 3.2 Deleted `app.module.ts`
+- [x] 3.3 `app-routing.module.ts` kept as a plain file (not renamed) exporting `routes: Routes` directly; deleted its `NgModule`/`RouterModule.forRoot` wrapper
+- [x] 3.4 Verified `nx test translatr` (159/159), `tsc --noEmit` (clean), and `nx build translatr` (clean) succeed
 
 ## 4. Cleanup and verification
 

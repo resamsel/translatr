@@ -1,8 +1,6 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { environment } from '../environments/environment';
+import { Routes } from '@angular/router';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./modules/pages/login-page').then(m => m.LoginPageComponent)
@@ -71,13 +69,3 @@ const routes: Routes = [
       )
   }
 ];
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      enableTracing: environment.routerTracing
-    })
-  ],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}

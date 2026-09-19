@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
 import { ThemeService } from '@dev/translatr-components';
 import { HotkeysHelpComponent, HotkeysService } from '@ngneat/hotkeys';
 import { TranslocoService } from '@jsverse/transloco';
@@ -7,10 +8,11 @@ import { filter } from 'rxjs/operators';
 import { AppFacade } from './+state/app.facade';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>',
+  imports: [RouterModule]
 })
 export class AppComponent implements AfterViewInit {
   constructor(
