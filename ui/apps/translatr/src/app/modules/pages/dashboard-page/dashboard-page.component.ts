@@ -7,7 +7,7 @@ import { Feature, User } from '@dev/translatr-model';
 import { TranslocoModule } from '@jsverse/transloco';
 import { filter, take } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 import { ActivityListComponent } from '../../shared/activity-list/activity-list.component';
 import { ProjectCardListComponent } from '../../shared/project-card-list/project-card-list.component';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
@@ -24,7 +24,7 @@ import { DashboardFacade } from './+state/dashboard.facade';
     CommonModule,
     RouterModule,
     TranslocoModule,
-    SidenavModule,
+    SidenavComponent,
     MetricComponent,
     ShortNumberPipe,
     ProjectCardListComponent,

@@ -7,8 +7,8 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { MockFeatureFlagClassDirective } from '@translatr/components/testing';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { SidenavTestingModule } from '../../nav/sidenav/testing';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
+import { MockSidenavComponent } from '../../nav/sidenav/testing';
 import { UserFacade } from './+state/user.facade';
 
 import { UserPageComponent } from './user-page.component';
@@ -21,8 +21,8 @@ describe('UserPageComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.overrideComponent(UserPageComponent, {
-        remove: { imports: [SidenavModule, FeatureFlagClassDirective] },
-        add: { imports: [SidenavTestingModule, MockFeatureFlagClassDirective] }
+        remove: { imports: [SidenavComponent, FeatureFlagClassDirective] },
+        add: { imports: [MockSidenavComponent, MockFeatureFlagClassDirective] }
       }).configureTestingModule({
         imports: [
           UserPageComponent,

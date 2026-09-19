@@ -19,8 +19,8 @@ import {
 } from '@dev/translatr-components';
 import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { EditorFacade } from '../+state/editor.facade';
-import { SidenavModule } from '../../../nav/sidenav/sidenav.module';
-import { SidenavTestingModule } from '../../../nav/sidenav/testing';
+import { SidenavComponent } from '../../../nav/sidenav/sidenav.component';
+import { MockSidenavComponent } from '../../../nav/sidenav/testing';
 import { EMPTY, Subject } from 'rxjs';
 import { EditorComponent } from './editor.component';
 
@@ -45,10 +45,10 @@ const editorTestImports = [
 
 const overrideEditorComponent = () =>
   TestBed.overrideComponent(EditorComponent, {
-    remove: { imports: [SidenavModule, EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent] },
+    remove: { imports: [SidenavComponent, EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent] },
     add: {
       imports: [
-        SidenavTestingModule,
+        MockSidenavComponent,
         MockEmptyViewComponent,
         MockEmptyViewActionsComponent,
         MockEmptyViewContentComponent,

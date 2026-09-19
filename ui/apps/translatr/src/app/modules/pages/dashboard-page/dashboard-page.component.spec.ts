@@ -6,13 +6,13 @@ import { FeatureFlagClassDirective, MetricComponent } from '@dev/translatr-compo
 import { MockFeatureFlagClassDirective, MockMetricComponent } from '@translatr/components/testing';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 import { ActivityListComponent } from '../../shared/activity-list/activity-list.component';
 import { ProjectCardListComponent } from '../../shared/project-card-list/project-card-list.component';
 import {
   MockActivityListComponent,
   MockProjectCardListComponent,
-  SidenavTestingModule
+  MockSidenavComponent
 } from '../../testing';
 import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { DashboardFacade } from './+state/dashboard.facade';
@@ -26,7 +26,7 @@ describe('DashboardPageComponent', () => {
     TestBed.overrideComponent(DashboardPageComponent, {
       remove: {
         imports: [
-          SidenavModule,
+          SidenavComponent,
           MetricComponent,
           ActivityListComponent,
           ProjectCardListComponent,
@@ -35,7 +35,7 @@ describe('DashboardPageComponent', () => {
       },
       add: {
         imports: [
-          SidenavTestingModule,
+          MockSidenavComponent,
           MockMetricComponent,
           MockActivityListComponent,
           MockProjectCardListComponent,

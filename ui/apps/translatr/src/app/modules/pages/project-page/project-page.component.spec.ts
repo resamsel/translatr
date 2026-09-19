@@ -8,8 +8,8 @@ import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { MockFeatureFlagClassDirective } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
-import { SidenavTestingModule } from '../../nav/sidenav/testing';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
+import { MockSidenavComponent } from '../../nav/sidenav/testing';
 import { ProjectFacade } from '../../shared/project-state';
 
 import { ProjectPageComponent } from './project-page.component';
@@ -22,8 +22,8 @@ describe('ProjectPageComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.overrideComponent(ProjectPageComponent, {
-        remove: { imports: [SidenavModule, FeatureFlagClassDirective] },
-        add: { imports: [SidenavTestingModule, MockFeatureFlagClassDirective] }
+        remove: { imports: [SidenavComponent, FeatureFlagClassDirective] },
+        add: { imports: [MockSidenavComponent, MockFeatureFlagClassDirective] }
       }).configureTestingModule({
         imports: [
           ProjectPageComponent,

@@ -9,9 +9,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { mockObservable } from '@translatr/utils/testing';
 import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { MockFeatureFlagDirective, MockFeatureFlagClassDirective } from '@translatr/components/testing';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 import { ProjectListComponent } from '../../shared/project-list/project-list.component';
-import { MockProjectListComponent, SidenavTestingModule } from '../../testing';
+import { MockProjectListComponent, MockSidenavComponent } from '../../testing';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
@@ -22,8 +22,8 @@ describe('UsersPageComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.overrideComponent(ProjectsPageComponent, {
-        remove: { imports: [SidenavModule, ProjectListComponent, FeatureFlagClassDirective] },
-        add: { imports: [SidenavTestingModule, MockProjectListComponent, MockFeatureFlagClassDirective] }
+        remove: { imports: [SidenavComponent, ProjectListComponent, FeatureFlagClassDirective] },
+        add: { imports: [MockSidenavComponent, MockProjectListComponent, MockFeatureFlagClassDirective] }
       }).configureTestingModule({
         imports: [
           ProjectsPageComponent,

@@ -4,11 +4,11 @@ import { UsersPageComponent } from './users-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 import { UserListComponent } from '../../shared/user-list/user-list.component';
 import { UsersFacade } from './+state/users.facade';
 import { mockObservable } from '@translatr/utils/testing';
-import { SidenavTestingModule } from '../../nav/sidenav/testing';
+import { MockSidenavComponent } from '../../nav/sidenav/testing';
 import { MockFeatureFlagClassDirective } from '@translatr/components/testing';
 import { MockUserListComponent } from '../../shared/user-list/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
@@ -20,8 +20,8 @@ describe('UsersPageComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.overrideComponent(UsersPageComponent, {
-        remove: { imports: [SidenavModule, UserListComponent, FeatureFlagClassDirective] },
-        add: { imports: [SidenavTestingModule, MockUserListComponent, MockFeatureFlagClassDirective] }
+        remove: { imports: [SidenavComponent, UserListComponent, FeatureFlagClassDirective] },
+        add: { imports: [MockSidenavComponent, MockUserListComponent, MockFeatureFlagClassDirective] }
       }).configureTestingModule({
         imports: [
           UsersPageComponent,
