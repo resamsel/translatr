@@ -62,7 +62,9 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/editor-page/editor-page.module').then(m => m.EditorPageModule)
+      import('./modules/pages/editor-page/editor-page-routing.module').then(
+        m => m.EditorPageRoutingModule
+      )
   }
 ];
 

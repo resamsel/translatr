@@ -1,16 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FilterFieldFilter, handleFilterFieldSelection } from '@dev/translatr-components';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent,
+  FilterFieldComponent,
+  FilterFieldFilter,
+  handleFilterFieldSelection
+} from '@dev/translatr-components';
 import { Locale, Message, PagedList } from '@dev/translatr-model';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { trackByFn } from '@translatr/utils';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { NavListComponent } from '../../shared/nav-list/nav-list.component';
 import { openLocaleEditDialog } from '../../shared/locale-edit-dialog/locale-edit-dialog.component';
 import { ProjectFacade } from '../../shared/project-state';
 import { EditorFacade } from './+state/editor.facade';
+import { EditorSelectorComponent } from './editor/editor-selector.component';
+import { EditorComponent } from './editor/editor.component';
 import { MessageItem } from './message-item';
 import { navigateItems } from './navigate-utils';
 
@@ -21,11 +36,26 @@ const filterComparator = (a: Params, b: Params): boolean =>
   a.search === b.search && a.missing === b.missing;
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-key-editor-page',
   templateUrl: './key-editor-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./key-editor-page.component.scss']
+  styleUrls: ['./key-editor-page.component.scss'],
+  imports: [
+    CommonModule,
+    TranslocoModule,
+    EditorComponent,
+    EditorSelectorComponent,
+    NavListComponent,
+    EmptyViewComponent,
+    EmptyViewHeaderComponent,
+    EmptyViewContentComponent,
+    EmptyViewActionsComponent,
+    FilterFieldComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule
+  ]
 })
 export class KeyEditorPageComponent implements OnInit, OnDestroy {
   readonly me$ = this.appFacade.me$;

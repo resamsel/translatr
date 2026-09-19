@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewChecked,
   ChangeDetectionStrategy,
@@ -8,26 +9,56 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTabGroup } from '@angular/material/tabs';
-import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
-import { Link } from '@dev/translatr-components';
+import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
+import { RouterModule } from '@angular/router';
+import { CodemirrorComponent, CodemirrorModule } from '@ctrl/ngx-codemirror';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  Link
+} from '@dev/translatr-components';
 import { Message, User } from '@dev/translatr-model';
 import { HotkeysService } from '@ngneat/hotkeys';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 import { filter, skip, take } from 'rxjs/operators';
+import { SidenavModule } from '../../../nav/sidenav/sidenav.module';
 import { EditorFacade } from '../+state/editor.facade';
 import { SaveBehavior } from '../save-behavior';
 
 import 'codemirror/mode/xml/xml';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    TranslocoModule,
+    SidenavModule,
+    MatDividerModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTabsModule,
+    MatCardModule,
+    CodemirrorModule,
+    EmptyViewComponent,
+    EmptyViewHeaderComponent,
+    EmptyViewContentComponent
+  ]
 })
 export class EditorComponent implements AfterViewChecked, OnDestroy {
   private _message: Message;
