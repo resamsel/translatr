@@ -2,10 +2,10 @@
 
 ## 1. No-state, minimal-composition pages
 
-- [ ] 1.1 Convert `ForbiddenPageComponent` to `standalone: true` with explicit `imports`, delete `forbidden-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
-- [ ] 1.2 Convert `NotFoundPageComponent` to `standalone: true` with explicit `imports`, delete `not-found-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
-- [ ] 1.3 Convert `MainPageComponent` to `standalone: true` with explicit `imports`, delete `main-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
-- [ ] 1.4 Convert `RegistrationPageComponent` to `standalone: true` with explicit `imports`, delete `registration-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed
+- [x] 1.1 Convert `ForbiddenPageComponent` to `standalone: true` with explicit `imports`, delete `forbidden-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (repointed app-routing.module.ts's `forbidden` loadChildren to `ForbiddenPageRoutingModule` in the same step, not deferred to group 7 - each page's route repoint happens atomically with its own conversion to keep every step independently buildable; translatr-admin has its own unrelated same-named `ForbiddenPageModule`, left untouched)
+- [x] 1.2 Convert `NotFoundPageComponent` to `standalone: true` with explicit `imports`, delete `not-found-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (dropped unused `SidenavModule`/`MatCardModule`/`MatDividerModule` imports - not used in its own template; `RouterModule` added since `routerLink` was used but was missing from the old module's own import list, apparently relying on a transitive re-export)
+- [x] 1.3 Convert `MainPageComponent` to `standalone: true` with explicit `imports`, delete `main-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (caught a real bug: `provideSvgIcons()` returns `EnvironmentProviders`, which NG0207 rejects in a component's own `providers` - moved it to `main-page-routing.module.ts`'s `@NgModule` `providers` instead, which is still environment-scoped; `{ provide: LanguageSwicher, useClass: AppFacade }` is a plain provider and stayed on the component)
+- [x] 1.4 Convert `RegistrationPageComponent` to `standalone: true` with explicit `imports`, delete `registration-page.module.ts`, update consumers; verify `nx test translatr` and `nx build translatr` succeed (same FontAwesome module-constructor icon-registration pattern as `login-page` in the libs change - fixed the same way, direct `IconDefinition` references instead of name-string lookup, removing the registration side effect entirely)
 
 ## 2. project-page
 

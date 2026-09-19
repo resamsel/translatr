@@ -11,11 +11,19 @@ import { SvgIconComponent, provideSvgIcons } from '@ngneat/svg-icon';
 
 import { MainPageComponent } from './main-page.component';
 import {
+  ActivityGraphComponent,
+  AuthBarLanguageSwitcherComponent,
+  FeatureFlagDirective, FeatureFlagClassDirective,
+  FooterComponent,
+  MetricComponent,
+  NavbarComponent
+} from '@dev/translatr-components';
+import {
   MockActivityGraphComponent,
   MockFeatureFlagDirective, MockFeatureFlagClassDirective,
   MockFooterComponent,
   MockMetricComponent,
-  MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent
+  MockNavbarComponent, MockAuthBarLanguageSwitcherComponent
 } from '@translatr/components/testing';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -31,14 +39,29 @@ describe('MainPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [MainPageComponent],
+      TestBed.overrideComponent(MainPageComponent, {
+        remove: {
+          imports: [
+            NavbarComponent,
+            AuthBarLanguageSwitcherComponent,
+            FooterComponent,
+            ActivityGraphComponent,
+            FeatureFlagDirective, FeatureFlagClassDirective,
+            MetricComponent
+          ]
+        },
+        add: {
+          imports: [
+            MockNavbarComponent, MockAuthBarLanguageSwitcherComponent,
+            MockFooterComponent,
+            MockActivityGraphComponent,
+            MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+            MockMetricComponent
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent,
-          MockFooterComponent,
-          MockActivityGraphComponent,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-          MockMetricComponent,
+          MainPageComponent,
           ShortNumberPipe,
 
           NoopAnimationsModule,
