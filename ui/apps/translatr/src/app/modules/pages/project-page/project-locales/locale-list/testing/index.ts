@@ -1,1 +1,1 @@
-export * from './locale-list-testing.module';
+export * from './mock-locale-list.component';

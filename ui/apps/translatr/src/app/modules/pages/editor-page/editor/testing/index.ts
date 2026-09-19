@@ -1,1 +1,2 @@
-export * from './editor-testing.module';
+export * from './mock-editor.component';
+export * from './mock-editor-selector.component';

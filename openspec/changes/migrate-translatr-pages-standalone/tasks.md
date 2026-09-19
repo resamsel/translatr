@@ -47,8 +47,8 @@
 
 ## 8. Testing modules
 
-- [ ] 8.1 Convert the `Mock*` classes in `editor/testing/editor-testing.module.ts`, `project-keys/key-list/testing/key-list-testing.module.ts`, `project-locales/locale-list/testing/locale-list-testing.module.ts`, `project-members/member-list/testing/member-list-testing.module.ts` to `standalone: true`; rename each file to `mock-*.component.ts`; update every consumer spec; delete the 4 `*-testing.module.ts` files
-- [ ] 8.2 Run `nx test translatr` and verify all specs pass
+- [x] 8.1 Convert the `Mock*` classes in `editor/testing/editor-testing.module.ts`, `project-keys/key-list/testing/key-list-testing.module.ts`, `project-locales/locale-list/testing/locale-list-testing.module.ts`, `project-members/member-list/testing/member-list-testing.module.ts` to `standalone: true`; renamed each file to `mock-*.component.ts` (the editor one split into two files, `mock-editor.component.ts` and `mock-editor-selector.component.ts`, matching its two exported classes); updated every consumer spec (`key-editor-page`, `locale-editor-page`, `project-keys`, `project-locales`, `project-members`) to import the `Mock*Component` classes directly instead of the `*TestingModule` wrapper; deleted the 4 `*-testing.module.ts` files
+- [x] 8.2 Run `nx test translatr` and verify all specs pass (159/159)
 
 ## 9. Cleanup and verification
 

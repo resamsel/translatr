@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Locale, LocaleCriteria, PagedList, Project } from '@dev/translatr-model';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-locale-list',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockLocaleListComponent {
+export class MockLocaleListComponent {
   @Input() project: Project;
   @Input() locales: PagedList<Locale>;
   @Input() criteria: LocaleCriteria | undefined;
@@ -19,9 +19,3 @@ class MockLocaleListComponent {
   @Output() edit = new EventEmitter<Locale>();
   @Output() delete = new EventEmitter<Locale>();
 }
-
-@NgModule({
-  declarations: [MockLocaleListComponent],
-  exports: [MockLocaleListComponent]
-})
-export class LocaleListTestingModule {}

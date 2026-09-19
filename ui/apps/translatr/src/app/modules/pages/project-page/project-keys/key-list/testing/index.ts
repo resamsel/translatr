@@ -1,1 +1,1 @@
-export * from './key-list-testing.module';
+export * from './mock-key-list.component';

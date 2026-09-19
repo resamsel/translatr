@@ -5,7 +5,7 @@ import { mockObservable } from '@translatr/utils/testing';
 import { ProjectFacade } from '../../../shared/project-state';
 import { AppFacade } from '../../../../+state/app.facade';
 import { MemberListComponent } from './member-list/member-list.component';
-import { MemberListTestingModule } from './member-list/testing';
+import { MockMemberListComponent } from './member-list/testing';
 
 import { ProjectMembersComponent } from './project-members.component';
 
@@ -17,7 +17,7 @@ describe('ProjectMembersComponent', () => {
     waitForAsync(() => {
       TestBed.overrideComponent(ProjectMembersComponent, {
         remove: { imports: [MemberListComponent] },
-        add: { imports: [MemberListTestingModule] }
+        add: { imports: [MockMemberListComponent] }
       }).configureTestingModule({
         imports: [ProjectMembersComponent, RouterTestingModule],
         providers: [

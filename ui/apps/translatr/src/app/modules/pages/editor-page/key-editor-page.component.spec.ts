@@ -16,7 +16,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { EditorFacade } from './+state/editor.facade';
 import { EditorSelectorComponent } from './editor/editor-selector.component';
 import { EditorComponent } from './editor/editor.component';
-import { EditorTestingModule } from './editor/testing';
+import { MockEditorComponent, MockEditorSelectorComponent } from './editor/testing';
 import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MockFilterFieldComponent } from '@translatr/components/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -48,7 +48,8 @@ describe('KeyEditorPageComponent', () => {
         },
         add: {
           imports: [
-            EditorTestingModule,
+            MockEditorComponent,
+            MockEditorSelectorComponent,
             MockNavListComponent,
             MockEmptyViewComponent,
             MockEmptyViewActionsComponent,
@@ -109,7 +110,7 @@ describe('KeyEditorPageComponent', () => {
 
   it('renders its search field with an outline appearance, matching the rest of the UI', () => {
     // The `dev-filter-field` lives inside `<app-editor>`'s projected content, which the
-    // EditorTestingModule stub (empty template, no <ng-content>) never renders into the DOM -
+    // mock EditorComponent/EditorSelectorComponent (empty template, no <ng-content>) never renders into the DOM -
     // so this reads the real template source instead of querying the rendered fixture.
     const template = readFileSync(join(__dirname, 'key-editor-page.component.html'), 'utf8');
     const filterFieldMarkup = template.match(/<dev-filter-field[\s\S]*?>/)[0];
