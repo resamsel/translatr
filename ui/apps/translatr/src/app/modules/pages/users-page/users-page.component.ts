@@ -7,7 +7,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { navigate } from '@translatr/utils';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 import { FilterCriteria } from '../../shared/list-header/list-header.component';
 import { UserListComponent } from '../../shared/user-list/user-list.component';
 import { UsersFacade } from './+state/users.facade';
@@ -18,7 +18,7 @@ import { UsersFacade } from './+state/users.facade';
   templateUrl: './users-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./users-page.component.scss'],
-  imports: [CommonModule, TranslocoModule, SidenavModule, UserListComponent, FeatureFlagClassDirective]
+  imports: [CommonModule, TranslocoModule, SidenavComponent, UserListComponent, FeatureFlagClassDirective]
 })
 export class UsersPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;

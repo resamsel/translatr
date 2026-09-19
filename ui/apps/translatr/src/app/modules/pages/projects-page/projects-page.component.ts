@@ -12,7 +12,7 @@ import { navigate } from '@translatr/utils';
 import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 import { FilterCriteria } from '../../shared/list-header/list-header.component';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { ProjectListComponent } from '../../shared/project-list/project-list.component';
@@ -27,7 +27,7 @@ import { ProjectsFacade } from './+state/projects.facade';
   imports: [
     CommonModule,
     TranslocoModule,
-    SidenavModule,
+    SidenavComponent,
     ProjectListComponent,
     MatIconModule,
     MatButtonModule,

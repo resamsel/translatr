@@ -30,7 +30,7 @@ import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 import { filter, skip, take } from 'rxjs/operators';
-import { SidenavModule } from '../../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../../nav/sidenav/sidenav.component';
 import { EditorFacade } from '../+state/editor.facade';
 import { SaveBehavior } from '../save-behavior';
 
@@ -47,7 +47,7 @@ import 'codemirror/mode/xml/xml';
     RouterModule,
     FormsModule,
     TranslocoModule,
-    SidenavModule,
+    SidenavComponent,
     MatDividerModule,
     MatMenuModule,
     MatButtonModule,

@@ -25,7 +25,7 @@ import {
   takeUntil
 } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 import { ProjectFacade } from '../../shared/project-state';
 import { PROJECT_ROUTES } from './project-page.token';
 
@@ -35,7 +35,7 @@ import { PROJECT_ROUTES } from './project-page.token';
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
   styleUrls: ['./project-page.component.scss'],
-  imports: [CommonModule, RouterModule, TranslocoModule, SidenavModule, MatIconModule, MatTabsModule, FeatureFlagClassDirective]
+  imports: [CommonModule, RouterModule, TranslocoModule, SidenavComponent, MatIconModule, MatTabsModule, FeatureFlagClassDirective]
 })
 export class ProjectPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;

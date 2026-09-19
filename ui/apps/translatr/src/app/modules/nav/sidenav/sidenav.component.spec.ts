@@ -1,16 +1,19 @@
-import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import {
-  MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+  AuthBarItemComponent,
+  AuthBarLanguageSwitcherComponent,
+  FeatureFlagDirective,
+  FooterComponent,
+  NavbarComponent
+} from '@dev/translatr-components';
+import {
+  MockFeatureFlagDirective,
   MockFooterComponent,
   MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent
 } from '@translatr/components/testing';
@@ -21,21 +24,33 @@ describe('SidenavComponent', () => {
   let fixture: ComponentFixture<SidenavComponent>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [SidenavComponent],
+    TestBed.overrideComponent(SidenavComponent, {
+      remove: {
+        imports: [
+          NavbarComponent,
+          AuthBarItemComponent,
+          AuthBarLanguageSwitcherComponent,
+          FooterComponent,
+          FeatureFlagDirective
+        ]
+      },
+      add: {
+        imports: [
+          MockNavbarComponent,
+          MockAuthBarItemComponent,
+          MockAuthBarLanguageSwitcherComponent,
+          MockFooterComponent,
+          MockFeatureFlagDirective
+        ]
+      }
+    }).configureTestingModule({
       imports: [
-        CommonModule,
+        SidenavComponent,
+
         RouterTestingModule,
         TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
-        MockNavbarComponent, MockAuthBarItemComponent, MockAuthBarLanguageSwitcherComponent,
-        MockFooterComponent,
-        MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-
-        MatToolbarModule,
         MatIconModule,
-        MatButtonModule,
-        MatListModule,
         MatMenuModule,
         MatDividerModule,
         MatTooltipModule

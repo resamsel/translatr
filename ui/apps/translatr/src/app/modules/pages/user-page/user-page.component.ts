@@ -9,7 +9,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { Observable } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 import { UserFacade } from './+state/user.facade';
 import { USER_ROUTES } from './user-page.token';
 
@@ -19,7 +19,7 @@ import { USER_ROUTES } from './user-page.token';
   templateUrl: './user-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-page.component.scss'],
-  imports: [CommonModule, RouterModule, TranslocoModule, SidenavModule, MatIconModule, MatTabsModule, FeatureFlagClassDirective]
+  imports: [CommonModule, RouterModule, TranslocoModule, SidenavComponent, MatIconModule, MatTabsModule, FeatureFlagClassDirective]
 })
 export class UserPageComponent implements OnDestroy {
   readonly me$ = this.appFacade.me$;

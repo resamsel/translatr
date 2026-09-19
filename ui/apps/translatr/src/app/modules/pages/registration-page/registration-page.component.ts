@@ -11,7 +11,7 @@ import { faFacebook, faGithub, faGoogle, faTwitter } from '@fortawesome/free-bra
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { TranslocoModule } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
-import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { SidenavComponent } from '../../nav/sidenav/sidenav.component';
 
 @Component({
   standalone: true,
@@ -21,7 +21,7 @@ import { SidenavModule } from '../../nav/sidenav/sidenav.module';
   styleUrls: ['./registration-page.component.scss'],
   imports: [
     CommonModule,
-    SidenavModule,
+    SidenavComponent,
     TranslocoModule,
     FeatureFlagDirective, FeatureFlagClassDirective,
     UserEditFormComponent,
