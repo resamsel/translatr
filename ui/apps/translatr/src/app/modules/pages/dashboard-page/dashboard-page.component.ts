@@ -1,19 +1,36 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { FeatureFlagClassDirective, MetricComponent, ShortNumberPipe } from '@dev/translatr-components';
 import { Feature, User } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { filter, take } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { ActivityListComponent } from '../../shared/activity-list/activity-list.component';
+import { ProjectCardListComponent } from '../../shared/project-card-list/project-card-list.component';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
 import { ProjectsFacade } from '../projects-page/+state/projects.facade';
 import { DashboardFacade } from './+state/dashboard.facade';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard-page',
   templateUrl: './dashboard-page.component.html',
-  styleUrls: ['./dashboard-page.component.scss']
+  styleUrls: ['./dashboard-page.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslocoModule,
+    SidenavModule,
+    MetricComponent,
+    ShortNumberPipe,
+    ProjectCardListComponent,
+    ActivityListComponent,
+    FeatureFlagClassDirective
+  ]
 })
 export class DashboardPageComponent implements OnInit {
   readonly me$ = this.appFacade.me$;

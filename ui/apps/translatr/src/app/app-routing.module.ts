@@ -17,8 +17,8 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () =>
-      import('./modules/pages/dashboard-page/dashboard-page.module').then(
-        m => m.DashboardPageModule
+      import('./modules/pages/dashboard-page/dashboard-page-routing.module').then(
+        m => m.DashboardPageRoutingModule
       )
   },
   {
@@ -29,7 +29,9 @@ const routes: Routes = [
   {
     path: 'projects',
     loadChildren: () =>
-      import('./modules/pages/projects-page/projects-page.module').then(m => m.ProjectsPageModule)
+      import('./modules/pages/projects-page/projects-page-routing.module').then(
+        m => m.ProjectsPageRoutingModule
+      )
   },
   {
     path: 'not-found',

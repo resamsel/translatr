@@ -1,10 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShortNumberPipe } from '@dev/translatr-components';
-import { MockFeatureFlagDirective, MockFeatureFlagClassDirective, MockMetricComponent } from '@translatr/components/testing';
+import { TranslocoTestingModule } from '@jsverse/transloco';
+import { FeatureFlagClassDirective, MetricComponent } from '@dev/translatr-components';
+import { MockFeatureFlagClassDirective, MockMetricComponent } from '@translatr/components/testing';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
+import { ActivityListComponent } from '../../shared/activity-list/activity-list.component';
+import { ProjectCardListComponent } from '../../shared/project-card-list/project-card-list.component';
 import {
   MockActivityListComponent,
   MockProjectCardListComponent,
@@ -19,16 +23,31 @@ describe('DashboardPageComponent', () => {
   let fixture: ComponentFixture<DashboardPageComponent>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardPageComponent],
+    TestBed.overrideComponent(DashboardPageComponent, {
+      remove: {
+        imports: [
+          SidenavModule,
+          MetricComponent,
+          ActivityListComponent,
+          ProjectCardListComponent,
+          FeatureFlagClassDirective
+        ]
+      },
+      add: {
+        imports: [
+          SidenavTestingModule,
+          MockMetricComponent,
+          MockActivityListComponent,
+          MockProjectCardListComponent,
+          MockFeatureFlagClassDirective
+        ]
+      }
+    }).configureTestingModule({
       imports: [
-        MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-        ShortNumberPipe,
+        DashboardPageComponent,
+
         RouterTestingModule,
-        MockActivityListComponent,
-        MockProjectCardListComponent,
-        MockMetricComponent,
-        SidenavTestingModule
+        TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
       ],
       providers: [
         {

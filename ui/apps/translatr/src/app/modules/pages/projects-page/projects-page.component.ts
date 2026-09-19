@@ -1,21 +1,39 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Params, Router } from '@angular/router';
+import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { Feature, ProjectCriteria, User } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { navigate } from '@translatr/utils';
 import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { FilterCriteria } from '../../shared/list-header/list-header.component';
 import { openProjectEditDialog } from '../../shared/project-edit-dialog/project-edit-dialog.component';
+import { ProjectListComponent } from '../../shared/project-list/project-list.component';
 import { ProjectsFacade } from './+state/projects.facade';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-projects-page',
   templateUrl: './projects-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./projects-page.component.scss']
+  styleUrls: ['./projects-page.component.scss'],
+  imports: [
+    CommonModule,
+    TranslocoModule,
+    SidenavModule,
+    ProjectListComponent,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    FeatureFlagClassDirective
+  ]
 })
 export class ProjectsPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;
