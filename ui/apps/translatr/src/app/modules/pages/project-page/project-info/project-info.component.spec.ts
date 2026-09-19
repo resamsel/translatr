@@ -12,14 +12,25 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { WINDOW } from '@translatr/utils';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewActionsComponent,
+  FeatureFlagDirective,
+  MetricComponent,
+  ProjectInfographicComponent
+} from '@dev/translatr-components';
 import {
   MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
   MockFeatureFlagDirective, MockFeatureFlagClassDirective,
   MockMetricComponent,
   MockProjectInfographicComponent
 } from '@translatr/components/testing';
+import { NavListComponent } from '../../../shared/nav-list/nav-list.component';
 import { MockNavListComponent } from '../../../shared/nav-list/testing';
+import { ActivityListComponent } from '../../../shared/activity-list/activity-list.component';
 import { MockActivityListComponent } from '../../../shared/activity-list/testing';
 import { ShortNumberPipe } from '@dev/translatr-components';
 import { mockObservable } from '@translatr/utils/testing';
@@ -31,18 +42,34 @@ describe('ProjectInfoComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectInfoComponent],
+      TestBed.overrideComponent(ProjectInfoComponent, {
+        remove: {
+          imports: [
+            MetricComponent,
+            NavListComponent,
+            ActivityListComponent,
+            FeatureFlagDirective,
+            EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewActionsComponent,
+            ProjectInfographicComponent
+          ]
+        },
+        add: {
+          imports: [
+            MockMetricComponent,
+            MockNavListComponent,
+            MockActivityListComponent,
+            MockFeatureFlagDirective, MockFeatureFlagClassDirective,
+            MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
+            MockProjectInfographicComponent
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          MockMetricComponent,
-          MockNavListComponent,
-          MockActivityListComponent,
+          ProjectInfoComponent,
           ShortNumberPipe,
-          MockFeatureFlagDirective, MockFeatureFlagClassDirective,
-          MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent,
-          MockProjectInfographicComponent,
 
           RouterTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatDialogModule,
           MatCardModule,

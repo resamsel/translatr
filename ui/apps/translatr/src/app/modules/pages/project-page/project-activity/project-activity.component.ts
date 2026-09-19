@@ -1,13 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivityGraphComponent } from '@dev/translatr-components';
 import { filter, map,  takeUntil, withLatestFrom } from 'rxjs/operators';
+import { ActivityListComponent } from '../../../shared/activity-list/activity-list.component';
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-activity',
   templateUrl: './project-activity.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./project-activity.component.scss']
+  styleUrls: ['./project-activity.component.scss'],
+  imports: [CommonModule, ActivityGraphComponent, ActivityListComponent]
 })
 export class ProjectActivityComponent implements OnInit {
   project$ = this.facade.project$;

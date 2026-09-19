@@ -1,6 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  ConfirmButtonComponent,
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent
+} from '@dev/translatr-components';
 import {
   fileTypeNames,
   fileTypes,
@@ -9,17 +23,36 @@ import {
   PagedList,
   Project
 } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { trackByFn } from '@translatr/utils';
 import { filter, take } from 'rxjs/operators';
+import { NavListComponent } from '../../../../shared/nav-list/nav-list.component';
 import { FilterCriteria } from '../../../../shared/list-header/list-header.component';
 import { openLocaleEditDialog } from '../../../../shared/locale-edit-dialog/locale-edit-dialog.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-locale-list',
   templateUrl: './locale-list.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./locale-list.component.scss']
+  styleUrls: ['./locale-list.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslocoModule,
+    NavListComponent,
+    ConfirmButtonComponent,
+    EmptyViewComponent,
+    EmptyViewHeaderComponent,
+    EmptyViewContentComponent,
+    EmptyViewActionsComponent,
+    MatListModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatButtonModule,
+    MatMenuModule
+  ]
 })
 export class LocaleListComponent {
   @Input() project: Project;

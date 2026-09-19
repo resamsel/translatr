@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,9 +7,12 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { ActivatedRoute, CanActivate, Route } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ActivatedRoute, CanActivate, Route, RouterModule } from '@angular/router';
+import { FeatureFlagClassDirective } from '@dev/translatr-components';
 import { Feature, Project } from '@dev/translatr-model';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { canActivate$, NameIconRoute } from '@translatr/utils';
 import { combineLatest, merge, Observable } from 'rxjs';
 import {
@@ -21,15 +25,17 @@ import {
   takeUntil
 } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { SidenavModule } from '../../nav/sidenav/sidenav.module';
 import { ProjectFacade } from '../../shared/project-state';
 import { PROJECT_ROUTES } from './project-page.token';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
-  styleUrls: ['./project-page.component.scss']
+  styleUrls: ['./project-page.component.scss'],
+  imports: [CommonModule, RouterModule, TranslocoModule, SidenavModule, MatIconModule, MatTabsModule, FeatureFlagClassDirective]
 })
 export class ProjectPageComponent implements OnInit, OnDestroy {
   me$ = this.appFacade.me$;

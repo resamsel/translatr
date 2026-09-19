@@ -9,12 +9,12 @@
 
 ## 2. project-page
 
-- [ ] 2.1 Convert `KeyListComponent` to `standalone: true` with explicit `imports`, update consumers
-- [ ] 2.2 Convert `LocaleListComponent` to `standalone: true` with explicit `imports`, update consumers
-- [ ] 2.3 Convert `MemberListComponent` to `standalone: true` with explicit `imports`, update consumers
-- [ ] 2.4 Convert `ProjectInfoComponent`, `ProjectKeysComponent` (imports `KeyListComponent`), `ProjectLocalesComponent` (imports `LocaleListComponent`), `ProjectMembersComponent` (imports `MemberListComponent`), `ProjectActivityComponent`, `ProjectSettingsComponent` to `standalone: true` with explicit `imports`
-- [ ] 2.5 Convert `ProjectPageComponent` to `standalone: true` with explicit `imports` (router-outlet only - no tab-component imports needed); delete `project-page.module.ts`; move the `ProjectStateModule` import from the deleted module into `project-page-routing.module.ts`; update consumers
-- [ ] 2.6 Verify `nx test translatr` and `nx build translatr` succeed
+- [x] 2.1 Convert `KeyListComponent` to `standalone: true` with explicit `imports`, update consumers (its spec needed `TestBed.overrideComponent` for the real `NavListComponent`/`ConfirmButtonComponent`/`EmptyView*` and `TranslocoTestingModule` for the same real-Transloco-activation reason seen throughout)
+- [x] 2.2 Convert `LocaleListComponent` to `standalone: true` with explicit `imports`, update consumers (same pattern as 2.1, plus `MatMenuModule` for the file-type dropdown)
+- [x] 2.3 Convert `MemberListComponent` to `standalone: true` with explicit `imports`, update consumers (uses `ngxGravatar` directly, not `UserCardComponent`; only `NavListComponent`/`ConfirmButtonComponent` needed the mock swap)
+- [x] 2.4 Convert `ProjectInfoComponent`, `ProjectKeysComponent` (imports `KeyListComponent`), `ProjectLocalesComponent` (imports `LocaleListComponent`), `ProjectMembersComponent` (imports `MemberListComponent`), `ProjectActivityComponent`, `ProjectSettingsComponent` to `standalone: true` with explicit `imports` (an initial grep-based scan of `project-info.component.html` missed `FeatureFlagDirective` and `MetricComponent` - both used via `*featureFlag` and `dev-metric` respectively; switched to systematically extracting every custom tag/`*directive` from each template before finalizing `imports`, and retroactively re-verified 2.1-2.3 the same way with no further misses)
+- [x] 2.5 Convert `ProjectPageComponent` to `standalone: true` with explicit `imports` (router-outlet only - no tab-component imports needed, but the same tag-extraction pass caught a missed `FeatureFlagClassDirective` via `[featureFlagClass]`); delete `project-page.module.ts`; moved `ProjectStateModule`, plus `AppFacade`/`ProjectGuard`/`ProjectAccessGuard`/`ProjectEditGuard` providers, from the deleted module into `project-page-routing.module.ts`; update consumers; repointed `app-routing.module.ts`'s project-page `loadChildren` to `ProjectPageRoutingModule`
+- [x] 2.6 Verify `nx test translatr` and `nx build translatr` succeed (159/159, clean build, `tsc --noEmit` clean)
 
 ## 3. user-page
 
