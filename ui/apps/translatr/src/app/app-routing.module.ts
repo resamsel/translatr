@@ -10,8 +10,8 @@ const routes: Routes = [
   {
     path: 'register',
     loadChildren: () =>
-      import('./modules/pages/registration-page/registration-page.module').then(
-        m => m.RegistrationPageModule
+      import('./modules/pages/registration-page/registration-page-routing.module').then(
+        m => m.RegistrationPageRoutingModule
       )
   },
   {
@@ -34,20 +34,20 @@ const routes: Routes = [
   {
     path: 'not-found',
     loadChildren: () =>
-      import('./modules/pages/not-found-page/not-found-page.module').then(m => m.NotFoundPageModule)
+      import('./modules/pages/not-found-page/not-found-page-routing.module').then(m => m.NotFoundPageRoutingModule)
   },
   {
     path: 'forbidden',
     loadChildren: () =>
-      import('./modules/pages/forbidden-page/forbidden-page.module').then(
-        m => m.ForbiddenPageModule
+      import('./modules/pages/forbidden-page/forbidden-page-routing.module').then(
+        m => m.ForbiddenPageRoutingModule
       )
   },
   {
     path: '',
     pathMatch: 'full',
     loadChildren: () =>
-      import('./modules/pages/main-page/main-page.module').then(m => m.MainPageModule)
+      import('./modules/pages/main-page/main-page-routing.module').then(m => m.MainPageRoutingModule)
   },
   {
     path: '',
