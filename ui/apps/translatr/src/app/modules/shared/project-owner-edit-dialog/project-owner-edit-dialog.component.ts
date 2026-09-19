@@ -12,6 +12,7 @@ import { UsersModule } from '../../pages/users-page/+state/users.module';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { ProjectMemberEditFormComponent } from '../project-member-edit-form/project-member-edit-form.component';
 import { ProjectOwnerEditFormComponent } from '../project-owner-edit-form/project-owner-edit-form.component';
+import { ProjectStateModule } from '../project-state';
 import { ProjectFacade } from '../project-state/+state';
 
 @Component({
@@ -31,6 +32,7 @@ import { ProjectFacade } from '../project-state/+state';
     ProjectMemberEditFormComponent,
     UsersModule,
     ProjectOwnerEditFormComponent,
+    ProjectStateModule,
     TranslocoModule
   ]
 })

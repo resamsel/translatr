@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, CanActivate, Router, RouterModule } from '@angular/router';
-import { MetricComponent, UserCardComponent } from '@dev/translatr-components';
+import { MetricComponent, ShortNumberPipe, TimeAgoPipe, UserCardComponent } from '@dev/translatr-components';
 import { PagedList, Project, User } from '@dev/translatr-model';
 import { TranslocoModule } from '@jsverse/transloco';
 import { canActivate$, NameIconRoute, slicePagedList } from '@translatr/utils';
@@ -31,7 +31,9 @@ import { USER_ROUTES } from '../user-page.token';
     MetricComponent,
     UserCardComponent,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ShortNumberPipe,
+    TimeAgoPipe
   ]
 })
 export class UserInfoComponent implements OnInit {

@@ -13,6 +13,7 @@ import { AppFacade } from '../../../+state/app.facade';
 import { UsersModule } from '../../pages/users-page/+state/users.module';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
 import { ProjectMemberEditFormComponent } from '../project-member-edit-form/project-member-edit-form.component';
+import { ProjectStateModule } from '../project-state';
 
 interface Data {
   member: Partial<Member>;
@@ -35,6 +36,7 @@ interface Data {
     MatDialogModule,
     ProjectMemberEditFormComponent,
     UsersModule,
+    ProjectStateModule,
     TranslocoModule
   ]
 })
