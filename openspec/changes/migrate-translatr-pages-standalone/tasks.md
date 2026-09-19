@@ -42,8 +42,8 @@
 
 ## 7. Routing repoint
 
-- [ ] 7.1 In `app-routing.module.ts`, change all 9 remaining `loadChildren` entries (`register`, `dashboard`, `users`, `projects`, `not-found`, `forbidden`, `''` main, `''` user-page, `''` project-page, `''` editor-page) from `.then(m => m.XxxPageModule)` to `.then(m => m.XxxPageRoutingModule)`
-- [ ] 7.2 Verify `nx build translatr` succeeds with no TypeScript errors
+- [x] 7.1 In `app-routing.module.ts`, change all 9 remaining `loadChildren` entries (`register`, `dashboard`, `users`, `projects`, `not-found`, `forbidden`, `''` main, `''` user-page, `''` project-page, `''` editor-page) from `.then(m => m.XxxPageModule)` to `.then(m => m.XxxPageRoutingModule)` (all 9 were already repointed atomically during their own group's conversion, per the deviation logged in group 1 - this task reduced to a verification sweep, which found all entries already pointing at `*RoutingModule`, plus the pre-existing `login` route which was already `loadComponent` from before this change)
+- [x] 7.2 Verify `nx build translatr` succeeds with no TypeScript errors (clean)
 
 ## 8. Testing modules
 
