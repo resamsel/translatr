@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, NgModule, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Member, PagedList, Project, RequestCriteria } from '@dev/translatr-model';
 import { FilterCriteria } from '../../../../../shared/list-header/list-header.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-member-list',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
-class MockMemberListComponent {
+export class MockMemberListComponent {
   @Input() criteria: RequestCriteria;
   @Input() project: Project;
   @Input() canCreate = false;
@@ -21,9 +21,3 @@ class MockMemberListComponent {
   @Output() edit = new EventEmitter<Member>();
   @Output() delete = new EventEmitter<Member>();
 }
-
-@NgModule({
-  declarations: [MockMemberListComponent],
-  exports: [MockMemberListComponent]
-})
-export class MemberListTestingModule {}

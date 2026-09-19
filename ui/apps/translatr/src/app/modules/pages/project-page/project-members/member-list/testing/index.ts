@@ -1,1 +1,1 @@
-export * from './member-list-testing.module';
+export * from './mock-member-list.component';

@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { ProjectFacade } from '../../../shared/project-state';
 import { LocaleListComponent } from './locale-list/locale-list.component';
-import { LocaleListTestingModule } from './locale-list/testing';
+import { MockLocaleListComponent } from './locale-list/testing';
 import { ProjectLocalesComponent } from './project-locales.component';
 
 describe('ProjectLocalesComponent', () => {
@@ -15,7 +15,7 @@ describe('ProjectLocalesComponent', () => {
     waitForAsync(() => {
       TestBed.overrideComponent(ProjectLocalesComponent, {
         remove: { imports: [LocaleListComponent] },
-        add: { imports: [LocaleListTestingModule] }
+        add: { imports: [MockLocaleListComponent] }
       }).configureTestingModule({
         imports: [ProjectLocalesComponent, RouterTestingModule],
         providers: [
