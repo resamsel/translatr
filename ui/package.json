@@ -52,6 +52,7 @@
     "build:prod": "npm run build:ui:prod && npm run build:admin:prod",
     "prebuild:ui:prod": "npm run buildinfo && npm run codegen",
     "build:ui:prod": "nx build translatr --configuration production --output-path ../public/ui",
+    "build:app:prod": "npm run build:ui:prod && npm run build:admin:prod && node tools/stage-app.js",
     "prebuild:admin:prod": "npm run buildinfo && npm run codegen",
     "build:admin:prod": "nx build translatr-admin --configuration production --output-path ../public/admin",
     "build:lets-generate": "nx build lets-generate",

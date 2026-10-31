@@ -102,14 +102,21 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   }
 
   private redirectToLogin(state: RouterStateSnapshot): void {
+    const redirectUri = environment.adminUrl + state.url;
+
     if (this.loginUrl.startsWith('http://') || this.loginUrl.startsWith('https://')) {
       const url = new URL(this.loginUrl);
-      url.searchParams.set('redirect_uri', environment.adminUrl + state.url);
+      url.searchParams.set('redirect_uri', redirectUri);
       this.window.location.href = url.toString();
+    } else if (this.loginUrl.startsWith('/')) {
+      // Root-relative (e.g. `/ui/login`): the login page belongs to the main SPA, which this
+      // app's router knows nothing about, so it needs a full page load. router.navigate() would
+      // fail to match and re-trigger the guard in a loop of /api/me calls.
+      this.window.location.href = `${this.loginUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
     } else {
       this.router.navigate([this.loginUrl], {
         queryParamsHandling: 'merge',
-        queryParams: { redirect_uri: environment.adminUrl + state.url }
+        queryParams: { redirect_uri: redirectUri }
       });
     }
   }

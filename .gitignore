@@ -127,6 +127,7 @@ fabric.properties
 .recommenders
 /public/ui
 /public/admin
+/public/app
 
 !.idea/
 

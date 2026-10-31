@@ -63,6 +63,7 @@ services:
     environment:
       APPLICATION_SECRET: 094c8762-4689-45c7-830d-f752f82e6ac5
       BASE_URL: "http://localhost:9000"
+      REDIRECT_BASE: "http://localhost:9000"
       ADMIN_ACCESS_TOKEN: 593bdcfe-0bc7-426b-9b80-65e930491a34
       # The app is Quarkus (quarkus.datasource.jdbc.url in application.properties),
       # not the Play-era stack — it reads JDBC_DATABASE_URL / DATABASE_USER /
