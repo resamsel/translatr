@@ -106,6 +106,19 @@ describe('AuthGuard', () => {
     });
   });
 
+  it('uses a full page load for a root-relative login URL served by the other SPA', done => {
+    configure({ me$: of(null) }, '/ui/login');
+
+    guard.canActivate(null, routeState('/accesstokens')).subscribe(result => {
+      expect(result).toBe(false);
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(windowRef.location.href).toBe(
+        `/ui/login?redirect_uri=${encodeURIComponent(environment.adminUrl + '/accesstokens')}`
+      );
+      done();
+    });
+  });
+
   it('fails closed when the user lookup errors (no user -> login)', done => {
     configure({ me$: of(undefined), loggedInUserSettled$: throwError(() => new Error('load failed')) });
 

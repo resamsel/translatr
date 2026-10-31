@@ -5,11 +5,9 @@
 # The quarkus-opentelemetry extension is present here exactly as in the native
 # image; the SDK stays dormant unless the overlay sets QUARKUS_OTEL_SDK_DISABLED=false.
 #
-# Quinoa (the Angular SPA build) is switched off for this image: the overlay
-# load-tests the JVM backend + tracing, not the UI. The disable key is the bare
-# `quarkus.quinoa` (Quinoa 2.7.2 maps `enabled` with @WithParentName, so
-# `quarkus.quinoa.enabled` is a no-op); without it the container build tries to
-# run `npm run build:ui:prod` against the host's node_modules and fails.
+# Quinoa builds the Angular SPA into the jar so /ui works on the backend origin
+# (it provisions its own Node, see quarkus.quinoa.package-manager-install). The
+# host's node_modules is excluded via .dockerignore, so `npm ci` runs in-image.
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 COPY . /app
@@ -19,7 +17,6 @@ COPY . /app
 # normal builds do not get pool metrics, only this load-test image does.
 RUN ./gradlew build \
       -Dquarkus.package.jar.type=fast-jar \
-      -Dquarkus.quinoa=false \
       -Dquarkus.datasource.jdbc.enable-metrics=true \
       -x test \
       --no-daemon

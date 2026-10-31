@@ -233,6 +233,9 @@ services:
     ports: !override
       - "8085:8080"
       - "8543:8443"
+    environment:
+      # Browser-facing URL follows the remapped host port (SigNoz owns :8080).
+      KC_HOSTNAME: http://localhost:8085
 
 volumes:
   clickhouse:

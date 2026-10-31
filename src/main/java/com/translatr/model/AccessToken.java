@@ -13,6 +13,7 @@ public class AccessToken extends PanacheEntityBase {
 
     public static final int NAME_LENGTH  = 32;
     public static final int KEY_LENGTH   = 64;
+    public static final int SCOPE_LENGTH = 1024;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "access_token_seq_gen")
@@ -40,6 +41,6 @@ public class AccessToken extends PanacheEntityBase {
     @Column(nullable = false, unique = true, length = KEY_LENGTH)
     public String key;
 
-    @Column(length = 255)
+    @Column(length = SCOPE_LENGTH)
     public String scope;
 }

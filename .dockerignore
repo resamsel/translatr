@@ -18,7 +18,7 @@ out
 dist
 tmp
 
-# node deps (huge; UI build is disabled via -Dquarkus.quinoa=false)
+# node deps (huge; Quinoa reinstalls them inside the image)
 node_modules
 **/node_modules
 ui/node_modules
