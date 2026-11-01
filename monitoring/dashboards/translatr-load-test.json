@@ -687,7 +687,7 @@
       "title": "Total requests",
       "description": "http_server_requests_seconds.count \u00b7 sum over the selected time range",
       "panelTypes": "value",
-      "yAxisUnit": "none",
+      "yAxisUnit": "short",
       "query": {
         "queryType": "builder",
         "promql": [
