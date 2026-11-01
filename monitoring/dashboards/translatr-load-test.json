@@ -11,12 +11,75 @@
   "layout": [
     {
       "h": 1,
-      "i": "h1",
+      "i": "h0",
       "moved": false,
       "static": false,
       "w": 12,
       "x": 0,
       "y": 0
+    },
+    {
+      "h": 3,
+      "i": "wreqmin",
+      "moved": false,
+      "static": false,
+      "w": 2,
+      "x": 0,
+      "y": 1
+    },
+    {
+      "h": 3,
+      "i": "wreadmin",
+      "moved": false,
+      "static": false,
+      "w": 2,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "h": 3,
+      "i": "wwritemin",
+      "moved": false,
+      "static": false,
+      "w": 2,
+      "x": 4,
+      "y": 1
+    },
+    {
+      "h": 3,
+      "i": "wsessions",
+      "moved": false,
+      "static": false,
+      "w": 2,
+      "x": 6,
+      "y": 1
+    },
+    {
+      "h": 3,
+      "i": "wusers",
+      "moved": false,
+      "static": false,
+      "w": 2,
+      "x": 8,
+      "y": 1
+    },
+    {
+      "h": 3,
+      "i": "wreqtotal",
+      "moved": false,
+      "static": false,
+      "w": 2,
+      "x": 10,
+      "y": 1
+    },
+    {
+      "h": 1,
+      "i": "h1",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 4
     },
     {
       "h": 6,
@@ -25,7 +88,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 1
+      "y": 5
     },
     {
       "h": 6,
@@ -34,7 +97,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 1
+      "y": 5
     },
     {
       "h": 6,
@@ -43,7 +106,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 7
+      "y": 11
     },
     {
       "h": 6,
@@ -52,7 +115,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 7
+      "y": 11
     },
     {
       "h": 1,
@@ -61,7 +124,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 7
+      "y": 11
     },
     {
       "h": 6,
@@ -70,7 +133,7 @@
       "static": false,
       "w": 4,
       "x": 0,
-      "y": 8
+      "y": 12
     },
     {
       "h": 6,
@@ -79,7 +142,7 @@
       "static": false,
       "w": 4,
       "x": 4,
-      "y": 8
+      "y": 12
     },
     {
       "h": 6,
@@ -88,7 +151,7 @@
       "static": false,
       "w": 4,
       "x": 8,
-      "y": 8
+      "y": 12
     },
     {
       "h": 6,
@@ -97,7 +160,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 14
+      "y": 18
     },
     {
       "h": 6,
@@ -106,7 +169,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 14
+      "y": 18
     },
     {
       "h": 1,
@@ -115,7 +178,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 14
+      "y": 18
     },
     {
       "h": 6,
@@ -124,7 +187,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 15
+      "y": 19
     },
     {
       "h": 6,
@@ -133,7 +196,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 15
+      "y": 19
     },
     {
       "h": 1,
@@ -142,7 +205,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 15
+      "y": 19
     },
     {
       "h": 6,
@@ -151,7 +214,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 16
+      "y": 20
     },
     {
       "h": 6,
@@ -160,7 +223,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 16
+      "y": 20
     },
     {
       "h": 6,
@@ -169,7 +232,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 22
+      "y": 26
     },
     {
       "h": 6,
@@ -178,10 +241,480 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 22
+      "y": 26
     }
   ],
   "widgets": [
+    {
+      "id": "h0",
+      "title": "Row 0 \u2014 Key metrics",
+      "panelTypes": "text"
+    },
+    {
+      "id": "wreqmin",
+      "title": "Requests / min (total)",
+      "description": "http_server_requests_seconds.count \u00b7 sum_rate * 60",
+      "panelTypes": "value",
+      "yAxisUnit": "none",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wreqmin-q",
+        "builder": {
+          "queryFormulas": [
+            {
+              "queryName": "F1",
+              "expression": "A * 60",
+              "legend": "Requests / min (total)",
+              "disabled": false
+            }
+          ],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wreadmin",
+      "title": "Read requests / min",
+      "description": "http_server_requests_seconds.count \u00b7 sum_rate * 60 \u00b7 method in (GET, HEAD)",
+      "panelTypes": "value",
+      "yAxisUnit": "none",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wreadmin-q",
+        "builder": {
+          "queryFormulas": [
+            {
+              "queryName": "F1",
+              "expression": "A * 60",
+              "legend": "Read requests / min",
+              "disabled": false
+            }
+          ],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "key": "method",
+                      "dataType": "string",
+                      "isColumn": false,
+                      "type": "tag"
+                    },
+                    "op": "in",
+                    "value": [
+                      "GET",
+                      "HEAD"
+                    ]
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wwritemin",
+      "title": "Write requests / min",
+      "description": "http_server_requests_seconds.count \u00b7 sum_rate * 60 \u00b7 method in (POST, PUT, PATCH, DELETE)",
+      "panelTypes": "value",
+      "yAxisUnit": "none",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wwritemin-q",
+        "builder": {
+          "queryFormulas": [
+            {
+              "queryName": "F1",
+              "expression": "A * 60",
+              "legend": "Write requests / min",
+              "disabled": false
+            }
+          ],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "key": "method",
+                      "dataType": "string",
+                      "isColumn": false,
+                      "type": "tag"
+                    },
+                    "op": "in",
+                    "value": [
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ]
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wsessions",
+      "title": "Parallel sessions",
+      "description": "http_server_active_requests \u00b7 avg (in-flight HTTP requests right now)",
+      "panelTypes": "value",
+      "yAxisUnit": "none",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wsessions-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_active_requests",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "last",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wusers",
+      "title": "Total users",
+      "description": "traces \u00b7 count_distinct(user.id) \u2014 distinct authenticated users seen in the selected window (span attribute stamped by ApiMetricsFilter; needs TRANSLATR_OBSERVABILITY_METRICS_ENABLED, which the SigNoz overlay sets)",
+      "panelTypes": "value",
+      "yAxisUnit": "none",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wusers-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "traces",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "string",
+                "isColumn": false,
+                "key": "user.id",
+                "type": "tag"
+              },
+              "aggregateOperator": "count_distinct",
+              "timeAggregation": "",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "sum",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wreqtotal",
+      "title": "Total requests",
+      "description": "http_server_requests_seconds.count \u00b7 sum over the selected time range",
+      "panelTypes": "value",
+      "yAxisUnit": "none",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wreqtotal-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum",
+              "timeAggregation": "sum",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "sum",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
     {
       "id": "h1",
       "title": "Row 1 \u2014 Throughput & latency",
