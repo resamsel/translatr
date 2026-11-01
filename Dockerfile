@@ -9,7 +9,6 @@ RUN ./gradlew build \
       -Dquarkus.native.enabled=true \
       -Dquarkus.native.container-build=false \
       -Dquarkus.package.jar.enabled=false \
-      -Dquarkus.quinoa=false \
       -x test \
       --no-daemon \
       --info
