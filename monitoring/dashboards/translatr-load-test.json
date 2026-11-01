@@ -278,6 +278,42 @@
       "w": 12,
       "x": 0,
       "y": 40
+    },
+    {
+      "h": 1,
+      "i": "h5",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 64
+    },
+    {
+      "h": 6,
+      "i": "wdbpool",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 65
+    },
+    {
+      "h": 6,
+      "i": "wdbawait",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 6,
+      "y": 65
+    },
+    {
+      "h": 6,
+      "i": "wdbacq",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 71
     }
   ],
   "widgets": [
@@ -2615,6 +2651,349 @@
           "thresholdValue": 0
         }
       ],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "h5",
+      "title": "Row 5 \u2014 Persistence (Agroal connection pool)",
+      "description": "",
+      "panelTypes": "text",
+      "yAxisUnit": "",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "h5-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": []
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wdbpool",
+      "title": "DB connection pool: active vs available vs max used",
+      "description": "agroal_active_count, agroal_available_count, agroal_max_used_count \u2014 pool is maxed when active+available approaches DATABASE_MAX_POOL_SIZE (default 10)",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wdbpool-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "active",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "agroal_active_count",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": false,
+              "legend": "available",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "agroal_available_count",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "C",
+              "expression": "C",
+              "disabled": false,
+              "legend": "max used",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "agroal_max_used_count",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wdbawait",
+      "title": "Threads waiting for a DB connection",
+      "description": "agroal_awaiting_count \u2014 any sustained value above 0 means the pool is exhausted and requests are queueing for a connection",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wdbawait-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "awaiting",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "agroal_awaiting_count",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [
+        {
+          "index": "385f28b2-d3cf-4d40-a8e7-efcb4de94feb",
+          "isEditEnabled": false,
+          "keyIndex": 0,
+          "selectedGraph": "graph",
+          "thresholdColor": "Red",
+          "thresholdFormat": "Text",
+          "thresholdLabel": "Pool exhausted",
+          "thresholdOperator": ">",
+          "thresholdTableOptions": "A",
+          "thresholdUnit": "none",
+          "thresholdValue": 0
+        }
+      ],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wdbacq",
+      "title": "DB connection acquire time (ms)",
+      "description": "agroal_blocking_time_average_milliseconds, agroal_blocking_time_max_milliseconds \u2014 time a thread waits to get a connection; rising values precede acquisition-timeout errors (DATABASE_CONNECTION_TIMEOUT, default 5s)",
+      "panelTypes": "graph",
+      "yAxisUnit": "ms",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wdbacq-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "avg acquire time",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "agroal_blocking_time_average_milliseconds",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "avg",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": false,
+              "legend": "max acquire time",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "agroal_blocking_time_max_milliseconds",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "avg",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
       "softMax": null,
       "softMin": null,
       "selectedLogFields": [],
