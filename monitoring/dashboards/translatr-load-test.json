@@ -248,7 +248,43 @@
     {
       "id": "h0",
       "title": "Row 0 \u2014 Key metrics",
-      "panelTypes": "text"
+      "description": "",
+      "panelTypes": "text",
+      "yAxisUnit": "",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "h0-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": []
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
     },
     {
       "id": "wreqmin",
