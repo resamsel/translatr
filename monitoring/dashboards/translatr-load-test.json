@@ -124,7 +124,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 17
+      "y": 21
     },
     {
       "h": 6,
@@ -133,7 +133,7 @@
       "static": false,
       "w": 4,
       "x": 0,
-      "y": 18
+      "y": 22
     },
     {
       "h": 6,
@@ -142,7 +142,7 @@
       "static": false,
       "w": 4,
       "x": 4,
-      "y": 18
+      "y": 22
     },
     {
       "h": 6,
@@ -151,7 +151,7 @@
       "static": false,
       "w": 4,
       "x": 8,
-      "y": 18
+      "y": 22
     },
     {
       "h": 6,
@@ -160,7 +160,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 24
+      "y": 28
     },
     {
       "h": 6,
@@ -169,7 +169,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 24
+      "y": 28
     },
     {
       "h": 1,
@@ -178,7 +178,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 30
+      "y": 44
     },
     {
       "h": 6,
@@ -187,7 +187,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 31
+      "y": 45
     },
     {
       "h": 6,
@@ -196,7 +196,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 31
+      "y": 45
     },
     {
       "h": 1,
@@ -205,7 +205,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 37
+      "y": 51
     },
     {
       "h": 6,
@@ -214,7 +214,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 38
+      "y": 52
     },
     {
       "h": 6,
@@ -223,7 +223,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 38
+      "y": 52
     },
     {
       "h": 6,
@@ -232,7 +232,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 44
+      "y": 58
     },
     {
       "h": 6,
@@ -241,7 +241,43 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 44
+      "y": 58
+    },
+    {
+      "h": 4,
+      "i": "werrrate",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 17
+    },
+    {
+      "h": 6,
+      "i": "wgcdur",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 34
+    },
+    {
+      "h": 6,
+      "i": "wpoolq",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 6,
+      "y": 34
+    },
+    {
+      "h": 4,
+      "i": "wpoolrej",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 40
     }
   ],
   "widgets": [
@@ -2113,6 +2149,472 @@
       "nullZeroValues": "zero",
       "opacity": "1",
       "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "werrrate",
+      "title": "Error rate (%, 5xx of total)",
+      "description": "http_server_requests_seconds.count \u00b7 (SERVER_ERROR rate / total rate) * 100",
+      "panelTypes": "graph",
+      "yAxisUnit": "percent",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "werrrate-q",
+        "builder": {
+          "queryFormulas": [
+            {
+              "queryName": "F1",
+              "expression": "(A / B) * 100",
+              "legend": "Error rate %",
+              "disabled": false
+            }
+          ],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": true,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "key": "outcome",
+                      "dataType": "string",
+                      "isColumn": false,
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "SERVER_ERROR"
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": true,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [
+        {
+          "index": "6720d801-fd89-4595-ba74-3e5943aef511",
+          "isEditEnabled": false,
+          "keyIndex": 0,
+          "selectedGraph": "graph",
+          "thresholdColor": "Amber",
+          "thresholdFormat": "Text",
+          "thresholdLabel": "Elevated",
+          "thresholdOperator": ">=",
+          "thresholdTableOptions": "A",
+          "thresholdUnit": "percent",
+          "thresholdValue": 1
+        },
+        {
+          "index": "468dc6ab-40a5-411b-9ad5-9baca81fed8e",
+          "isEditEnabled": false,
+          "keyIndex": 0,
+          "selectedGraph": "graph",
+          "thresholdColor": "Red",
+          "thresholdFormat": "Text",
+          "thresholdLabel": "Critical",
+          "thresholdOperator": ">=",
+          "thresholdTableOptions": "A",
+          "thresholdUnit": "percent",
+          "thresholdValue": 5
+        }
+      ],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wgcdur",
+      "title": "Avg GC pause duration (ms) by action",
+      "description": "jvm_gc_pause_seconds.sum / .count * 1000",
+      "panelTypes": "graph",
+      "yAxisUnit": "ms",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wgcdur-q",
+        "builder": {
+          "queryFormulas": [
+            {
+              "queryName": "F1",
+              "expression": "(A / B) * 1000",
+              "legend": "{{action}}",
+              "disabled": false
+            }
+          ],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": true,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "jvm_gc_pause_seconds.sum",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum",
+              "timeAggregation": "sum",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "action",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": true,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "jvm_gc_pause_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum",
+              "timeAggregation": "sum",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "action",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wpoolq",
+      "title": "Vert.x worker pool: queue depth vs active",
+      "description": "worker_pool_queue_size, worker_pool_active (pool=vert.x-worker-thread)",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wpoolq-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "queue size",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "worker_pool_queue_size",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "key": "pool_name",
+                      "dataType": "string",
+                      "isColumn": false,
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "vert.x-worker-thread"
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": false,
+              "legend": "active",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "worker_pool_active",
+                "type": "Gauge"
+              },
+              "aggregateOperator": "avg",
+              "timeAggregation": "avg",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "key": "pool_name",
+                      "dataType": "string",
+                      "isColumn": false,
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "vert.x-worker-thread"
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "wpoolrej",
+      "title": "Worker pool rejected tasks/s",
+      "description": "worker_pool_rejected_total \u00b7 sum_rate \u2014 any value above 0 means the pool is saturated and dropping work",
+      "panelTypes": "graph",
+      "yAxisUnit": "short",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "wpoolrej-q",
+        "builder": {
+          "queryFormulas": [],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": false,
+              "legend": "{{pool_name}}",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "worker_pool_rejected_total",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "isColumn": false,
+                  "key": "pool_name",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [
+        {
+          "index": "de864ae7-22d5-4d0b-975e-8fef1c2dfb4e",
+          "isEditEnabled": false,
+          "keyIndex": 0,
+          "selectedGraph": "graph",
+          "thresholdColor": "Red",
+          "thresholdFormat": "Text",
+          "thresholdLabel": "Saturated",
+          "thresholdOperator": ">",
+          "thresholdTableOptions": "A",
+          "thresholdUnit": "none",
+          "thresholdValue": 0
+        }
+      ],
       "softMax": null,
       "softMin": null,
       "selectedLogFields": [],
