@@ -51,7 +51,9 @@ services:
       KC_HOSTNAME: http://localhost:8080
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     volumes:
-      - ./docker/Translatr-realm.json:/opt/keycloak/data/import/Translatr-realm.json
+      # Load-test-only realm import: adds the loadtest-admin user (see below) on top of
+      # the shared Translatr-realm.json used by docker-compose.yml, which stays untouched.
+      - ./docker/Translatr-realm-loadtest.json:/opt/keycloak/data/import/Translatr-realm.json
   translatr:
     image: resamsel/translatr:4.0.1-0
     restart: unless-stopped
@@ -75,6 +77,10 @@ services:
       OIDC_KEYCLOAK_AUTH_SERVER_URL: http://sso:8080/realms/Translatr
       OIDC_KEYCLOAK_CLIENT_ID: translatr-localhost
       OIDC_KEYCLOAK_CLIENT_SECRET: 05d9a16b-5999-49f7-b26d-996bd414c849
+      # Grants the loadtest-admin Keycloak user (seeded in Translatr-realm-loadtest.json)
+      # app-level Admin on login, since that role comes from this email list, not from any
+      # Keycloak realm role.
+      ADMINS: loadtest-admin@translatr.local
       LOGLEVEL_ROOT: DEBUG
     healthcheck:
       # No curl/wget in resamsel/translatr's RHEL-UBI base image; use bash's
