@@ -91,6 +91,30 @@ Convention: class-level `@RequiresScope(<Read>)`; POST/PUT/PATCH/DELETE methods 
 | HealthResource, RootResource, LoginResource, LogoutResource, AuthenticateResource, AuthClientsResource, UiLandingResource, UiRedirectResource, StatisticsResource | `@NoScopeRequired` | |
 | OidcProviderResource | no annotation → tokens denied (admin config, no matching scope) | |
 
+## OpenAPI documentation
+
+`src/main/resources/META-INF/openapi.yaml` (OpenAPI 3.0.3, served as-is at `/api/openapi`) documents
+the scopes. 3.0.3 only allows scope lists on `oauth2`/`openIdConnect` requirements, so scopes are
+expressed with a vendor extension rather than bumping to 3.1 or faking an oauth2 scheme.
+
+- `components.securitySchemes`:
+  - `accessTokenHeader` — `type: apiKey`, `in: header`, `name: X-Access-Token`
+  - `accessTokenQuery` — `type: apiKey`, `in: query`, `name: access_token`
+  - `bearerToken` — `type: http`, `scheme: bearer`
+- Top-level `security`: each of the three schemes (empty scope lists) plus `{}` — authentication is
+  optional at the document level because anonymous reads exist.
+- Every operation gets `x-required-scopes` with the wire strings from the mapping table, e.g.
+  `x-required-scopes: [write:project]`; `@NoScopeRequired` operations get `x-required-scopes: []`.
+- Each operation's `description` gains a line `Required access-token scopes: write:project` (or
+  `none`), since Swagger UI does not render extensions.
+- OidcProvider operations get `x-access-token: denied` (no `x-required-scopes`) and the description
+  line `Not available to access tokens`.
+- The shared `fetch` parameter description notes that `members` additionally requires `read:member`
+  when called with an access token.
+
+The generator (`jaxrs-spec`) ignores these fields, so generated interfaces are unaffected.
+LocaleTransfer endpoints are not in `openapi.yaml` today and stay out of scope for documentation.
+
 ## Testing
 
 - **Unit:** `Scope.fromString` (known, unknown, whitespace, blank); `AccessTokenSecurityIdentity`
@@ -101,6 +125,11 @@ Convention: class-level `@RequiresScope(<Read>)`; POST/PUT/PATCH/DELETE methods 
 - **Completeness:** reflect over all `@Path` resource classes and their JAX-RS methods (including
   those declared on generated interfaces); fail if a method resolves to neither annotation, except
   classes on an explicit token-denied allow-list (`OidcProviderResource`).
+- **OpenAPI consistency:** parse `openapi.yaml`; for every operation, find the resource method whose
+  name equals the `operationId` (generated interface methods are named after operationIds) and assert
+  its resolved scopes equal `x-required-scopes` (`@NoScopeRequired` ↔ `[]`; token-denied ↔
+  `x-access-token: denied`). Fails on any operation missing the extension and on any annotated
+  method whose operation disagrees — drift in either direction breaks the build.
 - **Integration (`@QuarkusTest`):** a token with only `read:project` can `GET /api/projects` but gets
   403 on create; full-scope token can create; anonymous `GET` of a public project still 200;
   `?fetch=members` without `read:member` → 403; LocaleTransfer import with read-only scopes → 403.
