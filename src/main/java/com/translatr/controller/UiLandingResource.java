@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import com.translatr.auth.NoScopeRequired;
 import com.translatr.config.TranslatrConfig;
 import io.quarkus.arc.profile.UnlessBuildProfile;
 import jakarta.annotation.security.PermitAll;
@@ -24,6 +25,7 @@ import java.net.URI;
  */
 @UnlessBuildProfile("prod")
 @Path("/ui")
+@NoScopeRequired
 public class UiLandingResource {
 
     private final TranslatrConfig config;

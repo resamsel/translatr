@@ -1,5 +1,7 @@
 package com.translatr.controller;
 
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.criteria.MemberCriteria;
 import com.translatr.dto.MemberDto;
 import com.translatr.dto.PagedList;
@@ -11,6 +13,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import java.util.UUID;
 
+@RequiresScope(Scope.MemberRead)
 public class MemberResource implements MembersApi {
 
     private final MemberService memberService;
@@ -44,18 +47,21 @@ public class MemberResource implements MembersApi {
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.MemberWrite)
     public MemberDto createMember(MemberDto memberDto) {
         return memberService.create(memberDto);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.MemberWrite)
     public MemberDto updateMember(MemberDto memberDto) {
         return memberService.update(memberDto);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.MemberWrite)
     public MemberDto deleteMember(Long id) {
         return memberService.delete(id);
     }

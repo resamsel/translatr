@@ -1,11 +1,13 @@
 package com.translatr.controller;
 
+import com.translatr.auth.NoScopeRequired;
 import com.translatr.dto.StatisticsDto;
 import com.translatr.generated.api.StatisticsApi;
 import com.translatr.service.StatisticsService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 
+@NoScopeRequired
 public class StatisticsResource implements StatisticsApi {
 
     private final StatisticsService statisticsService;

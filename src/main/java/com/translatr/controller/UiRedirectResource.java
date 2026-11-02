@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import com.translatr.auth.NoScopeRequired;
 import io.quarkus.arc.profile.IfBuildProfile;
 import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.GET;
@@ -21,6 +22,7 @@ import java.net.URI;
  */
 @IfBuildProfile("prod")
 @Path("/ui")
+@NoScopeRequired
 public class UiRedirectResource {
 
     @GET

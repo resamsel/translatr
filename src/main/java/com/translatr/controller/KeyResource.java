@@ -1,5 +1,7 @@
 package com.translatr.controller;
 
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.criteria.KeyCriteria;
 import com.translatr.dto.KeyDto;
 import com.translatr.dto.PagedKeyList;
@@ -11,6 +13,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import java.util.UUID;
 
+@RequiresScope(Scope.KeyRead)
 public class KeyResource implements KeysApi {
 
     private final KeyService keyService;
@@ -42,18 +45,21 @@ public class KeyResource implements KeysApi {
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.KeyWrite)
     public KeyDto createKey(KeyDto keyDto) {
         return keyService.create(keyDto);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.KeyWrite)
     public KeyDto updateKey(KeyDto keyDto) {
         return keyService.update(keyDto);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.KeyWrite)
     public KeyDto deleteKey(UUID id) {
         return keyService.delete(id);
     }

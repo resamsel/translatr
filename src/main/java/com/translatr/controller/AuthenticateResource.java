@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import com.translatr.auth.NoScopeRequired;
 import com.translatr.config.TranslatrConfig;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -35,6 +36,7 @@ import java.net.URI;
  * user lands here with a valid session and is forwarded to the main UI.</p>
  */
 @Path("/authenticate")
+@NoScopeRequired
 public class AuthenticateResource {
 
     private final TranslatrConfig config;
