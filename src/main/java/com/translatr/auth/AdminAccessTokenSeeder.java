@@ -12,6 +12,9 @@ import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * Seeds a well-known admin access token from {@code translatr.admin-access-token}
  * (env {@code ADMIN_ACCESS_TOKEN}) so tooling such as the load generator can
@@ -23,12 +26,9 @@ public class AdminAccessTokenSeeder {
     private static final Logger LOG = Logger.getLogger(AdminAccessTokenSeeder.class);
 
     static final String ADMIN_USERNAME = "admin";
-    static final String SCOPE = String.join(",",
-            "read:user", "write:user", "read:accesstoken", "write:accesstoken",
-            "read:project", "write:project", "read:locale", "write:locale",
-            "read:key", "write:key", "read:message", "write:message",
-            "read:member", "write:member", "read:notification", "write:notification",
-            "read:featureflag", "write:featureflag");
+    static final String SCOPE = Arrays.stream(Scope.values())
+            .map(Scope::value)
+            .collect(Collectors.joining(","));
 
     private final TranslatrConfig config;
     private final UserRepository users;

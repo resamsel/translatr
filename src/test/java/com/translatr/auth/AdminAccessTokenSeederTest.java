@@ -74,4 +74,10 @@ class AdminAccessTokenSeederTest {
     long adminUsers() {
         return users.count("username", AdminAccessTokenSeeder.ADMIN_USERNAME);
     }
+
+    @Test
+    void seededScopeCoversEveryScope() {
+        org.assertj.core.api.Assertions.assertThat(Scope.parse(AdminAccessTokenSeeder.SCOPE))
+                .containsExactlyInAnyOrder(Scope.values());
+    }
 }
