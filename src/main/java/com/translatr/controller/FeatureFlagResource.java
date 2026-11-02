@@ -1,6 +1,8 @@
 package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.criteria.FeatureFlagCriteria;
 import com.translatr.dto.FeatureFlagDto;
 import com.translatr.dto.PagedFeatureFlagList;
@@ -13,6 +15,7 @@ import jakarta.inject.Inject;
 import java.util.UUID;
 
 @Authenticated
+@RequiresScope(Scope.FeatureFlagRead)
 public class FeatureFlagResource implements UserFeatureFlagsApi {
 
     private final FeatureFlagService  featureFlagService;
@@ -38,16 +41,19 @@ public class FeatureFlagResource implements UserFeatureFlagsApi {
     }
 
     @Override
+    @RequiresScope(Scope.FeatureFlagWrite)
     public FeatureFlagDto createUserFeatureFlag(FeatureFlagDto featureFlagDto) {
         return featureFlagService.create(featureFlagDto, currentUserResolver.resolve());
     }
 
     @Override
+    @RequiresScope(Scope.FeatureFlagWrite)
     public FeatureFlagDto updateUserFeatureFlag(FeatureFlagDto featureFlagDto) {
         return featureFlagService.update(featureFlagDto, currentUserResolver.resolve());
     }
 
     @Override
+    @RequiresScope(Scope.FeatureFlagWrite)
     public FeatureFlagDto deleteUserFeatureFlag(UUID id) {
         return featureFlagService.delete(id, currentUserResolver.resolve());
     }

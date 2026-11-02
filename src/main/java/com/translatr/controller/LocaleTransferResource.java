@@ -1,5 +1,7 @@
 package com.translatr.controller;
 
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.exporter.ExporterFactory;
 import com.translatr.importer.ImportResult;
 import com.translatr.importer.ImporterFactory;
@@ -45,6 +47,7 @@ public class LocaleTransferResource {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_JSON)
     @Authenticated
+    @RequiresScope({Scope.LocaleWrite, Scope.MessageWrite})
     public ImportResult upload(@PathParam("localeId") UUID localeId,
                                @PathParam("fileType") String fileType,
                                InputStream body) throws Exception {
@@ -57,6 +60,7 @@ public class LocaleTransferResource {
     @Path("/locale/{localeId}/export/{fileType}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @PermitAll
+    @RequiresScope({Scope.LocaleRead, Scope.MessageRead})
     public Response download(@PathParam("localeId") UUID localeId,
                              @PathParam("fileType") String fileType) {
         Locale locale   = localeRepo.findByIdOptional(localeId)

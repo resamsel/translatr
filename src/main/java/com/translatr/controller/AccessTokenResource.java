@@ -1,6 +1,8 @@
 package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.criteria.AccessTokenCriteria;
 import com.translatr.dto.AccessTokenDto;
 import com.translatr.dto.PagedAccessTokenList;
@@ -13,6 +15,7 @@ import jakarta.inject.Inject;
 import java.util.UUID;
 
 @Authenticated
+@RequiresScope(Scope.AccessTokenRead)
 public class AccessTokenResource implements AccessTokensApi {
 
     private final AccessTokenService  tokenService;
@@ -38,17 +41,20 @@ public class AccessTokenResource implements AccessTokensApi {
     }
 
     @Override
+    @RequiresScope(Scope.AccessTokenWrite)
     public AccessTokenDto createAccessToken(AccessTokenDto accessToken) {
         var owner = currentUserResolver.resolve();
         return tokenService.create(accessToken, owner);
     }
 
     @Override
+    @RequiresScope(Scope.AccessTokenWrite)
     public AccessTokenDto updateAccessToken(AccessTokenDto accessToken) {
         return tokenService.update(accessToken);
     }
 
     @Override
+    @RequiresScope(Scope.AccessTokenWrite)
     public AccessTokenDto deleteAccessToken(Long id) {
         return tokenService.delete(id);
     }

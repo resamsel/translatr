@@ -1,6 +1,8 @@
 package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.criteria.ProjectCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.PagedProjectList;
@@ -13,6 +15,7 @@ import jakarta.inject.Inject;
 
 import java.util.UUID;
 
+@RequiresScope(Scope.ProjectRead)
 public class ProjectResource implements ProjectsApi {
 
     private final ProjectService      projectService;
@@ -49,6 +52,7 @@ public class ProjectResource implements ProjectsApi {
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.ProjectWrite)
     public ProjectDto createProject(ProjectDto projectPayload) {
         var owner = currentUserResolver.resolve();
         return projectService.create(projectPayload, owner);
@@ -56,12 +60,14 @@ public class ProjectResource implements ProjectsApi {
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.ProjectWrite)
     public ProjectDto updateProject(ProjectDto projectPayload) {
         return projectService.update(projectPayload);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.ProjectWrite)
     public ProjectDto deleteProject(UUID id) {
         return projectService.delete(id);
     }

@@ -1,6 +1,8 @@
 package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.criteria.UserCriteria;
 import com.translatr.dto.PagedList;
 import com.translatr.dto.PagedUserList;
@@ -14,6 +16,7 @@ import jakarta.inject.Inject;
 
 import java.util.UUID;
 
+@RequiresScope(Scope.UserRead)
 public class UserResource implements UsersApi {
 
     private final UserService         userService;
@@ -62,24 +65,28 @@ public class UserResource implements UsersApi {
 
     @Override
     @PermitAll
+    @RequiresScope(Scope.UserWrite)
     public UserDto createUser(UserDto userDto) {
         return userService.create(userDto);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.UserWrite)
     public UserDto updateUser(UserDto userDto) {
         return userService.update(userDto);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.UserWrite)
     public UserDto deleteUser(UUID id) {
         return userService.delete(id);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.UserWrite)
     public UserDto saveUserSettings(UUID id, UserDto userDto) {
         userDto.setId(id);
         return userService.update(userDto);

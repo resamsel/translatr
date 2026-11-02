@@ -1,10 +1,12 @@
 package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.criteria.LocaleCriteria;
 import com.translatr.dto.LocaleDto;
-import com.translatr.dto.PagedLocaleList;
 import com.translatr.dto.PagedList;
+import com.translatr.dto.PagedLocaleList;
 import com.translatr.generated.api.LocalesApi;
 import com.translatr.service.LocaleService;
 import io.quarkus.security.Authenticated;
@@ -12,6 +14,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import java.util.UUID;
 
+@RequiresScope(Scope.LocaleRead)
 public class LocaleResource implements LocalesApi {
 
     private final LocaleService       localeService;
@@ -59,18 +62,21 @@ public class LocaleResource implements LocalesApi {
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.LocaleWrite)
     public LocaleDto createLocale(LocaleDto localeDto) {
         return localeService.create(localeDto);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.LocaleWrite)
     public LocaleDto updateLocale(LocaleDto localeDto) {
         return localeService.update(localeDto);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.LocaleWrite)
     public LocaleDto deleteLocale(UUID id) {
         return localeService.delete(id);
     }

@@ -36,7 +36,7 @@ class AccessTokenAuthMechanismTest {
         t.user = u;
         t.name = "test";
         t.key = "amt-" + System.nanoTime();
-        t.scope = "";
+        t.scope = "read:user";
         t.persist();
 
         this.rawKey = t.key;

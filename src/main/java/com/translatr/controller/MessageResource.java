@@ -1,6 +1,8 @@
 package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.criteria.MessageCriteria;
 import com.translatr.dto.MessageDto;
 import com.translatr.dto.PagedList;
@@ -13,6 +15,7 @@ import jakarta.inject.Inject;
 
 import java.util.UUID;
 
+@RequiresScope(Scope.MessageRead)
 public class MessageResource implements MessagesApi {
 
     private final MessageService     messageService;
@@ -65,18 +68,21 @@ public class MessageResource implements MessagesApi {
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.MessageWrite)
     public MessageDto createMessage(MessageDto messagePayload) {
         return messageService.create(messagePayload);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.MessageWrite)
     public MessageDto updateMessage(MessageDto messagePayload) {
         return messageService.update(messagePayload);
     }
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.MessageWrite)
     public MessageDto deleteMessage(UUID id) {
         return messageService.delete(id);
     }
