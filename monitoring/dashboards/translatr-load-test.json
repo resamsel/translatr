@@ -124,7 +124,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 25
+      "y": 21
     },
     {
       "h": 6,
@@ -133,7 +133,7 @@
       "static": false,
       "w": 4,
       "x": 0,
-      "y": 26
+      "y": 22
     },
     {
       "h": 6,
@@ -142,7 +142,7 @@
       "static": false,
       "w": 4,
       "x": 4,
-      "y": 26
+      "y": 22
     },
     {
       "h": 6,
@@ -151,7 +151,7 @@
       "static": false,
       "w": 4,
       "x": 8,
-      "y": 26
+      "y": 22
     },
     {
       "h": 6,
@@ -160,7 +160,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 32
+      "y": 28
     },
     {
       "h": 6,
@@ -169,7 +169,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 32
+      "y": 28
     },
     {
       "h": 1,
@@ -178,7 +178,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 48
+      "y": 44
     },
     {
       "h": 6,
@@ -187,7 +187,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 49
+      "y": 45
     },
     {
       "h": 6,
@@ -196,7 +196,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 49
+      "y": 45
     },
     {
       "h": 1,
@@ -205,7 +205,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 55
+      "y": 51
     },
     {
       "h": 6,
@@ -214,7 +214,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 56
+      "y": 52
     },
     {
       "h": 6,
@@ -223,7 +223,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 56
+      "y": 52
     },
     {
       "h": 6,
@@ -232,7 +232,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 62
+      "y": 58
     },
     {
       "h": 6,
@@ -241,7 +241,70 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 62
+      "y": 58
+    },
+    {
+      "h": 6,
+      "i": "wgcdur",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 34
+    },
+    {
+      "h": 6,
+      "i": "wpoolq",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 6,
+      "y": 34
+    },
+    {
+      "h": 4,
+      "i": "wpoolrej",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 40
+    },
+    {
+      "h": 1,
+      "i": "h5",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 64
+    },
+    {
+      "h": 6,
+      "i": "wdbpool",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 65
+    },
+    {
+      "h": 6,
+      "i": "wdbawait",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 6,
+      "y": 65
+    },
+    {
+      "h": 6,
+      "i": "wdbacq",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 71
     },
     {
       "h": 4,
@@ -251,78 +314,6 @@
       "w": 12,
       "x": 0,
       "y": 17
-    },
-    {
-      "h": 6,
-      "i": "wgcdur",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 0,
-      "y": 38
-    },
-    {
-      "h": 6,
-      "i": "wpoolq",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 6,
-      "y": 38
-    },
-    {
-      "h": 4,
-      "i": "wpoolrej",
-      "moved": false,
-      "static": false,
-      "w": 12,
-      "x": 0,
-      "y": 44
-    },
-    {
-      "h": 1,
-      "i": "h5",
-      "moved": false,
-      "static": false,
-      "w": 12,
-      "x": 0,
-      "y": 68
-    },
-    {
-      "h": 6,
-      "i": "wdbpool",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 0,
-      "y": 69
-    },
-    {
-      "h": 6,
-      "i": "wdbawait",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 6,
-      "y": 69
-    },
-    {
-      "h": 6,
-      "i": "wdbacq",
-      "moved": false,
-      "static": false,
-      "w": 12,
-      "x": 0,
-      "y": 75
-    },
-    {
-      "h": 4,
-      "i": "w403rate",
-      "moved": false,
-      "static": false,
-      "w": 12,
-      "x": 0,
-      "y": 21
     }
   ],
   "widgets": [
@@ -2200,147 +2191,6 @@
       "selectedTracesFields": []
     },
     {
-      "id": "werrrate",
-      "title": "Error rate (%, 5xx of total)",
-      "description": "http_server_requests_seconds.count \u00b7 (SERVER_ERROR rate / total rate) * 100",
-      "panelTypes": "graph",
-      "yAxisUnit": "percent",
-      "query": {
-        "queryType": "builder",
-        "promql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "clickhouse_sql": [
-          {
-            "name": "A",
-            "query": "",
-            "legend": "",
-            "disabled": false
-          }
-        ],
-        "id": "werrrate-q",
-        "builder": {
-          "queryFormulas": [
-            {
-              "queryName": "F1",
-              "expression": "(A / B) * 100",
-              "legend": "Error rate %",
-              "disabled": false
-            }
-          ],
-          "queryData": [
-            {
-              "dataSource": "metrics",
-              "queryName": "A",
-              "expression": "A",
-              "disabled": true,
-              "legend": "",
-              "aggregateAttribute": {
-                "dataType": "float64",
-                "isColumn": true,
-                "key": "http_server_requests_seconds.count",
-                "type": "Sum"
-              },
-              "aggregateOperator": "sum_rate",
-              "timeAggregation": "rate",
-              "spaceAggregation": "sum",
-              "filters": {
-                "op": "AND",
-                "items": [
-                  {
-                    "key": {
-                      "key": "outcome",
-                      "dataType": "string",
-                      "isColumn": false,
-                      "type": "tag"
-                    },
-                    "op": "=",
-                    "value": "SERVER_ERROR"
-                  }
-                ]
-              },
-              "groupBy": [],
-              "having": [],
-              "functions": [],
-              "stepInterval": 60,
-              "reduceTo": "avg",
-              "limit": null,
-              "orderBy": []
-            },
-            {
-              "dataSource": "metrics",
-              "queryName": "B",
-              "expression": "B",
-              "disabled": true,
-              "legend": "",
-              "aggregateAttribute": {
-                "dataType": "float64",
-                "isColumn": true,
-                "key": "http_server_requests_seconds.count",
-                "type": "Sum"
-              },
-              "aggregateOperator": "sum_rate",
-              "timeAggregation": "rate",
-              "spaceAggregation": "sum",
-              "filters": {
-                "op": "AND",
-                "items": []
-              },
-              "groupBy": [],
-              "having": [],
-              "functions": [],
-              "stepInterval": 60,
-              "reduceTo": "avg",
-              "limit": null,
-              "orderBy": []
-            }
-          ]
-        }
-      },
-      "timePreferance": "GLOBAL",
-      "fillSpans": false,
-      "isStacked": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "thresholds": [
-        {
-          "index": "6720d801-fd89-4595-ba74-3e5943aef511",
-          "isEditEnabled": false,
-          "keyIndex": 0,
-          "selectedGraph": "graph",
-          "thresholdColor": "Amber",
-          "thresholdFormat": "Text",
-          "thresholdLabel": "Elevated",
-          "thresholdOperator": ">=",
-          "thresholdTableOptions": "A",
-          "thresholdUnit": "percent",
-          "thresholdValue": 1
-        },
-        {
-          "index": "468dc6ab-40a5-411b-9ad5-9baca81fed8e",
-          "isEditEnabled": false,
-          "keyIndex": 0,
-          "selectedGraph": "graph",
-          "thresholdColor": "Red",
-          "thresholdFormat": "Text",
-          "thresholdLabel": "Critical",
-          "thresholdOperator": ">=",
-          "thresholdTableOptions": "A",
-          "thresholdUnit": "percent",
-          "thresholdValue": 5
-        }
-      ],
-      "softMax": null,
-      "softMin": null,
-      "selectedLogFields": [],
-      "selectedTracesFields": []
-    },
-    {
       "id": "wgcdur",
       "title": "Avg GC pause duration (ms) by action",
       "description": "jvm_gc_pause_seconds.sum / .count * 1000",
@@ -3009,9 +2859,9 @@
       "selectedTracesFields": []
     },
     {
-      "id": "w403rate",
-      "title": "403 rate (% of total, Forbidden)",
-      "description": "http_server_requests_seconds.count \u00b7 (status=403 rate / total rate) * 100",
+      "id": "werrrate",
+      "title": "Error / Auth failure rates (% of total)",
+      "description": "http_server_requests_seconds.count \u00b7 5xx, 401, 403 rate as % of total request rate",
       "panelTypes": "graph",
       "yAxisUnit": "percent",
       "query": {
@@ -3032,12 +2882,24 @@
             "disabled": false
           }
         ],
-        "id": "w403rate-q",
+        "id": "werrrate-q",
         "builder": {
           "queryFormulas": [
             {
               "queryName": "F1",
-              "expression": "(A / B) * 100",
+              "expression": "(A / D) * 100",
+              "legend": "5xx rate %",
+              "disabled": false
+            },
+            {
+              "queryName": "F2",
+              "expression": "(B / D) * 100",
+              "legend": "401 rate %",
+              "disabled": false
+            },
+            {
+              "queryName": "F3",
+              "expression": "(C / D) * 100",
               "legend": "403 rate %",
               "disabled": false
             }
@@ -3047,6 +2909,82 @@
               "dataSource": "metrics",
               "queryName": "A",
               "expression": "A",
+              "disabled": true,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "key": "outcome",
+                      "dataType": "string",
+                      "isColumn": false,
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "SERVER_ERROR"
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": true,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "key": "status",
+                      "dataType": "string",
+                      "isColumn": false,
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "401"
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "C",
+              "expression": "C",
               "disabled": true,
               "legend": "",
               "aggregateAttribute": {
@@ -3083,8 +3021,8 @@
             },
             {
               "dataSource": "metrics",
-              "queryName": "B",
-              "expression": "B",
+              "queryName": "D",
+              "expression": "D",
               "disabled": true,
               "legend": "",
               "aggregateAttribute": {
@@ -3118,7 +3056,7 @@
       "opacity": "1",
       "thresholds": [
         {
-          "index": "3c040d58-3863-4dbe-b689-c765f2e54ffe",
+          "index": "e08d3e84-0c14-4ee3-a20c-2605469dd17a",
           "isEditEnabled": false,
           "keyIndex": 0,
           "selectedGraph": "graph",
@@ -3131,7 +3069,7 @@
           "thresholdValue": 1
         },
         {
-          "index": "127c1b90-d079-4ac1-9a7d-eb1e32343131",
+          "index": "547bb9dd-d40a-4687-bb55-9a0af6e5ab2e",
           "isEditEnabled": false,
           "keyIndex": 0,
           "selectedGraph": "graph",
