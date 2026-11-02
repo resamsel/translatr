@@ -31,7 +31,7 @@
         [attr.y]="day.y"
         [attr.width]="day.width"
         [attr.height]="day.height"
-        matTooltip="{{ day.title }}: {{ day.value | shortNumber }}"
+        [matTooltip]="day.title"
         [attr.class]="'day q' + color(day.value / maxValue)"
       ></rect>
     }

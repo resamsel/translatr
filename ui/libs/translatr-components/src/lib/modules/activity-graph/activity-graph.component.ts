@@ -6,7 +6,7 @@ import { Aggregate } from '@dev/translatr-model';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import * as d3 from 'd3';
 import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
-import { shortenNumber, ShortNumberPipe } from '../pipes/short-number';
+import { shortenNumber } from '../pipes/short-number';
 
 const dayOfWeek = (d: Date) => (d.getDay() + 6) % 7;
 const numberOfColors = 4;
@@ -120,6 +120,8 @@ const locales = {
 };
 
 const breakpoint = '(min-width: 600px)';
+// Any Monday works: weekday labels are offsets (Mon=0) from this date
+const referenceMonday = new Date(2024, 0, 1);
 
 interface Id {
   id: string;
@@ -150,7 +152,7 @@ interface DataRect extends SvgRect {
   templateUrl: './activity-graph.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./activity-graph.component.scss'],
-  imports: [CommonModule, TranslocoModule, MatTooltipModule, ShortNumberPipe]
+  imports: [CommonModule, TranslocoModule, MatTooltipModule]
 })
 export class ActivityGraphComponent implements OnChanges, OnDestroy {
   @Input() data: Aggregate[];
@@ -160,7 +162,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
   @Input() offsetRight = 16;
   @Input() offsetBottom = 20;
   @Input() offsetLeft = 50;
-  @Input() weekdays = [2, 4, 6];
+  @Input() weekdays = [0, 2, 4];
 
   readonly today: Date = d3.timeDay.ceil(new Date());
   start: Date = d3.timeDay.offset(d3.timeDay.floor(this.today), -Math.floor(365 / 2));
@@ -203,7 +205,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
 
   private updateLanguage(language: string) {
     const timeFormat = d3.timeFormatDefaultLocale(locales[language]);
-    this.dateFormat = timeFormat.format('%B %d, %Y');
+    this.dateFormat = timeFormat.format('%a, %b %-d, %Y');
     this.monthFormat = timeFormat.format('%b');
     this.weekdayFormat = timeFormat.format('%a');
   }
@@ -247,7 +249,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
     return d3.timeMonths(this.start, this.today).map(month => ({
       id: month.getTime().toString(),
       x: cellPosition(month, this.width, this.cellSize, this.offset)[0],
-      y: 12,
+      y: this.offsetTop - 6,
       text: this.monthFormat(month)
     }));
   }
@@ -256,16 +258,8 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
     return this.weekdays.map(weekday => ({
       id: weekday.toString(),
       x: this.offsetLeft - 8,
-      y: this.offsetTop + weekday * this.cellSize - 4,
-      text: this.weekdayFormat(
-        (() => {
-          // Get a date corresponding to the given weekday (Monday=1 based)
-          const d = new Date();
-          const currentDay = (d.getDay() + 6) % 7; // convert to Mon=0
-          d.setDate(d.getDate() - currentDay + weekday);
-          return d;
-        })()
-      )
+      y: this.offsetTop + weekday * this.cellSize + this.cellInnerSize - 4,
+      text: this.weekdayFormat(d3.timeDay.offset(referenceMonday, weekday))
     }));
   }
 
@@ -279,7 +273,7 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
         y,
         width: this.cellInnerSize,
         height: this.cellInnerSize,
-        title: this.dateFormat(day)
+        title: this.tooltip(day, 0)
       };
     });
   }
@@ -298,9 +292,17 @@ export class ActivityGraphComponent implements OnChanges, OnDestroy {
         y,
         width: this.cellInnerSize,
         height: this.cellInnerSize,
-        title: this.dateFormat(day.date),
+        title: this.tooltip(day.date, day.value),
         value: day.value
       };
+    });
+  }
+
+  private tooltip(date: Date, value: number): string {
+    const key = value === 0 ? 'none' : value === 1 ? 'one' : 'some';
+    return this.translocoService.translate(`contributions.tooltip.${key}`, {
+      amount: shortenNumber(value),
+      date: this.dateFormat(date)
     });
   }
 
