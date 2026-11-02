@@ -3,8 +3,8 @@
 #   docker compose -f docker-compose-loadtest.yml -f docker-compose-signoz.yml up
 #
 # It layers three things on top of docker-compose-loadtest.yml:
-#   1. rebuilds `translatr` from Dockerfile.jvm (Task 2) with the Quarkus OTel SDK
-#      switched on, exporting OTLP to our collector;
+#   1. rebuilds `translatr` from the same native Dockerfile used for releases, with
+#      the Quarkus OTel SDK switched on, exporting OTLP to our collector;
 #   2. adds `otel-collector` — translatr's own OpenTelemetry Collector
 #      (monitoring/otel-collector/config.yaml, Task 7), which fans out to SigNoz;
 #   3. inlines a pinned SigNoz stack (ClickHouse + Zookeeper + schema migrator +
@@ -22,7 +22,7 @@ services:
   translatr:
     build:
       context: .
-      dockerfile: Dockerfile.jvm
+      dockerfile: Dockerfile
     image: translatr:loadtest-otel
     environment:
       # The base docker-compose-loadtest.yml only sets the Play-era DATABASE_URL /
@@ -42,7 +42,7 @@ services:
       # everywhere else; the load-test overlay opts in.
       TRANSLATR_OBSERVABILITY_METRICS_ENABLED: "true"
       # Caffeine cache metrics -> dashboard row 5. RUN_TIME property, so an env var works.
-      # (Agroal pool metrics are BUILD_AND_RUN_TIME_FIXED and are baked into Dockerfile.jvm.)
+      # (Agroal pool metrics are BUILD_AND_RUN_TIME_FIXED and are baked into Dockerfile.)
       QUARKUS_CACHE_CAFFEINE_METRICS_ENABLED: "true"
     depends_on:
       - otel-collector

@@ -19,7 +19,8 @@ Column notes:
 - **error %** — `http_server_requests_seconds_count{status=~"5.."}` / all, over the window.
 - **peak Agroal awaiting** — translatr's pool is **Agroal** (not HikariCP): read
   `agroal_awaiting_count` (threads blocked waiting for a connection). Requires
-  `quarkus.datasource.jdbc.enable-metrics=true`, which is build-fixed and baked into
-  `Dockerfile.jvm`; leave blank if not enabled for the run.
+  `quarkus.datasource.metrics.enabled=true`, which is build-fixed and baked into
+  `Dockerfile` (used for both the release and load-test images); leave blank if not
+  enabled for the run.
 - **total GC pause** — `increase(jvm_gc_pause_seconds_sum[<window>])`.
 - **peak CPU** — max of `process_cpu_usage` over the window (0–1).

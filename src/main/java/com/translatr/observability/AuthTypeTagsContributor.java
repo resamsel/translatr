@@ -10,7 +10,6 @@ import io.quarkus.vertx.http.runtime.security.QuarkusHttpUser;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.web.RoutingContext;
 import jakarta.inject.Singleton;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * Adds an {@code auth_type} tag to every {@code http_server_requests} meter so the SigNoz
@@ -59,13 +58,9 @@ public class AuthTypeTagsContributor implements HttpServerMetricsTagsContributor
      */
     static final String ROUTING_CONTEXT_LOCAL_KEY = "quarkus.http.routing.context";
 
-    /** Master gate — see {@code com.translatr.config.TranslatrConfig.ObservabilityConfig#metricsEnabled}. */
-    @ConfigProperty(name = "translatr.observability.metrics-enabled", defaultValue = "false")
-    boolean metricsEnabled;
-
     @Override
     public Tags contribute(Context context) {
-        if (!metricsEnabled) {
+        if (!ObservabilityFlags.metricsEnabled()) {
             return Tags.empty();
         }
         return Tags.of(Tag.of(TAG_KEY, resolveAuthType(context)));
