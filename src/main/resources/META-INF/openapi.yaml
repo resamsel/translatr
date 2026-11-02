@@ -2,10 +2,17 @@ openapi: 3.0.3
 info:
   title: Translatr API
   version: 1.0.0
+security:
+  - accessTokenHeader: []
+  - accessTokenQuery: []
+  - bearerToken: []
+  - {}
 paths:
   /api/oidc-providers:
     get:
       operationId: listOidcProviders
+      description: Not available to access tokens.
+      x-access-token: denied
       summary: List OIDC provider configuration and diagnostics (admin).
       tags:
         - oidc-providers
@@ -27,6 +34,9 @@ paths:
   /api/accesstokens:
     get:
       operationId: findAccessTokens
+      description: "Required access-token scopes: read:accesstoken"
+      x-required-scopes:
+        - read:accesstoken
       summary: List the authenticated caller's access tokens.
       tags:
         - access-tokens
@@ -55,6 +65,9 @@ paths:
   /api/accesstoken/{id}:
     get:
       operationId: getAccessToken
+      description: "Required access-token scopes: read:accesstoken"
+      x-required-scopes:
+        - read:accesstoken
       summary: Get one access token by id.
       tags:
         - access-tokens
@@ -80,6 +93,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteAccessToken
+      description: "Required access-token scopes: write:accesstoken"
+      x-required-scopes:
+        - write:accesstoken
       summary: Delete one access token by id.
       tags:
         - access-tokens
@@ -106,6 +122,9 @@ paths:
   /api/accesstoken:
     post:
       operationId: createAccessToken
+      description: "Required access-token scopes: write:accesstoken"
+      x-required-scopes:
+        - write:accesstoken
       summary: Create an access token for the authenticated caller.
       tags:
         - access-tokens
@@ -124,6 +143,9 @@ paths:
                 $ref: '#/components/schemas/AccessTokenDto'
     put:
       operationId: updateAccessToken
+      description: "Required access-token scopes: write:accesstoken"
+      x-required-scopes:
+        - write:accesstoken
       summary: Update an access token (name/scope). Carries its id in the body.
       tags:
         - access-tokens
@@ -149,6 +171,9 @@ paths:
   /api/projects:
     get:
       operationId: findProjects
+      description: "Required access-token scopes: read:project"
+      x-required-scopes:
+        - read:project
       tags:
         - projects
       parameters:
@@ -185,6 +210,9 @@ paths:
   /api/project/{id}:
     get:
       operationId: getProject
+      description: "Required access-token scopes: read:project"
+      x-required-scopes:
+        - read:project
       tags:
         - projects
       parameters:
@@ -209,6 +237,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteProject
+      description: "Required access-token scopes: write:project"
+      x-required-scopes:
+        - write:project
       tags:
         - projects
       parameters:
@@ -234,6 +265,9 @@ paths:
   /api/{username}/{projectName}:
     get:
       operationId: getProjectByOwnerAndName
+      description: "Required access-token scopes: read:project"
+      x-required-scopes:
+        - read:project
       tags:
         - projects
       parameters:
@@ -264,6 +298,9 @@ paths:
   /api/project:
     post:
       operationId: createProject
+      description: "Required access-token scopes: write:project"
+      x-required-scopes:
+        - write:project
       tags:
         - projects
       requestBody:
@@ -281,6 +318,9 @@ paths:
                 $ref: '#/components/schemas/ProjectDto'
     put:
       operationId: updateProject
+      description: "Required access-token scopes: write:project"
+      x-required-scopes:
+        - write:project
       tags:
         - projects
       requestBody:
@@ -299,6 +339,9 @@ paths:
   /api/messages:
     get:
       operationId: findMessages
+      description: "Required access-token scopes: read:message"
+      x-required-scopes:
+        - read:message
       tags:
         - messages
       parameters:
@@ -346,6 +389,9 @@ paths:
   /api/project/{projectId}/messages:
     get:
       operationId: findMessagesByProject
+      description: "Required access-token scopes: read:message"
+      x-required-scopes:
+        - read:message
       tags:
         - messages
       parameters:
@@ -394,6 +440,9 @@ paths:
   /api/message/{id}:
     get:
       operationId: getMessage
+      description: "Required access-token scopes: read:message"
+      x-required-scopes:
+        - read:message
       tags:
         - messages
       parameters:
@@ -418,6 +467,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteMessage
+      description: "Required access-token scopes: write:message"
+      x-required-scopes:
+        - write:message
       tags:
         - messages
       parameters:
@@ -443,6 +495,9 @@ paths:
   /api/message:
     post:
       operationId: createMessage
+      description: "Required access-token scopes: write:message"
+      x-required-scopes:
+        - write:message
       tags:
         - messages
       requestBody:
@@ -466,6 +521,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     put:
       operationId: updateMessage
+      description: "Required access-token scopes: write:message"
+      x-required-scopes:
+        - write:message
       tags:
         - messages
       requestBody:
@@ -490,6 +548,9 @@ paths:
   /api/project/{projectId}/locales:
     get:
       operationId: findLocalesByProject
+      description: "Required access-token scopes: read:locale"
+      x-required-scopes:
+        - read:locale
       tags:
         - locales
       parameters:
@@ -527,6 +588,9 @@ paths:
   /api/locale/{id}:
     get:
       operationId: getLocale
+      description: "Required access-token scopes: read:locale"
+      x-required-scopes:
+        - read:locale
       tags:
         - locales
       parameters:
@@ -551,6 +615,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteLocale
+      description: "Required access-token scopes: write:locale"
+      x-required-scopes:
+        - write:locale
       tags:
         - locales
       parameters:
@@ -576,6 +643,9 @@ paths:
   /api/{username}/{projectName}/locales/{localeName}:
     get:
       operationId: getLocaleByOwnerAndProjectNameAndName
+      description: "Required access-token scopes: read:locale"
+      x-required-scopes:
+        - read:locale
       tags:
         - locales
       parameters:
@@ -610,6 +680,9 @@ paths:
   /api/locale:
     post:
       operationId: createLocale
+      description: "Required access-token scopes: write:locale"
+      x-required-scopes:
+        - write:locale
       tags:
         - locales
       requestBody:
@@ -633,6 +706,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     put:
       operationId: updateLocale
+      description: "Required access-token scopes: write:locale"
+      x-required-scopes:
+        - write:locale
       tags:
         - locales
       requestBody:
@@ -657,6 +733,9 @@ paths:
   /api/project/{projectId}/keys:
     get:
       operationId: findKeysByProject
+      description: "Required access-token scopes: read:key"
+      x-required-scopes:
+        - read:key
       tags:
         - keys
       parameters:
@@ -690,6 +769,9 @@ paths:
   /api/key/{id}:
     get:
       operationId: getKey
+      description: "Required access-token scopes: read:key"
+      x-required-scopes:
+        - read:key
       tags:
         - keys
       parameters:
@@ -714,6 +796,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteKey
+      description: "Required access-token scopes: write:key"
+      x-required-scopes:
+        - write:key
       tags:
         - keys
       parameters:
@@ -739,6 +824,9 @@ paths:
   /api/{username}/{projectName}/keys/{keyName}:
     get:
       operationId: getKeyByOwnerAndProjectNameAndName
+      description: "Required access-token scopes: read:key"
+      x-required-scopes:
+        - read:key
       tags:
         - keys
       parameters:
@@ -773,6 +861,9 @@ paths:
   /api/key:
     post:
       operationId: createKey
+      description: "Required access-token scopes: write:key"
+      x-required-scopes:
+        - write:key
       tags:
         - keys
       requestBody:
@@ -796,6 +887,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     put:
       operationId: updateKey
+      description: "Required access-token scopes: write:key"
+      x-required-scopes:
+        - write:key
       tags:
         - keys
       requestBody:
@@ -820,6 +914,9 @@ paths:
   /api/project/{projectId}/members:
     get:
       operationId: findMembersByProject
+      description: "Required access-token scopes: read:member"
+      x-required-scopes:
+        - read:member
       tags:
         - members
       parameters:
@@ -849,6 +946,9 @@ paths:
   /api/members/{projectId}:
     get:
       operationId: findMembersByProjectLegacy
+      description: "Required access-token scopes: read:member"
+      x-required-scopes:
+        - read:member
       tags:
         - members
       parameters:
@@ -878,6 +978,9 @@ paths:
   /api/member/{id}:
     get:
       operationId: getMember
+      description: "Required access-token scopes: read:member"
+      x-required-scopes:
+        - read:member
       tags:
         - members
       parameters:
@@ -902,6 +1005,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteMember
+      description: "Required access-token scopes: write:member"
+      x-required-scopes:
+        - write:member
       tags:
         - members
       parameters:
@@ -927,6 +1033,9 @@ paths:
   /api/member:
     post:
       operationId: createMember
+      description: "Required access-token scopes: write:member"
+      x-required-scopes:
+        - write:member
       tags:
         - members
       requestBody:
@@ -950,6 +1059,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     put:
       operationId: updateMember
+      description: "Required access-token scopes: write:member"
+      x-required-scopes:
+        - write:member
       tags:
         - members
       requestBody:
@@ -974,6 +1086,9 @@ paths:
   /api/featureflags/resolved:
     get:
       operationId: listResolvedFeatures
+      description: "Required access-token scopes: read:featureflag"
+      x-required-scopes:
+        - read:featureflag
       tags:
         - featureflags
       parameters:
@@ -997,6 +1112,9 @@ paths:
   /api/featureflags/global:
     get:
       operationId: listGlobalFeatureFlags
+      description: "Required access-token scopes: read:featureflag"
+      x-required-scopes:
+        - read:featureflag
       tags:
         - featureflags
       responses:
@@ -1011,6 +1129,9 @@ paths:
   /api/featureflag/global:
     post:
       operationId: setGlobalFeatureFlag
+      description: "Required access-token scopes: write:featureflag"
+      x-required-scopes:
+        - write:featureflag
       tags:
         - featureflags
       requestBody:
@@ -1029,6 +1150,9 @@ paths:
   /api/featureflag/global/{id}:
     delete:
       operationId: deleteGlobalFeatureFlag
+      description: "Required access-token scopes: write:featureflag"
+      x-required-scopes:
+        - write:featureflag
       tags:
         - featureflags
       parameters:
@@ -1044,6 +1168,8 @@ paths:
   /api/health:
     get:
       operationId: getHealth
+      description: "Required access-token scopes: none"
+      x-required-scopes: []
       tags:
         - health
       responses:
@@ -1056,6 +1182,8 @@ paths:
   /api/statistics:
     get:
       operationId: getStatistics
+      description: "Required access-token scopes: none"
+      x-required-scopes: []
       tags:
         - statistics
       responses:
@@ -1068,6 +1196,8 @@ paths:
   /api/authclients:
     get:
       operationId: listAuthClients
+      description: "Required access-token scopes: none"
+      x-required-scopes: []
       tags:
         - authclients
       responses:
@@ -1082,6 +1212,9 @@ paths:
   /api/notifications:
     get:
       operationId: findNotifications
+      description: "Required access-token scopes: read:notification"
+      x-required-scopes:
+        - read:notification
       tags:
         - notifications
       parameters:
@@ -1097,6 +1230,9 @@ paths:
   /api/activities:
     get:
       operationId: findActivities
+      description: "Required access-token scopes: read:project"
+      x-required-scopes:
+        - read:project
       tags:
         - activities
       parameters:
@@ -1117,6 +1253,9 @@ paths:
   /api/user/{userId}/activity:
     get:
       operationId: findActivitiesByUser
+      description: "Required access-token scopes: read:project"
+      x-required-scopes:
+        - read:project
       tags:
         - activities
       parameters:
@@ -1138,6 +1277,9 @@ paths:
   /api/activities/aggregated:
     get:
       operationId: findAggregatedActivity
+      description: "Required access-token scopes: read:project"
+      x-required-scopes:
+        - read:project
       tags:
         - activities
       parameters:
@@ -1171,6 +1313,9 @@ paths:
   /api/featureflags:
     get:
       operationId: findUserFeatureFlags
+      description: "Required access-token scopes: read:featureflag"
+      x-required-scopes:
+        - read:featureflag
       tags:
         - user-feature-flags
       parameters:
@@ -1201,6 +1346,9 @@ paths:
   /api/featureflag/{id}:
     get:
       operationId: getUserFeatureFlag
+      description: "Required access-token scopes: read:featureflag"
+      x-required-scopes:
+        - read:featureflag
       tags:
         - user-feature-flags
       parameters:
@@ -1219,6 +1367,9 @@ paths:
                 $ref: '#/components/schemas/FeatureFlagDto'
     delete:
       operationId: deleteUserFeatureFlag
+      description: "Required access-token scopes: write:featureflag"
+      x-required-scopes:
+        - write:featureflag
       tags:
         - user-feature-flags
       parameters:
@@ -1238,6 +1389,9 @@ paths:
   /api/featureflag:
     post:
       operationId: createUserFeatureFlag
+      description: "Required access-token scopes: write:featureflag"
+      x-required-scopes:
+        - write:featureflag
       tags:
         - user-feature-flags
       requestBody:
@@ -1255,6 +1409,9 @@ paths:
                 $ref: '#/components/schemas/FeatureFlagDto'
     put:
       operationId: updateUserFeatureFlag
+      description: "Required access-token scopes: write:featureflag"
+      x-required-scopes:
+        - write:featureflag
       tags:
         - user-feature-flags
       requestBody:
@@ -1273,6 +1430,9 @@ paths:
   /api/users:
     get:
       operationId: findUsers
+      description: "Required access-token scopes: read:user"
+      x-required-scopes:
+        - read:user
       tags:
         - users
       parameters:
@@ -1299,6 +1459,9 @@ paths:
   /api/user/{id}:
     get:
       operationId: getUser
+      description: "Required access-token scopes: read:user"
+      x-required-scopes:
+        - read:user
       tags:
         - users
       parameters:
@@ -1317,6 +1480,9 @@ paths:
                 $ref: '#/components/schemas/UserDto'
     delete:
       operationId: deleteUser
+      description: "Required access-token scopes: write:user"
+      x-required-scopes:
+        - write:user
       tags:
         - users
       parameters:
@@ -1336,6 +1502,9 @@ paths:
   /api/user:
     post:
       operationId: createUser
+      description: "Required access-token scopes: write:user"
+      x-required-scopes:
+        - write:user
       tags:
         - users
       requestBody:
@@ -1359,6 +1528,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     put:
       operationId: updateUser
+      description: "Required access-token scopes: write:user"
+      x-required-scopes:
+        - write:user
       tags:
         - users
       requestBody:
@@ -1377,6 +1549,9 @@ paths:
   /api/user/{id}/settings:
     put:
       operationId: saveUserSettings
+      description: "Required access-token scopes: write:user"
+      x-required-scopes:
+        - write:user
       tags:
         - users
       parameters:
@@ -1402,6 +1577,9 @@ paths:
   /api/me:
     get:
       operationId: getCurrentUser
+      description: "Required access-token scopes: read:user"
+      x-required-scopes:
+        - read:user
       tags:
         - users
       responses:
@@ -1414,6 +1592,9 @@ paths:
   /api/profile:
     get:
       operationId: getProfile
+      description: "Required access-token scopes: read:user"
+      x-required-scopes:
+        - read:user
       tags:
         - users
       responses:
@@ -1428,6 +1609,9 @@ paths:
   /api/{username}:
     get:
       operationId: getUserByUsername
+      description: "Required access-token scopes: read:user"
+      x-required-scopes:
+        - read:user
       tags:
         - users
       parameters:
@@ -1444,6 +1628,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserDto'
 components:
+  securitySchemes:
+    accessTokenHeader:
+      type: apiKey
+      in: header
+      name: X-Access-Token
+    accessTokenQuery:
+      type: apiKey
+      in: query
+      name: access_token
+    bearerToken:
+      type: http
+      scheme: bearer
   parameters:
     SearchParam:
       name: search
@@ -1470,6 +1666,9 @@ components:
     FetchParam:
       name: fetch
       in: query
+      description: >-
+        Comma-separated expansions. With an access token, `members` additionally requires the
+        `read:member` scope.
       schema:
         type: string
   schemas:
