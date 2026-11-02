@@ -20,7 +20,8 @@ access tokens).
 ## Decisions
 
 - **Strict enforcement** from the release that ships this. No log-only mode, no data migration.
-  Under-scoped tokens get 403. Documented as a breaking change in the CHANGELOG.
+  Under-scoped tokens get 403. Treated as a bug fix (scopes were always meant to be enforced),
+  not a breaking change.
 - **Declarative annotations + one JAX-RS filter** (rejected: imperative service-level checks —
   scattered and easy to forget; Quarkus `@PermissionsAllowed` — denies anonymous callers on
   `@PermitAll` endpoints).
@@ -137,9 +138,8 @@ LocaleTransfer endpoints are not in `openapi.yaml` today and stay out of scope f
 
 ## Rollout
 
-CHANGELOG breaking-change entry: API access tokens are now restricted to their granted scopes;
-requests lacking a scope receive 403 `insufficient_scope`. The UI token form already lets users pick
-scopes — no UI change. No DB migration, no feature flag.
+Ships as a bug fix (`fix:` commit, closes #364); no breaking-change notice. The UI token form
+already lets users pick scopes — no UI change. No DB migration, no feature flag.
 
 ## Out of scope
 
