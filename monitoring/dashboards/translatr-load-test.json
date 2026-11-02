@@ -124,7 +124,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 21
+      "y": 25
     },
     {
       "h": 6,
@@ -133,7 +133,7 @@
       "static": false,
       "w": 4,
       "x": 0,
-      "y": 22
+      "y": 26
     },
     {
       "h": 6,
@@ -142,7 +142,7 @@
       "static": false,
       "w": 4,
       "x": 4,
-      "y": 22
+      "y": 26
     },
     {
       "h": 6,
@@ -151,7 +151,7 @@
       "static": false,
       "w": 4,
       "x": 8,
-      "y": 22
+      "y": 26
     },
     {
       "h": 6,
@@ -160,7 +160,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 28
+      "y": 32
     },
     {
       "h": 6,
@@ -169,7 +169,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 28
+      "y": 32
     },
     {
       "h": 1,
@@ -178,7 +178,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 44
+      "y": 48
     },
     {
       "h": 6,
@@ -187,7 +187,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 45
+      "y": 49
     },
     {
       "h": 6,
@@ -196,7 +196,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 45
+      "y": 49
     },
     {
       "h": 1,
@@ -205,7 +205,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 51
+      "y": 55
     },
     {
       "h": 6,
@@ -214,7 +214,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 52
+      "y": 56
     },
     {
       "h": 6,
@@ -223,7 +223,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 52
+      "y": 56
     },
     {
       "h": 6,
@@ -232,7 +232,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 58
+      "y": 62
     },
     {
       "h": 6,
@@ -241,7 +241,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 58
+      "y": 62
     },
     {
       "h": 4,
@@ -259,7 +259,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 34
+      "y": 38
     },
     {
       "h": 6,
@@ -268,7 +268,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 34
+      "y": 38
     },
     {
       "h": 4,
@@ -277,7 +277,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 40
+      "y": 44
     },
     {
       "h": 1,
@@ -286,7 +286,7 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 64
+      "y": 68
     },
     {
       "h": 6,
@@ -295,7 +295,7 @@
       "static": false,
       "w": 6,
       "x": 0,
-      "y": 65
+      "y": 69
     },
     {
       "h": 6,
@@ -304,7 +304,7 @@
       "static": false,
       "w": 6,
       "x": 6,
-      "y": 65
+      "y": 69
     },
     {
       "h": 6,
@@ -313,7 +313,16 @@
       "static": false,
       "w": 12,
       "x": 0,
-      "y": 71
+      "y": 75
+    },
+    {
+      "h": 4,
+      "i": "w403rate",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 21
     }
   ],
   "widgets": [
@@ -2994,6 +3003,147 @@
       "nullZeroValues": "zero",
       "opacity": "1",
       "thresholds": [],
+      "softMax": null,
+      "softMin": null,
+      "selectedLogFields": [],
+      "selectedTracesFields": []
+    },
+    {
+      "id": "w403rate",
+      "title": "403 rate (% of total, Forbidden)",
+      "description": "http_server_requests_seconds.count \u00b7 (status=403 rate / total rate) * 100",
+      "panelTypes": "graph",
+      "yAxisUnit": "percent",
+      "query": {
+        "queryType": "builder",
+        "promql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "",
+            "legend": "",
+            "disabled": false
+          }
+        ],
+        "id": "w403rate-q",
+        "builder": {
+          "queryFormulas": [
+            {
+              "queryName": "F1",
+              "expression": "(A / B) * 100",
+              "legend": "403 rate %",
+              "disabled": false
+            }
+          ],
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "queryName": "A",
+              "expression": "A",
+              "disabled": true,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": [
+                  {
+                    "key": {
+                      "key": "status",
+                      "dataType": "string",
+                      "isColumn": false,
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "403"
+                  }
+                ]
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            },
+            {
+              "dataSource": "metrics",
+              "queryName": "B",
+              "expression": "B",
+              "disabled": true,
+              "legend": "",
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "isColumn": true,
+                "key": "http_server_requests_seconds.count",
+                "type": "Sum"
+              },
+              "aggregateOperator": "sum_rate",
+              "timeAggregation": "rate",
+              "spaceAggregation": "sum",
+              "filters": {
+                "op": "AND",
+                "items": []
+              },
+              "groupBy": [],
+              "having": [],
+              "functions": [],
+              "stepInterval": 60,
+              "reduceTo": "avg",
+              "limit": null,
+              "orderBy": []
+            }
+          ]
+        }
+      },
+      "timePreferance": "GLOBAL",
+      "fillSpans": false,
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "thresholds": [
+        {
+          "index": "3c040d58-3863-4dbe-b689-c765f2e54ffe",
+          "isEditEnabled": false,
+          "keyIndex": 0,
+          "selectedGraph": "graph",
+          "thresholdColor": "Amber",
+          "thresholdFormat": "Text",
+          "thresholdLabel": "Elevated",
+          "thresholdOperator": ">=",
+          "thresholdTableOptions": "A",
+          "thresholdUnit": "percent",
+          "thresholdValue": 1
+        },
+        {
+          "index": "127c1b90-d079-4ac1-9a7d-eb1e32343131",
+          "isEditEnabled": false,
+          "keyIndex": 0,
+          "selectedGraph": "graph",
+          "thresholdColor": "Red",
+          "thresholdFormat": "Text",
+          "thresholdLabel": "Critical",
+          "thresholdOperator": ">=",
+          "thresholdTableOptions": "A",
+          "thresholdUnit": "percent",
+          "thresholdValue": 5
+        }
+      ],
       "softMax": null,
       "softMin": null,
       "selectedLogFields": [],
