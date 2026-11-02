@@ -5,18 +5,27 @@ import com.translatr.model.Project;
 import com.translatr.model.User;
 import io.vertx.mutiny.core.eventbus.EventBus;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Status;
+import jakarta.transaction.Synchronization;
+import jakarta.transaction.TransactionSynchronizationRegistry;
 
 /**
  * Replaces ActivityActorRef — publishes activity events to the Vert.x event bus.
  * {@link ActivityEventConsumer} persists them as {@code log_entry} rows asynchronously.
+ *
+ * <p>The consumer re-loads the user/project by id in its own transaction, so when called inside a
+ * transaction the event is held back until that transaction commits (and dropped on rollback).
+ * Publishing earlier races the commit and can persist a log entry with a null project.
  */
 @ApplicationScoped
 public class ActivityEventProducer {
 
     private final EventBus bus;
+    private final TransactionSynchronizationRegistry txSync;
 
-    public ActivityEventProducer(EventBus bus) {
+    public ActivityEventProducer(EventBus bus, TransactionSynchronizationRegistry txSync) {
         this.bus = bus;
+        this.txSync = txSync;
     }
 
     /**
@@ -28,13 +37,28 @@ public class ActivityEventProducer {
      */
     public void publish(ActionType type, User user, Project project, Class<?> dtoType,
                         Object before, Object after) {
-        bus.publish("activity", new ActivityEvent(
+        ActivityEvent event = new ActivityEvent(
                 type,
                 user    != null ? user.id    : null,
                 project != null ? project.id : null,
                 legacyContentType(dtoType),
                 before,
-                after));
+                after);
+        if (txSync.getTransactionStatus() != Status.STATUS_ACTIVE) {
+            bus.publish("activity", event);
+            return;
+        }
+        txSync.registerInterposedSynchronization(new Synchronization() {
+            @Override
+            public void beforeCompletion() {}
+
+            @Override
+            public void afterCompletion(int status) {
+                if (status == Status.STATUS_COMMITTED) {
+                    bus.publish("activity", event);
+                }
+            }
+        });
     }
 
     /**
