@@ -9,6 +9,7 @@ import io.smallrye.mutiny.Uni;
 
 import java.security.Permission;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,14 +18,19 @@ public class AccessTokenSecurityIdentity implements SecurityIdentity {
     private final User   user;
     private final String token;
     private final Long   keyId;
+    private final Set<Scope> scopes;
 
     public AccessTokenSecurityIdentity(AccessToken accessToken) {
         this.user  = accessToken.user;
         this.token = accessToken.key;
         this.keyId = accessToken.id;
+        this.scopes = Collections.unmodifiableSet(Scope.parse(accessToken.scope));
     }
 
     public User getUser() { return user; }
+
+    /** Scopes granted to this token; empty when the scope column is null or blank. */
+    public Set<Scope> getScopes() { return scopes; }
 
     @Override public Principal getPrincipal() {
         return () -> user.username;
