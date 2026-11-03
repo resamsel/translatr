@@ -1,13 +1,59 @@
 # Changelog
 
-## [v4.0.0](https://github.com/resamsel/translatr/tree/4.0.0) (2026-09-15)
+## [4.0.1](https://github.com/resamsel/translatr/tree/4.0.1) (2026-11-03)
 
-[Full Changelog](https://github.com/resamsel/translatr/compare/v3.3.3...v4.0.0)
+[Full Changelog](https://github.com/resamsel/translatr/compare/v4.0.1-0...4.0.1)
+
+**Fixed bugs:**
+
+- Missing UI in docker image [\#369](https://github.com/resamsel/translatr/issues/369)
+- Activity is broken on main page [\#366](https://github.com/resamsel/translatr/issues/366)
+- Scopes are not enforced in the API [\#364](https://github.com/resamsel/translatr/issues/364)
+
+**Merged pull requests:**
+
+- fix\(auth\): prevent scope escalation via access-token creation [\#373](https://github.com/resamsel/translatr/pull/373) ([resamsel](https://github.com/resamsel))
+- fix\(api\): enforce access-token scopes \(\#364\) [\#372](https://github.com/resamsel/translatr/pull/372) ([resamsel](https://github.com/resamsel))
+- fix\(activity-graph\): align weekday labels, unclip months, describe days on hover [\#371](https://github.com/resamsel/translatr/pull/371) ([resamsel](https://github.com/resamsel))
+- Load-test observability dashboard + one native Dockerfile for releases and load tests [\#370](https://github.com/resamsel/translatr/pull/370) ([resamsel](https://github.com/resamsel))
+
+## [v4.0.1-0](https://github.com/resamsel/translatr/tree/v4.0.1-0) (2026-09-19)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v4.0.0...v4.0.1-0)
 
 **Implemented enhancements:**
 
-- Migrate backend from Play Framework to Quarkus [\#225](https://github.com/resamsel/translatr/pull/225) ([resamsel](https://github.com/resamsel))
+- Introduce dark theme [\#307](https://github.com/resamsel/translatr/issues/307)
+
+**Fixed bugs:**
+
+- Dark mode: home/landing page mostly unreadable [\#351](https://github.com/resamsel/translatr/issues/351)
+- translatr-loadgenerator crashes the process when a persona request fails after retries [\#344](https://github.com/resamsel/translatr/issues/344)
+
+**Merged pull requests:**
+
+- Bump version to v4.0.1-0 [\#362](https://github.com/resamsel/translatr/pull/362) ([resamsel](https://github.com/resamsel))
+- fix\(translatr\): make home page legible in dark theme [\#361](https://github.com/resamsel/translatr/pull/361) ([resamsel](https://github.com/resamsel))
+- feat\(translatr-admin\): convert whole app to standalone components [\#359](https://github.com/resamsel/translatr/pull/359) ([resamsel](https://github.com/resamsel))
+- feat\(translatr\): convert root bootstrap to standalone \(bootstrapApplication\) [\#358](https://github.com/resamsel/translatr/pull/358) ([resamsel](https://github.com/resamsel))
+- feat\(translatr\): convert pages layer to standalone components [\#356](https://github.com/resamsel/translatr/pull/356) ([resamsel](https://github.com/resamsel))
+- Migrate translatr shared modules to standalone components [\#355](https://github.com/resamsel/translatr/pull/355) ([resamsel](https://github.com/resamsel))
+- fix\(featureflag\): make create idempotent to stop duplicate-key crash [\#354](https://github.com/resamsel/translatr/pull/354) ([resamsel](https://github.com/resamsel))
+- Migrate translatr-components to standalone components [\#352](https://github.com/resamsel/translatr/pull/352) ([resamsel](https://github.com/resamsel))
+- Add dark theme toggle \(light/dark/system\) [\#349](https://github.com/resamsel/translatr/pull/349) ([resamsel](https://github.com/resamsel))
+- fix\(load-test\): repair docker-compose-loadtest.yml stack and native-image 404 handling [\#345](https://github.com/resamsel/translatr/pull/345) ([resamsel](https://github.com/resamsel))
+- fix\(lets-generate\): stop persona errors from crashing the load generator [\#343](https://github.com/resamsel/translatr/pull/343) ([resamsel](https://github.com/resamsel))
+- Release/v4.0.0 [\#342](https://github.com/resamsel/translatr/pull/342) ([resamsel](https://github.com/resamsel))
+- lets-release: drop Github token requirement for non-prerelease releases [\#341](https://github.com/resamsel/translatr/pull/341) ([resamsel](https://github.com/resamsel))
+
+## [v4.0.0](https://github.com/resamsel/translatr/tree/v4.0.0) (2026-09-15)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v4.0.0-5...v4.0.0)
+
+**Implemented enhancements:**
+
 - Translatr CLI: Allow for multiple targets within one .translatr.yml config [\#336](https://github.com/resamsel/translatr/issues/336)
+- Release v4.0.0 [\#319](https://github.com/resamsel/translatr/issues/319)
 - Adopt contract-first OpenAPI: single openapi.yaml as source of truth, generate DTOs/interfaces [\#256](https://github.com/resamsel/translatr/issues/256)
 - Show admin sidebar by default on large screens [\#243](https://github.com/resamsel/translatr/issues/243)
 - Admin: manage feature flags for any user \(user filter on the Feature Flags page\) [\#240](https://github.com/resamsel/translatr/issues/240)
@@ -42,13 +88,20 @@
 - Use constructor injection in Quarkus components [\#286](https://github.com/resamsel/translatr/issues/286)
 - Route AbstractService's consumers through generated TypeScript API clients [\#282](https://github.com/resamsel/translatr/issues/282)
 - Upgrade Gradle to latest version [\#250](https://github.com/resamsel/translatr/issues/250)
-- Replace TestBed.get with TestBed.inject in tests [\#167](https://github.com/resamsel/translatr/issues/167)
-- Rewrite activity component [\#123](https://github.com/resamsel/translatr/issues/123)
 - Make timeouts and limits configurable [\#35](https://github.com/resamsel/translatr/issues/35)
 
 **Merged pull requests:**
 
-- lets-release: drop Github token requirement for non-prerelease releases [\#341](https://github.com/resamsel/translatr/pull/341) ([resamsel](https://github.com/resamsel))
+- Bump version to v4.0.0-3 [\#325](https://github.com/resamsel/translatr/pull/325) ([resamsel](https://github.com/resamsel))
+- chore\(openspec\): archive release-loadgenerator-image change [\#323](https://github.com/resamsel/translatr/pull/323) ([resamsel](https://github.com/resamsel))
+- fix\(ui\): show token owner's username in admin access-tokens table [\#318](https://github.com/resamsel/translatr/pull/318) ([resamsel](https://github.com/resamsel))
+
+## [v4.0.0-5](https://github.com/resamsel/translatr/tree/v4.0.0-5) (2026-09-15)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v4.0.0-4...v4.0.0-5)
+
+**Merged pull requests:**
+
 - Bump version to v4.0.0-5 [\#340](https://github.com/resamsel/translatr/pull/340) ([resamsel](https://github.com/resamsel))
 - docs: fix stale .translatr.yml wording and CLI screenshot [\#339](https://github.com/resamsel/translatr/pull/339) ([resamsel](https://github.com/resamsel))
 - cli: drop .translatr.yml's top-level translatr: wrapper [\#338](https://github.com/resamsel/translatr/pull/338) ([resamsel](https://github.com/resamsel))
@@ -57,17 +110,42 @@
 - Archive completed CLI changes and sync translatr-cli main spec [\#334](https://github.com/resamsel/translatr/pull/334) ([resamsel](https://github.com/resamsel))
 - Support loading .env into .translatr.yml substitution [\#332](https://github.com/resamsel/translatr/pull/332) ([resamsel](https://github.com/resamsel))
 - Move cli/ to ui/apps/cli/ and share generated DTO types [\#330](https://github.com/resamsel/translatr/pull/330) ([resamsel](https://github.com/resamsel))
+
+## [v4.0.0-4](https://github.com/resamsel/translatr/tree/v4.0.0-4) (2026-09-13)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v4.0.0-3...v4.0.0-4)
+
+**Merged pull requests:**
+
 - fix\(deps\): resolve Dependabot vulnerability alerts [\#328](https://github.com/resamsel/translatr/pull/328) ([resamsel](https://github.com/resamsel))
 - chore\(release\): bump version to v4.0.0-4 [\#327](https://github.com/resamsel/translatr/pull/327) ([resamsel](https://github.com/resamsel))
 - fix\(ci\): replace unmaintained release actions, bump checkout/setup-node [\#326](https://github.com/resamsel/translatr/pull/326) ([resamsel](https://github.com/resamsel))
-- Bump version to v4.0.0-3 [\#325](https://github.com/resamsel/translatr/pull/325) ([resamsel](https://github.com/resamsel))
+
+## [v4.0.0-3](https://github.com/resamsel/translatr/tree/v4.0.0-3) (2026-09-13)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v4.0.0-2...v4.0.0-3)
+
+**Merged pull requests:**
+
 - fix\(release\): commit version bumps on a work branch, not main [\#324](https://github.com/resamsel/translatr/pull/324) ([resamsel](https://github.com/resamsel))
-- chore\(openspec\): archive release-loadgenerator-image change [\#323](https://github.com/resamsel/translatr/pull/323) ([resamsel](https://github.com/resamsel))
+
+## [v4.0.0-2](https://github.com/resamsel/translatr/tree/v4.0.0-2) (2026-09-13)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v4.0.0-0...v4.0.0-2)
+
+**Merged pull requests:**
+
 - fix\(release\): keep docker-compose-loadtest.yml image tags in sync [\#322](https://github.com/resamsel/translatr/pull/322) ([resamsel](https://github.com/resamsel))
 - fix\(loadgenerator\): fix Dockerfile build \(lockfile, npmrc, scripts\) [\#321](https://github.com/resamsel/translatr/pull/321) ([resamsel](https://github.com/resamsel))
 - ci\(release\): publish loadgenerator image alongside translatr [\#320](https://github.com/resamsel/translatr/pull/320) ([resamsel](https://github.com/resamsel))
-- fix\(ui\): show token owner's username in admin access-tokens table [\#318](https://github.com/resamsel/translatr/pull/318) ([resamsel](https://github.com/resamsel))
 - docs\(openspec\): close out sunset-python-cli's last task [\#316](https://github.com/resamsel/translatr/pull/316) ([resamsel](https://github.com/resamsel))
+
+## [v4.0.0-0](https://github.com/resamsel/translatr/tree/v4.0.0-0) (2026-09-12)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/diag-quinoa-1...v4.0.0-0)
+
+**Merged pull requests:**
+
 - ci\(docker\): build the release image on every push/PR [\#315](https://github.com/resamsel/translatr/pull/315) ([resamsel](https://github.com/resamsel))
 - fix\(docker\): don't spawn a nested container for the native image build [\#314](https://github.com/resamsel/translatr/pull/314) ([resamsel](https://github.com/resamsel))
 - fix\(docker\): skip tests during image build [\#313](https://github.com/resamsel/translatr/pull/313) ([resamsel](https://github.com/resamsel))
@@ -125,6 +203,16 @@
 - chore: fix Dependabot alerts \(safe dependency updates\) [\#234](https://github.com/resamsel/translatr/pull/234) ([resamsel](https://github.com/resamsel))
 - fix\(ui\): resolve UI regressions after the Angular/Material 22 upgrade \(\#228\) [\#232](https://github.com/resamsel/translatr/pull/232) ([resamsel](https://github.com/resamsel))
 - fix\(ui\): Material 22 \(MDC\) migration regressions \(\#230\) [\#231](https://github.com/resamsel/translatr/pull/231) ([resamsel](https://github.com/resamsel))
+- Migrate backend from Play Framework to Quarkus [\#225](https://github.com/resamsel/translatr/pull/225) ([resamsel](https://github.com/resamsel))
+
+## [diag-quinoa-1](https://github.com/resamsel/translatr/tree/diag-quinoa-1) (2026-09-12)
+
+[Full Changelog](https://github.com/resamsel/translatr/compare/v3.3.3...diag-quinoa-1)
+
+**Closed issues:**
+
+- Replace TestBed.get with TestBed.inject in tests [\#167](https://github.com/resamsel/translatr/issues/167)
+- Rewrite activity component [\#123](https://github.com/resamsel/translatr/issues/123)
 
 ## [v3.3.3](https://github.com/resamsel/translatr/tree/v3.3.3) (2022-04-16)
 
