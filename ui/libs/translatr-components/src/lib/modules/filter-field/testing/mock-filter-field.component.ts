@@ -1,0 +1,20 @@
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { ThemePalette } from '@angular/material/core';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { FilterFieldFilter } from '@dev/translatr-components';
+
+@Component({
+  standalone: true,
+  selector: 'dev-filter-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: ''
+})
+export class MockFilterFieldComponent {
+  @Input() enabled: boolean;
+  @Input() filters: ReadonlyArray<FilterFieldFilter>;
+  @Input() appearance: MatFormFieldAppearance | 'elevate' = 'fill';
+  @Input() color: ThemePalette = 'primary';
+  @Input() selection: ReadonlyArray<FilterFieldFilter>;
+
+  @Output() selected = new EventEmitter<ReadonlyArray<FilterFieldFilter>>();
+}

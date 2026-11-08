@@ -1,1 +1,1 @@
-export * from './button-testing.module';
+export * from '../confirm-button/testing';

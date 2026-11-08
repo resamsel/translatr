@@ -2,15 +2,18 @@ import { Injector } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShortNumberModule } from '@dev/translatr-components';
-import { MetricTestingModule, UserCardTestingModule } from '@translatr/components/testing';
+import { MetricComponent, ShortNumberPipe, UserCardComponent } from '@dev/translatr-components';
+import { MockMetricComponent, MockUserCardComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 import { UserFacade } from '../+state/user.facade';
-import { ActivityListTestingModule } from '../../../shared/activity-list/testing';
-import { ProjectCardListTestingModule } from '../../../shared/project-card-list/testing';
+import { ActivityListComponent } from '../../../shared/activity-list/activity-list.component';
+import { MockActivityListComponent } from '../../../shared/activity-list/testing';
+import { ProjectCardListComponent } from '../../../shared/project-card-list/project-card-list.component';
+import { MockProjectCardListComponent } from '../../../shared/project-card-list/testing';
 import { USER_ROUTES } from '../user-page.token';
 
 import { UserInfoComponent } from './user-info.component';
@@ -21,20 +24,20 @@ describe('UserInfoComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserInfoComponent],
+      TestBed.overrideComponent(UserInfoComponent, {
+        remove: { imports: [UserCardComponent, MetricComponent, ActivityListComponent, ProjectCardListComponent] },
+        add: { imports: [MockUserCardComponent, MockMetricComponent, MockProjectCardListComponent, MockActivityListComponent] }
+      }).configureTestingModule({
         imports: [
-          UserCardTestingModule,
-          MetricTestingModule,
-          ShortNumberModule,
-          ProjectCardListTestingModule,
-          ActivityListTestingModule,
+          UserInfoComponent,
+          ShortNumberPipe,
 
           RouterTestingModule,
-          TimeAgoModule,
+          TimeAgoPipe,
 
           MatIconModule,
-          MatTooltipModule
+          MatTooltipModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } })
         ],
         providers: [
           { provide: Injector, useFactory: () => ({}) },

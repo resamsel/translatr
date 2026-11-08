@@ -1,15 +1,21 @@
+@use '@angular/material' as mat;
+
 .user-picker {
   display: block;
   max-width: 320px;
 }
 
 .hint {
-  color: rgba(0, 0, 0, 0.6);
   margin-bottom: 1rem;
 }
 
 table {
   width: 100%;
+  // Match mat-card's rounded corners - overflow: hidden clips the header
+  // row's square corners to the radius too.
+  border-radius: var(--mat-card-elevated-container-shape, 4px);
+  overflow: hidden;
+  @include mat.elevation(1);
 
   .title {
     font-weight: 500;
@@ -24,5 +30,35 @@ table {
     text-align: center;
     width: 1px;
     white-space: nowrap;
+  }
+
+  // Zebra stripes, matching entity-table's.
+  ::ng-deep tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  ::ng-deep tbody tr:hover {
+    background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+// rgba(0,0,0,.5) assumes a light card - only ~2.1:1 against the dark theme's
+// #424242 table-row surface, far short of WCAG AAA's 7:1. Same idea, light-
+// based, tuned to clear 7:1 there.
+:host-context(.dark-theme) {
+  table .sub-title {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  // The black-based stripe/hover tints above are ~invisible against the
+  // dark theme's row surface - same idea, light-based.
+  table {
+    ::ng-deep tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    ::ng-deep tbody tr:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
   }
 }

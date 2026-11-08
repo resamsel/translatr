@@ -1,1 +1,1 @@
-export * from './project-list-testing.module';
+export * from './mock-project-list.component';

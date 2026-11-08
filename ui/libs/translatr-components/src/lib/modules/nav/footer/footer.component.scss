@@ -26,6 +26,20 @@ footer {
   }
 }
 
+// #9e9e9e is ~6.99:1 against the dark theme's #121212 page background (worse
+// still, ~5.2:1, against the #303030 mat-sidenav-container surface the
+// admin app's footer sits on) - short of WCAG AAA's 7:1 for normal text.
+// Lighter shade tuned to clear 7:1 against the harder (lighter) of the two.
+:host-context(.dark-theme) {
+  footer {
+    color: #bfbfbf;
+  }
+
+  .home a:not(:hover) {
+    color: #bfbfbf;
+  }
+}
+
 .links {
   float: right;
   width: 33%;

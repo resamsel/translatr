@@ -1,18 +1,49 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  ConfirmButtonComponent,
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent
+} from '@dev/translatr-components';
 import { Key, KeyCriteria, PagedList, Project } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { trackByFn } from '@translatr/utils';
 import { filter, take } from 'rxjs/operators';
+import { NavListComponent } from '../../../../shared/nav-list/nav-list.component';
 import { openKeyEditDialog } from '../../../../shared/key-edit-dialog/key-edit-dialog.component';
 import { FilterCriteria } from '../../../../shared/list-header/list-header.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-key-list',
   templateUrl: './key-list.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./key-list.component.scss']
+  styleUrls: ['./key-list.component.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslocoModule,
+    NavListComponent,
+    ConfirmButtonComponent,
+    EmptyViewComponent,
+    EmptyViewHeaderComponent,
+    EmptyViewContentComponent,
+    EmptyViewActionsComponent,
+    MatListModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatButtonModule
+  ]
 })
 export class KeyListComponent {
   @Input() project: Project;

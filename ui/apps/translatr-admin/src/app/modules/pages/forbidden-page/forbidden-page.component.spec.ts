@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ErrorPageTestingModule } from '@translatr/components/testing';
+import { ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent } from '@dev/translatr-components';
+import { MockErrorPageComponent, MockErrorPageHeaderComponent, MockErrorPageMessageComponent } from '@translatr/components/testing';
 import { AppFacade } from '../../../+state/app.facade';
 import { ForbiddenPageComponent } from './forbidden-page.component';
 
@@ -10,9 +11,11 @@ describe('ForbiddenPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ForbiddenPageComponent],
-        imports: [ErrorPageTestingModule, RouterTestingModule],
+      TestBed.overrideComponent(ForbiddenPageComponent, {
+        remove: { imports: [ErrorPageComponent, ErrorPageHeaderComponent, ErrorPageMessageComponent] },
+        add: { imports: [MockErrorPageComponent, MockErrorPageHeaderComponent, MockErrorPageMessageComponent] }
+      }).configureTestingModule({
+        imports: [ForbiddenPageComponent, RouterTestingModule],
         providers: [
           {
             provide: AppFacade,

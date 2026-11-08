@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AppFacade } from '../../../+state/app.facade';
 import { AuthGuard } from '../../../guards/auth.guard';
+import { ProjectStateModule } from '../../shared/project-state';
+import { ProjectAccessGuard } from './project-access.guard';
 import { ProjectActivityComponent } from './project-activity/project-activity.component';
 import { ProjectEditGuard } from './project-edit.guard';
 import { ProjectInfoComponent } from './project-info/project-info.component';
@@ -72,8 +75,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes), ProjectStateModule],
   exports: [RouterModule],
-  providers: [{ provide: PROJECT_ROUTES, useValue: routes }]
+  providers: [
+    { provide: PROJECT_ROUTES, useValue: routes },
+    AppFacade,
+    ProjectGuard,
+    ProjectAccessGuard,
+    ProjectEditGuard
+  ]
 })
 export class ProjectPageRoutingModule {}

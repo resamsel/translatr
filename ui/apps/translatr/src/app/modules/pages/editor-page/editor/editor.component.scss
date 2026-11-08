@@ -10,9 +10,22 @@ $editor-flap-margin-y-xl: $editor-margin-xl + 12px;
   $accent-color: #ffc107;
 
   :host {
+    // White text on this amber row (#ffc107) is only ~1.6:1 - unreadable in
+    // either theme. Dark text reads ~12.9:1 against amber.
     .sidebar .nav-list ::ng-deep a.active {
       background: $accent-color;
-      color: white;
+      color: rgba(0, 0, 0, 0.87);
+
+      // h1-h6 get an explicit `color: white` from the dark theme (more
+      // specific than plain inheritance from the anchor above), so the
+      // list-item title needs its own explicit override too.
+      h1, h2, h3, h4, h5, h6 {
+        color: rgba(0, 0, 0, 0.87);
+      }
+
+      .sub-title {
+        color: rgba(0, 0, 0, 0.6);
+      }
     }
   }
 }
@@ -266,3 +279,67 @@ $editor-flap-margin-y-xl: $editor-margin-xl + 12px;
 }
 
 @include editor-theme($app-theme);
+
+// The sidebar/content/empty-state/meta panels above are hardcoded to a
+// white/light surface, unreadable against the dark theme - same idea,
+// using the dark theme's own card surface tone (#424242, matching
+// mat-card elsewhere) instead of white, and lightening the hairline
+// borders that assumed a light background too.
+:host-context(.dark-theme) {
+  .sidebar {
+    @include medium {
+      border-right-color: rgba(255, 255, 255, 0.06);
+      background-color: #424242;
+    }
+  }
+
+  // `.editor` itself has no background (only `.content` below does), so the
+  // `.buttons` toolbar row shows the page's #121212 straight through -
+  // a harsh, disconnected black strip against the #424242 panel below it.
+  .editor {
+    background: #424242;
+  }
+
+  .editor .content {
+    background: #424242;
+    border-color: rgba(255, 255, 255, 0.1);
+
+    // CodeMirror's own base theme (cm-s-default) hardcodes a white
+    // background/black text/black caret, unrelated to the app's theme.
+    ::ng-deep .CodeMirror {
+      background: #424242;
+      color: #fff;
+
+      .CodeMirror-gutters {
+        background: #383838;
+        border-right-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .CodeMirror-linenumber {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .CodeMirror-cursor {
+        border-left-color: #fff;
+      }
+
+      .CodeMirror-selected {
+        background: rgba(255, 255, 255, 0.15);
+      }
+    }
+  }
+
+  .editor-empty {
+    @include medium {
+      background-color: #424242;
+    }
+  }
+
+  .meta {
+    border-left-color: rgba(255, 255, 255, 0.06);
+
+    @include medium {
+      background-color: #424242;
+    }
+  }
+}

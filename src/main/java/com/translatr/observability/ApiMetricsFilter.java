@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * For {@code /api/**} requests: stamps observability span attributes on the way in, and
@@ -81,27 +80,9 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
         this.identity = identity;
     }
 
-    /**
-     * Read as a plain property (not via {@link com.translatr.config.TranslatrConfig}) because JAX-RS
-     * provider instances are created during RESTEasy Reactive deployment setup, before
-     * {@code @ConfigMapping} beans resolve ({@code SRCFG00027}). The matching
-     * {@code translatr.observability.apikey-metrics.key-id-label} entry on {@code TranslatrConfig}
-     * exists only to keep it a known key under the validated {@code translatr} mapping prefix.
-     */
-    @ConfigProperty(name = "translatr.observability.apikey-metrics.key-id-label", defaultValue = "true")
-    boolean keyIdLabel;
-
-    /**
-     * Master gate (see {@code com.translatr.config.TranslatrConfig.ObservabilityConfig#metricsEnabled}).
-     * Read as a plain property for the same reason as {@link #keyIdLabel} — JAX-RS provider instances
-     * are built before {@code @ConfigMapping} beans resolve.
-     */
-    @ConfigProperty(name = "translatr.observability.metrics-enabled", defaultValue = "false")
-    boolean metricsEnabled;
-
     @Override
     public void filter(ContainerRequestContext req) {
-        if (!isApi(req) || !metricsEnabled) {
+        if (!isApi(req) || !ObservabilityFlags.metricsEnabled()) {
             return;
         }
         Span span = Span.current();
@@ -129,7 +110,7 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext resp) {
-        if (!isApi(req) || !metricsEnabled) {
+        if (!isApi(req) || !ObservabilityFlags.metricsEnabled()) {
             return;
         }
         if (!isAccessKey(identity)) {
@@ -143,7 +124,7 @@ public class ApiMetricsFilter implements ContainerRequestFilter, ContainerRespon
         String endpoint = templatedPath();
         String status = String.valueOf(resp.getStatus());
 
-        if (keyIdLabel) {
+        if (ObservabilityFlags.keyIdLabel()) {
             registry.counter("translatr.apikey.requests",
                     "key_id", keyId, "endpoint", endpoint, "status", status).increment();
         } else {

@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { mockObservable } from '@translatr/utils/testing';
+import { ProjectStateModule } from '../project-state';
 import { ProjectFacade } from '../project-state/+state';
 import { LocaleEditDialogComponent } from './locale-edit-dialog.component';
 
@@ -17,9 +18,12 @@ describe('LocaleEditDialogComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [LocaleEditDialogComponent],
+      TestBed.overrideComponent(LocaleEditDialogComponent, {
+        remove: { imports: [ProjectStateModule] },
+        add: {}
+      }).configureTestingModule({
         imports: [
+          LocaleEditDialogComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

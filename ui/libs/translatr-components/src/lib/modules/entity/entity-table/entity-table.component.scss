@@ -1,7 +1,13 @@
+@use '@angular/material' as mat;
 @use 'mixins' as *;
 
 table {
   width: 100%;
+  // Match mat-card's rounded corners - overflow: hidden clips the header
+  // row's square corners to the radius too.
+  border-radius: var(--mat-card-elevated-container-shape, 4px);
+  overflow: hidden;
+  @include mat.elevation(1);
 
   ::ng-deep tbody tr:nth-child(even) {
     background: rgba(0, 0, 0, 0.04);
@@ -12,9 +18,22 @@ table {
   }
 }
 
+// The black-based stripe/hover tints above are ~invisible against the dark
+// theme's row surface - same idea, light-based.
+:host-context(.dark-theme) table {
+  ::ng-deep tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  ::ng-deep tbody tr:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
 .controls {
   display: flex;
   justify-content: center;
+  margin-block-end: 16px;
 
   .filter-field {
     flex-grow: 1;

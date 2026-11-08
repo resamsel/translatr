@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -8,10 +9,17 @@ import {
   Output,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Member, MemberRole, memberRoles, User } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
 import { ProjectFacade } from '../project-state/+state';
@@ -41,11 +49,22 @@ const formToMember = (form: MemberForm): Member => {
 };
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-member-edit-form',
   templateUrl: './project-member-edit-form.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./project-member-edit-form.component.scss']
+  styleUrls: ['./project-member-edit-form.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    TranslocoModule
+  ]
 })
 export class ProjectMemberEditFormComponent
   extends BaseEditFormComponent<ProjectMemberEditFormComponent, MemberForm, Member>

@@ -12,20 +12,25 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { EmptyViewTestingModule } from '@translatr/components/testing';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent
+} from '@dev/translatr-components';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent } from '@translatr/components/testing';
 import { EditorFacade } from '../+state/editor.facade';
-import { SidenavTestingModule } from '../../../nav/sidenav/testing';
+import { SidenavComponent } from '../../../nav/sidenav/sidenav.component';
+import { MockSidenavComponent } from '../../../nav/sidenav/testing';
 import { EMPTY, Subject } from 'rxjs';
 import { EditorComponent } from './editor.component';
 
 const editorTestImports = [
-  SidenavTestingModule,
+  EditorComponent,
 
   RouterTestingModule,
   FormsModule,
   NoopAnimationsModule,
   TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
-  EmptyViewTestingModule,
 
   MatButtonModule,
   MatDividerModule,
@@ -38,14 +43,27 @@ const editorTestImports = [
   CodemirrorModule
 ];
 
+const overrideEditorComponent = () =>
+  TestBed.overrideComponent(EditorComponent, {
+    remove: { imports: [SidenavComponent, EmptyViewComponent, EmptyViewHeaderComponent, EmptyViewContentComponent] },
+    add: {
+      imports: [
+        MockSidenavComponent,
+        MockEmptyViewComponent,
+        MockEmptyViewActionsComponent,
+        MockEmptyViewContentComponent,
+        MockEmptyViewHeaderComponent
+      ]
+    }
+  });
+
 describe('EditorComponent', () => {
   let component: EditorComponent;
   let fixture: ComponentFixture<EditorComponent>;
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [EditorComponent],
+      overrideEditorComponent().configureTestingModule({
         imports: editorTestImports,
         providers: [
           {
@@ -98,8 +116,7 @@ describe('EditorComponent save shortcut', () => {
       };
 
       TestBed.resetTestingModule();
-      TestBed.configureTestingModule({
-        declarations: [EditorComponent],
+      overrideEditorComponent().configureTestingModule({
         imports: editorTestImports,
         providers: [
           { provide: EditorFacade, useValue: facade },

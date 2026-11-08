@@ -108,6 +108,38 @@ class FeatureFlagServiceTest {
     }
 
     @Test
+    void create_newUserFeaturePair_persistsNewFlag() {
+        UUID callerId = UUID.randomUUID();
+        User caller   = userWithId(callerId, UserRole.User);
+        FeatureFlagDto dto = new FeatureFlagDto().userId(callerId).feature("theme-switcher").enabled(true);
+
+        when(featureFlagRepo.findByUserAndFeature(callerId, "theme-switcher")).thenReturn(Optional.empty());
+        when(userRepo.findByIdOptional(callerId)).thenReturn(Optional.of(userWithId(callerId, UserRole.User)));
+        when(mapper.toDto(any(UserFeatureFlag.class))).thenReturn(dto);
+
+        service.create(dto, caller);
+
+        verify(featureFlagRepo).persist(any(UserFeatureFlag.class));
+    }
+
+    @Test
+    void create_existingUserFeaturePair_updatesInsteadOfPersisting() {
+        UUID callerId = UUID.randomUUID();
+        User caller   = userWithId(callerId, UserRole.User);
+        FeatureFlagDto dto = new FeatureFlagDto().userId(callerId).feature("theme-switcher").enabled(false);
+        UserFeatureFlag existingFlag = UserFeatureFlag.of(UUID.randomUUID(), caller, "theme-switcher", true);
+
+        when(featureFlagRepo.findByUserAndFeature(callerId, "theme-switcher")).thenReturn(Optional.of(existingFlag));
+        when(mapper.toDto(existingFlag)).thenReturn(dto);
+
+        service.create(dto, caller);
+
+        assertThat(existingFlag.enabled).isFalse();
+        verify(featureFlagRepo, never()).persist(any(UserFeatureFlag.class));
+        verifyNoInteractions(userRepo);
+    }
+
+    @Test
     void update_allowsCallerToUpdateTheirOwnOverride_whenNotAdmin() {
         UUID flagId = UUID.randomUUID();
         User caller = userWithId(UUID.randomUUID(), UserRole.User);

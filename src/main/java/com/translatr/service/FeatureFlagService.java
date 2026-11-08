@@ -66,6 +66,12 @@ public class FeatureFlagService {
     @Transactional
     public FeatureFlagDto create(FeatureFlagDto dto, User caller) {
         requireOwnerOrAdmin(dto.getUserId(), caller);
+        var existing = featureFlagRepo.findByUserAndFeature(dto.getUserId(), dto.getFeature());
+        if (existing.isPresent()) {
+            var flag = existing.get();
+            flag.enabled = Boolean.TRUE.equals(dto.getEnabled());
+            return mapper.toDto(flag);
+        }
         var user = userRepo.findByIdOptional(dto.getUserId()).orElseThrow(NotFoundException::new);
         var flag = UserFeatureFlag.of(user, dto.getFeature(), Boolean.TRUE.equals(dto.getEnabled()));
         featureFlagRepo.persist(flag);

@@ -9,7 +9,7 @@ describe('EmptyViewActionsComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [EmptyViewActionsComponent]
+        imports: [EmptyViewActionsComponent]
       }).compileComponents();
     })
   );

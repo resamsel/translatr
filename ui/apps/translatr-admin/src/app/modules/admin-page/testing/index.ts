@@ -1,1 +1,1 @@
-export * from './admin-page-testing.module';
+export * from './mock-admin-page.component';

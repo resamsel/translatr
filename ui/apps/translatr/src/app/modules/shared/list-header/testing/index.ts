@@ -1,1 +1,1 @@
-export * from './list-header-testing.module';
+export * from './mock-list-header.component';

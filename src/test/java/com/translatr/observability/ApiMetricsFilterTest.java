@@ -49,7 +49,7 @@ class ApiMetricsFilterTest {
         t.user = u;
         t.name = "test";
         t.key = "amf-" + System.nanoTime();
-        t.scope = "";
+        t.scope = "read:user";
         t.persist();
 
         this.rawKey = t.key;

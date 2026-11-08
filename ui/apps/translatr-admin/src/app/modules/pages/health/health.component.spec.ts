@@ -7,7 +7,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthClientService, OidcProviderStatus } from '@dev/translatr-sdk';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Subject, of, throwError } from 'rxjs';
-import { AdminPageTestingModule } from '../../admin-page/testing';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
+import { MockAdminPageComponent } from '../../admin-page/testing';
 import { HealthComponent } from './health.component';
 
 const provider = (over: Partial<OidcProviderStatus>): OidcProviderStatus => ({
@@ -39,11 +40,13 @@ describe('HealthComponent', () => {
   beforeEach(
     waitForAsync(() => {
       authClientService = { getProviderStatus: jest.fn().mockReturnValue(of([])) };
-      TestBed.configureTestingModule({
-        declarations: [HealthComponent],
+      TestBed.overrideComponent(HealthComponent, {
+        remove: { imports: [AdminPageComponent] },
+        add: { imports: [MockAdminPageComponent] }
+      }).configureTestingModule({
         imports: [
+          HealthComponent,
           NoopAnimationsModule,
-          AdminPageTestingModule,
           MatCardModule,
           MatChipsModule,
           MatProgressSpinnerModule,

@@ -7,4 +7,9 @@
   color: rgba(0, 0, 0, 0.6);
   font-size: 14px;
   margin-left: 4px;
+
+  // rgba(0,0,0,.6) is ~invisible against the dark theme's background.
+  :host-context(.dark-theme) & {
+    color: rgba(255, 255, 255, 0.7);
+  }
 }

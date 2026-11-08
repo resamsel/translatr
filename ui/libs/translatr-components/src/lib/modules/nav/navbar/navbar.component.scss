@@ -24,6 +24,33 @@
   }
 }
 
+// Per-page header colors (passed in via [backgroundColor], e.g. the admin
+// app's dev-admin-page [headerColor]) are tuned for a light theme and read
+// too bright/saturated against the rest of the dark theme. Dim it a bit
+// regardless of the exact color, without needing a per-page dark-mode
+// variant of each hardcoded hex.
+//
+// A `filter` on the row itself would dim its text/icon children too (they
+// inherit the row's `color: white`, not the background) - a ::before layer
+// carries the color instead, `filter`ed on its own, behind the content.
+:host-context(.dark-theme) .mat-toolbar .mat-toolbar-row {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: inherit;
+    filter: brightness(0.8) saturate(0.85);
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
 .elevated .mat-toolbar-row {
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, .2), 0px 2px 2px 0px rgba(0, 0, 0, .14), 0px 1px 5px 0px rgba(0, 0, 0, .12);
 }

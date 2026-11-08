@@ -2,7 +2,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { User } from '@dev/translatr-model';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-auth-bar-item',
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ''

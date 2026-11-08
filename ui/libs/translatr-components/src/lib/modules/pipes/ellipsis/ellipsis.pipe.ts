@@ -7,7 +7,7 @@ const defaultConfig = {
 };
 
 @Pipe({
-  standalone: false,
+  standalone: true,
   name: 'ellipsis',
   pure: false
 })

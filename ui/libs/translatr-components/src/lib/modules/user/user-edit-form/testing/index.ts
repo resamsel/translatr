@@ -1,1 +1,1 @@
-export * from './user-edit-form-testing.module';
+export * from './mock-user-edit-form.component';

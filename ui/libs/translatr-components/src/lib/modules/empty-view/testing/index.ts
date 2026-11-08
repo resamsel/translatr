@@ -1,1 +1,1 @@
-export * from './empty-view-testing.module';
+export * from './mock-empty-view.component';

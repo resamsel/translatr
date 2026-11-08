@@ -1,13 +1,13 @@
 import { Injector } from '@angular/core';
-import { ErrorHandler, errorMessage } from '@dev/translatr-sdk';
+import { ErrorHandler } from '@dev/translatr-sdk';
 import { capitalize, capitalizeWords, cutOffAfter, groupBy } from '@translatr/utils';
 import { cli } from 'cli-ux';
 import { interval } from 'rxjs';
-import { catchError, exhaustMap, map, retryWhen, tap } from 'rxjs/operators';
+import { exhaustMap, map } from 'rxjs/operators';
 import { createInjector } from './api';
 import { LoadGeneratorConfig } from './load-generator-config';
 import { Persona, personas } from './personas';
-import { genericRetryStrategy, selectPersonaFactory } from './utils';
+import { executePersona, selectPersonaFactory } from './utils';
 import { WeightedPersonaFactory } from './weighted-persona-factory';
 
 const operations = ['create', 'read', 'update', 'delete'];
@@ -71,29 +71,8 @@ export class LoadGenerator {
           return persona.create(this.config, this.injector);
         }),
         exhaustMap((persona: Persona) => {
-          const startedMillis = new Date().getTime();
           cli.action.start(`Processing ${persona.name}`);
-          return persona.execute().pipe(
-            tap(message => {
-              console.log(
-                `${persona.name}: ${message} in ${new Date().getTime() - startedMillis}ms`
-              );
-            }),
-            retryWhen(
-              genericRetryStrategy({
-                maxRetryAttempts: this.config.maxRetryAttempts,
-                scalingDuration: this.config.retryScalingDelay,
-                prefix: `${persona.name}: `
-              })
-            ),
-            catchError(error => {
-              console.error(
-                `${persona.name}: ${errorMessage(error)} in ${new Date().getTime() -
-                  startedMillis}ms`
-              );
-              return errorHandler.handleError(error);
-            })
-          );
+          return executePersona(persona, errorHandler, this.config);
         })
       )
       .toPromise();

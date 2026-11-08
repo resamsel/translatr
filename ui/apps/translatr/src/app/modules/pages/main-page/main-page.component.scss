@@ -3,47 +3,37 @@
 :host {
   position: relative;
   display: block;
-}
-
-:host ::ng-deep {
   font-size: 20px;
   line-height: 28px;
+}
 
-  .header {
-    color: #43a047;
-    font-weight: 300;
-  }
+.header {
+  color: #43a047;
+  font-weight: 300;
+}
 
-  h1 {
-    font-size: 4.2rem;
-    line-height: 110%;
-    margin: 2.1rem 0 0.68rem 0;
+h1 {
+  font-size: 4.2rem;
+  line-height: 110%;
+  margin: 2.1rem 0 0.68rem 0;
+}
 
-    .material-icons {
-      float: left;
-      line-height: 110%;
-      font-size: 4.2rem;
-      margin-right: 3px;
-    }
-  }
+h3 {
+  font-size: 2.92rem;
+  line-height: 110%;
+  margin: 1.46rem 0 2rem 0;
+}
 
-  h3 {
-    font-size: 2.92rem;
-    line-height: 110%;
-    margin: 1.46rem 0 2rem 0;
-  }
+h4 {
+  font-size: 150%;
+  line-height: 110%;
+  margin-block-end: 16px;
+}
 
-  h4 {
-    font-size: 150%;
-    line-height: 110%;
-    margin-block-end: 16px;
-  }
-
-  h5 {
-    font-size: 1.64rem;
-    line-height: 110%;
-    margin: 0.82rem 0 0.656rem 0;
-  }
+h5 {
+  font-size: 1.64rem;
+  line-height: 110%;
+  margin: 0.82rem 0 0.656rem 0;
 }
 
 header.header {
@@ -179,7 +169,7 @@ header.header {
   color: #c8e6c9 !important;
 }
 
-.white {
+.alternate-background {
   background-color: #fff;
 }
 
@@ -329,5 +319,27 @@ section .image {
       margin-left: 16px;
       flex: 1 0;
     }
+  }
+}
+
+// Dark theme: the page hardcodes light-theme colors, so override them here
+// (the M2 theme provides no --mat-sys-* tokens).
+:host-context(.dark-theme) {
+  .alternate-background {
+    background-color: var(--mat-card-elevated-container-color, #424242);
+  }
+
+  h3.header {
+    color: #81c784;
+  }
+
+  .light,
+  p {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .feature svg-icon {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.06);
   }
 }

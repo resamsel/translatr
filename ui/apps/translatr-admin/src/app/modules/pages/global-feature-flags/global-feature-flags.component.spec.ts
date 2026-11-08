@@ -9,7 +9,8 @@ import { Feature, features } from '@dev/translatr-model';
 import { of, Subject } from 'rxjs';
 import { AppActionTypes } from '../../../+state/app.actions';
 import { AppFacade } from '../../../+state/app.facade';
-import { AdminPageTestingModule } from '../../admin-page/testing';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
+import { MockAdminPageComponent } from '../../admin-page/testing';
 import { GlobalFeatureFlagsComponent } from './global-feature-flags.component';
 
 describe('GlobalFeatureFlagsComponent', () => {
@@ -40,10 +41,12 @@ describe('GlobalFeatureFlagsComponent', () => {
         setGlobalFeatureFlag: jest.fn(),
         deleteGlobalFeatureFlag: jest.fn()
       };
-      TestBed.configureTestingModule({
-        declarations: [GlobalFeatureFlagsComponent],
+      TestBed.overrideComponent(GlobalFeatureFlagsComponent, {
+        remove: { imports: [AdminPageComponent] },
+        add: { imports: [MockAdminPageComponent] }
+      }).configureTestingModule({
         imports: [
-          AdminPageTestingModule,
+          GlobalFeatureFlagsComponent,
           NoopAnimationsModule,
           MatSlideToggleModule,
           MatTableModule,

@@ -6,9 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { UserEditDialogComponent } from '@dev/translatr-components';
+import { UserEditDialogComponent, UserEditFormComponent } from '@dev/translatr-components';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { UserEditFormTestingModule } from '@translatr/components/testing';
+import { MockUserEditFormComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 
 describe('UserEditDialogComponent', () => {
@@ -17,14 +17,15 @@ describe('UserEditDialogComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserEditDialogComponent],
+      TestBed.overrideComponent(UserEditDialogComponent, {
+        remove: { imports: [UserEditFormComponent] },
+        add: { imports: [MockUserEditFormComponent] }
+      }).configureTestingModule({
         imports: [
+          UserEditDialogComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
-
-          UserEditFormTestingModule,
 
           MatFormFieldModule,
           MatDialogModule,

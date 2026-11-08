@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,12 +8,17 @@ import {
   Input,
   Output
 } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'confirm-button',
-  templateUrl: './confirm-button.component.html'
+  templateUrl: './confirm-button.component.html',
+  imports: [CommonModule, MatButtonModule, MatMenuModule, MatIconModule, MatTooltipModule]
 })
 export class ConfirmButtonComponent {
   @Input() tooltip: string;

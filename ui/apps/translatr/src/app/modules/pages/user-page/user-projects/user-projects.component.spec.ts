@@ -7,8 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ProjectListTestingModule } from '../../../shared/project-list/testing';
+import { ProjectListComponent } from '../../../shared/project-list/project-list.component';
+import { MockProjectListComponent } from '../../../shared/project-list/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 describe('UserProjectsComponent', () => {
   let component: UserProjectsComponent;
@@ -16,12 +18,15 @@ describe('UserProjectsComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserProjectsComponent],
+      TestBed.overrideComponent(UserProjectsComponent, {
+        remove: { imports: [ProjectListComponent] },
+        add: { imports: [MockProjectListComponent] }
+      }).configureTestingModule({
         imports: [
-          ProjectListTestingModule,
+          UserProjectsComponent,
 
           RouterTestingModule,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
           MatTooltipModule,
           MatButtonModule,

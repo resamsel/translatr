@@ -1,1 +1,1 @@
-export { LoginPageModule } from '@dev/translatr-components';
+export { LoginPageComponent } from '@dev/translatr-components';

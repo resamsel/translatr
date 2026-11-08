@@ -1,1 +1,1 @@
-export * from './nav-list-testing.module';
+export * from './mock-nav-list.component';

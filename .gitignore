@@ -127,6 +127,7 @@ fabric.properties
 .recommenders
 /public/ui
 /public/admin
+/public/app
 
 !.idea/
 
@@ -146,3 +147,7 @@ fabric.properties
 
 # Claude Code local workspace
 .claude/
+
+# init-clickhouse (docker-compose-signoz.yml) downloads this binary into the
+# bind-mounted host directory at container start; it isn't source.
+/monitoring/signoz/common/clickhouse/user_scripts/histogramQuantile

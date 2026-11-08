@@ -2,7 +2,7 @@ import { AfterViewInit, Directive, Input } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
 @Directive({
-  standalone: false,
+  standalone: true,
   selector: '[disableControl]'
 })
 export class DisableControlDirective implements AfterViewInit {

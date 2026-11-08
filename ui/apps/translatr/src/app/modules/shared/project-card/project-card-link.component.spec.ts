@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ProjectCardLinkComponent } from './project-card-link.component';
+import { ProjectCardComponent } from './project-card.component';
 import { MockProjectCardComponent } from './testing';
 
 describe('ProjectCardLinkComponent', () => {
@@ -9,9 +10,11 @@ describe('ProjectCardLinkComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectCardLinkComponent, MockProjectCardComponent],
-        imports: [RouterTestingModule]
+      TestBed.overrideComponent(ProjectCardLinkComponent, {
+        remove: { imports: [ProjectCardComponent] },
+        add: { imports: [MockProjectCardComponent] }
+      }).configureTestingModule({
+        imports: [ProjectCardLinkComponent, RouterTestingModule]
       }).compileComponents();
     })
   );

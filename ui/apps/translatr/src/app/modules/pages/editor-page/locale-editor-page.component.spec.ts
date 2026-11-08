@@ -9,13 +9,23 @@ import { MatMenuModule } from '@angular/material/menu';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { EmptyViewTestingModule, FilterFieldTestingModule } from '@translatr/components/testing';
+import {
+  EmptyViewComponent,
+  EmptyViewHeaderComponent,
+  EmptyViewContentComponent,
+  EmptyViewActionsComponent,
+  FilterFieldComponent
+} from '@dev/translatr-components';
+import { MockEmptyViewComponent, MockEmptyViewActionsComponent, MockEmptyViewContentComponent, MockEmptyViewHeaderComponent, MockFilterFieldComponent } from '@translatr/components/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { AppFacade } from '../../../+state/app.facade';
-import { NavListTestingModule } from '../../shared/nav-list/testing';
+import { NavListComponent } from '../../shared/nav-list/nav-list.component';
+import { MockNavListComponent } from '../../shared/nav-list/testing';
 import { ProjectFacade } from '../../shared/project-state/+state';
 import { EditorFacade } from './+state/editor.facade';
-import { EditorTestingModule } from './editor/testing';
+import { EditorSelectorComponent } from './editor/editor-selector.component';
+import { EditorComponent } from './editor/editor.component';
+import { MockEditorComponent, MockEditorSelectorComponent } from './editor/testing';
 import { LocaleEditorPageComponent } from './locale-editor-page.component';
 
 describe('LocaleEditorPageComponent', () => {
@@ -24,15 +34,36 @@ describe('LocaleEditorPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [LocaleEditorPageComponent],
+      TestBed.overrideComponent(LocaleEditorPageComponent, {
+        remove: {
+          imports: [
+            EditorComponent,
+            EditorSelectorComponent,
+            NavListComponent,
+            EmptyViewComponent,
+            EmptyViewHeaderComponent,
+            EmptyViewContentComponent,
+            EmptyViewActionsComponent,
+            FilterFieldComponent
+          ]
+        },
+        add: {
+          imports: [
+            MockEditorComponent,
+            MockEditorSelectorComponent,
+            MockNavListComponent,
+            MockEmptyViewComponent,
+            MockEmptyViewActionsComponent,
+            MockEmptyViewContentComponent,
+            MockEmptyViewHeaderComponent,
+            MockFilterFieldComponent
+          ]
+        }
+      }).configureTestingModule({
         imports: [
-          RouterTestingModule,
-          EditorTestingModule,
-          FilterFieldTestingModule,
-          NavListTestingModule,
-          EmptyViewTestingModule,
+          LocaleEditorPageComponent,
 
+          RouterTestingModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 
@@ -81,7 +112,7 @@ describe('LocaleEditorPageComponent', () => {
 
   it('renders its search field with an outline appearance, matching the rest of the UI', () => {
     // The `dev-filter-field` lives inside `<app-editor>`'s projected content, which the
-    // EditorTestingModule stub (empty template, no <ng-content>) never renders into the DOM -
+    // mock EditorComponent/EditorSelectorComponent (empty template, no <ng-content>) never renders into the DOM -
     // so this reads the real template source instead of querying the rendered fixture.
     const template = readFileSync(join(__dirname, 'locale-editor-page.component.html'), 'utf8');
     const filterFieldMarkup = template.match(/<dev-filter-field[\s\S]*?>/)[0];

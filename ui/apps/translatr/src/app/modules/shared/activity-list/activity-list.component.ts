@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,6 +7,11 @@ import {
   Input,
   Output
 } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import { EmptyViewComponent, EmptyViewHeaderComponent, TimeAgoPipe } from '@dev/translatr-components';
 import {
   AccessToken,
   Activity,
@@ -16,7 +22,15 @@ import {
   PagedList,
   Project
 } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { FilterCriteria } from '../list-header/list-header.component';
+import { NavListComponent } from '../nav-list/nav-list.component';
+import { ActivityAccessTokenLinkComponent } from './activity-access-token-link/activity-access-token-link.component';
+import { ActivityKeyLinkComponent } from './activity-key-link/activity-key-link.component';
+import { ActivityLocaleLinkComponent } from './activity-locale-link/activity-locale-link.component';
+import { ActivityMemberLinkComponent } from './activity-member-link/activity-member-link.component';
+import { ActivityMessageLinkComponent } from './activity-message-link/activity-message-link.component';
+import { ActivityProjectLinkComponent } from './activity-project-link/activity-project-link.component';
 
 const contentTypeToIconMap = {
   'dto.Project': 'view_quilt',
@@ -32,12 +46,30 @@ const contentTypeToIconTypeMap = {
 };
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-list',
   templateUrl: './activity-list.component.html',
   styleUrls: ['./activity-list.component.scss'],
-  preserveWhitespaces: true
+  preserveWhitespaces: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    NavListComponent,
+    EmptyViewComponent,
+    EmptyViewHeaderComponent,
+    MatListModule,
+    MatIconModule,
+    MatTooltipModule,
+    TimeAgoPipe,
+    TranslocoModule,
+    ActivityAccessTokenLinkComponent,
+    ActivityKeyLinkComponent,
+    ActivityLocaleLinkComponent,
+    ActivityMemberLinkComponent,
+    ActivityMessageLinkComponent,
+    ActivityProjectLinkComponent
+  ]
 })
 export class ActivityListComponent {
   @Input() activities: PagedList<Activity>;

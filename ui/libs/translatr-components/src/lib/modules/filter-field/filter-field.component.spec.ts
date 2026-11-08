@@ -10,7 +10,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { DisableControlTestingModule } from '@translatr/components/testing';
 
 import { FilterFieldComponent } from './filter-field.component';
 
@@ -21,13 +20,11 @@ describe('FilterFieldComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [FilterFieldComponent],
         imports: [
+          FilterFieldComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
-
-          DisableControlTestingModule,
 
           MatFormFieldModule,
           MatChipsModule,

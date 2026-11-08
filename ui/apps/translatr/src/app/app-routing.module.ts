@@ -1,77 +1,71 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { environment } from '../environments/environment';
+import { Routes } from '@angular/router';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('./modules/pages/login-page').then(m => m.LoginPageModule)
+    loadComponent: () => import('./modules/pages/login-page').then(m => m.LoginPageComponent)
   },
   {
     path: 'register',
     loadChildren: () =>
-      import('./modules/pages/registration-page/registration-page.module').then(
-        m => m.RegistrationPageModule
+      import('./modules/pages/registration-page/registration-page-routing.module').then(
+        m => m.RegistrationPageRoutingModule
       )
   },
   {
     path: 'dashboard',
     loadChildren: () =>
-      import('./modules/pages/dashboard-page/dashboard-page.module').then(
-        m => m.DashboardPageModule
+      import('./modules/pages/dashboard-page/dashboard-page-routing.module').then(
+        m => m.DashboardPageRoutingModule
       )
   },
   {
     path: 'users',
     loadChildren: () =>
-      import('./modules/pages/users-page/users-page.module').then(m => m.UsersPageModule)
+      import('./modules/pages/users-page/users-page-routing.module').then(
+        m => m.UsersPageRoutingModule
+      )
   },
   {
     path: 'projects',
     loadChildren: () =>
-      import('./modules/pages/projects-page/projects-page.module').then(m => m.ProjectsPageModule)
+      import('./modules/pages/projects-page/projects-page-routing.module').then(
+        m => m.ProjectsPageRoutingModule
+      )
   },
   {
     path: 'not-found',
     loadChildren: () =>
-      import('./modules/pages/not-found-page/not-found-page.module').then(m => m.NotFoundPageModule)
+      import('./modules/pages/not-found-page/not-found-page-routing.module').then(m => m.NotFoundPageRoutingModule)
   },
   {
     path: 'forbidden',
     loadChildren: () =>
-      import('./modules/pages/forbidden-page/forbidden-page.module').then(
-        m => m.ForbiddenPageModule
+      import('./modules/pages/forbidden-page/forbidden-page-routing.module').then(
+        m => m.ForbiddenPageRoutingModule
       )
   },
   {
     path: '',
     pathMatch: 'full',
     loadChildren: () =>
-      import('./modules/pages/main-page/main-page.module').then(m => m.MainPageModule)
+      import('./modules/pages/main-page/main-page-routing.module').then(m => m.MainPageRoutingModule)
   },
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/user-page/user-page.module').then(m => m.UserPageModule)
+      import('./modules/pages/user-page/user-page-routing.module').then(m => m.UserPageRoutingModule)
   },
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/project-page/project-page.module').then(m => m.ProjectPageModule)
+      import('./modules/pages/project-page/project-page-routing.module').then(m => m.ProjectPageRoutingModule)
   },
   {
     path: '',
     loadChildren: () =>
-      import('./modules/pages/editor-page/editor-page.module').then(m => m.EditorPageModule)
+      import('./modules/pages/editor-page/editor-page-routing.module').then(
+        m => m.EditorPageRoutingModule
+      )
   }
 ];
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      enableTracing: environment.routerTracing
-    })
-  ],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}

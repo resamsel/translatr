@@ -1,2 +1,2 @@
-export * from './entity-table.module';
 export * from './entity-table.component';
+export * from './selection-actions.component';

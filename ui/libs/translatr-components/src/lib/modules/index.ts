@@ -14,3 +14,4 @@ export * from './access-token';
 export * from './user';
 export * from './metric';
 export * from './tag';
+export * from './theme';

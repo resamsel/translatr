@@ -1,6 +1,8 @@
 package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.dto.GlobalFeatureFlagDto;
 import com.translatr.dto.ResolvedFeatureDto;
 import com.translatr.generated.api.FeatureflagsApi;
@@ -13,6 +15,7 @@ import jakarta.ws.rs.ForbiddenException;
 import java.util.List;
 import java.util.UUID;
 
+@RequiresScope(Scope.FeatureFlagRead)
 public class GlobalFeatureFlagResource implements FeatureflagsApi {
 
     private final GlobalFeatureFlagService globalService;
@@ -47,6 +50,7 @@ public class GlobalFeatureFlagResource implements FeatureflagsApi {
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.FeatureFlagWrite)
     public GlobalFeatureFlagDto setGlobalFeatureFlag(GlobalFeatureFlagDto globalFeatureFlagDto) {
         requireAdmin();
         return globalService.set(globalFeatureFlagDto.getFeature(), Boolean.TRUE.equals(globalFeatureFlagDto.getEnabled()));
@@ -54,6 +58,7 @@ public class GlobalFeatureFlagResource implements FeatureflagsApi {
 
     @Override
     @Authenticated
+    @RequiresScope(Scope.FeatureFlagWrite)
     public void deleteGlobalFeatureFlag(UUID id) {
         requireAdmin();
         globalService.delete(id);

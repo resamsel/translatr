@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * {@code ?projectId=..&keyName=..&localeIds=..} fall through to "page 0 of everything", which is how
  * the key editor ended up showing a different key's translations.
  */
-final class QuerySupport {
+public final class QuerySupport {
 
     private QuerySupport() {
     }
@@ -41,7 +41,7 @@ final class QuerySupport {
      * is a comma-separated list (e.g. {@code count,progress}); matching is exact per token, so
      * {@code featureFlags} never satisfies a check for {@code features}.
      */
-    static boolean wants(String fetch, String token) {
+    public static boolean wants(String fetch, String token) {
         if (fetch == null) {
             return false;
         }

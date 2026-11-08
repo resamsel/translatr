@@ -1,1 +1,1 @@
-export * from './metric-testing.module';
+export * from './mock-metric.component';

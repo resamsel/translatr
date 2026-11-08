@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import com.translatr.auth.NoScopeRequired;
 import com.translatr.config.TranslatrConfig;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
@@ -29,6 +30,7 @@ import java.util.List;
  * harmless redirect rather than a 401 or a login challenge.</p>
  */
 @Path("/logout")
+@NoScopeRequired
 public class LogoutResource {
 
     /** Covers q_session, q_session_&lt;tenant&gt;[_chunk_N], q_session_at/_rt, q_auth_*, q_post_logout. */

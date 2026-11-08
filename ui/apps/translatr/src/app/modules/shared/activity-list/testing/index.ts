@@ -1,1 +1,1 @@
-export * from './activity-list-testing.module';
+export * from './mock-activity-list.component';

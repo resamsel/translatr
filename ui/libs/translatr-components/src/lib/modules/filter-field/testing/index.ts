@@ -1,1 +1,1 @@
-export * from './filter-field-testing.module';
+export * from './mock-filter-field.component';

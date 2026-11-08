@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { Project } from '@dev/translatr-model';
+import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-project-link',
   templateUrl: './activity-project-link.component.html',
-  styleUrls: ['./activity-project-link.component.scss']
+  styleUrls: ['./activity-project-link.component.scss'],
+  imports: [RouterModule, TranslocoModule]
 })
 export class ActivityProjectLinkComponent {
   projectLink: string[] | undefined;

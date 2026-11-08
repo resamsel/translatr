@@ -9,21 +9,21 @@ and two runs compared to decide whether a change improved or regressed performan
 `quarkusDev`, the base `docker-compose.yml`, or any production / Heroku behaviour — the
 OpenTelemetry SDK is compiled in but **dormant by default** everywhere.
 
-> ⚠️ **Status — this is the intended procedure, not a verified run.** The full
-> `docker compose … up` for this overlay has **not** been stood up end-to-end on any
-> machine yet. What *has* been checked is `monitoring/validate.sh` (collector-config lint
-> + `docker compose … config` merge) and a compose `--dry-run`. Treat the stand-up steps
-> below as the design; expect to debug first-boot ordering. Likewise the committed
-> dashboard (`monitoring/dashboards/translatr-load-test.json`) is a **seed** — hand-authored
-> against the metric names the code emits, not exported from a live SigNoz. Import it, drive
-> one run, refine it in the UI, then re-export over the file and re-commit.
+> ✅ **Status — verified end-to-end on 2026-09-15.** The full stand-up (§2) was run
+> against current `main`, including the org-signup gotcha called out in step 3 and the
+> `docker-compose-loadtest.yml` / `docker/entrypoint-initdb.d/init-translatr.sh` fixes
+> described inline below. The committed dashboard
+> (`monitoring/dashboards/translatr-load-test.json`) is still a **seed** — hand-authored
+> against the metric names the code emits, not exported from a live SigNoz — but it does
+> render real data once imported. Refine it in the UI, then re-export over the file and
+> re-commit if panels need tuning.
 
 ## 1. Architecture
 
 Signal flow, active **only** under the load-test overlay:
 
 ```
- translatr  (built from Dockerfile.jvm; OTel SDK enabled via overlay env)
+ translatr  (built from Dockerfile — the same native image as releases; OTel SDK enabled via overlay env)
     │  OTLP/gRPC :4317  — traces + logs
     ▼
  otel-collector   ← translatr's OWN collector, our config
@@ -48,7 +48,7 @@ Traces and logs travel by OTLP.
 
 | Path | Role |
 |---|---|
-| `Dockerfile.jvm` | fast (~1 min) JVM build of current code; the overlay builds `translatr` from it. **Needs internet** (Maven/Gradle deps). |
+| `Dockerfile` | native Mandrel build of current code (~8–12 min); the overlay builds `translatr` from the same Dockerfile used for releases, so load-test and production behaviour never diverge. **Needs internet** (Maven/Gradle deps). |
 | `docker-compose-signoz.yml` | the overlay: `translatr` rebuild + env, our `otel-collector`, and the vendored SigNoz services inline |
 | `monitoring/otel-collector/config.yaml` | our collector config (receivers `otlp` + `prometheus`, processors, `otlp/signoz` exporter) |
 | `monitoring/signoz/` | SigNoz's own config files, vendored verbatim @ `v0.129.0` — see `monitoring/signoz/README.md` |
@@ -58,17 +58,15 @@ Traces and logs travel by OTLP.
 
 ## 2. Stand it up
 
-> The commands below are the **intended** procedure. See the status warning above — the
-> overlay has not yet been run end-to-end, so treat first-boot hiccups as expected.
-
 ### Prerequisites
 
-- **A `.env` file at the repo root** (or an exported `POSTGRES_PASSWORD`). `docker-compose-loadtest.yml`
-  sets `POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}` with **no default**, so `docker compose … up`
-  aborts with a "variable is not set" warning and an unusable Postgres if it is missing. A
-  one-line `POSTGRES_PASSWORD=translatr` is enough. Quarkus also reads this `.env` at startup.
+- **A `.env` file at the repo root** is optional. `docker-compose-loadtest.yml` now defaults
+  `POSTGRES_USER`/`POSTGRES_PASSWORD` (`postgres` / `translatr`, matching the base
+  `docker-compose.yml`), so `docker compose … up` no longer aborts if it's missing. Set
+  `POSTGRES_PASSWORD` in `.env` (or export it) only to override the default. Quarkus also
+  reads this `.env` at startup.
 - **Internet on the first `up`.** Two reasons:
-  1. `Dockerfile.jvm` resolves build dependencies.
+  1. `Dockerfile` resolves build dependencies (native Mandrel build).
   2. `init-clickhouse` downloads a `histogram-quantile` binary from GitHub
      (`github.com/SigNoz/signoz/releases`) at container start. **An offline `up` fails here.**
 - **Memory.** ClickHouse alone wants ~4 GB; give Docker Desktop / Colima **≥ 8 GB** allocated.
@@ -140,7 +138,7 @@ Two gates apply (both **on** under the overlay, **off** everywhere else):
   and `translatr_apikey_auth_failures_total` are **not emitted** (rows 1, 6, 7 lose those
   series). `@QuarkusTest` re-enables it via `%test.` so the observability tests still run.
 - A couple of rows are also **latent** until a Micrometer binder is switched on — Agroal pool
-  metrics (build-fixed, baked into `Dockerfile.jvm`) and Caffeine cache metrics (runtime env
+  metrics (build-fixed, baked into `Dockerfile`) and Caffeine cache metrics (runtime env
   var). Noted inline below and in §5.
 
 | # | Row | What it shows | Backing metric(s) |
@@ -148,7 +146,7 @@ Two gates apply (both **on** under the overlay, **off** everywhere else):
 | 1 | **Throughput & latency** | request rate; p50/p90/p95/p99; a histogram cross-check of p95; 5xx ratio | `http_server_requests_seconds_count`, `http_server_requests_seconds{quantile="0.5\|0.9\|0.95\|0.99"}`, `http_server_requests_seconds_bucket` |
 | 2 | **Concurrency & queueing** | in-flight HTTP requests; threads waiting for a DB connection; active DB connections | `http_server_active_requests`, `agroal_awaiting_count`, `agroal_active_count` |
 | 3 | **Runtime (JVM)** | process vs system CPU; heap used vs max; GC pause rate and time-in-GC | `process_cpu_usage`, `system_cpu_usage`, `jvm_memory_used_bytes{area="heap"}`, `jvm_memory_max_bytes{area="heap"}`, `jvm_gc_pause_seconds_count`, `jvm_gc_pause_seconds_sum` |
-| 4 | **Persistence (DB pool)** | pool active / available / max-used; connection-acquire wait | `agroal_active_count`, `agroal_available_count`, `agroal_max_used_count`, `agroal_blocking_time_average` — **needs `quarkus.datasource.jdbc.enable-metrics=true`, which is BUILD-fixed and baked into `Dockerfile.jvm` (not an env var)** |
+| 4 | **Persistence (DB pool)** | pool active / available / max-used; connection-acquire wait | `agroal_active_count`, `agroal_available_count`, `agroal_max_used_count`, `agroal_blocking_time_average` — **needs `quarkus.datasource.metrics.enabled=true`, which is BUILD-fixed and baked into `Dockerfile` (not an env var)** |
 | 5 | **Cache** | hit ratio per cache; put rate per cache (caches: `projects`, `keys`, `locales`, `users`) | `cache_gets_total{cache,result}`, `cache_puts_total{cache}` — **needs `quarkus.cache.caffeine.metrics-enabled=true`; runtime, so the overlay sets it as `QUARKUS_CACHE_CAFFEINE_METRICS_ENABLED`** |
 | 6 | **API usage** | request rate by route; by `auth_type`; per-key usage; API-key auth failures by reason | `http_server_requests_seconds_count` (by `uri` / `auth_type`), `translatr_apikey_requests_total{key_id,endpoint,status}`, `translatr_apikey_auth_failures_total{reason}` |
 | 7 | **Errors** | 5xx timeline by status; ERROR-severity log rate | `http_server_requests_seconds_count{status=~"5.."}`; SigNoz logs (`severity_text = ERROR`, via OTLP) |
@@ -173,12 +171,12 @@ Notes on specific series:
   pool is Agroal. The metric family is `agroal_*` (tag `datasource="default"`), **not**
   `hikaricp_*`. (The `# HikariCP pool tuning` comment and the `com.zaxxer.hikari` log category
   in `application.properties` are vestigial from the pre-Quarkus Play stack.) These metrics
-  are **off by default**. `quarkus.datasource.jdbc.enable-metrics` is
+  are **off by default**. `quarkus.datasource.metrics.enabled` is
   **`BUILD_AND_RUN_TIME_FIXED`**, so an overlay env var is silently ignored — it is instead
-  **baked into `Dockerfile.jvm`** (`-Dquarkus.datasource.jdbc.enable-metrics=true` on the
-  Gradle build line), and only that load-test image carries pool metrics. The base native
-  `Dockerfile` and normal builds do not, and it is deliberately kept out of
-  `application.properties`.
+  **baked into `Dockerfile`** (`-Dquarkus.datasource.metrics.enabled=true` on the
+  Gradle build line), so every image built from it — release and load-test alike — carries
+  pool metrics. It is deliberately kept out of `application.properties` so it stays tied to
+  the one build command instead of two places that could drift.
 - **Cache metrics are off by default.** `quarkus-cache` only wires Caffeine caches to
   Micrometer when `quarkus.cache.caffeine.metrics-enabled=true` (global) or
   `quarkus.cache.caffeine."<name>".metrics-enabled=true` (per cache). This key is
@@ -258,12 +256,12 @@ All are env vars on the `translatr` container (the overlay sets the load-test va
 | `QUARKUS_CACHE_CAFFEINE_METRICS_ENABLED` | `quarkus.cache.caffeine.metrics-enabled` | `false` | `true` | **`RUN_TIME`** property, so this env var works. Wires every Caffeine cache to Micrometer → `cache_gets_total` / `cache_puts_total` (dashboard row 5). |
 | `TRANSLATR_OBSERVABILITY_APIKEY_METRICS_KEY_ID_LABEL` | `translatr.observability.apikey-metrics.key-id-label` | **`true`** | (unset → `true`) | Secondary cardinality guard, **only consulted when `metrics-enabled` is on**. `true`: `translatr_apikey_requests_total` carries `key_id` + `endpoint` + `status`. `false`: `key_id` is dropped from the counter (keeps `endpoint` + `status`); the key id then survives only as the `translatr.key_id` **span** attribute. Set `false` if per-key time-series count ever bites. |
 
-**Not an env var — build-fixed:** `quarkus.datasource.jdbc.enable-metrics` (Agroal pool
+**Not an env var — build-fixed:** `quarkus.datasource.metrics.enabled` (Agroal pool
 metrics → dashboard rows 2 & 4) is **`BUILD_AND_RUN_TIME_FIXED`**. An overlay env var is
-silently ignored, so it is compiled in via `-Dquarkus.datasource.jdbc.enable-metrics=true`
-on the `./gradlew build` line in **`Dockerfile.jvm`** — only the load-test image gets pool
-metrics; the base native `Dockerfile` and normal builds do not, and it is kept out of
-`application.properties`.
+silently ignored, so it is compiled in via `-Dquarkus.datasource.metrics.enabled=true`
+on the `./gradlew build` line in **`Dockerfile`** — every build from it (release and
+load-test) carries pool metrics, and it is kept out of `application.properties` so it
+stays defined in one place.
 
 Related, set in `application.properties` (not per-run knobs, but load-bearing):
 `quarkus.otel.service.name=translatr`, `quarkus.otel.metrics.enabled=false` (metrics go via

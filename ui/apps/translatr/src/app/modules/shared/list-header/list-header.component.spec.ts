@@ -3,7 +3,8 @@ import { By } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FilterFieldTestingModule } from '@translatr/components/testing';
+import { FilterFieldComponent } from '@dev/translatr-components';
+import { MockFilterFieldComponent } from '@translatr/components/testing';
 
 import { ListHeaderComponent } from './list-header.component';
 
@@ -13,9 +14,11 @@ describe('ListHeaderComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ListHeaderComponent],
-        imports: [FilterFieldTestingModule, MatIconModule, MatButtonModule, MatTooltipModule]
+      TestBed.overrideComponent(ListHeaderComponent, {
+        remove: { imports: [FilterFieldComponent] },
+        add: { imports: [MockFilterFieldComponent] }
+      }).configureTestingModule({
+        imports: [ListHeaderComponent, MatIconModule, MatButtonModule, MatTooltipModule]
       }).compileComponents();
     })
   );

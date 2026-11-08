@@ -12,8 +12,12 @@ describe('AuthBarLanguageSwitcherComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [AuthBarLanguageSwitcherComponent],
-        imports: [TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }), MatMenuModule, MatIconModule]
+        imports: [
+          AuthBarLanguageSwitcherComponent,
+          TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
+          MatMenuModule,
+          MatIconModule
+        ]
       }).compileComponents();
     })
   );

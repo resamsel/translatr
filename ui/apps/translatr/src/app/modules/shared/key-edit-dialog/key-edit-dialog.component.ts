@@ -1,10 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, Optional, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Key } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
 import { BaseEditFormComponent } from '../edit-form/base-edit-form.component';
+import { ProjectStateModule } from '../project-state';
 import { ProjectFacade } from '../project-state/+state';
 
 interface Data {
@@ -15,9 +21,21 @@ interface Data {
 }
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.Eager,
-  templateUrl: './key-edit-dialog.component.html'
+  templateUrl: './key-edit-dialog.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ProjectStateModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSnackBarModule,
+    MatButtonModule,
+    MatInputModule,
+    TranslocoModule
+  ]
 })
 export class KeyEditDialogComponent extends BaseEditFormComponent<
   KeyEditDialogComponent,

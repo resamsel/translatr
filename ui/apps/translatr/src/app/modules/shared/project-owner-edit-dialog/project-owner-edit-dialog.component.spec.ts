@@ -4,8 +4,12 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { mockObservable } from '@translatr/utils/testing';
 import { ProjectFacade } from '../project-state/+state';
+import { UsersModule } from '../../pages/users-page/+state/users.module';
 import { UsersFacade } from '../../pages/users-page/+state/users.facade';
-import { ProjectOwnerEditFormTestingModule } from '../testing';
+import { ProjectMemberEditFormComponent } from '../project-member-edit-form/project-member-edit-form.component';
+import { ProjectOwnerEditFormComponent } from '../project-owner-edit-form/project-owner-edit-form.component';
+import { ProjectStateModule } from '../project-state';
+import { MockProjectMemberEditFormComponent, MockProjectOwnerEditFormComponent } from '../testing';
 import { ProjectOwnerEditDialogComponent } from './project-owner-edit-dialog.component';
 
 describe('ProjectMemberEditDialogComponent', () => {
@@ -14,10 +18,19 @@ describe('ProjectMemberEditDialogComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectOwnerEditDialogComponent],
+      TestBed.overrideComponent(ProjectOwnerEditDialogComponent, {
+        remove: {
+          imports: [
+            ProjectMemberEditFormComponent,
+            ProjectOwnerEditFormComponent,
+            UsersModule,
+            ProjectStateModule
+          ]
+        },
+        add: { imports: [MockProjectMemberEditFormComponent, MockProjectOwnerEditFormComponent] }
+      }).configureTestingModule({
         imports: [
-          ProjectOwnerEditFormTestingModule,
+          ProjectOwnerEditDialogComponent,
 
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
 

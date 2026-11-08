@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import com.translatr.auth.NoScopeRequired;
 import com.translatr.config.TranslatrConfig;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -39,6 +40,7 @@ import java.util.Locale;
  * so this endpoint cannot be used as an open redirector.</p>
  */
 @Path("/login")
+@NoScopeRequired
 public class LoginResource {
 
     private static final Logger LOG = Logger.getLogger(LoginResource.class);

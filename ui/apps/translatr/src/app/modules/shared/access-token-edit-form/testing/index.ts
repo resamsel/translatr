@@ -1,1 +1,1 @@
-export * from './access-token-edit-form-testing.module';
+export * from './mock-access-token-edit-form.component';

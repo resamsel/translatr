@@ -12,6 +12,7 @@
       .weekday,
       .month {
         fill: rgba(0, 0, 0, 0.6);
+        font-size: 12px;
       }
 
       .day {
@@ -32,6 +33,26 @@
 
       .q3 {
         fill: #1e6823;
+      }
+    }
+  }
+}
+
+:host-context(.dark-theme) {
+  ::ng-deep {
+    svg {
+      text.legend,
+      .weekday,
+      .month {
+        fill: rgba(255, 255, 255, 0.7);
+      }
+
+      // Cells rendered as `class="day qN"` (dataRects/legendRects, N=0-3)
+      // must fall through to the .q0-.q3 rules above, not this empty-cell
+      // grey - :not() keeps this scoped to plain "no activity" cells,
+      // matching the equal specificity + source order .q0-.q3 rely on.
+      .day:not(.q0):not(.q1):not(.q2):not(.q3) {
+        fill: rgba(255, 255, 255, 0.15);
       }
     }
   }

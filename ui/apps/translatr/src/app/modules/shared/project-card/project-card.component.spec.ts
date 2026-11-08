@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { TimeAgoPipe } from '@dev/translatr-components';
 
 import { ProjectCardComponent } from './project-card.component';
 
@@ -13,8 +13,7 @@ describe('ProjectCardComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ProjectCardComponent],
-        imports: [GravatarModule, TimeAgoModule, MatCardModule, MatTooltipModule]
+        imports: [ProjectCardComponent, GravatarModule, TimeAgoPipe, MatCardModule, MatTooltipModule]
       }).compileComponents();
     })
   );

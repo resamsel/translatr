@@ -1,6 +1,6 @@
 {
   "name": "translatr-ui",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "author": "René Panzar",
   "license": "GPL-3.0",
   "bugs": {
@@ -52,6 +52,7 @@
     "build:prod": "npm run build:ui:prod && npm run build:admin:prod",
     "prebuild:ui:prod": "npm run buildinfo && npm run codegen",
     "build:ui:prod": "nx build translatr --configuration production --output-path ../public/ui",
+    "build:app:prod": "npm run build:ui:prod && npm run build:admin:prod && node tools/stage-app.js",
     "prebuild:admin:prod": "npm run buildinfo && npm run codegen",
     "build:admin:prod": "nx build translatr-admin --configuration production --output-path ../public/admin",
     "build:lets-generate": "nx build lets-generate",

@@ -26,4 +26,24 @@ class AccessTokenSecurityIdentityTest {
         assertThat(identity.getPrincipal().getName()).isEqualTo("jane");
         assertThat(identity.isAnonymous()).isFalse();
     }
+
+    @Test
+    void getScopes_parsesColumn() {
+        assertThat(identityWithScope("read:user,write:user").getScopes())
+                .containsExactlyInAnyOrder(Scope.UserRead, Scope.UserWrite);
+    }
+
+    @Test
+    void getScopes_nullColumnIsEmpty() {
+        assertThat(identityWithScope(null).getScopes()).isEmpty();
+    }
+
+    private static AccessTokenSecurityIdentity identityWithScope(String scope) {
+        User u = new User();
+        u.username = "jane";
+        AccessToken t = new AccessToken();
+        t.user = u;
+        t.scope = scope;
+        return new AccessTokenSecurityIdentity(t);
+    }
 }

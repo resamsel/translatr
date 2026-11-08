@@ -1,17 +1,44 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Params } from '@angular/router';
 import { AuthClient } from '@dev/translatr-model';
 import { AuthClientService } from '@dev/translatr-sdk';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faApple,
+  faFacebook,
+  faGithub,
+  faGoogle,
+  faMicrosoft,
+  faTwitter
+} from '@fortawesome/free-brands-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { combineLatest } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
+import { AuthBarLanguageSwitcherComponent } from '../../nav/navbar/auth-bar-language-switcher/auth-bar-language-switcher.component';
+import { NavbarComponent } from '../../nav/navbar/navbar.component';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'dev-login-page',
   templateUrl: './login-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./login-page.component.scss']
+  styleUrls: ['./login-page.component.scss'],
+  imports: [
+    CommonModule,
+    NavbarComponent,
+    AuthBarLanguageSwitcherComponent,
+    MatIconModule,
+    MatButtonModule,
+    FontAwesomeModule,
+    MatCardModule,
+    TranslocoModule
+  ]
 })
 export class LoginPageComponent implements OnInit {
   readonly names = {
@@ -24,13 +51,13 @@ export class LoginPageComponent implements OnInit {
     apple: 'Apple'
   };
   icons = {
-    google: ['fab', 'google'],
-    keycloak: ['fas', 'key'],
-    github: ['fab', 'github'],
-    facebook: ['fab', 'facebook'],
-    twitter: ['fab', 'twitter'],
-    microsoft: ['fab', 'microsoft'],
-    apple: ['fab', 'apple']
+    google: faGoogle,
+    keycloak: faKey,
+    github: faGithub,
+    facebook: faFacebook,
+    twitter: faTwitter,
+    microsoft: faMicrosoft,
+    apple: faApple
   };
 
   readonly providers$ = this.authProviderService

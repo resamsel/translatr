@@ -12,7 +12,7 @@ test.describe('Admin Global Feature Flags', () => {
     const flags = await new FeatureFlagsPage(page).navigateToGlobal();
 
     await expect(flags.getPageName()).toHaveText('Global Feature Flags');
-    await expect(flags.getRows()).toHaveCount(4);
+    await expect(flags.getRows()).toHaveCount(5);
     await expect(flags.getToggle('header-graphic')).toBeChecked();
     await expect(flags.getToggle('language-switcher')).not.toBeChecked();
   });

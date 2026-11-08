@@ -14,7 +14,8 @@ public enum Feature {
     ProjectCliCard    ("project-cli-card",    false),
     ProjectInfographic("project-infographic", false),
     HeaderGraphic     ("header-graphic",      false),
-    LanguageSwitcher  ("language-switcher",   false);
+    LanguageSwitcher  ("language-switcher",   false),
+    ThemeSwitcher     ("theme-switcher",      false);
 
     public final String  key;
     public final boolean defaultEnabled;

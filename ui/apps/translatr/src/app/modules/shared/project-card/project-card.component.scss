@@ -2,6 +2,11 @@
   .owner,
   .when-created {
     color: rgba(0, 0, 0, 0.54);
+
+    // rgba(0,0,0,.54) is ~invisible against the dark theme's card surface.
+    :host-context(.dark-theme) & {
+      color: rgba(255, 255, 255, 0.7);
+    }
   }
 
   .owner {

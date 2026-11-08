@@ -1,1 +1,1 @@
-export * from './feature-flag-testing.module';
+export * from './mock-feature-flag';

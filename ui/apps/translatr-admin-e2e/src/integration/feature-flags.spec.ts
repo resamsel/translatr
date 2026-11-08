@@ -11,7 +11,7 @@ test.describe('Admin Feature Flags', () => {
     const flags = await new FeatureFlagsPage(page).navigateTo();
 
     await expect(flags.getPageName()).toHaveText('Feature Flags');
-    await expect(flags.getRows()).toHaveCount(4);
+    await expect(flags.getRows()).toHaveCount(5);
     await expect(flags.getGlobalDefaultCell('header-graphic')).toContainText('on');
     await expect(flags.getGlobalDefaultCell('project-cli-card')).toContainText('off');
   });

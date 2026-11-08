@@ -1,5 +1,6 @@
 package com.translatr.controller;
 
+import com.translatr.auth.NoScopeRequired;
 import com.translatr.dto.AuthClientDto;
 import com.translatr.generated.api.AuthclientsApi;
 import com.translatr.service.AuthProviderStatusService;
@@ -8,6 +9,7 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 
+@NoScopeRequired
 public class AuthClientsResource implements AuthclientsApi {
 
     private final AuthProviderStatusService statusService;

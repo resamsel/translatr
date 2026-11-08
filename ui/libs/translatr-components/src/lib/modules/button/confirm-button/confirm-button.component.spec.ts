@@ -12,8 +12,7 @@ describe('ConfirmButtonComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ConfirmButtonComponent],
-        imports: [MatMenuModule, MatButtonModule, MatTooltipModule, MatIconModule]
+        imports: [ConfirmButtonComponent, MatMenuModule, MatButtonModule, MatTooltipModule, MatIconModule]
       }).compileComponents();
     })
   );

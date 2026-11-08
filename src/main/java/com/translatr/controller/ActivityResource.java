@@ -1,17 +1,20 @@
 package com.translatr.controller;
 
 import com.translatr.auth.CurrentUserResolver;
+import com.translatr.auth.RequiresScope;
+import com.translatr.auth.Scope;
 import com.translatr.dto.ActivityDto;
 import com.translatr.dto.AggregateDto;
 import com.translatr.dto.PagedActivityList;
 import com.translatr.dto.PagedAggregateList;
 import com.translatr.dto.PagedList;
-import com.translatr.service.ActivityService;
 import com.translatr.generated.api.ActivitiesApi;
+import com.translatr.service.ActivityService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import java.util.UUID;
 
+@RequiresScope(Scope.ProjectRead)
 public class ActivityResource implements ActivitiesApi {
 
     private final ActivityService     activityService;

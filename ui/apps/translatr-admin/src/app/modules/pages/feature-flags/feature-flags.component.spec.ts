@@ -12,7 +12,8 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { Feature, features, UserRole } from '@dev/translatr-model';
 import { of } from 'rxjs';
 import { AppFacade } from '../../../+state/app.facade';
-import { AdminPageTestingModule } from '../../admin-page/testing';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
+import { MockAdminPageComponent } from '../../admin-page/testing';
 import { FeatureFlagsComponent } from './feature-flags.component';
 
 describe('FeatureFlagsComponent', () => {
@@ -78,10 +79,12 @@ describe('FeatureFlagsComponent', () => {
     };
     router = { navigate: jest.fn() };
 
-    TestBed.configureTestingModule({
-      declarations: [FeatureFlagsComponent],
+    TestBed.overrideComponent(FeatureFlagsComponent, {
+      remove: { imports: [AdminPageComponent] },
+      add: { imports: [MockAdminPageComponent] }
+    }).configureTestingModule({
       imports: [
-        AdminPageTestingModule,
+        FeatureFlagsComponent,
         NoopAnimationsModule,
         ReactiveFormsModule,
         MatAutocompleteModule,

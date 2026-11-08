@@ -1,11 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Feature, features, GlobalFeatureFlag, ResolvedFeature } from '@dev/translatr-model';
+import { TranslocoModule } from '@jsverse/transloco';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { AppActionTypes } from '../../../+state/app.actions';
 import { AppFacade } from '../../../+state/app.facade';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
 
 export interface GlobalFeatureRow {
   feature: Feature;
@@ -16,11 +22,12 @@ export interface GlobalFeatureRow {
 }
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-global-feature-flags',
   templateUrl: './global-feature-flags.component.html',
-  styleUrls: ['./global-feature-flags.component.scss']
+  styleUrls: ['./global-feature-flags.component.scss'],
+  imports: [CommonModule, TranslocoModule, AdminPageComponent, MatTableModule, MatSlideToggleModule, MatTooltipModule]
 })
 export class GlobalFeatureFlagsComponent implements OnInit, OnDestroy {
   readonly displayedColumns = ['feature', 'default', 'actions'];

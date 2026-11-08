@@ -3,7 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { mockObservable } from '@translatr/utils/testing';
 import { ProjectFacade } from '../../../shared/project-state';
-import { KeyListTestingModule } from './key-list/testing';
+import { KeyListComponent } from './key-list/key-list.component';
+import { MockKeyListComponent } from './key-list/testing';
 
 import { ProjectKeysComponent } from './project-keys.component';
 
@@ -13,9 +14,11 @@ describe('ProjectKeysComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProjectKeysComponent],
-        imports: [KeyListTestingModule, RouterTestingModule],
+      TestBed.overrideComponent(ProjectKeysComponent, {
+        remove: { imports: [KeyListComponent] },
+        add: { imports: [MockKeyListComponent] }
+      }).configureTestingModule({
+        imports: [ProjectKeysComponent, RouterTestingModule],
         providers: [
           {
             provide: ProjectFacade,

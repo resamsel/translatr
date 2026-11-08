@@ -1,17 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { ButtonTestingModule, EmptyViewTestingModule } from '@translatr/components/testing';
-import { GravatarModule } from 'ngx-gravatar';
-import { TimeAgoModule } from '@dev/translatr-components';
+import { ConfirmButtonComponent } from '@dev/translatr-components';
+import { MockConfirmButtonComponent } from '@translatr/components/testing';
 import { AppFacade } from '../../../../../+state/app.facade';
-import { NavListTestingModule } from '../../../../shared/nav-list/testing';
+import { NavListComponent } from '../../../../shared/nav-list/nav-list.component';
+import { MockNavListComponent } from '../../../../shared/nav-list/testing';
 
 import { MemberListComponent } from './member-list.component';
 
@@ -21,25 +16,15 @@ describe('MemberListComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [MemberListComponent],
+      TestBed.overrideComponent(MemberListComponent, {
+        remove: { imports: [NavListComponent, ConfirmButtonComponent] },
+        add: { imports: [MockNavListComponent, MockConfirmButtonComponent] }
+      }).configureTestingModule({
         imports: [
-          NavListTestingModule,
-          ButtonTestingModule,
-          EmptyViewTestingModule,
-
+          MemberListComponent,
           RouterTestingModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),
-
-          MatDialogModule,
-          MatListModule,
-          MatIconModule,
-          MatProgressBarModule,
-          MatTooltipModule,
-          MatButtonModule,
-
-          GravatarModule,
-          TimeAgoModule
+          MatDialogModule
         ],
         providers: [{ provide: AppFacade, useFactory: () => ({}) }]
       }).compileComponents();

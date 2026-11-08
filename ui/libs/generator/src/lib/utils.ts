@@ -1,5 +1,7 @@
-import { Observable, throwError, timer } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { ErrorHandler, errorMessage } from '@dev/translatr-sdk';
+import { EMPTY, Observable, throwError, timer } from 'rxjs';
+import { catchError, mergeMap, retryWhen, tap } from 'rxjs/operators';
+import { Persona } from './personas/persona';
 import { WeightedPersonaFactory } from './weighted-persona-factory';
 
 export const selectPersonaFactory = (
@@ -43,6 +45,36 @@ export const genericRetryStrategy = ({
       console.log(`${prefix}attempt ${retryAttempt} failed - retrying in ${delay}ms`);
       // retry after 1s, 2s, etc...
       return timer(delay);
+    })
+  );
+};
+
+export const executePersona = (
+  persona: Persona,
+  errorHandler: ErrorHandler,
+  options: { maxRetryAttempts: number; retryScalingDelay: number }
+): Observable<string> => {
+  const startedMillis = new Date().getTime();
+
+  return persona.execute().pipe(
+    tap(message => {
+      console.log(`${persona.name}: ${message} in ${new Date().getTime() - startedMillis}ms`);
+    }),
+    retryWhen(
+      genericRetryStrategy({
+        maxRetryAttempts: options.maxRetryAttempts,
+        scalingDuration: options.retryScalingDelay,
+        prefix: `${persona.name}: `
+      })
+    ),
+    catchError(error => {
+      console.error(
+        `${persona.name}: ${errorMessage(error)} in ${new Date().getTime() - startedMillis}ms`
+      );
+      // errorHandler.handleError() always returns an observable that re-throws (it exists for
+      // callers that want the error propagated); here we only need its side-effect logging, so
+      // the re-thrown error is swallowed to keep the load generator running for the next persona.
+      return errorHandler.handleError(error).pipe(catchError(() => EMPTY));
     })
   );
 };

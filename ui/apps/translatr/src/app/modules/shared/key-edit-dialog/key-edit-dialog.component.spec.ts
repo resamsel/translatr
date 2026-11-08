@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { mockObservable } from '@translatr/utils/testing';
+import { ProjectStateModule } from '../project-state';
 import { ProjectFacade } from '../project-state/+state';
 import { KeyEditDialogComponent } from './key-edit-dialog.component';
 
@@ -17,9 +18,12 @@ describe('KeyEditDialogComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [KeyEditDialogComponent],
+      TestBed.overrideComponent(KeyEditDialogComponent, {
+        remove: { imports: [ProjectStateModule] },
+        add: {}
+      }).configureTestingModule({
         imports: [
+          KeyEditDialogComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

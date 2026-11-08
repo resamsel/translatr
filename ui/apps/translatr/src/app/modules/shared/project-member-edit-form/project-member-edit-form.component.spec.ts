@@ -22,8 +22,8 @@ describe('ProjectMemberEditFormComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ProjectMemberEditFormComponent],
         imports: [
+          ProjectMemberEditFormComponent,
           ReactiveFormsModule,
           NoopAnimationsModule,
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

@@ -4,12 +4,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
-import { NavbarTestingModule } from '@translatr/components/testing';
+import { MockNavbarComponent, MockAuthBarLanguageSwitcherComponent } from '@translatr/components/testing';
 import { ENDPOINT_URL } from '@translatr/utils';
 import { mockObservable } from '@translatr/utils/testing';
 import { of } from 'rxjs';
 
 import { LoginPageComponent } from './login-page.component';
+import { AuthBarLanguageSwitcherComponent } from '../../nav/navbar/auth-bar-language-switcher/auth-bar-language-switcher.component';
+import { NavbarComponent } from '../../nav/navbar/navbar.component';
 import { AuthClientService } from '@dev/translatr-sdk';
 import { AuthClient } from '@dev/translatr-model';
 
@@ -36,12 +38,13 @@ describe('LoginPageComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [LoginPageComponent],
+      TestBed.overrideComponent(LoginPageComponent, {
+        remove: { imports: [NavbarComponent, AuthBarLanguageSwitcherComponent] },
+        add: { imports: [MockNavbarComponent, MockAuthBarLanguageSwitcherComponent] }
+      }).configureTestingModule({
         imports: [
+          LoginPageComponent,
           RouterTestingModule,
-
-          NavbarTestingModule,
 
           // Without it the whole template stays inside an unrendered `*transloco` ng-template.
           TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }),

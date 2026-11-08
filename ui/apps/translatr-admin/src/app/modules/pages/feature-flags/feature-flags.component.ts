@@ -1,13 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { Feature, features, RequestCriteria, ResolvedFeature, User, UserFeatureFlag } from '@dev/translatr-model';
 import { isAdmin } from '@dev/translatr-sdk';
+import { TranslocoModule } from '@jsverse/transloco';
 import { navigate } from '@translatr/utils';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { AppFacade } from '../../../+state/app.facade';
+import { AdminPageComponent } from '../../admin-page/admin-page.component';
 
 export interface FeatureRow {
   feature: Feature;
@@ -20,11 +28,23 @@ export interface FeatureRow {
 }
 
 @Component({
-  standalone: false,
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'dev-feature-flags',
   templateUrl: './feature-flags.component.html',
-  styleUrls: ['./feature-flags.component.scss']
+  styleUrls: ['./feature-flags.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+    AdminPageComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatTableModule,
+    MatSlideToggleModule,
+    MatTooltipModule
+  ]
 })
 export class FeatureFlagsComponent implements OnInit, OnDestroy {
   readonly Feature = Feature;

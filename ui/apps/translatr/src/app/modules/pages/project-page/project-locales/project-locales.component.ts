@@ -1,17 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Locale, LocaleCriteria, Project } from '@dev/translatr-model';
 import { navigate } from '@translatr/utils';
 import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { LocaleListComponent } from './locale-list/locale-list.component';
 import { ProjectFacade } from '../../../shared/project-state';
 
 @Component({
-  standalone: false,
+  standalone: true,
   selector: 'app-project-locales',
   templateUrl: './project-locales.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./project-locales.component.scss']
+  styleUrls: ['./project-locales.component.scss'],
+  imports: [CommonModule, LocaleListComponent]
 })
 export class ProjectLocalesComponent {
   project$ = this.facade.project$.pipe(filter(x => !!x));

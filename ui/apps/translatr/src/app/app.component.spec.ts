@@ -11,7 +11,6 @@ describe('AppComponent', () => {
   const createComponent = createComponentFactory({
     component: AppComponent,
     imports: [RouterTestingModule, TranslocoTestingModule.forRoot({ langs: {}, translocoConfig: { availableLangs: ['en'] } }), MatDialogModule],
-    declarations: [AppComponent],
     providers: [
       mockProvider(AppFacade, {
         me$: mockObservable()
